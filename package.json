@@ -1,0 +1,18 @@
+{
+  "name": "gatool",
+  "version": "0.5.0",
+  "description": "TBD",
+  "author": "James Lockman, Arthur Lockman",
+  "license": "MIT",
+  "scripts": {
+	  "start": "node server.js"
+  },
+  "repository": 
+  {
+	  "type": "git",
+	  "url": "https://github.com/arthurlockman/gatool"
+  },
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
