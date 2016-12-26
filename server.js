@@ -14,6 +14,15 @@ var server = app.listen(8080, function () {
     console.log('Server listening at http://%s:%s', host, port)
 })
 
+function sendFile(res, filename, contentType) {
+  contentType = contentType || 'text/html'
+
+  fs.readFile(filename, function(error, content) {
+    res.writeHead(200, {'Content-type': contentType})
+    res.end(content, 'utf-8')
+  })
+}
+
 app.use('/api', router)
 
 router.route('/:year/events').get(function(req, res) {
@@ -26,6 +35,13 @@ router.route('/:year/events').get(function(req, res) {
 })
 
 app.get('/', function(req, res) {
-    res.writeHead(200, {'Content-type': 'text/html'})
-    res.end('Welcome to FRC events!', 'utf-8')
+    sendFile(res, 'index.html', 'text/html')
+})
+
+app.get('/scripts.js', function(req, res) {
+    sendFile(res, 'scripts.js', 'text/js')
+})
+
+app.get('/css/style.css', function(req, res) {
+    sendFile(res, 'style.css', 'text/css')
 })
