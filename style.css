@@ -73,3 +73,9 @@ ul.tab li a:focus, .active {background-color: #ccc;}
     from {opacity: 0;}
     to {opacity: 1;}
 }
+
+.string { color: green; }
+.number { color: darkorange; }
+.boolean { color: blue; }
+.null { color: magenta; }
+.key { color: red; }

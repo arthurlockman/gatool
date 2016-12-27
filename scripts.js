@@ -1,6 +1,7 @@
 var eventsData = {}
 
 window.onload = function() {
+    document.getElementById('scheduleProgressBar').style.display = 'none'
     if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
         $('.selectpicker').selectpicker('mobile')
     }
@@ -15,6 +16,7 @@ window.onload = function() {
 }
 
 function handleEventSelection() {
+    document.getElementById('scheduleProgressBar').style.display = 'block'
     var e = document.getElementById('eventSelector')
     var data = JSON.parse(e.value)
     var codeText = document.getElementById('eventCodeContainer')
@@ -25,6 +27,7 @@ function handleEventSelection() {
     var startDate = moment(data.dateStart, 'YYYY-MM-DDTHH:mm:ss').format('MMMM Do')
     var endDate = moment(data.dateEnd, 'YYYY-MM-DDTHH:mm:ss').format('MMMM Do, YYYY')
     dateText.innerHTML = startDate + " to " + endDate
+    getHybridSchedule()
 }
 
 function loadEventsList() {
@@ -75,4 +78,40 @@ function openTab(evt, cityName) {
     // Show the current tab, and add an "active" class to the link that opened the tab
     document.getElementById(cityName).style.display = "block";
     evt.currentTarget.className += " active";
+}
+
+function getHybridSchedule() {
+    var year = document.getElementById('yearPicker')
+    var eventPicker = document.getElementById('eventSelector')
+    var req = new XMLHttpRequest()
+    req.open('GET', '/api/' + year.options[year.selectedIndex].value + '/schedule/' + JSON.parse(eventPicker.options[eventPicker.selectedIndex].value).code + '/qual')
+    req.addEventListener('load', function() {
+        document.getElementById('schedulejson').innerHTML = syntaxHighlight(JSON.parse(req.responseText))
+        document.getElementById('scheduleProgressBar').style.display = 'none'
+    })
+    req.send()
+}
+
+
+// UTILITY FUNCTIONS
+function syntaxHighlight(json) {
+    if (typeof json != 'string') {
+         json = JSON.stringify(json, undefined, 2);
+    }
+    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+        var cls = 'number';
+        if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+                cls = 'key';
+            } else {
+                cls = 'string';
+            }
+        } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+        } else if (/null/.test(match)) {
+            cls = 'null';
+        }
+        return '<span class="' + cls + '">' + match + '</span>';
+    });
 }
