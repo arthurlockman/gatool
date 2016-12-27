@@ -31,19 +31,33 @@
             </h1>
             <p>
                 <select class="selectpicker" id="yearPicker" data-width="75%">
-                    <option>2015</option>
-                    <option>2016</option>
                     <option>2017</option>
+                    <option>2016</option>
+                    <option>2015</option>
+                    <option>2014</option>
+                    <option>2013</option>
                 </select>
             </p>
             <p>
                 <select class="selectpicker" id="eventSelector" data-width="75%">
                 </select>
             </p>
+            <div id="eventInfoContainer">
+                <p>
+                    <b>Event Code:</b> <span id="eventCodeContainer">no event selected</span>
+                </p>
+                <p>
+                    <b>Event Location:</b> <span id="eventLocationContainer">no event selected</span>
+                </p>
+                <p>
+                    <b>Event Dates:</b> <span id="eventDateContainer">no event selected</span>
+                </p>
+            </div>
         </div>
 
         <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
         <script src="scripts.js"></script>
         <!-- Include all compiled plugins (below), or include individual files as needed -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
