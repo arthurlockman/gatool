@@ -30,7 +30,7 @@
                 Welcome to gatool!
             </h1>
             <p>
-                <select class="selectpicker" id="yearPicker" data-width="75%">
+                <select class="selectpicker" id="yearPicker" data-width="100%">
                     <option>2017</option>
                     <option>2016</option>
                     <option>2015</option>
@@ -39,7 +39,7 @@
                 </select>
             </p>
             <p>
-                <select class="selectpicker" id="eventSelector" data-width="75%">
+                <select class="selectpicker" id="eventSelector" data-width="100%">
                 </select>
             </p>
             <div id="eventInfoContainer">
@@ -52,6 +52,30 @@
                 <p>
                     <b>Event Dates:</b> <span id="eventDateContainer">no event selected</span>
                 </p>
+            </div>
+            <div id="tabContainer">
+                <ul class="tab">
+                    <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'schedule')" id="scheduleTabPicker">Match Schedule</a></li>
+                    <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'teamdata')">Team Data</a></li>
+                    <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'announce')">Announce</a></li>
+                    <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'playbyplay')">Play-by-play</a></li>
+                </ul>
+                <div id="schedule" class="tabcontent">
+                    <h3>Match Schedule</h3>
+                    <p>this is some content</p>
+                </div>
+                <div id="teamdata" class="tabcontent">
+                    <h3>Team Data</h3>
+                    <p>this is some content</p>
+                </div>
+                <div id="announce" class="tabcontent">
+                    <h3>Announce</h3>
+                    <p>this is some content</p>
+                </div>
+                <div id="playbyplay" class="tabcontent">
+                    <h3>Play-by-play</h3>
+                    <p>this is some content</p>
+                </div>
             </div>
         </div>
 
