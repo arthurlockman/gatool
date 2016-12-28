@@ -17,7 +17,7 @@ window.onload = function() {
 
 function handleEventSelection() {
     document.getElementById('scheduleProgressBar').style.display = 'block'
-    document.getElementById('scheduleContainer').innerHTML = ''
+    document.getElementById('scheduleContainer').innerHTML = 'Select an Event'
     var e = document.getElementById('eventSelector')
     var data = JSON.parse(e.value)
     var codeText = document.getElementById('eventCodeContainer')
