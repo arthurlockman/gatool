@@ -29,6 +29,7 @@ function handleEventSelection() {
 	var endDate = moment(data.dateEnd, 'YYYY-MM-DDTHH:mm:ss').format('MMMM Do, YYYY')
 	dateText.innerHTML = startDate + " to " + endDate
 	getHybridSchedule()
+	getTeamList()
 }
 
 function loadEventsList() {
@@ -142,8 +143,8 @@ function getTeamList() {
 				document.getElementById('teamsTable').innerHTML += generateTeamTableRow(element)
 			}
 		}
-		req.send()
 	})
+	req.send()
 }
 
 // UTILITY FUNCTIONS
