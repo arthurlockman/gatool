@@ -147,7 +147,7 @@ function syntaxHighlight(json) {
 
 function generateMatchTableRow(matchData) {
     var returnData = '<tr><td>'
-    returnData += moment(matchData.startTime, 'YYYY-MM-DDTHH:mm:ss').format('hh:mm:ss A') + '</td><td>'
+    returnData += moment(matchData.startTime, 'YYYY-MM-DDTHH:mm:ss').format('ddd hh:mm:ss A') + '</td><td>'
     returnData += matchData.description + '</td><td>'
     returnData += matchData.matchNumber + '</td><td>'
     returnData += getTeamForStation(matchData.Teams, 'Red1').teamNumber + '</td><td>'
