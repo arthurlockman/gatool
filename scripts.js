@@ -17,8 +17,7 @@ window.onload = function() {
 
 function handleEventSelection() {
     document.getElementById('scheduleProgressBar').style.display = 'block'
-    document.getElementById('qualScheduleContainer').innerHTML = ''
-    document.getElementById('elimScheduleContainer').innerHTML = ''
+    document.getElementById('scheduleContainer').innerHTML = ''
     var e = document.getElementById('eventSelector')
     var data = JSON.parse(e.value)
     var codeText = document.getElementById('eventCodeContainer')
@@ -83,8 +82,6 @@ function openTab(evt, cityName) {
 }
 
 function getHybridSchedule() {
-    var qualFinished = false
-    var playoffFinished = false
     var year = document.getElementById('yearPicker')
     var eventPicker = document.getElementById('eventSelector')
     var req = new XMLHttpRequest()
@@ -93,19 +90,16 @@ function getHybridSchedule() {
         var data = JSON.parse(req.responseText)
         if (data.Schedule.length == 0)
         {
-            document.getElementById('qualScheduleContainer').innerHTML = '<b>No qualification matches have been scheduled for this event.</b>'    
+            document.getElementById('scheduleContainer').innerHTML = '<b>No qualification matches have been scheduled for this event.</b>'
         } else {
-            document.getElementById('qualScheduleContainer').innerHTML = ''
+            document.getElementById('scheduleContainer').innerHTML = '<div class="floatThead-container"><table id="scheduleTable" class="table table-bordered floatThead-table">'
+            document.getElementById('scheduleTable').innerHTML += '<thead><tr><td><b>Time</b></td><td><b>Description</b></td><td><b>Match Number</b></td><td><b>Red 1</b></td><td><b>Red 2</b></td><td><b>Red 3</b></td><td><b>Red 4</b></td><td><b>Blue 1</b></td><td><b>Blue 2</b></td><td><b>Blue 3</b></td><td><b>Blue 4</b></td><tr></thead>'
             for (i = 0; i < data.Schedule.length; i++) {
                 var element = data.Schedule[i]
-                document.getElementById('qualScheduleContainer').innerHTML += generateMatchTable(element)
+                document.getElementById('scheduleTable').innerHTML += generateMatchTableRow(element)
             }
-            document.getElementById('qualScheduleContainer').innerHTML += '<pre id="qualschedulejson">' + syntaxHighlight(JSON.parse(req.responseText)) + '</pre>'
         }
-        qualFinished = true
-        if (qualFinished && playoffFinished) {
-            document.getElementById('scheduleProgressBar').style.display = 'none'
-        }
+        req1.send()
     })
     var req1 = new XMLHttpRequest()
     req1.open('GET', '/api/' + year.options[year.selectedIndex].value + '/schedule/' + JSON.parse(eventPicker.options[eventPicker.selectedIndex].value).code + '/playoff')
@@ -114,22 +108,18 @@ function getHybridSchedule() {
         var data = JSON.parse(req1.responseText)
         if (data.Schedule.length == 0)
         {
-            document.getElementById('elimScheduleContainer').innerHTML = '<b>No elimination matches have been scheduled for this event.</b>'    
+            document.getElementById('scheduleContainer').innerHTML += '</table><p><b>No elimination matches have been scheduled for this event.</b></p>'
         } else {
-            document.getElementById('elimScheduleContainer').innerHTML = ''
             for (i = 0; i < data.Schedule.length; i++) {
                 var element = data.Schedule[i]
-                document.getElementById('elimScheduleContainer').innerHTML += generateMatchTable(element)
+                document.getElementById('scheduleTable').innerHTML += generateMatchTableRow(element)
             }
-            document.getElementById('elimScheduleContainer').innerHTML += '<pre id="elimschedulejson">' + syntaxHighlight(JSON.parse(req1.responseText)) + '</pre>'
+            document.getElementById('scheduleContainer').innerHTML += '</table></div>'
         }
-        playoffFinished = true
-        if (qualFinished && playoffFinished) {
-            document.getElementById('scheduleProgressBar').style.display = 'none'
-        }
+        document.getElementById('scheduleProgressBar').style.display = 'none'
+        $('scheduleTable').floatThead()
     })
     req.send()
-    req1.send()
 }
 
 
@@ -156,11 +146,29 @@ function syntaxHighlight(json) {
     });
 }
 
-function generateMatchTable(matchData) {
-    var returnData = '<p>'
-    returnData += '<h3>' + matchData.description + '</h3>'
-    returnData += '<table class="table table-bordered table-striped">'
-    returnData += '<tr><td>test</td><td>test</td></tr>'
-    returnData += '</table>'
-    return returnData + '</p>'
+function generateMatchTableRow(matchData) {
+    var returnData = '<tr><td>'
+    returnData += matchData.startTime + '</td><td>'
+    returnData += matchData.description + '</td><td>'
+    returnData += matchData.matchNumber + '</td><td>'
+    returnData += getTeamForStation(matchData.Teams, 'Red1').teamNumber + '</td><td>'
+    returnData += getTeamForStation(matchData.Teams, 'Red2').teamNumber + '</td><td>'
+    returnData += getTeamForStation(matchData.Teams, 'Red3').teamNumber + '</td><td>'
+    returnData += getTeamForStation(matchData.Teams, 'Red4').teamNumber + '</td><td>'
+    returnData += getTeamForStation(matchData.Teams, 'Blue1').teamNumber + '</td><td>'
+    returnData += getTeamForStation(matchData.Teams, 'Blue2').teamNumber + '</td><td>'
+    returnData += getTeamForStation(matchData.Teams, 'Blue3').teamNumber + '</td><td>'
+    returnData += getTeamForStation(matchData.Teams, 'Blue4').teamNumber + '</td>'
+    return returnData + '</tr>'
+}
+
+function getTeamForStation(teamList, station) {
+    for (j = 0; j < teamList.length; j++) {
+        if (teamList[j].station == station) {
+            return teamList[j]
+      }
+    }
+    var r = {}
+    r.teamNumber = ""
+    return r
 }
