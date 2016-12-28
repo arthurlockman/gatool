@@ -12,7 +12,7 @@ window.onload = function() {
     document.getElementById('eventSelector').onchange = function() {
         handleEventSelection()
     }
-    document.getElementById('scheduleTabPicker').click()
+    document.getElementById('setupTabPicker').click()
 }
 
 function handleEventSelection() {
