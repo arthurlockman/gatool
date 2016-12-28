@@ -92,8 +92,8 @@ function getHybridSchedule() {
         {
             document.getElementById('scheduleContainer').innerHTML = '<b>No qualification matches have been scheduled for this event.</b>'
         } else {
-            document.getElementById('scheduleContainer').innerHTML = '<div class="floatThead-container"><table id="scheduleTable" class="table table-bordered floatThead-table">'
-            document.getElementById('scheduleTable').innerHTML += '<thead><tr><td><b>Time</b></td><td><b>Description</b></td><td><b>Match Number</b></td><td><b>Red 1</b></td><td><b>Red 2</b></td><td><b>Red 3</b></td><td><b>Red 4</b></td><td><b>Blue 1</b></td><td><b>Blue 2</b></td><td><b>Blue 3</b></td><td><b>Blue 4</b></td><tr></thead>'
+            document.getElementById('scheduleContainer').innerHTML = '<div class=""><table id="scheduleTable" class="table table-bordered">'
+            document.getElementById('scheduleTable').innerHTML += '<thead><tr><td><b>Time</b></td><td><b>Description</b></td><td><b>Match Number</b></td><td><b>Red 1</b></td><td><b>Red 2</b></td><td><b>Red 3</b></td><td><b>Red 4</b></td><td><b>Blue 1</b></td><td><b>Blue 2</b></td><td><b>Blue 3</b></td><td><b>Blue 4</b></td></tr></thead>'
             for (i = 0; i < data.Schedule.length; i++) {
                 var element = data.Schedule[i]
                 document.getElementById('scheduleTable').innerHTML += generateMatchTableRow(element)
@@ -117,7 +117,6 @@ function getHybridSchedule() {
             document.getElementById('scheduleContainer').innerHTML += '</table></div>'
         }
         document.getElementById('scheduleProgressBar').style.display = 'none'
-        $('scheduleTable').floatThead()
     })
     req.send()
 }
