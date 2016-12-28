@@ -17,6 +17,8 @@ window.onload = function() {
 
 function handleEventSelection() {
     document.getElementById('scheduleProgressBar').style.display = 'block'
+    document.getElementById('qualScheduleContainer').innerHTML = ''
+    document.getElementById('elimScheduleContainer').innerHTML = ''
     var e = document.getElementById('eventSelector')
     var data = JSON.parse(e.value)
     var codeText = document.getElementById('eventCodeContainer')
@@ -81,15 +83,53 @@ function openTab(evt, cityName) {
 }
 
 function getHybridSchedule() {
+    var qualFinished = false
+    var playoffFinished = false
     var year = document.getElementById('yearPicker')
     var eventPicker = document.getElementById('eventSelector')
     var req = new XMLHttpRequest()
     req.open('GET', '/api/' + year.options[year.selectedIndex].value + '/schedule/' + JSON.parse(eventPicker.options[eventPicker.selectedIndex].value).code + '/qual')
     req.addEventListener('load', function() {
-        document.getElementById('schedulejson').innerHTML = syntaxHighlight(JSON.parse(req.responseText))
-        document.getElementById('scheduleProgressBar').style.display = 'none'
+        var data = JSON.parse(req.responseText)
+        if (data.Schedule.length == 0)
+        {
+            document.getElementById('qualScheduleContainer').innerHTML = '<b>No qualification matches have been scheduled for this event.</b>'    
+        } else {
+            document.getElementById('qualScheduleContainer').innerHTML = ''
+            for (i = 0; i < data.Schedule.length; i++) {
+                var element = data.Schedule[i]
+                document.getElementById('qualScheduleContainer').innerHTML += generateMatchTable(element)
+            }
+            document.getElementById('qualScheduleContainer').innerHTML += '<pre id="qualschedulejson">' + syntaxHighlight(JSON.parse(req.responseText)) + '</pre>'
+        }
+        qualFinished = true
+        if (qualFinished && playoffFinished) {
+            document.getElementById('scheduleProgressBar').style.display = 'none'
+        }
+    })
+    var req1 = new XMLHttpRequest()
+    req1.open('GET', '/api/' + year.options[year.selectedIndex].value + '/schedule/' + JSON.parse(eventPicker.options[eventPicker.selectedIndex].value).code + '/playoff')
+    req1.addEventListener('load', function() {
+        console.log(JSON.stringify(req1))
+        var data = JSON.parse(req1.responseText)
+        if (data.Schedule.length == 0)
+        {
+            document.getElementById('elimScheduleContainer').innerHTML = '<b>No elimination matches have been scheduled for this event.</b>'    
+        } else {
+            document.getElementById('elimScheduleContainer').innerHTML = ''
+            for (i = 0; i < data.Schedule.length; i++) {
+                var element = data.Schedule[i]
+                document.getElementById('elimScheduleContainer').innerHTML += generateMatchTable(element)
+            }
+            document.getElementById('elimScheduleContainer').innerHTML += '<pre id="elimschedulejson">' + syntaxHighlight(JSON.parse(req1.responseText)) + '</pre>'
+        }
+        playoffFinished = true
+        if (qualFinished && playoffFinished) {
+            document.getElementById('scheduleProgressBar').style.display = 'none'
+        }
     })
     req.send()
+    req1.send()
 }
 
 
@@ -114,4 +154,13 @@ function syntaxHighlight(json) {
         }
         return '<span class="' + cls + '">' + match + '</span>';
     });
+}
+
+function generateMatchTable(matchData) {
+    var returnData = '<p>'
+    returnData += '<h3>' + matchData.description + '</h3>'
+    returnData += '<table class="table table-bordered table-striped">'
+    returnData += '<tr><td>test</td><td>test</td></tr>'
+    returnData += '</table>'
+    return returnData + '</p>'
 }
