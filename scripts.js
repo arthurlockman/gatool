@@ -143,6 +143,8 @@ function getTeamList() {
 				document.getElementById('teamsTable').innerHTML += generateTeamTableRow(element)
 			}
 		}
+				document.getElementById('teamProgressBar').style.display = 'none'
+
 	})
 	req.send()
 }
