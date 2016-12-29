@@ -143,7 +143,7 @@ function getTeamList() {
 				document.getElementById('teamsTable').innerHTML += generateTeamTableRow(element)
 			}
 		}
-				document.getElementById('teamProgressBar').style.display = 'none'
+		document.getElementById('teamProgressBar').style.display = 'none'
 
 	})
 	req2.send()
@@ -203,10 +203,10 @@ function generateTeamTableRow(teamData) {
 	var returnData = '<tr><td>'
 	returnData += teamData.teamNumber + '</td><td>'
 	returnData += teamData.nameShort + '</td><td>'
-	returnData += teamData.city + teamData.stateProv + '</td><td>'
+	returnData += teamData.city + ", " + teamData.stateProv + '</td><td>'
 	returnData += teamData.nameFull + '</td><td>'
 	returnData += teamData.nameShort + '</td><td>' //replace with organization function.
 	returnData += teamData.rookieYear + '</td><td>'
-	returnData += teamData.robotName + '</td>'
+	returnData += if(teamData.robotName == "null","No robot name reported",teamData.robotName) + '</td>'
 	return returnData + '</tr>'
 }
