@@ -130,7 +130,7 @@ function getTeamList() {
 	var year = document.getElementById('yearPicker')
 	var eventPicker = document.getElementById('eventSelector')
 	var req = new XMLHttpRequest()
-	req.open('GET', '/api/' + year.options[year.selectedIndex].value + '/teams?' + JSON.parse(eventPicker.options[eventPicker.selectedIndex].value).code)
+	req.open('GET', '/api/' + year.options[year.selectedIndex].value + '/teams/' + JSON.parse(eventPicker.options[eventPicker.selectedIndex].value).code)
 	req.addEventListener('load', function () {
 		var data = JSON.parse(req.responseText)
 		if (data.teams.length == 0) {

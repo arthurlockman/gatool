@@ -43,6 +43,16 @@ router.route('/:year/schedule/:eventCode/:tlevel').get(function(req, res) {
     })
 })
 
+router.route('/:year/teams/:eventCode/').get(function(req, res) {
+    unirest.get('https://frc-api.firstinspires.org/v2.0/'+req.params.year+'/teams/?eventcode='+req.params.eventCode)
+        .headers({'Authorization': token.token})
+        .end(function (response) {
+            res.writeHead(200, {'Content-type': 'text/html'})
+            res.end(JSON.stringify(response.body), 'utf-8')
+    })
+})
+
+
 app.get('/', function(req, res) {
     sendFile(res, 'index.html', 'text/html')
 })
