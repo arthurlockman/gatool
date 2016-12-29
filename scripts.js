@@ -207,7 +207,7 @@ function generateTeamTableRow(teamData) {
 	returnData += teamData.nameFull + '</td><td>'
 	returnData += teamData.nameShort + '</td><td>' //replace with organization function.
 	returnData += teamData.rookieYear + '</td><td>'
-	if (teamData.robotName == "null") {
+	if (teamData.robotName == "") {
 		returnData += "No robot name reported" + '</td>'
 	} else {
 		returnData += teamData.robotName + '</td>'
