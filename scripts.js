@@ -113,7 +113,7 @@ function getHybridSchedule() {
 		console.log(JSON.stringify(req1))
 		var data = JSON.parse(req1.responseText)
 		if (data.Schedule.length == 0) {
-			document.getElementById('scheduleContainer').innerHTML += '</table><p><b>No elimination matches have been scheduled for this event.</b></p>'
+			document.getElementById('scheduleContainer').innerHTML += '</table><p><b>No playoff matches have been scheduled for this event.</b></p>'
 		} else {
 			for (i = 0; i < data.Schedule.length; i++) {
 				var element = data.Schedule[i]
@@ -129,10 +129,10 @@ function getHybridSchedule() {
 function getTeamList() {
 	var year = document.getElementById('yearPicker')
 	var eventPicker = document.getElementById('eventSelector')
-	var req = new XMLHttpRequest()
-	req.open('GET', '/api/' + year.options[year.selectedIndex].value + '/teams/' + JSON.parse(eventPicker.options[eventPicker.selectedIndex].value).code)
-	req.addEventListener('load', function () {
-		var data = JSON.parse(req.responseText)
+	var req2 = new XMLHttpRequest()
+	req2.open('GET', '/api/' + year.options[year.selectedIndex].value + '/teams/' + JSON.parse(eventPicker.options[eventPicker.selectedIndex].value).code)
+	req2.addEventListener('load', function () {
+		var data = JSON.parse(req2.responseText)
 		if (data.teams.length == 0) {
 			document.getElementById('teamsContainer').innerHTML = '<b>No teams have registered for this event.</b>'
 		} else {
@@ -146,7 +146,7 @@ function getTeamList() {
 				document.getElementById('teamProgressBar').style.display = 'none'
 
 	})
-	req.send()
+	req2.send()
 }
 
 // UTILITY FUNCTIONS
