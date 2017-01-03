@@ -101,5 +101,5 @@ app.get('/scripts.js', function (req, res) {
 
 app.get('/css/style.css', function (req, res) {
     'use strict';
-    sendFile(res, '/css/style.css', 'text/css');
+    sendFile(res, 'css/style.css', 'text/css');
 });
