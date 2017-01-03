@@ -73,6 +73,21 @@ router.route('/:year/teams/:eventCode/').get(function (req, res) {
         });
 });
 
+router.route('/:year/awards/:eventCode/').get(function (req, res) {
+    'use strict';
+    unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/awards/'+req.params.eventCode)
+        .headers({
+            'Authorization': token.token
+        })
+        .end(function (response) {
+            res.writeHead(200, {
+                'Content-type': 'text/html'
+            });
+            res.end(JSON.stringify(response.body), 'utf-8');
+        });
+});
+
+
 
 app.get('/', function (req, res) {
     'use strict';
@@ -86,5 +101,5 @@ app.get('/scripts.js', function (req, res) {
 
 app.get('/css/style.css', function (req, res) {
     'use strict';
-    sendFile(res, 'style.css', 'text/css');
+    sendFile(res, '/css/style.css', 'text/css');
 });

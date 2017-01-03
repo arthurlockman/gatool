@@ -107,7 +107,8 @@ function getHybridSchedule() {
             document.getElementById('scheduleContainer').innerHTML = '<b>No qualification matches have been scheduled for this event.</b>';
         } else {
             document.getElementById('scheduleContainer').innerHTML = '<div class=""><table id="scheduleTable" class="table table-bordered">';
-            document.getElementById('scheduleTable').innerHTML += '<thead><tr><td><b>Time</b></td><td><b>Description</b></td><td><b>Match Number</b></td><td><b>Red 1</b></td><td><b>Red 2</b></td><td><b>Red 3</b></td><td><b>Red 4</b></td><td><b>Blue 1</b></td><td><b>Blue 2</b></td><td><b>Blue 3</b></td><td><b>Blue 4</b></td></tr></thead>';
+              document.getElementById('scheduleTable').innerHTML += '<thead><tr><td><b>Time</b></td><td><b>Description</b></td><td><b>Match Number</b></td><td><b>Red 1</b></td><td><b>Red 2</b></td><td><b>Red 3</b></td><td><b>Blue 1</b></td><td><b>Blue 2</b></td><td><b>Blue 3</b></td></tr></thead>';
+          //document.getElementById('scheduleTable').innerHTML += '<thead><tr><td><b>Time</b></td><td><b>Description</b></td><td><b>Match Number</b></td><td><b>Red 1</b></td><td><b>Red 2</b></td><td><b>Red 3</b></td><td><b>Red 4</b></td><td><b>Blue 1</b></td><td><b>Blue 2</b></td><td><b>Blue 3</b></td><td><b>Blue 4</b></td></tr></thead>';
             for (var i = 0; i < data.Schedule.length; i++) {
                 var element = data.Schedule[i];
                 document.getElementById('scheduleTable').innerHTML += generateMatchTableRow(element);
@@ -193,11 +194,12 @@ function generateMatchTableRow(matchData) {
     returnData += getTeamForStation(matchData.Teams, 'Red1').teamNumber + '</td><td>';
     returnData += getTeamForStation(matchData.Teams, 'Red2').teamNumber + '</td><td>';
     returnData += getTeamForStation(matchData.Teams, 'Red3').teamNumber + '</td><td>';
-    returnData += getTeamForStation(matchData.Teams, 'Red4').teamNumber + '</td><td>';
+    // returnData += getTeamForStation(matchData.Teams, 'Red4').teamNumber + '</td><td>';
     returnData += getTeamForStation(matchData.Teams, 'Blue1').teamNumber + '</td><td>';
     returnData += getTeamForStation(matchData.Teams, 'Blue2').teamNumber + '</td><td>';
-    returnData += getTeamForStation(matchData.Teams, 'Blue3').teamNumber + '</td><td>';
-    returnData += getTeamForStation(matchData.Teams, 'Blue4').teamNumber + '</td>';
+    returnData += getTeamForStation(matchData.Teams, 'Blue3').teamNumber + '</td>';
+    //returnData += getTeamForStation(matchData.Teams, 'Blue3').teamNumber + '</td><td>';
+    //returnData += getTeamForStation(matchData.Teams, 'Blue4').teamNumber + '</td>';
     return returnData + '</tr>';
 }
 
