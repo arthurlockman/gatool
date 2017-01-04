@@ -148,11 +148,17 @@ function getTeamList() {
         } else {
             document.getElementById('teamsContainer').innerHTML = '<div class="" style="display:table;"><table id="teamsTable" class="table table-responsive table-bordered table-striped">';
             document.getElementById('teamsTable').innerHTML += '<thead class="thead-default"><tr ><td><b>Number</b></td><td><b>Short Name</b></td><td><b>City</b></td><td><b>Sponsors</b></td><td><b>Organization</b></td><td><b>Rookie Year</b></td><td><b>Robot name</b></td></tr></thead><tbody>';
+            var teamList = "";
             for (var i = 0; i < data.teams.length; i++) {
                 var element = data.teams[i];
-                document.getElementById('teamsTable').innerHTML += generateTeamTableRow(element);
+                //document.getElementById('teamsTable').innerHTML += generateTeamTableRow(element);
+                // ^^Old way, causing repeated <tbody> tags
+                // (below) New way, using a string and then appending
+                teamList += generateTeamTableRow(element);
             }
-            document.getElementById('teamsTable').innerHTML += "</tbody></table></div>";
+            document.getElementById('teamsTable').innerHTML += teamList +"</tbody></table></div>";
+            // Notice that even though we're only doing this once, this will create TWO <tbody> tags. That's because when
+            // you call .innerHTML, it's auto-completing the tags for you.
         }
         document.getElementById('teamProgressBar').style.display = 'none';
     });
