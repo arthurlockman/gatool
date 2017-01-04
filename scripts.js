@@ -106,8 +106,8 @@ function getHybridSchedule() {
         if (data.Schedule.length === 0) {
             document.getElementById('scheduleContainer').innerHTML = '<b>No qualification matches have been scheduled for this event.</b>';
         } else {
-            document.getElementById('scheduleContainer').innerHTML = '<div class=""><table id="scheduleTable" class="table table-bordered">';
-              document.getElementById('scheduleTable').innerHTML += '<thead><tr><td><b>Time</b></td><td><b>Description</b></td><td><b>Match Number</b></td><td><b>Red 1</b></td><td><b>Red 2</b></td><td><b>Red 3</b></td><td><b>Blue 1</b></td><td><b>Blue 2</b></td><td><b>Blue 3</b></td></tr></thead>';
+            document.getElementById('scheduleContainer').innerHTML = '<div class=""><table id="scheduleTable" class="table table-bordered table-responsive table-striped">';
+              document.getElementById('scheduleTable').innerHTML += '<thead class="thead-default"><tr><td><b>Time</b></td><td><b>Description</b></td><td><b>Match Number</b></td><td><b>Red 1</b></td><td><b>Red 2</b></td><td><b>Red 3</b></td><td><b>Blue 1</b></td><td><b>Blue 2</b></td><td><b>Blue 3</b></td></tr></thead><tbody>';
           //document.getElementById('scheduleTable').innerHTML += '<thead><tr><td><b>Time</b></td><td><b>Description</b></td><td><b>Match Number</b></td><td><b>Red 1</b></td><td><b>Red 2</b></td><td><b>Red 3</b></td><td><b>Red 4</b></td><td><b>Blue 1</b></td><td><b>Blue 2</b></td><td><b>Blue 3</b></td><td><b>Blue 4</b></td></tr></thead>';
             for (var i = 0; i < data.Schedule.length; i++) {
                 var element = data.Schedule[i];
@@ -122,13 +122,13 @@ function getHybridSchedule() {
         console.log(JSON.stringify(req1));
         var data = JSON.parse(req1.responseText);
         if (data.Schedule.length === 0) {
-            document.getElementById('scheduleContainer').innerHTML += '</table><p><b>No playoff matches have been scheduled for this event.</b></p>';
+            document.getElementById('scheduleContainer').innerHTML += '</tbody></table><p><b>No playoff matches have been scheduled for this event.</b></p>';
         } else {
             for (var i = 0; i < data.Schedule.length; i++) {
                 var element = data.Schedule[i];
                 document.getElementById('scheduleTable').innerHTML += generateMatchTableRow(element);
             }
-            document.getElementById('scheduleContainer').innerHTML += '</table></div>';
+            document.getElementById('scheduleContainer').innerHTML += '</tbody></table></div>';
         }
         document.getElementById('scheduleProgressBar').style.display = 'none';
     });
@@ -146,15 +146,13 @@ function getTeamList() {
         if (data.teams.length === 0) {
             document.getElementById('teamsContainer').innerHTML = '<b>No teams have registered for this event.</b>';
         } else {
-            document.getElementById('teamsContainer').innerHTML = '<div class="" style="display:table;"><table id="teamsTable" class="table table-bordered">';
-            document.getElementById('teamsTable').innerHTML += '<thead><tr><td><b>Number</b></td><td><b>Short Name</b></td><td><b>City</b></td><td><b>Sponsors</b></td><td><b>Organization</b></td><td><b>Rookie Year</b></td><td><b>Robot name</b></td></tr></thead>';
-            document.getElementById('teamsTable').innerHTML += '<tbody>';
+            document.getElementById('teamsContainer').innerHTML = '<div class="" style="display:table;"><table id="teamsTable" class="table table-responsive table-bordered table-striped">';
+            document.getElementById('teamsTable').innerHTML += '<thead class="thead-default"><tr ><td><b>Number</b></td><td><b>Short Name</b></td><td><b>City</b></td><td><b>Sponsors</b></td><td><b>Organization</b></td><td><b>Rookie Year</b></td><td><b>Robot name</b></td></tr></thead><tbody>';
             for (var i = 0; i < data.teams.length; i++) {
                 var element = data.teams[i];
                 document.getElementById('teamsTable').innerHTML += generateTeamTableRow(element);
             }
-            document.getElementById('teamsTable').innerHTML += '</tbody>';
-            document.getElementById('teamsTable').innerHTML += "</table></div>";
+            document.getElementById('teamsTable').innerHTML += "</tbody></table></div>";
         }
         document.getElementById('teamProgressBar').style.display = 'none';
     });
