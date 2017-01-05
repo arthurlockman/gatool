@@ -97,6 +97,7 @@ function openTab(evt, cityName) {
 
 function getHybridSchedule() {
     "use strict";
+    var matchSchedule = "";
     var year = document.getElementById('yearPicker');
     var eventPicker = document.getElementById('eventSelector');
     var req = new XMLHttpRequest();
@@ -106,12 +107,12 @@ function getHybridSchedule() {
         if (data.Schedule.length === 0) {
             document.getElementById('scheduleContainer').innerHTML = '<b>No qualification matches have been scheduled for this event.</b>';
         } else {
-            document.getElementById('scheduleContainer').innerHTML = '<div class=""><table id="scheduleTable" class="table table-bordered table-responsive table-striped">';
-              document.getElementById('scheduleTable').innerHTML += '<thead class="thead-default"><tr><td><b>Time</b></td><td><b>Description</b></td><td><b>Match Number</b></td><td><b>Red 1</b></td><td><b>Red 2</b></td><td><b>Red 3</b></td><td><b>Blue 1</b></td><td><b>Blue 2</b></td><td><b>Blue 3</b></td></tr></thead><tbody>';
-          //document.getElementById('scheduleTable').innerHTML += '<thead><tr><td><b>Time</b></td><td><b>Description</b></td><td><b>Match Number</b></td><td><b>Red 1</b></td><td><b>Red 2</b></td><td><b>Red 3</b></td><td><b>Red 4</b></td><td><b>Blue 1</b></td><td><b>Blue 2</b></td><td><b>Blue 3</b></td><td><b>Blue 4</b></td></tr></thead>';
+            document.getElementById('scheduleContainer').innerHTML = '<div class=""><table id="scheduleTable" class="table table-bordered table-responsive table-striped"></table></div>';
+            matchSchedule += '<thead class="thead-default"><tr><td><b>Time</b></td><td><b>Description</b></td><td><b>Match Number</b></td><td><b>Red 1</b></td><td><b>Red 2</b></td><td><b>Red 3</b></td><td><b>Blue 1</b></td><td><b>Blue 2</b></td><td><b>Blue 3</b></td></tr></thead><tbody>';
+            //document.getElementById('scheduleTable').innerHTML += '<thead><tr><td><b>Time</b></td><td><b>Description</b></td><td><b>Match Number</b></td><td><b>Red 1</b></td><td><b>Red 2</b></td><td><b>Red 3</b></td><td><b>Red 4</b></td><td><b>Blue 1</b></td><td><b>Blue 2</b></td><td><b>Blue 3</b></td><td><b>Blue 4</b></td></tr></thead>';
             for (var i = 0; i < data.Schedule.length; i++) {
                 var element = data.Schedule[i];
-                document.getElementById('scheduleTable').innerHTML += generateMatchTableRow(element);
+                matchSchedule += generateMatchTableRow(element);
             }
         }
         req1.send();
@@ -122,14 +123,14 @@ function getHybridSchedule() {
         console.log(JSON.stringify(req1));
         var data = JSON.parse(req1.responseText);
         if (data.Schedule.length === 0) {
-            document.getElementById('scheduleContainer').innerHTML += '</tbody></table><p><b>No playoff matches have been scheduled for this event.</b></p>';
+            document.getElementById('scheduleContainer').innerHTML += '<p><b>No playoff matches have been scheduled for this event.</b></p>';
         } else {
             for (var i = 0; i < data.Schedule.length; i++) {
                 var element = data.Schedule[i];
-                document.getElementById('scheduleTable').innerHTML += generateMatchTableRow(element);
+                matchSchedule += generateMatchTableRow(element);
             }
-            document.getElementById('scheduleContainer').innerHTML += '</tbody></table></div>';
         }
+        document.getElementById('scheduleTable').innerHTML += matchSchedule;
         document.getElementById('scheduleProgressBar').style.display = 'none';
     });
     req.send();
@@ -146,9 +147,9 @@ function getTeamList() {
         if (data.teams.length === 0) {
             document.getElementById('teamsContainer').innerHTML = '<b>No teams have registered for this event.</b>';
         } else {
-            document.getElementById('teamsContainer').innerHTML = '<div class="" style="display:table;"><table id="teamsTable" class="table table-responsive table-bordered table-striped">';
-            document.getElementById('teamsTable').innerHTML += '<thead class="thead-default"><tr ><td><b>Number</b></td><td><b>Short Name</b></td><td><b>City</b></td><td><b>Sponsors</b></td><td><b>Organization</b></td><td><b>Rookie Year</b></td><td><b>Robot name</b></td></tr></thead><tbody>';
             var teamList = "";
+            document.getElementById('teamsContainer').innerHTML = '<div class="" style="display:table;"><table id="teamsTable" class="table table-responsive table-bordered table-striped">';
+            teamList += '<thead class="thead-default"><tr ><td><b>Number</b></td><td><b>Short Name</b></td><td><b>City</b></td><td><b>Sponsors</b></td><td><b>Organization</b></td><td><b>Rookie Year</b></td><td><b>Robot name</b></td></tr></thead><tbody>';
             for (var i = 0; i < data.teams.length; i++) {
                 var element = data.teams[i];
                 //document.getElementById('teamsTable').innerHTML += generateTeamTableRow(element);
@@ -156,7 +157,7 @@ function getTeamList() {
                 // (below) New way, using a string and then appending
                 teamList += generateTeamTableRow(element);
             }
-            document.getElementById('teamsTable').innerHTML += teamList +"</tbody></table></div>";
+            document.getElementById('teamsTable').innerHTML += teamList + "</tbody></table></div>";
             // Notice that even though we're only doing this once, this will create TWO <tbody> tags. That's because when
             // you call .innerHTML, it's auto-completing the tags for you.
         }
