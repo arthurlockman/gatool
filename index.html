@@ -36,7 +36,6 @@
     <div class="navbar-header theme-showcase" role="main"> <a class="navbar-brand" href="/">gatool</a> </div>
 </div>
 <div class="container" id="body-container">
-    <h1> Welcome to gatool! </h1>
     <div id="tabContainer" style="display: table">
         <ul class="tab">
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'setup')" id="setupTabPicker">Setup</a></li>
@@ -46,7 +45,6 @@
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'playbyplay')" id="playByPlayTabPicker">Play-by-play</a></li>
         </ul>
         <div id="setup" class="tabcontent">
-            <h3>Setup</h3>
             <p>
                 <select class="selectpicker" id="yearPicker" data-width="100%">
                     <option>2017</option>
@@ -74,7 +72,6 @@
             <div id="scheduleContainer"></div>
         </div>
         <div id="teamdata" class="tabcontent">
-            <h3>Team Data</h3>
             <div class="progress" id="teamProgressBar">
                 <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" 
 						aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%"> Loading... </div>
@@ -84,14 +81,20 @@
             </p>
         </div>
         <div id="announce" class="tabcontent">
-            <h3>Announce</h3>
-            <div class="" style="display:table;">
-                <table id="teamsTable" class="table table-bordered table-striped">
-                </table>
+            <div id="" class="announceTableView" width="100%" style="display:table;">
+                <table id="announceTable" class="table table-bordered table-striped" width="100%">
+                    <thead><tr id="announceTableHeader"><td id="matchNumber">Match Number</td><td id="matchName">Match Name</td><td id="eventName">Event Name</td><td>Ranking</td></tr></thead>
+                    <tbody><tr id="red1" class="redAlliance"><td id="red1TeamNumber">team Number</td><td id="red1TeamName">teamName</td><td id="red1Organization">Organization</td><td id="red1Rank">Team Rank</td></tr>
+                    <tr id="red2" class="redAlliance"><td id="red2TeamNumber">team Number</td><td id="red2TeamName">teamName</td><td id="red2Organization">Organization</td><td id="red2Rank">Team Rank</td></tr>
+                    <tr id="red3" class="redAlliance"><td id="red3TeamNumber">team Number</td><td id="red3TeamName">teamName</td><td id="red3Organization">Organization</td><td id="red3Rank">Team Rank</td></tr>
+                    <tr id="blue1" class="blueAlliance"><td id="blue1TeamNumber">team Number</td><td id="blue1TeamName">teamName</td><td id="blue1Organization">Organization</td><td id="blue1Rank">Team Rank</td></tr>
+                    <tr id="blue2" class="blueAlliance"><td id="blue2TeamNumber">team Number</td><td id="blue2TeamName">teamName</td><td id="blue2Organization">Organization</td><td id="blue2Rank">Team Rank</td></tr>
+                    <tr id="blue3" class="blueAlliance"><td id="blue3TeamNumber">team Number</td><td id="blue3TeamName">teamName</td><td id="blue3Organization">Organization</td><td id="blue3Rank">Team Rank</td></tr>
+                        <tr><td class="btn-default" id="previousMatch" colspan="2" onClick="getPreviousMatch()">Previous Match</td><td class="btn-default" id="nextMatch" align="right" colspan="2" onClick="getNextMatch()">Next Match</td></tr></tbody>
+                    </table>
             </div>
         </div>
         <div id="playbyplay" class="tabcontent">
-            <h3>Play-by-play</h3>
             <p>this is some content</p>
         </div>
     </div>

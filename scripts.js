@@ -2,6 +2,9 @@
 
 $.getScript('https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js', function () {});
 
+localStorage.currentMatch = 1;
+
+
 window.onload = function () {
     "use strict";
     document.getElementById('scheduleProgressBar').style.display = 'none';
@@ -15,7 +18,16 @@ window.onload = function () {
     document.getElementById('eventSelector').onchange = function () {
         handleEventSelection();
     };
+
+    document.getElementById("nextMatch").onClick = function () {
+        getNextMatch();
+    };
+
+    document.getElementById("previousMatch").onClick = function () {
+        getPreviousMatch();
+    };
     document.getElementById('setupTabPicker').click();
+
 };
 
 
@@ -106,6 +118,7 @@ function getHybridSchedule() {
         var data = JSON.parse(req.responseText);
         if (data.Schedule.length === 0) {
             document.getElementById('scheduleContainer').innerHTML = '<b>No qualification matches have been scheduled for this event.</b>';
+            localStorage.qualsList = null;
         } else {
             document.getElementById('scheduleContainer').innerHTML = '<div class=""><table id="scheduleTable" class="table table-bordered table-responsive table-striped"></table></div>';
             matchSchedule += '<thead class="thead-default"><tr><td><b>Time</b></td><td><b>Description</b></td><td><b>Match Number</b></td><td><b>Red 1</b></td><td><b>Red 2</b></td><td><b>Red 3</b></td><td><b>Blue 1</b></td><td><b>Blue 2</b></td><td><b>Blue 3</b></td></tr></thead><tbody>';
@@ -114,6 +127,8 @@ function getHybridSchedule() {
                 var element = data.Schedule[i];
                 matchSchedule += generateMatchTableRow(element);
             }
+            localStorage.qualsList = data;
+
         }
         req1.send();
     });
@@ -124,14 +139,16 @@ function getHybridSchedule() {
         var data = JSON.parse(req1.responseText);
         if (data.Schedule.length === 0) {
             document.getElementById('scheduleContainer').innerHTML += '<p><b>No playoff matches have been scheduled for this event.</b></p>';
+            localStorage.playoffList = null;
         } else {
-            for (var i = 0; i < data.Schedule.length; i++) {
+        for (var i = 0; i < data.Schedule.length; i++) {
                 var element = data.Schedule[i];
                 matchSchedule += generateMatchTableRow(element);
             }
         }
         document.getElementById('scheduleTable').innerHTML += matchSchedule;
         document.getElementById('scheduleProgressBar').style.display = 'none';
+        localStorage.playoffList = data;
     });
     req.send();
 }
@@ -146,10 +163,11 @@ function getTeamList() {
         var data = JSON.parse(req2.responseText);
         if (data.teams.length === 0) {
             document.getElementById('teamsContainer').innerHTML = '<b>No teams have registered for this event.</b>';
+            localStorage.teamList = null;
         } else {
             var teamList = "";
-            document.getElementById('teamsContainer').innerHTML = '<div class="" style="display:table;"><table id="teamsTable" class="table table-responsive table-bordered table-striped">';
-            teamList += '<thead class="thead-default"><tr ><td><b>Number</b></td><td><b>Short Name</b></td><td><b>City</b></td><td><b>Sponsors</b></td><td><b>Organization</b></td><td><b>Rookie Year</b></td><td><b>Robot name</b></td></tr></thead><tbody>';
+            document.getElementById('teamsContainer').innerHTML = '<div class="" style="display:table;"><table id="teamsTable" class="table table-responsive table-bordered table-striped"></table>';
+            teamList += '<thead class="thead-default"><tr><td><b>Number</b></td><td><b>Short Name</b></td><td><b>City</b></td><td><b>Sponsors</b></td><td><b>Organization</b></td><td><b>Rookie Year</b></td><td><b>Robot name</b></td></tr></thead><tbody>';
             for (var i = 0; i < data.teams.length; i++) {
                 var element = data.teams[i];
                 //document.getElementById('teamsTable').innerHTML += generateTeamTableRow(element);
@@ -157,14 +175,36 @@ function getTeamList() {
                 // (below) New way, using a string and then appending
                 teamList += generateTeamTableRow(element);
             }
-            document.getElementById('teamsTable').innerHTML += teamList + "</tbody></table></div>";
+            document.getElementById('teamsTable').innerHTML = teamList + "</tbody></table></div>";
             // Notice that even though we're only doing this once, this will create TWO <tbody> tags. That's because when
             // you call .innerHTML, it's auto-completing the tags for you.
         }
         document.getElementById('teamProgressBar').style.display = 'none';
+        localStorage.teamList = data;
+        console.log(localStorage.teamList);
     });
     req2.send();
+
 }
+
+function getNextMatch() {
+    "use strict";
+     if (localStorage.qualsList.Schedule.length === 0) {
+         document.getElementById("matchNumber").innerHTML="No match scheduled.";
+     } else {
+    localStorage.currentMatch++;
+         if (localStorage.currentMatch > localStorage.qualsList.Schedule.length) {localStorage.currentMatch=localStorage.qualsList.Schedule.length;}
+    //displayMatchData();
+
+     }
+}
+
+function getPreviousMatch() {
+    "use strict";
+    localStorage.currentMatch--;
+    if(localStorage.currentMatch <1) {localStorage.currentMatch=1;}
+}
+
 
 // UTILITY FUNCTIONS
 function syntaxHighlight(json) {
