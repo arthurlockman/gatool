@@ -73,6 +73,20 @@ router.route('/:year/teams/:eventCode/').get(function (req, res) {
         });
 });
 
+router.route('/:year/rankings/:eventCode/').get(function (req, res) {
+    'use strict';
+    unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/rankings/' + req.params.eventCode)
+        .headers({
+            'Authorization': token.token
+        })
+        .end(function (response) {
+            res.writeHead(200, {
+                'Content-type': 'text/html'
+            });
+            res.end(JSON.stringify(response.body), 'utf-8');
+        });
+});
+
 router.route('/:year/awards/:eventCode/').get(function (req, res) {
     'use strict';
     unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/awards/'+req.params.eventCode)
