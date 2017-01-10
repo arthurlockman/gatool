@@ -4,7 +4,6 @@ $.getScript('https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.
 
 localStorage.currentMatch = 1;
 
-
 window.onload = function () {
     "use strict";
     document.getElementById('scheduleProgressBar').style.display = 'none';
@@ -19,14 +18,7 @@ window.onload = function () {
         handleEventSelection();
     };
 
-    document.getElementById("nextMatch").onClick = function () {
-        getNextMatch();
-    };
-
-    document.getElementById("previousMatch").onClick = function () {
-        getPreviousMatch();
-    };
-    document.getElementById('setupTabPicker').click();
+     document.getElementById('setupTabPicker').click();
 
 };
 
@@ -47,6 +39,7 @@ function handleEventSelection() {
     dateText.innerHTML = startDate + " to " + endDate;
     getHybridSchedule();
     getTeamList();
+    announceDisplay();
 }
 
 function loadEventsList() {
@@ -119,6 +112,7 @@ function getHybridSchedule() {
         if (data.Schedule.length === 0) {
             document.getElementById('scheduleContainer').innerHTML = '<b>No qualification matches have been scheduled for this event.</b>';
             localStorage.qualsList = null;
+            localStorage.playoffList = null;
         } else {
             document.getElementById('scheduleContainer').innerHTML = '<div class=""><table id="scheduleTable" class="table table-bordered table-responsive table-striped"></table></div>';
             matchSchedule += '<thead class="thead-default"><tr><td><b>Time</b></td><td><b>Description</b></td><td><b>Match Number</b></td><td><b>Red 1</b></td><td><b>Red 2</b></td><td><b>Red 3</b></td><td><b>Blue 1</b></td><td><b>Blue 2</b></td><td><b>Blue 3</b></td></tr></thead><tbody>';
@@ -127,7 +121,7 @@ function getHybridSchedule() {
                 var element = data.Schedule[i];
                 matchSchedule += generateMatchTableRow(element);
             }
-            localStorage.qualsList = data;
+            localStorage.qualsList = JSON.stringify(data);
 
         }
         req1.send();
@@ -141,14 +135,16 @@ function getHybridSchedule() {
             document.getElementById('scheduleContainer').innerHTML += '<p><b>No playoff matches have been scheduled for this event.</b></p>';
             localStorage.playoffList = null;
         } else {
-        for (var i = 0; i < data.Schedule.length; i++) {
+            for (var i = 0; i < data.Schedule.length; i++) {
                 var element = data.Schedule[i];
                 matchSchedule += generateMatchTableRow(element);
             }
         }
-        document.getElementById('scheduleTable').innerHTML += matchSchedule;
+        if (matchSchedule) {
+            document.getElementById('scheduleTable').innerHTML += matchSchedule;
+        }
         document.getElementById('scheduleProgressBar').style.display = 'none';
-        localStorage.playoffList = data;
+        localStorage.playoffList = JSON.stringify(data);
     });
     req.send();
 }
@@ -166,7 +162,7 @@ function getTeamList() {
             localStorage.teamList = null;
         } else {
             var teamList = "";
-            document.getElementById('teamsContainer').innerHTML = '<div class="" style="display:table;"><table id="teamsTable" class="table table-responsive table-bordered table-striped"></table>';
+            document.getElementById('teamsContainer').innerHTML = '<div class="" style="display:table;"><table id="teamsTable" class="table table-responsive table-bordered table-striped"></table></div>';
             teamList += '<thead class="thead-default"><tr><td><b>Number</b></td><td><b>Short Name</b></td><td><b>City</b></td><td><b>Sponsors</b></td><td><b>Organization</b></td><td><b>Rookie Year</b></td><td><b>Robot name</b></td></tr></thead><tbody>';
             for (var i = 0; i < data.teams.length; i++) {
                 var element = data.teams[i];
@@ -175,12 +171,12 @@ function getTeamList() {
                 // (below) New way, using a string and then appending
                 teamList += generateTeamTableRow(element);
             }
-            document.getElementById('teamsTable').innerHTML = teamList + "</tbody></table></div>";
+            document.getElementById('teamsTable').innerHTML = teamList + "</tbody>";
             // Notice that even though we're only doing this once, this will create TWO <tbody> tags. That's because when
             // you call .innerHTML, it's auto-completing the tags for you.
         }
         document.getElementById('teamProgressBar').style.display = 'none';
-        localStorage.teamList = data;
+        localStorage.teamList = JSON.stringify(data);
         console.log(localStorage.teamList);
     });
     req2.send();
@@ -189,20 +185,54 @@ function getTeamList() {
 
 function getNextMatch() {
     "use strict";
-     if (localStorage.qualsList.Schedule.length === 0) {
-         document.getElementById("matchNumber").innerHTML="No match scheduled.";
-     } else {
-    localStorage.currentMatch++;
-         if (localStorage.currentMatch > localStorage.qualsList.Schedule.length) {localStorage.currentMatch=localStorage.qualsList.Schedule.length;}
-    //displayMatchData();
+    var qualsList = JSON.parse(localStorage.qualsList);
+    if (!qualsList) {
+        document.getElementById("matchNumber").innerHTML = "No match scheduled.";
+    } else {
+        localStorage.currentMatch++;
+        if (localStorage.currentMatch > qualsList.Schedule.length) {
+            localStorage.currentMatch = qualsList.Schedule.length;
+        }
+        announceDisplay();
+    }
+}
 
-     }
+function announceDisplay() {
+    "use strict";
+    var qualsList = JSON.parse(localStorage.qualsList);
+    var currentMatch = localStorage.currentMatch - 1;
+    var currentMatchData = qualsList.Schedule[currentMatch];
+    document.getElementById("matchNumber").innerHTML = currentMatchData.matchNumber;
+    document.getElementById("matchName").innerHTML = currentMatchData.description;
+    document.getElementById("red1TeamNumber").innerHTML = currentMatchData.Teams[0].teamNumber;
+    document.getElementById("red1TeamName").innerHTML = JSON.parse(localStorage['teamData'+currentMatchData.Teams[0].teamNumber]).nameShort;
+    document.getElementById("red1Organization").innerHTML = JSON.parse(localStorage['teamData'+currentMatchData.Teams[0].teamNumber]).nameFull;
+    document.getElementById("red2TeamNumber").innerHTML = currentMatchData.Teams[1].teamNumber;
+    document.getElementById("red2TeamName").innerHTML = JSON.parse(localStorage['teamData'+currentMatchData.Teams[1].teamNumber]).nameShort;
+    document.getElementById("red2Organization").innerHTML = JSON.parse(localStorage['teamData'+currentMatchData.Teams[1].teamNumber]).nameFull;
+    document.getElementById("red3TeamNumber").innerHTML = currentMatchData.Teams[2].teamNumber;
+    document.getElementById("red3TeamName").innerHTML = JSON.parse(localStorage['teamData'+currentMatchData.Teams[2].teamNumber]).nameShort;
+    document.getElementById("red3Organization").innerHTML = JSON.parse(localStorage['teamData'+currentMatchData.Teams[2].teamNumber]).nameFull;
+    document.getElementById("blue1TeamNumber").innerHTML = currentMatchData.Teams[3].teamNumber;
+    document.getElementById("blue1TeamName").innerHTML = JSON.parse(localStorage['teamData'+currentMatchData.Teams[3].teamNumber]).nameShort;
+    document.getElementById("blue1Organization").innerHTML = JSON.parse(localStorage['teamData'+currentMatchData.Teams[3].teamNumber]).nameFull;
+    document.getElementById("blue2TeamNumber").innerHTML = currentMatchData.Teams[4].teamNumber;
+    document.getElementById("blue2TeamName").innerHTML = JSON.parse(localStorage['teamData'+currentMatchData.Teams[4].teamNumber]).nameShort;
+    document.getElementById("blue2Organization").innerHTML = JSON.parse(localStorage['teamData'+currentMatchData.Teams[4].teamNumber]).nameFull;
+    document.getElementById("blue3TeamNumber").innerHTML = currentMatchData.Teams[5].teamNumber;
+    document.getElementById("blue3TeamName").innerHTML = JSON.parse(localStorage['teamData'+currentMatchData.Teams[5].teamNumber]).nameShort;
+    document.getElementById("blue3Organization").innerHTML = JSON.parse(localStorage['teamData'+currentMatchData.Teams[5].teamNumber]).nameFull;
+
 }
 
 function getPreviousMatch() {
     "use strict";
     localStorage.currentMatch--;
-    if(localStorage.currentMatch <1) {localStorage.currentMatch=1;}
+    if (localStorage.currentMatch < 1) {
+        localStorage.currentMatch = 1;
+
+    }
+    announceDisplay();
 }
 
 
@@ -262,7 +292,9 @@ function getTeamForStation(teamList, station) {
 
 function generateTeamTableRow(teamData) {
     "use strict";
+    var robotName = "";
     var returnData = '<tr><td>';
+    var teamInfo = "";
     returnData += teamData.teamNumber + '</td><td>';
     returnData += teamData.nameShort + '</td><td>';
     returnData += teamData.city + ", " + teamData.stateProv + '</td><td>';
@@ -273,6 +305,16 @@ function generateTeamTableRow(teamData) {
         returnData += "No robot name reported" + '</td>';
     } else {
         returnData += teamData.robotName + '</td>';
+        robotName = teamData.robotName;
     }
+    teamInfo = {"nameShort":teamData.nameShort,"cityState":teamData.city + ', ' + teamData.stateProv,"nameFull":teamData.nameFull,"organization":teamData.nameShort,"rookieyear":teamData.rookieYear,"robotName":teamData.robotName};
+    localStorage['teamData'+teamData.teamNumber] = JSON.stringify(teamInfo);
     return returnData + '</tr>';
+}
+
+function generateTeamDetails(teamNumber) {
+    "use strict";
+    var teamList = JSON.parse(localStorage.teamList).teams;
+    var teamIndex = teamList.teamNumber.indexOf(teamNumber);
+    return teamList.teams[teamIndex];
 }

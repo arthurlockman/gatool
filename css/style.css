@@ -81,5 +81,8 @@ opacity: 1;
 .key {
     color: red;
 }
+
+.redAlliance {background-color: #F7B3B4}
+.blueAlliance {background-color: #98B4F4}
 .announceTableView {
 }
