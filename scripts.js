@@ -170,9 +170,6 @@ function getTeamList() {
             teamList += '<thead class="thead-default"><tr><td><b>Number</b></td><td><b>Short Name</b></td><td><b>City</b></td><td><b>Sponsors</b></td><td><b>Organization</b></td><td><b>Rookie Year</b></td><td><b>Robot name</b></td></tr></thead><tbody>';
             for (var i = 0; i < data.teams.length; i++) {
                 var element = data.teams[i];
-                //document.getElementById('teamsTable').innerHTML += generateTeamTableRow(element);
-                // ^^Old way, causing repeated <tbody> tags
-                // (below) New way, using a string and then appending
                 teamList += generateTeamTableRow(element);
             }
             document.getElementById('teamsTable').innerHTML = teamList + "</tbody>";
@@ -181,7 +178,6 @@ function getTeamList() {
         }
         document.getElementById('teamProgressBar').style.display = 'none';
         localStorage.teamList = JSON.stringify(data);
-        getTeamRanks();
     });
     req2.send();
 
@@ -219,8 +215,9 @@ function announceDisplay() {
     var currentMatch = localStorage.currentMatch - 1;
     var currentMatchData = qualsList.Schedule[currentMatch];
     getTeamRanks();
-    document.getElementById("matchNumber").innerHTML = currentMatchData.matchNumber;
-    document.getElementById("matchName").innerHTML = currentMatchData.description;
+    document.getElementById("eventName").innerHTML = "<b>" + JSON.parse(document.getElementById("eventSelector").value).name + "</b>";
+    document.getElementById("matchNumber").innerHTML = "<b>" + currentMatchData.matchNumber + "</b>";
+    document.getElementById("matchName").innerHTML = "<b>" + currentMatchData.description + "</b>";
     document.getElementById("red1TeamNumber").innerHTML = currentMatchData.Teams[0].teamNumber;
     document.getElementById("red1TeamName").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[0].teamNumber]).nameShort;
     document.getElementById("red1Rank").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[0].teamNumber]).rank;
