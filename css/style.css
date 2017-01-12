@@ -84,5 +84,5 @@ opacity: 1;
 
 .redAlliance {background-color: #F7B3B4}
 .blueAlliance {background-color: #98B4F4}
-.announceTableView {
-}
+.announceTableView {}
+.ranking {align-content: center;vertical-align: middle;text-align: center;font-size: xx-large;color: black}

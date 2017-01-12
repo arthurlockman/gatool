@@ -214,34 +214,51 @@ function announceDisplay() {
     var qualsList = JSON.parse(localStorage.qualsList);
     var currentMatch = localStorage.currentMatch - 1;
     var currentMatchData = qualsList.Schedule[currentMatch];
+    var stationList = ["red1","red2","red3","blue1","blue2","blue3"];
     getTeamRanks();
-    document.getElementById("eventName").innerHTML = "<b>" + JSON.parse(document.getElementById("eventSelector").value).name + "</b>";
-    document.getElementById("matchNumber").innerHTML = "<b>" + currentMatchData.matchNumber + "</b>";
-    document.getElementById("matchName").innerHTML = "<b>" + currentMatchData.description + "</b>";
-    document.getElementById("red1TeamNumber").innerHTML = currentMatchData.Teams[0].teamNumber;
-    document.getElementById("red1TeamName").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[0].teamNumber]).nameShort + "<br><b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[0].teamNumber]).organization + "</i></b>";
-    document.getElementById("red1Rank").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[0].teamNumber]).rank;
-    document.getElementById("red1Organization").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[0].teamNumber]).sponsors;
-    document.getElementById("red2TeamNumber").innerHTML = currentMatchData.Teams[1].teamNumber;
-    document.getElementById("red2TeamName").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[1].teamNumber]).nameShort + "<br><b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[1].teamNumber]).organization + "</i></b>";
-    document.getElementById("red2Organization").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[1].teamNumber]).sponsors;
-    document.getElementById("red2Rank").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[1].teamNumber]).rank;
-    document.getElementById("red3TeamNumber").innerHTML = currentMatchData.Teams[2].teamNumber;
-    document.getElementById("red3TeamName").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[2].teamNumber]).nameShort + "<br><b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[2].teamNumber]).organization + "</i></b>";
-    document.getElementById("red3Organization").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[2].teamNumber]).sponsors;
-    document.getElementById("red3Rank").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[2].teamNumber]).rank;
-    document.getElementById("blue1TeamNumber").innerHTML = currentMatchData.Teams[3].teamNumber;
-    document.getElementById("blue1TeamName").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[3].teamNumber]).nameShort + "<br><b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[3].teamNumber]).organization + "</i></b>";
-    document.getElementById("blue1Organization").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[3].teamNumber]).sponsors;
-    document.getElementById("blue1Rank").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[3].teamNumber]).rank;
-    document.getElementById("blue2TeamNumber").innerHTML = currentMatchData.Teams[4].teamNumber;
-    document.getElementById("blue2TeamName").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[4].teamNumber]).nameShort + "<br><b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[4].teamNumber]).organization + "</i></b>";
-    document.getElementById("blue2Organization").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[4].teamNumber]).sponsors;
-    document.getElementById("blue2Rank").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[4].teamNumber]).rank;
-    document.getElementById("blue3TeamNumber").innerHTML = currentMatchData.Teams[5].teamNumber;
-    document.getElementById("blue3TeamName").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[5].teamNumber]).nameShort + "<br><b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[5].teamNumber]).organization + "</i></b>";
-    document.getElementById("blue3Organization").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[5].teamNumber]).sponsors;
-    document.getElementById("blue3Rank").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[5].teamNumber]).rank;
+    $("#eventName").html("<b>" + JSON.parse(document.getElementById("eventSelector").value).name + "</b>");
+    $("#matchNumber").html("<b>" + currentMatchData.matchNumber + "</b>");
+    $("#matchName").html("<b>" + currentMatchData.description + "</b>");
+    for (var ii = 0; ii < 6; ii++) {
+        $('#' + stationList[ii] + 'TeamNumber').html("<b>" + currentMatchData.Teams[ii].teamNumber + "</b><br>");
+        $("#" + stationList[ii] + "TeamName").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).nameShort + "<br><b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).organization + "</i></b>");
+        $("#" + stationList[ii] + "Rank").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rank);
+        rankHighlight(stationList[ii]+"Rank", JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rank);
+        $("#" + stationList[ii] + "Organization").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).sponsors);
+    }    
+    //document.getElementById("eventName").innerHTML = "<b>" + JSON.parse(document.getElementById("eventSelector").value).name + "</b>";
+    //document.getElementById("matchNumber").innerHTML = "<b>" + currentMatchData.matchNumber + "</b>";
+    //document.getElementById("matchName").innerHTML = "<b>" + currentMatchData.description + "</b>";
+ //   document.getElementById("red1TeamNumber").innerHTML = "<b>"+currentMatchData.Teams[0].teamNumber+"</b><br>";
+//    document.getElementById("red1TeamName").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[0].teamNumber]).nameShort + "<br><b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[0].teamNumber]).organization + "</i></b>";
+//    document.getElementById("red1Rank").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[0].teamNumber]).rank;
+//    rankHighlight("red1Rank", JSON.parse(localStorage['teamData' + currentMatchData.Teams[0].teamNumber]).rank);
+//    document.getElementById("red1Organization").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[0].teamNumber]).sponsors;
+//    document.getElementById("red2TeamNumber").innerHTML = currentMatchData.Teams[1].teamNumber;
+//    document.getElementById("red2TeamName").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[1].teamNumber]).nameShort + "<br><b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[1].teamNumber]).organization + "</i></b>";
+//    document.getElementById("red2Organization").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[1].teamNumber]).sponsors;
+//    document.getElementById("red2Rank").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[1].teamNumber]).rank;
+//    rankHighlight("red2Rank", JSON.parse(localStorage['teamData' + currentMatchData.Teams[1].teamNumber]).rank);
+//    document.getElementById("red3TeamNumber").innerHTML = currentMatchData.Teams[2].teamNumber;
+//    document.getElementById("red3TeamName").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[2].teamNumber]).nameShort + "<br><b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[2].teamNumber]).organization + "</i></b>";
+//    document.getElementById("red3Organization").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[2].teamNumber]).sponsors;
+//    document.getElementById("red3Rank").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[2].teamNumber]).rank;
+//    rankHighlight("red3Rank", JSON.parse(localStorage['teamData' + currentMatchData.Teams[2].teamNumber]).rank);
+//    document.getElementById("blue1TeamNumber").innerHTML = currentMatchData.Teams[3].teamNumber;
+//    document.getElementById("blue1TeamName").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[3].teamNumber]).nameShort + "<br><b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[3].teamNumber]).organization + "</i></b>";
+//    document.getElementById("blue1Organization").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[3].teamNumber]).sponsors;
+//    document.getElementById("blue1Rank").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[3].teamNumber]).rank;
+//    rankHighlight("blue1Rank", JSON.parse(localStorage['teamData' + currentMatchData.Teams[3].teamNumber]).rank);
+//    document.getElementById("blue2TeamNumber").innerHTML = currentMatchData.Teams[4].teamNumber;
+//    document.getElementById("blue2TeamName").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[4].teamNumber]).nameShort + "<br><b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[4].teamNumber]).organization + "</i></b>";
+//    document.getElementById("blue2Organization").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[4].teamNumber]).sponsors;
+//    document.getElementById("blue2Rank").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[4].teamNumber]).rank;
+//    rankHighlight("blue2Rank", JSON.parse(localStorage['teamData' + currentMatchData.Teams[4].teamNumber]).rank);
+//    document.getElementById("blue3TeamNumber").innerHTML = currentMatchData.Teams[5].teamNumber;
+//    document.getElementById("blue3TeamName").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[5].teamNumber]).nameShort + "<br><b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[5].teamNumber]).organization + "</i></b>";
+//    document.getElementById("blue3Organization").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[5].teamNumber]).sponsors;
+//    document.getElementById("blue3Rank").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[5].teamNumber]).rank;
+//    rankHighlight("blue3Rank", JSON.parse(localStorage['teamData' + currentMatchData.Teams[5].teamNumber]).rank);
 }
 
 
@@ -344,47 +361,48 @@ function generateTeamTableRow(teamData) {
     var teamInfo = "";
     var organization = "";
     var sponsors = "";
-    var sponsorArray = teamData.nameFull.split("/");
-    if (!sponsorArray) {
+    var sponsorArray = trimArray(teamData.nameFull.split("/"));
+    var organizationArray = trimArray(teamData.nameFull.split("/").pop().split("&"));
+    if (!sponsorArray && !organizationArray) {
         organization = "No organization in TIMS";
         sponsors = "No sponsors in TIMS";
     }
-    if (sponsorArray.length > 6) {
-        organization = sponsorArray[sponsorArray.length-1];
-        sponsorArray = teamData.nameFull.split("/", 5);
-        sponsors = sponsorArray.toString();
-    }
-    else if (sponsorArray.length ===1) {
-        organization = sponsorArray[0];
+    if (sponsorArray.length === 1) {
         sponsors = sponsorArray[0];
-    } else if (sponsorArray.length ===2) {
-        organization = sponsorArray[1];
-        sponsors = sponsorArray[0];
-    }
-    else
-    {
-        organization = sponsorArray[sponsorArray.length-1];
-        for (var i=0;i<=sponsorArray.length-3;i++) {
-            sponsors = sponsors + sponsorArray[i].trim() + ", ";
+    } else {
+        if (organizationArray.length > 1) {
+            sponsorArray.pop();
         }
-        sponsors += sponsorArray[sponsorArray.length-2];
+        for (var i = 0; i < sponsorArray.length - 2; i++) {
+            sponsors += sponsorArray[i] + ", ";
+        }
+        sponsors += sponsorArray[sponsorArray.length - 1];
+
     }
-    
-    
-    
-   //fallback code below. 
-   // if (teamData.nameFull.indexOf("&") === -1) {
-//        sponsors = teamData.nameFull;
-//    } else {
-//        sponsors = teamData.nameFull.slice(0, teamData.nameFull.indexOf("&"));
-//    }
-//    if (teamData.nameFull.indexOf("&") === -1) {
-//        organization = teamData.nameFull;
-//    } else {
-//        organization = teamData.nameFull.slice(teamData.nameFull.indexOf("&") + 1, teamData.nameFull.length);
-//    }
-//    
-    
+    if (organizationArray.length === 1) {
+        organization = organizationArray[0];
+    } else {
+        sponsors += ", " + organizationArray.shift();
+        for (var j = 0; j < organizationArray.length - 2; j++) {
+            organization += organizationArray[j] + " & ";
+        }
+        organization += organizationArray[organizationArray.length - 1];
+    }
+
+
+    //fallback code below. 
+    // if (teamData.nameFull.indexOf("&") === -1) {
+    //        sponsors = teamData.nameFull;
+    //    } else {
+    //        sponsors = teamData.nameFull.slice(0, teamData.nameFull.indexOf("&"));
+    //    }
+    //    if (teamData.nameFull.indexOf("&") === -1) {
+    //        organization = teamData.nameFull;
+    //    } else {
+    //        organization = teamData.nameFull.slice(teamData.nameFull.indexOf("&") + 1, teamData.nameFull.length);
+    //    }
+    //    
+
     returnData += teamData.teamNumber + '</td><td>';
     returnData += teamData.nameShort + '</td><td>';
     returnData += teamData.city + ", " + teamData.stateProv + '</td><td>';
@@ -408,4 +426,24 @@ function generateTeamTableRow(teamData) {
     };
     localStorage['teamData' + teamData.teamNumber] = JSON.stringify(teamInfo);
     return returnData + '</tr>';
+}
+
+function trimArray(arr) {
+    "use strict";
+    for (var i = 0; i <= arr.length - 1; i++) {
+        arr[i] = arr[i].trim();
+    }
+    return arr;
+}
+
+function rankHighlight(station, rank) {
+    "use strict";
+    if (rank < 11) {
+        document.getElementById(station).style.color = "white";
+       document.getElementById(station).style.backgroundColor = "red";
+    } else {
+        document.getElementById(station).style.color = "";
+        document.getElementById(station).style.backgroundColor = "";
+    }
+
 }
