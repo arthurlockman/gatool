@@ -185,12 +185,13 @@ function getTeamList() {
 function getNextMatch() {
     "use strict";
     var qualsList = JSON.parse(localStorage.qualsList);
+    var playoffList = JSON.parse(localStorage.playoffList);
     if (!qualsList) {
-        document.getElementById("matchNumber").innerHTML = "No match scheduled.";
+        document.getElementById("matchNumber").innerHTML = "No matches scheduled.";
     } else {
         localStorage.currentMatch++;
-        if (localStorage.currentMatch > qualsList.Schedule.length) {
-            localStorage.currentMatch = qualsList.Schedule.length;
+        if (localStorage.currentMatch > qualsList.Schedule.length + playoffList.Schedule.length) {
+            localStorage.currentMatch = qualsList.Schedule.length + playoffList.Schedule.length;
         }
         announceDisplay();
 
@@ -212,7 +213,12 @@ function announceDisplay() {
     "use strict";
     var qualsList = JSON.parse(localStorage.qualsList);
     var currentMatch = localStorage.currentMatch - 1;
+    if (localStorage.currentMatch > qualsList.Schedule.length) {
+        currentMatch = localStorage.currentMatch - qualsList.Schedule.length - 1;
+        qualsList = JSON.parse(localStorage.playoffList);
+    }
     var currentMatchData = qualsList.Schedule[currentMatch];
+
     var stationList = ["red1", "red2", "red3", "blue1", "blue2", "blue3"];
     getTeamRanks();
     $("#eventName").html("<b>" + JSON.parse(document.getElementById("eventSelector").value).name + "</b>");
@@ -220,8 +226,8 @@ function announceDisplay() {
     $("#matchName").html("<b>" + currentMatchData.description + "</b>");
     for (var ii = 0; ii < 6; ii++) {
         $('#' + stationList[ii] + 'TeamNumber').html("<b>" + currentMatchData.Teams[ii].teamNumber + "</b><br>" + rookieYearDisplay(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rookieYear));
-        $("#" + stationList[ii] + "TeamName").html('<span class="teamName">'+JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).nameShort+'</span><br>'+JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).cityState+"<br>"+JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).robotName);       
-        $("#" + stationList[ii] + "Organization").html("<b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).organization + "</i></b><br>"+JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).sponsors);
+        $("#" + stationList[ii] + "TeamName").html('<span class="teamName">' + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).nameShort + '</span><br>' + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).cityState + "<br>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).robotName);
+        $("#" + stationList[ii] + "Organization").html("<b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).organization + "</i></b><br>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).sponsors);
         $("#" + stationList[ii] + "Rank").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rank);
         rankHighlight(stationList[ii] + "Rank", JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rank);
     }
@@ -240,7 +246,12 @@ function getTeamRanks() {
             $("#rankingDisplay").html('<b>No Rankings available.</b>');
             //document.getElementById('rankingDisplay').innerHTML = '<b>No Rankings available.</b>';
         } else {
-            $("#rankingDisplay").html('<b>Ranking</b>');
+            if (localStorage.currentMatch > JSON.parse(localStorage.qualsList).Schedule.length) {
+                $("#rankingDisplay").html("<b>Seed<b>");
+            } else {
+                $("#rankingDisplay").html('<b>Ranking</b>');
+            }
+
             //document.getElementById('rankingDisplay').innerHTML = '<b>Ranking</b>';
             for (var i = 0; i < data.Rankings.length; i++) {
                 var team = JSON.parse(localStorage['teamData' + data.Rankings[i].teamNumber]);
