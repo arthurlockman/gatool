@@ -117,7 +117,6 @@ function getHybridSchedule() {
         } else {
             document.getElementById('scheduleContainer').innerHTML = '<div class=""><table id="scheduleTable" class="table table-bordered table-responsive table-striped"></table></div>';
             matchSchedule += '<thead class="thead-default"><tr><td><b>Time</b></td><td><b>Description</b></td><td><b>Match Number</b></td><td><b>Red 1</b></td><td><b>Red 2</b></td><td><b>Red 3</b></td><td><b>Blue 1</b></td><td><b>Blue 2</b></td><td><b>Blue 3</b></td></tr></thead><tbody>';
-            //document.getElementById('scheduleTable').innerHTML += '<thead><tr><td><b>Time</b></td><td><b>Description</b></td><td><b>Match Number</b></td><td><b>Red 1</b></td><td><b>Red 2</b></td><td><b>Red 3</b></td><td><b>Red 4</b></td><td><b>Blue 1</b></td><td><b>Blue 2</b></td><td><b>Blue 3</b></td><td><b>Blue 4</b></td></tr></thead>';
             for (var i = 0; i < data.Schedule.length; i++) {
                 var element = data.Schedule[i];
                 matchSchedule += generateMatchTableRow(element);
@@ -214,51 +213,18 @@ function announceDisplay() {
     var qualsList = JSON.parse(localStorage.qualsList);
     var currentMatch = localStorage.currentMatch - 1;
     var currentMatchData = qualsList.Schedule[currentMatch];
-    var stationList = ["red1","red2","red3","blue1","blue2","blue3"];
+    var stationList = ["red1", "red2", "red3", "blue1", "blue2", "blue3"];
     getTeamRanks();
     $("#eventName").html("<b>" + JSON.parse(document.getElementById("eventSelector").value).name + "</b>");
     $("#matchNumber").html("<b>" + currentMatchData.matchNumber + "</b>");
     $("#matchName").html("<b>" + currentMatchData.description + "</b>");
     for (var ii = 0; ii < 6; ii++) {
-        $('#' + stationList[ii] + 'TeamNumber').html("<b>" + currentMatchData.Teams[ii].teamNumber + "</b><br>");
-        $("#" + stationList[ii] + "TeamName").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).nameShort + "<br><b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).organization + "</i></b>");
+        $('#' + stationList[ii] + 'TeamNumber').html("<b>" + currentMatchData.Teams[ii].teamNumber + "</b><br>" + rookieYearDisplay(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rookieYear));
+        $("#" + stationList[ii] + "TeamName").html('<span class="teamName">'+JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).nameShort+'</span><br>'+JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).cityState+"<br>"+JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).robotName);       
+        $("#" + stationList[ii] + "Organization").html("<b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).organization + "</i></b><br>"+JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).sponsors);
         $("#" + stationList[ii] + "Rank").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rank);
-        rankHighlight(stationList[ii]+"Rank", JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rank);
-        $("#" + stationList[ii] + "Organization").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).sponsors);
-    }    
-    //document.getElementById("eventName").innerHTML = "<b>" + JSON.parse(document.getElementById("eventSelector").value).name + "</b>";
-    //document.getElementById("matchNumber").innerHTML = "<b>" + currentMatchData.matchNumber + "</b>";
-    //document.getElementById("matchName").innerHTML = "<b>" + currentMatchData.description + "</b>";
- //   document.getElementById("red1TeamNumber").innerHTML = "<b>"+currentMatchData.Teams[0].teamNumber+"</b><br>";
-//    document.getElementById("red1TeamName").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[0].teamNumber]).nameShort + "<br><b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[0].teamNumber]).organization + "</i></b>";
-//    document.getElementById("red1Rank").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[0].teamNumber]).rank;
-//    rankHighlight("red1Rank", JSON.parse(localStorage['teamData' + currentMatchData.Teams[0].teamNumber]).rank);
-//    document.getElementById("red1Organization").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[0].teamNumber]).sponsors;
-//    document.getElementById("red2TeamNumber").innerHTML = currentMatchData.Teams[1].teamNumber;
-//    document.getElementById("red2TeamName").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[1].teamNumber]).nameShort + "<br><b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[1].teamNumber]).organization + "</i></b>";
-//    document.getElementById("red2Organization").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[1].teamNumber]).sponsors;
-//    document.getElementById("red2Rank").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[1].teamNumber]).rank;
-//    rankHighlight("red2Rank", JSON.parse(localStorage['teamData' + currentMatchData.Teams[1].teamNumber]).rank);
-//    document.getElementById("red3TeamNumber").innerHTML = currentMatchData.Teams[2].teamNumber;
-//    document.getElementById("red3TeamName").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[2].teamNumber]).nameShort + "<br><b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[2].teamNumber]).organization + "</i></b>";
-//    document.getElementById("red3Organization").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[2].teamNumber]).sponsors;
-//    document.getElementById("red3Rank").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[2].teamNumber]).rank;
-//    rankHighlight("red3Rank", JSON.parse(localStorage['teamData' + currentMatchData.Teams[2].teamNumber]).rank);
-//    document.getElementById("blue1TeamNumber").innerHTML = currentMatchData.Teams[3].teamNumber;
-//    document.getElementById("blue1TeamName").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[3].teamNumber]).nameShort + "<br><b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[3].teamNumber]).organization + "</i></b>";
-//    document.getElementById("blue1Organization").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[3].teamNumber]).sponsors;
-//    document.getElementById("blue1Rank").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[3].teamNumber]).rank;
-//    rankHighlight("blue1Rank", JSON.parse(localStorage['teamData' + currentMatchData.Teams[3].teamNumber]).rank);
-//    document.getElementById("blue2TeamNumber").innerHTML = currentMatchData.Teams[4].teamNumber;
-//    document.getElementById("blue2TeamName").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[4].teamNumber]).nameShort + "<br><b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[4].teamNumber]).organization + "</i></b>";
-//    document.getElementById("blue2Organization").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[4].teamNumber]).sponsors;
-//    document.getElementById("blue2Rank").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[4].teamNumber]).rank;
-//    rankHighlight("blue2Rank", JSON.parse(localStorage['teamData' + currentMatchData.Teams[4].teamNumber]).rank);
-//    document.getElementById("blue3TeamNumber").innerHTML = currentMatchData.Teams[5].teamNumber;
-//    document.getElementById("blue3TeamName").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[5].teamNumber]).nameShort + "<br><b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[5].teamNumber]).organization + "</i></b>";
-//    document.getElementById("blue3Organization").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[5].teamNumber]).sponsors;
-//    document.getElementById("blue3Rank").innerHTML = JSON.parse(localStorage['teamData' + currentMatchData.Teams[5].teamNumber]).rank;
-//    rankHighlight("blue3Rank", JSON.parse(localStorage['teamData' + currentMatchData.Teams[5].teamNumber]).rank);
+        rankHighlight(stationList[ii] + "Rank", JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rank);
+    }
 }
 
 
@@ -271,9 +237,11 @@ function getTeamRanks() {
     req3.addEventListener('load', function () {
         var data = JSON.parse(req3.responseText);
         if (data.Rankings.length === 0) {
-            document.getElementById('rankingDisplay').innerHTML = '<b>No Rankings available.</b>';
+            $("#rankingDisplay").html('<b>No Rankings available.</b>');
+            //document.getElementById('rankingDisplay').innerHTML = '<b>No Rankings available.</b>';
         } else {
-            document.getElementById('rankingDisplay').innerHTML = '<b>Ranking</b>';
+            $("#rankingDisplay").html('<b>Ranking</b>');
+            //document.getElementById('rankingDisplay').innerHTML = '<b>Ranking</b>';
             for (var i = 0; i < data.Rankings.length; i++) {
                 var team = JSON.parse(localStorage['teamData' + data.Rankings[i].teamNumber]);
                 team.rank = data.Rankings[i].rank;
@@ -389,26 +357,12 @@ function generateTeamTableRow(teamData) {
         organization += organizationArray[organizationArray.length - 1];
     }
 
-
-    //fallback code below. 
-    // if (teamData.nameFull.indexOf("&") === -1) {
-    //        sponsors = teamData.nameFull;
-    //    } else {
-    //        sponsors = teamData.nameFull.slice(0, teamData.nameFull.indexOf("&"));
-    //    }
-    //    if (teamData.nameFull.indexOf("&") === -1) {
-    //        organization = teamData.nameFull;
-    //    } else {
-    //        organization = teamData.nameFull.slice(teamData.nameFull.indexOf("&") + 1, teamData.nameFull.length);
-    //    }
-    //    
-
     returnData += teamData.teamNumber + '</td><td>';
     returnData += teamData.nameShort + '</td><td>';
     returnData += teamData.city + ", " + teamData.stateProv + '</td><td>';
     returnData += teamData.nameFull + '</td><td>';
     returnData += teamData.nameShort + '</td><td>'; //replace with organization function.
-    returnData += teamData.rookieYear + '</td><td>';
+    returnData += rookieYearDisplay(teamData.rookieYear) + '</td><td>';
     if (teamData.robotName === null) {
         returnData += "No robot name reported" + '</td>';
     } else {
@@ -421,7 +375,7 @@ function generateTeamTableRow(teamData) {
         "nameFull": teamData.nameFull,
         "sponsors": sponsors,
         "organization": organization,
-        "rookieyear": teamData.rookieYear,
+        "rookieYear": teamData.rookieYear,
         "robotName": teamData.robotName
     };
     localStorage['teamData' + teamData.teamNumber] = JSON.stringify(teamInfo);
@@ -440,10 +394,25 @@ function rankHighlight(station, rank) {
     "use strict";
     if (rank < 11) {
         document.getElementById(station).style.color = "white";
-       document.getElementById(station).style.backgroundColor = "red";
+        document.getElementById(station).style.backgroundColor = "red";
     } else {
         document.getElementById(station).style.color = "";
         document.getElementById(station).style.backgroundColor = "";
     }
 
+}
+
+function rookieYearDisplay(year) {
+    "use strict";
+    var currrentYear = document.getElementById('yearPicker').options[document.getElementById('yearPicker').selectedIndex].value;
+    switch (currrentYear - year) {
+        case 0:
+            return year + " (Rookie Year)";
+        case 1:
+            return year + " (2nd season)";
+        case 2:
+            return year + " (3rd season)";
+        default:
+            return year + " (" + (currrentYear - year) + "th season)";
+    }
 }
