@@ -39,6 +39,9 @@ function handleEventSelection() {
     dateText.innerHTML = startDate + " to " + endDate;
     document.getElementById('announceBanner').style.display = 'block';
     document.getElementById('announceDisplay').style.display = 'none';
+    document.getElementById('playByPlayBanner').style.display = 'block';
+    document.getElementById('playByPlayDisplay').style.display = 'none';
+
     getHybridSchedule();
     getTeamList();
 }
@@ -124,6 +127,9 @@ function getHybridSchedule() {
             localStorage.qualsList = JSON.stringify(data);
             document.getElementById('announceBanner').style.display = 'none';
             document.getElementById('announceDisplay').style.display = 'block';
+            document.getElementById('playByPlayBanner').style.display = 'none';
+            document.getElementById('playByPlayDisplay').style.display = 'block';
+
             announceDisplay();
 
 
@@ -224,12 +230,18 @@ function announceDisplay() {
     $("#eventName").html("<b>" + JSON.parse(document.getElementById("eventSelector").value).name + "</b>");
     $("#matchNumber").html("<b>" + currentMatchData.matchNumber + "</b>");
     $("#matchName").html("<b>" + currentMatchData.description + "</b>");
+    $("#matchNamePlayByPlay").html("<b>" + currentMatchData.description + "</b>");
+
     for (var ii = 0; ii < 6; ii++) {
         $('#' + stationList[ii] + 'TeamNumber').html("<b>" + currentMatchData.Teams[ii].teamNumber + "</b><br>" + rookieYearDisplay(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rookieYear));
         $("#" + stationList[ii] + "TeamName").html('<span class="teamName">' + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).nameShort + '</span><br>' + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).cityState + "<br>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).robotName);
         $("#" + stationList[ii] + "Organization").html("<b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).organization + "</i></b><br>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).sponsors);
         $("#" + stationList[ii] + "Rank").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rank);
         rankHighlight(stationList[ii] + "Rank", JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rank);
+        $('#' + stationList[ii] + 'PlaybyPlayteamNumber').html("<b>" + currentMatchData.Teams[ii].teamNumber + "</b>");
+        $('#' + stationList[ii] + 'PlaybyPlayTeamName').html("<b>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).nameShort + "</b>");
+        $('#' + stationList[ii] + 'PlaybyPlayRobotName').html("<b>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).robotName + "</b>");
+
     }
 }
 
@@ -403,14 +415,27 @@ function trimArray(arr) {
 
 function rankHighlight(station, rank) {
     "use strict";
-    if (rank < 11) {
+    if ((rank < 8) && (rank > 1)) {
         document.getElementById(station).style.color = "white";
-        document.getElementById(station).style.backgroundColor = "red";
+        document.getElementById(station).style.backgroundColor = "green";
+    } else if ((rank < 11) && (rank > 8)) {
+        document.getElementById(station).style.color = "";
+        document.getElementById(station).style.backgroundColor = "yellow";
+    } else if (rank === 1) {
+        document.getElementById(station).style.color = "white";
+        document.getElementById(station).style.backgroundColor = "orange";
+
     } else {
         document.getElementById(station).style.color = "";
         document.getElementById(station).style.backgroundColor = "";
     }
 
+}
+
+function setMatch(elem) {
+    "use strict";
+    localStorage.currentMatch = elem.innerHTML;
+    announceDisplay();
 }
 
 function rookieYearDisplay(year) {
