@@ -229,15 +229,21 @@ function announceDisplay() {
     getTeamRanks();
     $("#eventName").html("<b>" + JSON.parse(document.getElementById("eventSelector").value).name + "</b>");
     $("#matchNumber").html("<b>" + currentMatchData.matchNumber + "</b>");
+    $("#matchNameAnnounce").html("<b>" + currentMatchData.matchNumber + "</b>");
     $("#matchName").html("<b>" + currentMatchData.description + "</b>");
     $("#matchNamePlayByPlay").html("<b>" + currentMatchData.description + "</b>");
 
     for (var ii = 0; ii < 6; ii++) {
-        $('#' + stationList[ii] + 'TeamNumber').html("<b>" + currentMatchData.Teams[ii].teamNumber + "</b><br>" + rookieYearDisplay(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rookieYear));
-        $("#" + stationList[ii] + "TeamName").html('<span class="teamName">' + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).nameShort + '</span><br>' + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).cityState + "<br>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).robotName);
-        $("#" + stationList[ii] + "Organization").html("<b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).organization + "</i></b><br>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).sponsors);
+        $('#' + stationList[ii] + 'TeamNumber').html("<b>" + currentMatchData.Teams[ii].teamNumber + "</b>");
+        $('#' + stationList[ii] + 'RookieYear').html(rookieYearDisplay(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rookieYear));
+        $("#" + stationList[ii] + "TeamName").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).nameShort + '<br>');
+        $("#" + stationList[ii] + "CityState").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).cityState);
+        $("#" + stationList[ii] + "RobotName").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).robotName);
+        $("#" + stationList[ii] + "Organization").html("<b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).organization + "</i></b>");
+        $("#" + stationList[ii] + "Sponsors").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).sponsors);
         $("#" + stationList[ii] + "Rank").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rank);
         rankHighlight(stationList[ii] + "Rank", JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rank);
+        
         $('#' + stationList[ii] + 'PlaybyPlayteamNumber').html("<b>" + currentMatchData.Teams[ii].teamNumber + "</b>");
         $('#' + stationList[ii] + 'PlaybyPlayTeamName').html("<b>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).nameShort + "</b>");
         $('#' + stationList[ii] + 'PlaybyPlayRobotName').html("<b>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).robotName + "</b>");

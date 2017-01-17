@@ -35,8 +35,8 @@
 <div id="navbar" class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-header theme-showcase" role="main"> <a class="navbar-brand" id="eventName">gatool</a> </div>
 </div>
-<div class="container" id="body-container">
-    <div id="tabContainer" style="height:100%; display:table">
+<div class="container-fluid" id="body-container">
+    <div id="tabContainer" style="height:100%; display:block">
         <ul class="tab">
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'setup')" id="setupTabPicker">Setup</a></li>
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'schedule')" id="scheduleTabPicker">Match Schedule</a></li>
@@ -81,75 +81,183 @@
             </p>
         </div>
         <div id="announce" class="tabcontent">
-            <div id="announceBanner" style="display: block">
+            <div id="announceBanner" style="display: none">
                 <p><b>No qualification matches have been scheduled for this event.</b></p>
             </div>
-            <div id="announceDisplay" class="announceTableView" width="100%" style="display:none;">
-                <table id="announceTable" class="table table-bordered" width="100%">
-                    <thead><tr id="announceTableHeader"><td id="matchNumber" class="matchNumber" onClick="setMatch()">Match Number</td><td id="matchName">Match Name</td><td><b>Organization and Sponsors</b></td><td id="rankingDisplay">Ranking</td></tr></thead>
-                    <tbody><tr id="red1" class="redAlliance"><td id="red1TeamNumber">team Number</td><td id="red1TeamName">teamName</td><td id="red1Organization">Organization</td><td id="red1Rank" class="ranking">Team Rank</td></tr>
-                    <tr id="red2" class="redAlliance"><td id="red2TeamNumber">team Number</td><td id="red2TeamName">teamName</td><td id="red2Organization">Organization</td><td id="red2Rank" class="ranking">Team Rank</td></tr>
-                    <tr id="red3" class="redAlliance"><td id="red3TeamNumber">team Number</td><td id="red3TeamName">teamName</td><td id="red3Organization">Organization</td><td id="red3Rank" class="ranking">Team Rank</td></tr>
-                    <tr id="blue1" class="blueAlliance"><td id="blue1TeamNumber">team Number</td><td id="blue1TeamName">teamName</td><td id="blue1Organization">Organization</td><td id="blue1Rank" class="ranking">Team Rank</td></tr>
-                    <tr id="blue2" class="blueAlliance"><td id="blue2TeamNumber">team Number</td><td id="blue2TeamName">teamName</td><td id="blue2Organization">Organization</td><td id="blue2Rank" class="ranking">Team Rank</td></tr>
-                    <tr id="blue3" class="blueAlliance"><td id="blue3TeamNumber">team Number</td><td id="blue3TeamName">teamName</td><td id="blue3Organization">Organization</td><td id="blue3Rank" class="ranking">Team Rank</td></tr>
-                        <tr><td class="btn-default" id="previousMatch" colspan="2" onClick="getPreviousMatch()">Previous Match</td><td class="btn-default" id="nextMatch" align="right" colspan="2" onClick="getNextMatch()">Next Match</td></tr></tbody>
-                    </table>
+            <div id="announceDisplay" class="gatool-announce" style="display:block">
+            <div class="row">
+                <div class="col-xs-2"><span id="matchNumber">Match Number</span></div>
+                <div class="col-xs-3"><span id="matchName">Match Names</span></div>
+                <div class="col-xs-5"><span>Organization and Sponsors</span></div>
+                <div class="col-xs-2"><span id="rankingDisplay">Ranking</span></div>
+            </div>
+            <div class="row redAlliance">
+                <div class="col-xs-2">
+                    <p><span id="red1TeamNumber">Red1 Team Number</span></p>
+                    <p><span id="red1RookieYear">Red1 Rookie</span></p>
+                </div>
+                <div class="col-xs-3">
+                    <p><span id="red1TeamName" class="teamName">red1 Team Name</span></p>
+                    <p><span id="red1CityState">red1 city</span></p>
+                    <p><span id="red1RobotName">red1 robot name</span></p>
+                </div>
+                <div class="col-xs-5">
+                    <p><span id="red1Organization">red1 Organization</span></p>
+                    <p><span id="red1Sponsors">Red1 Sponsors</span></p>
+                </div>
+                <div class="col-xs-2 ranking" id="red1Rank">
+                    <p>Rank</p>
+                </div>
+            </div>
+            <div class="row redAlliance">
+                <div class="col-xs-2">
+                    <p><span id="red2TeamNumber">red2 Team Number</span></p>
+                    <p><span id="red2RookieYear">red2 Rookie</span></p>
+                </div>
+                <div class="col-xs-3">
+                    <p><span id="red2TeamName" class="teamName">red2 Team Name</span></p>
+                    <p><span id="red2CityState">red2 city</span></p>
+                    <p><span id="red2RobotName">red2 robot name</span></p>
+                </div>
+                <div class="col-xs-5">
+                    <p><span id="red2Organization">red2 Organization</span></p>
+                    <p><span id="red2Sponsors">red2 Sponsors</span></p>
+                </div>
+                <div class="col-xs-2 ranking" id="red2Rank">
+                    <p>Rank</p>
+                </div>
+            </div>
+            <div class="row redAlliance">
+                <div class="col-xs-2">
+                    <p><span id="red3TeamNumber">red3 Team Number</span></p>
+                    <p><span id="red3RookieYear">red3 Rookie</span></p>
+                </div>
+                <div class="col-xs-3">
+                    <p><span id="red3TeamName" class="teamName">red3 Team Name</span></p>
+                    <p><span id="red3CityState">red3 city</span></p>
+                    <p><span id="red3RobotName">red3 robot name</span></p>
+                </div>
+                <div class="col-xs-5">
+                    <p><span id="red3Organization">red3 Organization</span></p>
+                    <p><span id="red3Sponsors">red3 Sponsors</span></p>
+                </div>
+                <div class="col-xs-2 ranking" id="red3Rank">
+                    <p>Rank</p>
+                </div>
+            </div>
+            <div class="row blueAlliance">
+                <div class="col-xs-2">
+                    <p><span id="blue1TeamNumber">blue1 Team Number</span></p>
+                    <p><span id="blue1RookieYear">blue1 Rookie</span></p>
+                </div>
+                <div class="col-xs-3">
+                    <p><span id="blue1TeamName" class="teamName">blue1 Team Name</span></p>
+                    <p><span id="blue1CityState">blue1 city</span></p>
+                    <p><span id="blue1RobotName">blue1 robot name</span></p>
+                </div>
+                <div class="col-xs-5">
+                    <p><span id="blue1Organization">blue1 Organization</span></p>
+                    <p><span id="blue1Sponsors">blue1 Sponsors</span></p>
+                </div>
+                <div class="col-xs-2 ranking" id="blue1Rank">
+                    <p>Rank</p>
+                </div>
+            </div>
+            <div class="row blueAlliance">
+                <div class="col-xs-2">
+                    <p><span id="blue2TeamNumber">blue2 Team Number</span></p>
+                    <p><span id="blue2RookieYear">blue2 Rookie</span></p>
+                </div>
+                <div class="col-xs-3">
+                    <p><span id="blue2TeamName" class="teamName">blue2 Team Name</span></p>
+                    <p><span id="blue2CityState">blue2 city</span></p>
+                    <p><span id="blue2RobotName">blue2 robot name</span></p>
+                </div>
+                <div class="col-xs-5">
+                    <p><span id="blue2Organization">blue2 Organization</span></p>
+                    <p><span id="blue2Sponsors">blue2 Sponsors</span></p>
+                </div>
+                <div class="col-xs-2 ranking" id="blue2Rank">
+                    <p>Rank</p>
+                </div>
+            </div>
+            <div class="row blueAlliance">
+                <div class="col-xs-2">
+                    <p><span id="blue3TeamNumber">blue3 Team Number</span></p>
+                    <p><span id="blue3RookieYear">blue3 Rookie</span></p>
+                </div>
+                <div class="col-xs-3">
+                    <p><span id="blue3TeamName" class="teamName">blue3 Team Name</span></p>
+                    <p><span id="blue3CityState">blue3 city</span></p>
+                    <p><span id="blue3RobotName">blue3 robot name</span></p>
+                </div>
+                <div class="col-xs-5">
+                    <p><span id="blue3Organization">blue3 Organization</span></p>
+                    <p><span id="blue3Sponsors">blue3 Sponsors</span></p>
+                </div>
+                <div class="col-xs-2 ranking" id="blue3Rank">
+                    <p>Rank</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="btn-default gatool-button col-xs-4" onClick="getPreviousMatch()">Previous Match</div>
+                <div class="gatool-button col-xs-4" align="center"><span id="matchNameAnnounce">Match Name</span></div>
+                <div class="btn-default gatool-button col-xs-4" align="right" onClick="getNextMatch()">Next Match</div>
             </div>
         </div>
-        <div id="playbyplay" class="tabcontent">
-            <div id="playByPlayBanner" style="display: block">
-                <p><b>No qualification matches have been scheduled for this event.</b></p>
+    </div>
+    <div id="playbyplay" class="tabcontent">
+        <div id="playByPlayBanner" style="display: none">
+            <p><b>No qualification matches have been scheduled for this event.</b></p>
+        </div>
+        <div id="playByPlayDisplay" class="gatool-playbyplay" style="display: block">
+            <div class="row">
+                <div class="col-xs-2 redAlliancePlayByPlay"><span id="red1PlaybyPlayteamNumber" class="playByPlayteamNumber">Red1 Team Number</span></div>
+                <div class="col-xs-4 redAlliancePlayByPlay">
+                    <p><span id="red1PlaybyPlayTeamName">Red1 Team Name</span></p>
+                    <p><span id="red1PlaybyPlayRobotName" class="playByPlayRobotName">Red1 Robot Name</span></p>
+                </div>
+                <div class="col-xs-2 blueAlliancePlayByPlay"><span id="blue1PlaybyPlayteamNumber" class="playByPlayteamNumber">Blue1 Team Number</span></div>
+                <div class="col-xs-4 blueAlliancePlayByPlay">
+                    <p><span id="blue1PlaybyPlayTeamName">Blue1 Team Name</span></p>
+                    <p><span id="blue1PlaybyPlayRobotName" class="playByPlayRobotName">Blue1 Robot Name</span></p>
+                </div>
             </div>
-            <div id="playByPlayDisplay" class="container-fluid gatool-playbyplay" style="display: none">
-    <div class="row">
-        <div class="col-xs-2 redAlliancePlayByPlay"><span id="red1PlaybyPlayteamNumber" class="playByPlayteamNumber">Red1 Team Number</span></div>
-        <div class="col-xs-4 redAlliancePlayByPlay">
-            <p><span id="red1PlaybyPlayTeamName">Red1 Team Name</span></p>
-            <p><span id="red1PlaybyPlayRobotName" class="playByPlayRobotName">Red1 Robot Name</span></p>
+            <div class="row">
+                <div class="col-xs-2 redAlliancePlayByPlay"><span id="red2PlaybyPlayteamNumber" class="playByPlayteamNumber">Red2 Team Number</span></div>
+                <div class="col-xs-4 redAlliancePlayByPlay">
+                    <p><span id="red2PlaybyPlayTeamName">Red2 Team Name</span></p>
+                    <p><span id="red2PlaybyPlayRobotName" class="playByPlayRobotName">Red2 Robot Name</span></p>
+                </div>
+                <div class="col-xs-2 blueAlliancePlayByPlay"><span id="blue2PlaybyPlayteamNumber" class="playByPlayteamNumber">Blue2 Team Number</span></div>
+                <div class="col-xs-4 blueAlliancePlayByPlay">
+                    <p><span id="blue2PlaybyPlayTeamName">Blue2 Team Name</span></p>
+                    <p><span id="blue2PlaybyPlayRobotName" class="playByPlayRobotName">Blue2 Robot Name</span></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-2 redAlliancePlayByPlay"><span id="red3PlaybyPlayteamNumber" class="playByPlayteamNumber">Red3 Team Number</span></div>
+                <div class="col-xs-4 redAlliancePlayByPlay">
+                    <p><span id="red3PlaybyPlayTeamName">Red3 Team Name</span></p>
+                    <p><span id="red3PlaybyPlayRobotName" class="playByPlayRobotName">Red3 Robot Name</span></p>
+                </div>
+                <div class="col-xs-2 blueAlliancePlayByPlay"><span id="blue3PlaybyPlayteamNumber" class="playByPlayteamNumber">Blue3 Team Number</span></div>
+                <div class="col-xs-4 blueAlliancePlayByPlay">
+                    <p><span id="blue3PlaybyPlayTeamName">Blue3 Team Name</span></p>
+                    <p><span id="blue3PlaybyPlayRobotName" class="playByPlayRobotName">Blue3 Robot Name</span></p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="btn-default gatool-button col-xs-4" onClick="getPreviousMatch()">Previous Match</div>
+                <div class="gatool-button col-xs-4" align="center"><span id="matchNamePlayByPlay">Match Name</span></div>
+                <div class="btn-default gatool-button col-xs-4" align="right" onClick="getNextMatch()">Next Match</div>
+            </div>
         </div>
-        <div class="col-xs-2 blueAlliancePlayByPlay"><span id="blue1PlaybyPlayteamNumber" class="playByPlayteamNumber">Blue1 Team Number</span></div>
-        <div class="col-xs-4 blueAlliancePlayByPlay">
-            <p><span id="blue1PlaybyPlayTeamName">Blue1 Team Name</span></p>
-            <p><span id="blue1PlaybyPlayRobotName" class="playByPlayRobotName">Blue1 Robot Name</span></p>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-2 redAlliancePlayByPlay"><span id="red2PlaybyPlayteamNumber" class="playByPlayteamNumber">Red2 Team Number</span></div>
-        <div class="col-xs-4 redAlliancePlayByPlay">
-            <p><span id="red2PlaybyPlayTeamName">Red2 Team Name</span></p>
-            <p><span id="red2PlaybyPlayRobotName" class="playByPlayRobotName">Red2 Robot Name</span></p>
-        </div>
-        <div class="col-xs-2 blueAlliancePlayByPlay"><span id="blue2PlaybyPlayteamNumber" class="playByPlayteamNumber">Blue2 Team Number</span></div>
-        <div class="col-xs-4 blueAlliancePlayByPlay">
-            <p><span id="blue2PlaybyPlayTeamName">Blue2 Team Name</span></p>
-            <p><span id="blue2PlaybyPlayRobotName" class="playByPlayRobotName">Blue2 Robot Name</span></p>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-2 redAlliancePlayByPlay"><span id="red3PlaybyPlayteamNumber" class="playByPlayteamNumber">Red3 Team Number</span></div>
-        <div class="col-xs-4 redAlliancePlayByPlay">
-            <p><span id="red3PlaybyPlayTeamName">Red3 Team Name</span></p>
-            <p><span id="red3PlaybyPlayRobotName" class="playByPlayRobotName">Red3 Robot Name</span></p>
-        </div>
-        <div class="col-xs-2 blueAlliancePlayByPlay"><span id="blue3PlaybyPlayteamNumber" class="playByPlayteamNumber">Blue3 Team Number</span></div>
-        <div class="col-xs-4 blueAlliancePlayByPlay">
-            <p><span id="blue3PlaybyPlayTeamName">Blue3 Team Name</span></p>
-            <p><span id="blue3PlaybyPlayRobotName" class="playByPlayRobotName">Blue3 Robot Name</span></p>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-6 btn-default gatool-button col-lg-4" onClick="getPreviousMatch()">Previous Match</div>
-        <div class="col-xs-6 gatool-button col-lg-4" align="center"><span id="matchNamePlayByPlay">Match Name</span></div>
-        <div class="col-xs-6 btn-default gatool-button col-lg-4" align="right" onClick="getNextMatch()">Next Match</div>
     </div>
 </div>
-
-        </div>
-    </div>
 </div>
 <footer class="gatool-footer footer">
-    <div class="container">
+    <div>
         <p class="text-muted">© 2016 Arthur Lockman & James Lockman</p>
     </div>
 </footer>

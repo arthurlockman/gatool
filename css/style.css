@@ -82,17 +82,17 @@ opacity: 1;
     color: red;
 }
 
-.redAlliance {background-color: #F7B3B4}
-.redAlliancePlayByPlay {height: 200px; border: white; align-content: center;background-color:red;font-size: x-large;color: white}
-.blueAlliance {background-color: #98B4F4}
-.blueAlliancePlayByPlay {height: 200px; border: white; align-content: center;background-color:blue;font-size: x-large;color: white}
-.announceTableView {}
+.redAlliance {border: 1px solid #ccc; background-color: #F7B3B4}
+.redAlliancePlayByPlay {height: 175px; border: 1px solid #ccc; align-content: center;background-color:red;font-size: x-large;color: white}
+.blueAlliance {border: 1px solid #ccc; background-color: #98B4F4}
+.blueAlliancePlayByPlay {height: 175px; border: 1px solid #ccc; align-content: center;background-color:blue;font-size: x-large;color: white}
 .ranking {align-content: center;vertical-align: middle;text-align: center;font-size: xx-large;color: black}
 .teamName {font-size: x-large;color: black}
 .matchNumber {font-size: x-large}
-.gatool-container {height: 100%}
-.popup {width: auto;height: 200px;background-color: #888888}
-.gatool-button {height: 50px;font-size: xx-large}
-.gatool-playbyplay {width: 1000px}
+.gatool-container {height: 700px}
+.popup {width: auto;height: 180px;background-color: #888888}
+.gatool-button {height: 50px;font-size: x-large}
+.gatool-playbyplay {border: 1px solid #ccc;}
+.gatool-announce {border: 1px solid #ccc;}
 .playByPlayRobotName {font-style: italic; color: #13CB00}
 .playByPlayteamNumber {font-size:40px}
