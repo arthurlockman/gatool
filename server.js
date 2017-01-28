@@ -6,9 +6,13 @@ var http = require('http'),
     express = require('express'),
     app = express(),
     router = express.Router(),
-    unirest = require('unirest');
+    unirest = require('unirest'),
+    mysql = require('mysql');
 
 var token = require("./token.json");
+
+var level = require("level");
+var db = level("./database/");
 
 var server = app.listen(8080, function () {
     'use strict';
@@ -116,4 +120,9 @@ app.get('/scripts.js', function (req, res) {
 app.get('/css/style.css', function (req, res) {
     'use strict';
     sendFile(res, 'css/style.css', 'text/css');
+});
+
+app.get('/images/:filename', function (req, res) {
+    'use strict';
+    sendFile(res, './images/'+req.params.filename);
 });

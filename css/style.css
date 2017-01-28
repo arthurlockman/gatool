@@ -3,8 +3,8 @@ html {
     min-height: 100%;
 }
 body {
-    padding-top: 50px;
-    margin-bottom: 60px;
+    padding-top:40px;
+    margin-bottom: 40px;
     font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 /* Style the list */
@@ -92,7 +92,8 @@ opacity: 1;
 .matchNumber {font-size: x-large}
 .gatool-container {height: 700px}
 .popup {width: auto;height: 180px;background-color: #888888}
-.gatool-button {height: 50px;font-size: x-large}
+.gatool-button-row{}
+.gatool-button {font-size: large;height: 50px}
 .gatool-playbyplay {border: 1px solid #ccc;}
 .gatool-announce {border: 1px solid #ccc;background-color: white}
 .playByPlayRobotName {font-style: italic; color: #13CB00}

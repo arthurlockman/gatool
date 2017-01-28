@@ -1,7 +1,7 @@
 {
   "name": "gatool",
   "version": "0.5.0",
-  "description": "TBD",
+  "description": "This site is a set of tools and services to provide FIRST Game Announcers with real-time access to match data.",
   "author": "James Lockman, Arthur Lockman",
   "license": "MIT",
   "scripts": {
@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "express": "^4.14.0",
+    "level": "^1.5.0",
+    "mysql": "^2.5.4",
     "unirest": "^0.5.1"
   }
 }

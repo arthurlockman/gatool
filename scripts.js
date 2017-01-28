@@ -240,13 +240,13 @@ function announceDisplay() {
         $("#" + stationList[ii] + "CityState").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).cityState);
         $("#" + stationList[ii] + "RobotName").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).robotName);
         $("#" + stationList[ii] + "Organization").html("<b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).organization + "</i></b>");
-        $("#" + stationList[ii] + "Sponsors").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).sponsors);
+        $("#" + stationList[ii] + "Sponsors").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).topSponsors);
         $("#" + stationList[ii] + "Rank").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rank);
         rankHighlight(stationList[ii] + "Rank", JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rank);
-        
+
         $('#' + stationList[ii] + 'PlaybyPlayteamNumber').html("<b>" + currentMatchData.Teams[ii].teamNumber + "</b>");
         $('#' + stationList[ii] + 'PlaybyPlayTeamName').html("<b>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).nameShort + "</b>");
-        $('#' + stationList[ii] + 'PlaybyPlayRobotName').html("<b>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).robotName + "</b>");
+        $('#' + stationList[ii] + 'PlaybyPlayRobotName').html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).robotName);
 
     }
 }
@@ -358,33 +358,45 @@ function generateTeamTableRow(teamData) {
     var teamInfo = "";
     var organization = "";
     var sponsors = "";
+    var topSponsors = "";
+    var topSponsorsArray = [];
     var sponsorArray = trimArray(teamData.nameFull.split("/"));
     var organizationArray = trimArray(teamData.nameFull.split("/").pop().split("&"));
     if (!sponsorArray && !organizationArray) {
         organization = "No organization in TIMS";
         sponsors = "No sponsors in TIMS";
+        topSponsorsArray[0] = sponsors;
     }
     if (sponsorArray.length === 1) {
         sponsors = sponsorArray[0];
+        topSponsorsArray[0] = sponsors;
     } else {
         if (organizationArray.length > 1) {
             sponsorArray.pop();
         }
         for (var i = 0; i < sponsorArray.length - 2; i++) {
             sponsors += sponsorArray[i] + ", ";
+            topSponsorsArray[i] = sponsorArray[i];
         }
         sponsors += sponsorArray[sponsorArray.length - 1];
-
+        topSponsorsArray[topSponsorsArray.length] = sponsorArray[sponsorArray.length - 1];
     }
     if (organizationArray.length === 1) {
         organization = organizationArray[0];
     } else {
-        sponsors += ", " + organizationArray.shift();
+        topSponsorsArray[topSponsorsArray.length] = organizationArray.shift();
+        sponsors += ", " + topSponsorsArray[topSponsorsArray.length - 1];
         for (var j = 0; j < organizationArray.length - 2; j++) {
             organization += organizationArray[j] + " & ";
         }
         organization += organizationArray[organizationArray.length - 1];
     }
+    topSponsorsArray = topSponsorsArray.slice(0, 5); //take the top 5 sponsors
+    if (topSponsorsArray.length===1) {
+        topSponsors = topSponsorsArray[0];
+    } else {
+        topSponsors = splitArray(topSponsorsArray);
+    }    
 
     returnData += teamData.teamNumber + '</td><td>';
     returnData += teamData.nameShort + '</td><td>';
@@ -403,6 +415,7 @@ function generateTeamTableRow(teamData) {
         "cityState": teamData.city + ', ' + teamData.stateProv,
         "nameFull": teamData.nameFull,
         "sponsors": sponsors,
+        "topSponsors": topSponsors,
         "organization": organization,
         "rookieYear": teamData.rookieYear,
         "robotName": teamData.robotName
@@ -457,4 +470,26 @@ function rookieYearDisplay(year) {
         default:
             return year + " (" + (currrentYear - year) + "th season)";
     }
+}
+
+function splitArray(array) {
+    "use strict";
+    var result = "";
+    switch (array.length) {
+        case 1:
+            result = array[0];
+            break;
+        case 2:
+            result = array[0] + ", " + array[1];
+            break;
+        case 3:
+            result = array[0] + ", " + array[1]+ ", " + array[2];
+            break;
+        case 4:
+            result = array[0] + ", " + array[1]+ ", " + array[2]+ ", " + array[3];
+            break;
+        case 4:
+            result = array[0] + ", " + array[1]+ ", " + array[2]+ ", " + array[3]+ ", " + array[4];            
+    } 
+return result;
 }
