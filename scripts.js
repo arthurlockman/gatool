@@ -17,10 +17,13 @@ window.onload = function () {
     document.getElementById('eventSelector').onchange = function () {
         handleEventSelection();
     };
-
+    scaleRows();
     document.getElementById('setupTabPicker').click();
 
 };
+
+window.addEventListener("resize",scaleRows);
+
 
 
 function handleEventSelection() {
@@ -102,6 +105,9 @@ function openTab(evt, cityName) {
     // Show the current tab, and add an "active" class to the link that opened the tab
     document.getElementById(cityName).style.display = "block";
     evt.currentTarget.className += " active";
+    
+    //resize the window
+    scaleRows();
 }
 
 function getHybridSchedule() {
@@ -214,6 +220,27 @@ function getPreviousMatch() {
     announceDisplay();
 }
 
+function scaleRows() {
+    "use strict";
+    var height = window.innerHeight;
+    var width = window.innerWidth-30;
+    var col2width = width/6;
+    var col3width = width/4;
+    var col4width = width/3;
+    var col5width = width/12*5;
+    var col6width = width/2;
+    var announceHeight = Math.round((height - $("#navbar").outerHeight() - $("#appTab").outerHeight() - $("#gameButtonsAnnounce").outerHeight() - $("#footer").outerHeight() - $("#announceTableHeader").outerHeight()) / 6 - 2);
+    var playByPlayHeight = Math.round((height - $("#navbar").outerHeight() - $("#appTab").outerHeight() - $("#gameButtonsPlayByPlay").outerHeight() - $("#footer").outerHeight() - $("#announceTableHeader").outerHeight()) / 3 - 4);
+    $(".redAlliancePlayByPlay,.blueAlliancePlayByPlay").css("height", playByPlayHeight+"px");
+    $(".redAlliance,.blueAlliance").css("height", announceHeight+"px");
+    $(".col2").css("width",col2width+"px");
+    $(".col3").css("width",col3width+"px");
+    $(".col4").css("width",col4width+"px");
+    $(".col5").css("width",col5width+"px");
+    $(".col6").css("width",col6width+"px");
+    $("#windowHeight").html("Height: "+height + " px, announceHeight: "+announceHeight + " px, playByPlayHeight: "+playByPlayHeight + " px" );
+}
+
 
 function announceDisplay() {
     "use strict";
@@ -229,14 +256,14 @@ function announceDisplay() {
     getTeamRanks();
     $("#eventName").html("<b>" + JSON.parse(document.getElementById("eventSelector").value).name + "</b>");
     $("#matchNumber").html("<b>" + currentMatchData.matchNumber + "</b>");
-    $("#matchNameAnnounce").html("<b>" + currentMatchData.matchNumber + "</b>");
+    $("#matchNameAnnounce").html("<b>" + currentMatchData.description + "</b>");
     $("#matchName").html("<b>" + currentMatchData.description + "</b>");
     $("#matchNamePlayByPlay").html("<b>" + currentMatchData.description + "</b>");
 
     for (var ii = 0; ii < 6; ii++) {
         $('#' + stationList[ii] + 'TeamNumber').html("<b>" + currentMatchData.Teams[ii].teamNumber + "</b>");
         $('#' + stationList[ii] + 'RookieYear').html(rookieYearDisplay(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rookieYear));
-        $("#" + stationList[ii] + "TeamName").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).nameShort + '<br>');
+        $("#" + stationList[ii] + "TeamName").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).nameShort);
         $("#" + stationList[ii] + "CityState").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).cityState);
         $("#" + stationList[ii] + "RobotName").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).robotName);
         $("#" + stationList[ii] + "Organization").html("<b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).organization + "</i></b>");
@@ -244,8 +271,8 @@ function announceDisplay() {
         $("#" + stationList[ii] + "Rank").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rank);
         rankHighlight(stationList[ii] + "Rank", JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rank);
 
-        $('#' + stationList[ii] + 'PlaybyPlayteamNumber').html("<b>" + currentMatchData.Teams[ii].teamNumber + "</b>");
-        $('#' + stationList[ii] + 'PlaybyPlayTeamName').html("<b>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).nameShort + "</b>");
+        $('#' + stationList[ii] + 'PlaybyPlayteamNumber').html(currentMatchData.Teams[ii].teamNumber);
+        $('#' + stationList[ii] + 'PlaybyPlayTeamName').html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).nameShort);
         $('#' + stationList[ii] + 'PlaybyPlayRobotName').html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).robotName);
 
     }
@@ -262,7 +289,6 @@ function getTeamRanks() {
         var data = JSON.parse(req3.responseText);
         if (data.Rankings.length === 0) {
             $("#rankingDisplay").html('<b>No Rankings available.</b>');
-            //document.getElementById('rankingDisplay').innerHTML = '<b>No Rankings available.</b>';
         } else {
             if (localStorage.currentMatch > JSON.parse(localStorage.qualsList).Schedule.length) {
                 $("#rankingDisplay").html("<b>Seed<b>");
@@ -392,11 +418,11 @@ function generateTeamTableRow(teamData) {
         organization += organizationArray[organizationArray.length - 1];
     }
     topSponsorsArray = topSponsorsArray.slice(0, 5); //take the top 5 sponsors
-    if (topSponsorsArray.length===1) {
+    if (topSponsorsArray.length === 1) {
         topSponsors = topSponsorsArray[0];
     } else {
         topSponsors = splitArray(topSponsorsArray);
-    }    
+    }
 
     returnData += teamData.teamNumber + '</td><td>';
     returnData += teamData.nameShort + '</td><td>';
@@ -483,13 +509,13 @@ function splitArray(array) {
             result = array[0] + ", " + array[1];
             break;
         case 3:
-            result = array[0] + ", " + array[1]+ ", " + array[2];
+            result = array[0] + ", " + array[1] + ", " + array[2];
             break;
         case 4:
-            result = array[0] + ", " + array[1]+ ", " + array[2]+ ", " + array[3];
+            result = array[0] + ", " + array[1] + ", " + array[2] + ", " + array[3];
             break;
         case 4:
-            result = array[0] + ", " + array[1]+ ", " + array[2]+ ", " + array[3]+ ", " + array[4];            
-    } 
-return result;
+            result = array[0] + ", " + array[1] + ", " + array[2] + ", " + array[3] + ", " + array[4];
+    }
+    return result;
 }
