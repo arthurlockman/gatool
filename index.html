@@ -85,122 +85,128 @@
                 <p><b>No qualification matches have been scheduled for this event.</b></p>
             </div>
             <div id="announceDisplay">
-               <table>
-                <tr id="announceTableHeader" class="gatool-announce">
-                    <td class="col2"><span id="matchNumber">Match Number</span></td>
-                    <td class="col3"><span id="matchName">Match Names</span></td>
-                    <td class="col5"><span><b>Organization and Sponsors</b></span></td>
-                    <td class="col2" align="center"><span id="rankingDisplay">Ranking</span></td>
-                </tr>
-                <tr id="announceRow1" class="redAlliance">
-                    <td class="col2"><span id="red1TeamNumber" class="announceTeamNumber">Red1 Team Number</span><br>
-                        <span id="red1RookieYear">Red1 Rookie</span></td>
-                    <td class="col3"><span id="red1TeamName" class="teamName">red1 Team Name</span><br>
-                        <span id="red1CityState">red1 city</span><br>
-                        <span id="red1RobotName" class="robotName">red1 robot name</span></td>
-                    <td class="col5"><span id="red1Organization">red1 Organization</span><br>
-                        <span id="red1Sponsors">Red1 Sponsors</span></td>
-                    <td class="col2 ranking" id="red1Rank">No Rank Yet</td>
-                </tr>
-                <tr id="announceRow2" class="redAlliance">
-                    <td class="col2"><span id="red2TeamNumber" class="announceTeamNumber">red2 Team Number</span><br>
-                        <span id="red2RookieYear">red2 Rookie</span></td>
-                    <td class="col3"><span id="red2TeamName" class="teamName">red2 Team Name</span><br>
-                        <span id="red2CityState">red2 city</span><br>
-                        <span id="red2RobotName" class="robotName">red2 robot name</span></td>
-                    <td class="col5"><span id="red2Organization">red2 Organization</span><br>
-                        <span id="red2Sponsors">red2 Sponsors</span></td>
-                    <td class="col2 ranking" id="red2Rank">No Rank Yet</td>
-                </tr>
-                <tr id="announceRow3" class="redAlliance">
-                    <td class="col2"><span id="red3TeamNumber" class="announceTeamNumber">red3 Team Number</span><br>
-                        <span id="red3RookieYear">red3 Rookie</span></td>
-                    <td class="col3"><span id="red3TeamName" class="teamName">red3 Team Name</span><br>
-                        <span id="red3CityState">red3 city</span><br>
-                        <span id="red3RobotName" class="robotName">red3 robot name</span></td>
-                    <td class="col5"><span id="red3Organization">red3 Organization</span><br>
-                        <span id="red3Sponsors">red3 Sponsors</span></td>
-                    <td class="col2 ranking" id="red3Rank">No Rank Yet</td>
-                </tr>
-                <tr id="announceRow4" class="blueAlliance">
-                    <td class="col2"><span id="blue1TeamNumber" class="announceTeamNumber">blue1 Team Number</span><br>
-                        <span id="blue1RookieYear">blue1 Rookie</span></td>
-                    <td class="col3"><span id="blue1TeamName" class="teamName">blue1 Team Name</span><br>
-                        <span id="blue1CityState">blue1 city</span><br>
-                        <span id="blue1RobotName" class="robotName">blue1 robot name</span></td>
-                    <td class="col5"><span id="blue1Organization">blue1 Organization</span><br>
-                        <span id="blue1Sponsors">blue1 Sponsors</span></td>
-                    <td class="col2 ranking" id="blue1Rank">No Rank Yet</td>
-                </tr>
-                <tr id="announceRow5" class="blueAlliance">
-                    <td class="col2"><span id="blue2TeamNumber" class="announceTeamNumber">blue2 Team Number</span><br>
-                        <span id="blue2RookieYear">blue2 Rookie</span></td>
-                    <td class="col3"><span id="blue2TeamName" class="teamName">blue2 Team Name</span><br>
-                        <span id="blue2CityState">blue2 city</span><br>
-                        <span id="blue2RobotName" class="robotName">blue2 robot name</span></td>
-                    <td class="col5"><span id="blue2Organization">blue2 Organization</span><br>
-                        <span id="blue2Sponsors">blue2 Sponsors</span></td>
-                    <td class="col2 ranking" id="blue2Rank">No Rank Yet</td>
-                </tr>
-                <tr id="announceRow6" class="blueAlliance">
-                    <td class="col2"><span id="blue3TeamNumber" class="announceTeamNumber">blue3 Team Number</span><br>
-                        <span id="blue3RookieYear">blue3 Rookie</span></td>
-                    <td class="col3"><span id="blue3TeamName" class="teamName">blue3 Team Name</span><br>
-                        <span id="blue3CityState">blue3 city</span><br>
-                        <span id="blue3RobotName" class="robotName">blue3 robot name</span></td>
-                    <td class="col5"><span id="blue3Organization">blue3 Organization</span><br>
-                        <span id="blue3Sponsors">blue3 Sponsors</span></td>
-                    <td class="col2 ranking" id="blue3Rank">No Rank Yet</td>
-                </tr>
-            </table>
-            <table>
-                <tr id="gameButtonsAnnounce" class="row">
-                    <td class="btn-default gatool-button col4" align="center" onClick="getPreviousMatch()">Previous Match</td>
-                    <td class="gatool-button col4" align="center"><span id="matchNameAnnounce">Match Name</span></td>
-                    <td class="btn-default gatool-button col4" align="center" onClick="getNextMatch()">Next Match</td>
-                </tr>
-            </table>
+                <table>
+                    <tr id="announceTableHeader" class="gatool-announce">
+                        <td class="col2"><span id="matchNumber">Match Number</span></td>
+                        <td class="col3"><span id="matchName">Match Names</span></td>
+                        <td class="col5"><span><strong>Organization, Sponsors and prior awards</strong></span></td>
+                        <td class="col2" align="center"><span id="rankingDisplay">Ranking</span></td>
+                    </tr>
+                    <tr id="announceRow1" class="redAlliance">
+                        <td class="col2"><span id="red1TeamNumber" class="announceTeamNumber">Red1 Team Number</span><br>
+                            <span id="red1RookieYear">Red1 Rookie</span></td>
+                        <td class="col3"><span id="red1TeamName" class="teamName">red1 Team Name</span><br>
+                            <span id="red1CityState">red1 city</span><br>
+                            <span id="red1RobotName" class="robotName">red1 robot name</span></td>
+                        <td class="col5"><span id="red1Organization">red1 Organization</span><br>
+                            <span id="red1Sponsors">Red1 Sponsors</span><br>
+                            <span id="red1Awards" class="awards">Red1 Awards</span></td>
+                        <td class="col2 ranking" id="red1Rank">No Rank Yet</td>
+                    </tr>
+                    <tr id="announceRow2" class="redAlliance">
+                        <td class="col2"><span id="red2TeamNumber" class="announceTeamNumber">red2 Team Number</span><br>
+                            <span id="red2RookieYear">red2 Rookie</span></td>
+                        <td class="col3"><span id="red2TeamName" class="teamName">red2 Team Name</span><br>
+                            <span id="red2CityState">red2 city</span><br>
+                            <span id="red2RobotName" class="robotName">red2 robot name</span></td>
+                        <td class="col5"><span id="red2Organization">red2 Organization</span><br>
+                            <span id="red2Sponsors">red2 Sponsors</span><br>
+                            <span id="red2Awards" class="awards">Red2 Awards</span></td>
+                        <td class="col2 ranking" id="red2Rank">No Rank Yet</td>
+                    </tr>
+                    <tr id="announceRow3" class="redAlliance">
+                        <td class="col2"><span id="red3TeamNumber" class="announceTeamNumber">red3 Team Number</span><br>
+                            <span id="red3RookieYear">red3 Rookie</span></td>
+                        <td class="col3"><span id="red3TeamName" class="teamName">red3 Team Name</span><br>
+                            <span id="red3CityState">red3 city</span><br>
+                            <span id="red3RobotName" class="robotName">red3 robot name</span></td>
+                        <td class="col5"><span id="red3Organization">red3 Organization</span><br>
+                            <span id="red3Sponsors">red3 Sponsors</span><br>
+                            <span id="red3Awards" class="awards">Red3 Awards</span></td>
+                        <td class="col2 ranking" id="red3Rank">No Rank Yet</td>
+                    </tr>
+                    <tr id="announceRow4" class="blueAlliance">
+                        <td class="col2"><span id="blue1TeamNumber" class="announceTeamNumber">blue1 Team Number</span><br>
+                            <span id="blue1RookieYear">blue1 Rookie</span></td>
+                        <td class="col3"><span id="blue1TeamName" class="teamName">blue1 Team Name</span><br>
+                            <span id="blue1CityState">blue1 city</span><br>
+                            <span id="blue1RobotName" class="robotName">blue1 robot name</span></td>
+                        <td class="col5"><span id="blue1Organization">blue1 Organization</span><br>
+                            <span id="blue1Sponsors">blue1 Sponsors</span><br>
+                            <span id="blue1Awards" class="awards">blue1 Awards</span></td>
+                        <td class="col2 ranking" id="blue1Rank">No Rank Yet</td>
+                    </tr>
+                    <tr id="announceRow5" class="blueAlliance">
+                        <td class="col2"><span id="blue2TeamNumber" class="announceTeamNumber">blue2 Team Number</span><br>
+                            <span id="blue2RookieYear">blue2 Rookie</span></td>
+                        <td class="col3"><span id="blue2TeamName" class="teamName">blue2 Team Name</span><br>
+                            <span id="blue2CityState">blue2 city</span><br>
+                            <span id="blue2RobotName" class="robotName">blue2 robot name</span></td>
+                        <td class="col5"><span id="blue2Organization">blue2 Organization</span><br>
+                            <span id="blue2Sponsors">blue2 Sponsors</span><br>
+                            <span id="blue2Awards" class="awards">blue2 Awards</span></td>
+                        <td class="col2 ranking" id="blue2Rank">No Rank Yet</td>
+                    </tr>
+                    <tr id="announceRow6" class="blueAlliance">
+                        <td class="col2"><span id="blue3TeamNumber" class="announceTeamNumber">blue3 Team Number</span><br>
+                            <span id="blue3RookieYear">blue3 Rookie</span></td>
+                        <td class="col3"><span id="blue3TeamName" class="teamName">blue3 Team Name</span><br>
+                            <span id="blue3CityState">blue3 city</span><br>
+                            <span id="blue3RobotName" class="robotName">blue3 robot name</span></td>
+                        <td class="col5"><span id="blue3Organization">blue3 Organization</span><br>
+                            <span id="blue3Sponsors">blue3 Sponsors</span><br>
+                            <span id="blue3Awards" class="awards">blue3 Awards</span></td>
+                        <td class="col2 ranking" id="blue3Rank">No Rank Yet</td>
+                    </tr>
+                </table>
+                <table>
+                    <tr id="gameButtonsAnnounce" class="row">
+                        <td class="btn-default gatool-button col4" align="center" onClick="getPreviousMatch()">Previous Match</td>
+                        <td class="gatool-button col4" align="center"><span id="matchNameAnnounce">Match Name</span></td>
+                        <td class="btn-default gatool-button col4" align="center" onClick="getNextMatch()">Next Match</td>
+                    </tr>
+                </table>
+            </div>
         </div>
-    </div>
         <div id="playbyplay" class="tabcontent">
             <div id="playByPlayBanner" style="display: none">
                 <p><b>No qualification matches have been scheduled for this event.</b></p>
             </div>
             <div id="playByPlayDisplay" class="gatool-playbyplay" style="display: block">
-    <table>
-        <tr id="playByPlayRow1" class="row">
-            <td class="col2 blueAlliancePlayByPlay" align="center"><span id="blue1PlaybyPlayteamNumber" class="playByPlayteamNumber">blue1 Team Number</span></td>
-            <td class="col4 blueAlliancePlayByPlay"><span id="blue1PlaybyPlayTeamName">blue1 Team Name</span><br>
-                <span id="blue1PlaybyPlayRobotName" class="playByPlayRobotName">blue1 Robot Name</span></td>
-            <td class="col2 redAlliancePlayByPlay" align="center"><span id="red1PlaybyPlayteamNumber" class="playByPlayteamNumber">red1 Team Number</span></td>
-            <td class="col4 redAlliancePlayByPlay"><p><span id="red1PlaybyPlayTeamName">red1 Team Name</span></p>
-                <p><span id="red1PlaybyPlayRobotName" class="playByPlayRobotName">red1 Robot Name</span></p></td>
-        </tr>
-        <tr id="playByPlayRow2" class="row">
-            <td class="col2 blueAlliancePlayByPlay" align="center"><span id="blue2PlaybyPlayteamNumber" class="playByPlayteamNumber">blue2 Team Number</span></td>
-            <td class="col4 blueAlliancePlayByPlay"><span id="blue2PlaybyPlayTeamName">blue2 Team Name</span><br>
-                <span id="blue2PlaybyPlayRobotName" class="playByPlayRobotName">blue2 Robot Name</span></td>
-            <td class="col2 redAlliancePlayByPlay" align="center"><span id="red2PlaybyPlayteamNumber" class="playByPlayteamNumber">red2 Team Number</span></td>
-            <td class="col4 redAlliancePlayByPlay"><span id="red2PlaybyPlayTeamName">red2 Team Name</span><br>
-                <span id="red2PlaybyPlayRobotName" class="playByPlayRobotName">red2 Robot Name</span></td>
-        </tr>
-        <tr id="playByPlayRow3" class="row">
-            <td class="col2 blueAlliancePlayByPlay" align="center"><span id="blue3PlaybyPlayteamNumber" class="playByPlayteamNumber">blue3 Team Number</span></td>
-            <td class="col4 blueAlliancePlayByPlay"><span id="blue3PlaybyPlayTeamName">blue3 Team Name</span><br>
-                <span id="blue3PlaybyPlayRobotName" class="playByPlayRobotName">blue3 Robot Name</span></td>
-            <td class="col2 redAlliancePlayByPlay" align="center"><span id="red3PlaybyPlayteamNumber" class="playByPlayteamNumber">red3 Team Number</span></td>
-            <td class="col4 redAlliancePlayByPlay"><span id="red3PlaybyPlayTeamName">red3 Team Name</span><br>
-                <span id="red3PlaybyPlayRobotName" class="playByPlayRobotName">red3 Robot Name</span></td>
-        </tr>
-    </table>
-    <table>
-        <tr id="gameButtonsPlayByPlay" class="row gatool-button-row">
-            <td class="btn-default gatool-button col4" align="center" onClick="getPreviousMatch()">Previous Match</td>
-            <td class="gatool-button col4" align="center"><span id="matchNamePlayByPlay">Match Name</span></td>
-            <td class="btn-default gatool-button col4" align="center" onClick="getNextMatch()">Next Match</td>
-        </tr>
-    </table>
-</div>
+                <table>
+                    <tr id="playByPlayRow1" class="row">
+                        <td class="col2 blueAlliancePlayByPlay" align="center"><span id="blue1PlaybyPlayteamNumber" class="playByPlayteamNumber">blue1 Team Number</span></td>
+                        <td class="col4 blueAlliancePlayByPlay"><span id="blue1PlaybyPlayTeamName">blue1 Team Name</span><br>
+                            <span id="blue1PlaybyPlayRobotName" class="playByPlayRobotName">blue1 Robot Name</span></td>
+                        <td class="col2 redAlliancePlayByPlay" align="center"><span id="red1PlaybyPlayteamNumber" class="playByPlayteamNumber">red1 Team Number</span></td>
+                        <td class="col4 redAlliancePlayByPlay"><p><span id="red1PlaybyPlayTeamName">red1 Team Name</span></p>
+                            <p><span id="red1PlaybyPlayRobotName" class="playByPlayRobotName">red1 Robot Name</span></p></td>
+                    </tr>
+                    <tr id="playByPlayRow2" class="row">
+                        <td class="col2 blueAlliancePlayByPlay" align="center"><span id="blue2PlaybyPlayteamNumber" class="playByPlayteamNumber">blue2 Team Number</span></td>
+                        <td class="col4 blueAlliancePlayByPlay"><span id="blue2PlaybyPlayTeamName">blue2 Team Name</span><br>
+                            <span id="blue2PlaybyPlayRobotName" class="playByPlayRobotName">blue2 Robot Name</span></td>
+                        <td class="col2 redAlliancePlayByPlay" align="center"><span id="red2PlaybyPlayteamNumber" class="playByPlayteamNumber">red2 Team Number</span></td>
+                        <td class="col4 redAlliancePlayByPlay"><span id="red2PlaybyPlayTeamName">red2 Team Name</span><br>
+                            <span id="red2PlaybyPlayRobotName" class="playByPlayRobotName">red2 Robot Name</span></td>
+                    </tr>
+                    <tr id="playByPlayRow3" class="row">
+                        <td class="col2 blueAlliancePlayByPlay" align="center"><span id="blue3PlaybyPlayteamNumber" class="playByPlayteamNumber">blue3 Team Number</span></td>
+                        <td class="col4 blueAlliancePlayByPlay"><span id="blue3PlaybyPlayTeamName">blue3 Team Name</span><br>
+                            <span id="blue3PlaybyPlayRobotName" class="playByPlayRobotName">blue3 Robot Name</span></td>
+                        <td class="col2 redAlliancePlayByPlay" align="center"><span id="red3PlaybyPlayteamNumber" class="playByPlayteamNumber">red3 Team Number</span></td>
+                        <td class="col4 redAlliancePlayByPlay"><span id="red3PlaybyPlayTeamName">red3 Team Name</span><br>
+                            <span id="red3PlaybyPlayRobotName" class="playByPlayRobotName">red3 Robot Name</span></td>
+                    </tr>
+                </table>
+                <table>
+                    <tr id="gameButtonsPlayByPlay" class="row gatool-button-row">
+                        <td class="btn-default gatool-button col4" align="center" onClick="getPreviousMatch()">Previous Match</td>
+                        <td class="gatool-button col4" align="center"><span id="matchNamePlayByPlay">Match Name</span></td>
+                        <td class="btn-default gatool-button col4" align="center" onClick="getNextMatch()">Next Match</td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 </div>

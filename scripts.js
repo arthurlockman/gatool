@@ -22,7 +22,7 @@ window.onload = function () {
 
 };
 
-window.addEventListener("resize",scaleRows);
+window.addEventListener("resize", scaleRows);
 
 
 
@@ -57,12 +57,17 @@ function loadEventsList() {
     req.addEventListener('load', function () {
         var tmp = JSON.parse(req.responseText).Events;
         var options = [];
+        var events = [];
         for (var i = 0; i < tmp.length; i++) {
             var _option = {
                 text: tmp[i].name,
                 value: tmp[i]
             };
+            var _event = {
+                [tmp[i].code]: tmp[i].name
+            };
             options.push(_option);
+            events.push(_event);
         }
         options.sort(function (a, b) {
             if (a.text < b.text) {
@@ -80,6 +85,7 @@ function loadEventsList() {
                 .attr('value', JSON.stringify(option.value)).text(option.text));
         });
         sel.selectpicker('refresh');
+        localStorage.events = JSON.stringify(events);
         handleEventSelection();
     });
     req.send();
@@ -105,7 +111,7 @@ function openTab(evt, cityName) {
     // Show the current tab, and add an "active" class to the link that opened the tab
     document.getElementById(cityName).style.display = "block";
     evt.currentTarget.className += " active";
-    
+
     //resize the window
     scaleRows();
 }
@@ -223,22 +229,22 @@ function getPreviousMatch() {
 function scaleRows() {
     "use strict";
     var height = window.innerHeight;
-    var width = window.innerWidth-30;
-    var col2width = width/6;
-    var col3width = width/4;
-    var col4width = width/3;
-    var col5width = width/12*5;
-    var col6width = width/2;
+    var width = window.innerWidth - 30;
+    var col2width = width / 6;
+    var col3width = width / 4;
+    var col4width = width / 3;
+    var col5width = width / 12 * 5;
+    var col6width = width / 2;
     var announceHeight = Math.round((height - $("#navbar").outerHeight() - $("#appTab").outerHeight() - $("#gameButtonsAnnounce").outerHeight() - $("#footer").outerHeight() - $("#announceTableHeader").outerHeight()) / 6 - 2);
     var playByPlayHeight = Math.round((height - $("#navbar").outerHeight() - $("#appTab").outerHeight() - $("#gameButtonsPlayByPlay").outerHeight() - $("#footer").outerHeight() - $("#announceTableHeader").outerHeight()) / 3 - 4);
-    $(".redAlliancePlayByPlay,.blueAlliancePlayByPlay").css("height", playByPlayHeight+"px");
-    $(".redAlliance,.blueAlliance").css("height", announceHeight+"px");
-    $(".col2").css("width",col2width+"px");
-    $(".col3").css("width",col3width+"px");
-    $(".col4").css("width",col4width+"px");
-    $(".col5").css("width",col5width+"px");
-    $(".col6").css("width",col6width+"px");
-    $("#windowHeight").html("Height: "+height + " px, announceHeight: "+announceHeight + " px, playByPlayHeight: "+playByPlayHeight + " px" );
+    $(".redAlliancePlayByPlay,.blueAlliancePlayByPlay").css("height", playByPlayHeight + "px");
+    $(".redAlliance,.blueAlliance").css("height", announceHeight + "px");
+    $(".col2").css("width", col2width + "px");
+    $(".col3").css("width", col3width + "px");
+    $(".col4").css("width", col4width + "px");
+    $(".col5").css("width", col5width + "px");
+    $(".col6").css("width", col6width + "px");
+    $("#windowHeight").html("Height: " + height + " px, announceHeight: " + announceHeight + " px, playByPlayHeight: " + playByPlayHeight + " px");
 }
 
 
@@ -261,19 +267,21 @@ function announceDisplay() {
     $("#matchNamePlayByPlay").html("<b>" + currentMatchData.description + "</b>");
 
     for (var ii = 0; ii < 6; ii++) {
+        var teamData = JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]);
         $('#' + stationList[ii] + 'TeamNumber').html("<b>" + currentMatchData.Teams[ii].teamNumber + "</b>");
-        $('#' + stationList[ii] + 'RookieYear').html(rookieYearDisplay(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rookieYear));
-        $("#" + stationList[ii] + "TeamName").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).nameShort);
-        $("#" + stationList[ii] + "CityState").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).cityState);
-        $("#" + stationList[ii] + "RobotName").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).robotName);
-        $("#" + stationList[ii] + "Organization").html("<b><i>" + JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).organization + "</i></b>");
-        $("#" + stationList[ii] + "Sponsors").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).topSponsors);
-        $("#" + stationList[ii] + "Rank").html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rank);
-        rankHighlight(stationList[ii] + "Rank", JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).rank);
+        $('#' + stationList[ii] + 'RookieYear').html(rookieYearDisplay(teamData.rookieYear));
+        $("#" + stationList[ii] + "TeamName").html(teamData.nameShort);
+        $("#" + stationList[ii] + "CityState").html(teamData.cityState);
+        $("#" + stationList[ii] + "RobotName").html(teamData.robotName);
+        $("#" + stationList[ii] + "Organization").html("<b><i>" + teamData.organization + "</i></b>");
+        $("#" + stationList[ii] + "Sponsors").html(teamData.topSponsors);
+        $("#" + stationList[ii] + "Rank").html(teamData.rank);
+        $("#" + stationList[ii] + "Awards").html(teamData.awards);
+        rankHighlight(stationList[ii] + "Rank", teamData.rank);
 
         $('#' + stationList[ii] + 'PlaybyPlayteamNumber').html(currentMatchData.Teams[ii].teamNumber);
-        $('#' + stationList[ii] + 'PlaybyPlayTeamName').html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).nameShort);
-        $('#' + stationList[ii] + 'PlaybyPlayRobotName').html(JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]).robotName);
+        $('#' + stationList[ii] + 'PlaybyPlayTeamName').html(teamData.nameShort);
+        $('#' + stationList[ii] + 'PlaybyPlayRobotName').html(teamData.robotName);
 
     }
 }
@@ -318,10 +326,52 @@ function getTeamRanks() {
 
     });
     req3.send();
-
-
 }
 
+function getTeamAwards(teamNumber, year) {
+    "use strict";
+    var eventCodes = JSON.parse(localStorage.events);
+    var awards = "";
+    var year1 = year - 1;
+    var teamData = JSON.parse(localStorage["teamData"+teamNumber]);
+
+    var req = new XMLHttpRequest();
+    req.open('GET', '/api/' + year + '/awards/' + teamNumber + "/");
+    req.addEventListener('load', function () {
+        if (req.responseText.substr(0, 5) !== '"Team') {
+            var data = JSON.parse(req.responseText);
+            if (data.Awards.length > 0) {
+
+                for (var i = 0; i < data.Awards.length; i++) {
+                    awards += year+" "+data.Awards[i].eventCode + ": " + data.Awards[i].name + " | ";
+                }
+            }
+        }
+        req1.send();
+    });
+
+    var req1 = new XMLHttpRequest();
+    req1.open('GET', '/api/' + year1 + '/awards/' + teamNumber + "/");
+    req1.addEventListener('load', function () {
+        if (req1.responseText.substr(0, 5) !== '"Team') {
+            var data = JSON.parse(req1.responseText);
+            if (data.Awards.length > 0) {
+                for (var i = 0; i < data.Awards.length; i++) {
+                    awards += year1+" "+data.Awards[i].eventCode + ": " + data.Awards[i].name + " | ";
+                }
+            }
+        }
+        if (awards.length > 3) {
+            awards = awards.substr(0,awards.length-3);
+        }
+        teamData.awards = awards;
+        console.log(teamNumber + ":" + awards);
+        console.log(JSON.stringify(teamData));
+        localStorage["teamData"+teamNumber] = JSON.stringify(teamData);
+    });
+
+    req.send();
+}
 
 // UTILITY FUNCTIONS
 function syntaxHighlight(json) {
@@ -379,6 +429,7 @@ function getTeamForStation(teamList, station) {
 
 function generateTeamTableRow(teamData) {
     "use strict";
+    var year = document.getElementById('yearPicker').options[document.getElementById('yearPicker').selectedIndex].value;
     var robotName = "";
     var returnData = '<tr><td>';
     var teamInfo = "";
@@ -447,6 +498,8 @@ function generateTeamTableRow(teamData) {
         "robotName": teamData.robotName
     };
     localStorage['teamData' + teamData.teamNumber] = JSON.stringify(teamInfo);
+    getTeamAwards(teamData.teamNumber, year);
+    
     return returnData + '</tr>';
 }
 

@@ -7,11 +7,9 @@ body {
     margin-bottom: 40px;
     font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
-
 th, td {
     padding: 10px;
 }
-
 /* Style the list */
 ul.tab {
     list-style-type: none;
@@ -149,16 +147,18 @@ opacity: 1;
 }
 .robotName {
     font-style: italic;
-        font-weight: bold;
+    font-weight: bold;
     color: #FF4000
 }
-
 .playByPlayRobotName {
     font-style: italic;
     color: #13CB00
 }
 .playByPlayteamNumber {
     font-size: 40px
+}
+.awards {
+    font-style: italic
 }
 .cell {
     display: inline
