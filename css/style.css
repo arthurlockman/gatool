@@ -158,7 +158,21 @@ opacity: 1;
     font-size: 40px
 }
 .awards {
-    font-style: italic
+    font-style: italic;
+    font-weight: 900
+}
+.playoffAlert {
+    font-style: italic;
+    font-weight: bolder;
+    color: #FF0000;
+    font-size: 20px
+}
+.announceOrganization {
+    font-size: 20px;
+    font-weight: bold
+}
+.loadingEvent {
+    color: red
 }
 .cell {
     display: inline

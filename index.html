@@ -62,6 +62,11 @@
                 <p> <b>Event Code:</b> <span id="eventCodeContainer">no event selected</span> </p>
                 <p> <b>Event Location:</b> <span id="eventLocationContainer">no event selected</span> </p>
                 <p> <b>Event Dates:</b> <span id="eventDateContainer">no event selected</span> </p>
+                <p> <b>Last Event List update:</b> <span id="eventUpdateContainer">no event selected</span> </p>
+                <p> <b>Last Team Info update:</b> <span id="teamUpdateContainer">no event selected</span> </p>
+                <p> <b>Last Ranking update:</b> <span id="rankUpdateContainer">no event selected</span> </p>
+                <p> <b>Last Schedule update:</b> <span id="scheduleUpdateContainer">no event selected</span></p>
+                <p> <span id="playoffScheduleAlert" class="playoffAlert" onClick="getHybridSchedule()">Tap here to refresh Playoff schedule, when available.</span></p>
             </div>
         </div>
         <div id="schedule" class="tabcontent">
@@ -98,7 +103,7 @@
                         <td class="col3"><span id="red1TeamName" class="teamName">red1 Team Name</span><br>
                             <span id="red1CityState">red1 city</span><br>
                             <span id="red1RobotName" class="robotName">red1 robot name</span></td>
-                        <td class="col5"><span id="red1Organization">red1 Organization</span><br>
+                        <td class="col5"><span id="red1Organization" class="announceOrganization">red1 Organization</span><br>
                             <span id="red1Sponsors">Red1 Sponsors</span><br>
                             <span id="red1Awards" class="awards">Red1 Awards</span></td>
                         <td class="col2 ranking" id="red1Rank">No Rank Yet</td>
@@ -109,7 +114,7 @@
                         <td class="col3"><span id="red2TeamName" class="teamName">red2 Team Name</span><br>
                             <span id="red2CityState">red2 city</span><br>
                             <span id="red2RobotName" class="robotName">red2 robot name</span></td>
-                        <td class="col5"><span id="red2Organization">red2 Organization</span><br>
+                        <td class="col5"><span class="announceOrganization" id="red2Organization">red2 Organization</span><br>
                             <span id="red2Sponsors">red2 Sponsors</span><br>
                             <span id="red2Awards" class="awards">Red2 Awards</span></td>
                         <td class="col2 ranking" id="red2Rank">No Rank Yet</td>
@@ -120,7 +125,7 @@
                         <td class="col3"><span id="red3TeamName" class="teamName">red3 Team Name</span><br>
                             <span id="red3CityState">red3 city</span><br>
                             <span id="red3RobotName" class="robotName">red3 robot name</span></td>
-                        <td class="col5"><span id="red3Organization">red3 Organization</span><br>
+                        <td class="col5"><span class="announceOrganization" id="red3Organization">red3 Organization</span><br>
                             <span id="red3Sponsors">red3 Sponsors</span><br>
                             <span id="red3Awards" class="awards">Red3 Awards</span></td>
                         <td class="col2 ranking" id="red3Rank">No Rank Yet</td>
@@ -131,7 +136,7 @@
                         <td class="col3"><span id="blue1TeamName" class="teamName">blue1 Team Name</span><br>
                             <span id="blue1CityState">blue1 city</span><br>
                             <span id="blue1RobotName" class="robotName">blue1 robot name</span></td>
-                        <td class="col5"><span id="blue1Organization">blue1 Organization</span><br>
+                        <td class="col5"><span class="announceOrganization" id="blue1Organization">blue1 Organization</span><br>
                             <span id="blue1Sponsors">blue1 Sponsors</span><br>
                             <span id="blue1Awards" class="awards">blue1 Awards</span></td>
                         <td class="col2 ranking" id="blue1Rank">No Rank Yet</td>
@@ -142,7 +147,7 @@
                         <td class="col3"><span id="blue2TeamName" class="teamName">blue2 Team Name</span><br>
                             <span id="blue2CityState">blue2 city</span><br>
                             <span id="blue2RobotName" class="robotName">blue2 robot name</span></td>
-                        <td class="col5"><span id="blue2Organization">blue2 Organization</span><br>
+                        <td class="col5"><span class="announceOrganization" id="blue2Organization">blue2 Organization</span><br>
                             <span id="blue2Sponsors">blue2 Sponsors</span><br>
                             <span id="blue2Awards" class="awards">blue2 Awards</span></td>
                         <td class="col2 ranking" id="blue2Rank">No Rank Yet</td>
@@ -153,7 +158,7 @@
                         <td class="col3"><span id="blue3TeamName" class="teamName">blue3 Team Name</span><br>
                             <span id="blue3CityState">blue3 city</span><br>
                             <span id="blue3RobotName" class="robotName">blue3 robot name</span></td>
-                        <td class="col5"><span id="blue3Organization">blue3 Organization</span><br>
+                        <td class="col5"><span class="announceOrganization" id="blue3Organization">blue3 Organization</span><br>
                             <span id="blue3Sponsors">blue3 Sponsors</span><br>
                             <span id="blue3Awards" class="awards">blue3 Awards</span></td>
                         <td class="col2 ranking" id="blue3Rank">No Rank Yet</td>
@@ -173,7 +178,7 @@
                 <p><b>No qualification matches have been scheduled for this event.</b></p>
             </div>
             <div id="playByPlayDisplay" class="gatool-playbyplay" style="display: block">
-                <table>
+                <table id="playByPlayTable">
                     <tr id="playByPlayRow1" class="row">
                         <td class="col2 blueAlliancePlayByPlay" align="center"><span id="blue1PlaybyPlayteamNumber" class="playByPlayteamNumber">blue1 Team Number</span></td>
                         <td class="col4 blueAlliancePlayByPlay"><span id="blue1PlaybyPlayTeamName">blue1 Team Name</span><br>
@@ -212,7 +217,7 @@
 </div>
 <footer id="footer" class="gatool-footer footer">
     <div>
-        <p class="text-muted">© 2016 Arthur Lockman & James Lockman <span id="windowHeight">0px</span></p>
+        <p class="text-muted">© 2016 Arthur Lockman & James Lockman</p>
     </div>
 </footer>
 </body>

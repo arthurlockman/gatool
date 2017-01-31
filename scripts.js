@@ -44,13 +44,14 @@ function handleEventSelection() {
     document.getElementById('announceDisplay').style.display = 'none';
     document.getElementById('playByPlayBanner').style.display = 'block';
     document.getElementById('playByPlayDisplay').style.display = 'none';
-
+    $("#eventName").html('<span class="loadingEvent"><b>Loading event...</b></span>');
     getHybridSchedule();
     getTeamList();
 }
 
 function loadEventsList() {
     "use strict";
+    $("#eventUpdateContainer").html("Loading event data...");
     var e = document.getElementById('yearPicker');
     var req = new XMLHttpRequest();
     req.open('GET', '/api/' + e.options[e.selectedIndex].value + '/events');
@@ -87,6 +88,7 @@ function loadEventsList() {
         sel.selectpicker('refresh');
         localStorage.events = JSON.stringify(events);
         handleEventSelection();
+        $("#eventUpdateContainer").html(Date());
     });
     req.send();
 }
@@ -118,6 +120,7 @@ function openTab(evt, cityName) {
 
 function getHybridSchedule() {
     "use strict";
+    $("#scheduleUpdateContainer").html("Loading schedule data...");
     var matchSchedule = "";
     var year = document.getElementById('yearPicker');
     var eventPicker = document.getElementById('eventSelector');
@@ -143,7 +146,7 @@ function getHybridSchedule() {
             document.getElementById('playByPlayDisplay').style.display = 'block';
 
             announceDisplay();
-
+            $("#scheduleUpdateContainer").html(Date() + "and looking for Playoff schedule...");
 
         }
         req1.send();
@@ -151,6 +154,7 @@ function getHybridSchedule() {
     var req1 = new XMLHttpRequest();
     req1.open('GET', '/api/' + year.options[year.selectedIndex].value + '/schedule/' + JSON.parse(eventPicker.options[eventPicker.selectedIndex].value).code + '/playoff');
     req1.addEventListener('load', function () {
+        $("#playoffScheduleAlert").css("display","block");
         var data = JSON.parse(req1.responseText);
         if (data.Schedule.length === 0) {
             document.getElementById('scheduleContainer').innerHTML += '<p><b>No playoff matches have been scheduled for this event.</b></p>';
@@ -160,18 +164,21 @@ function getHybridSchedule() {
                 var element = data.Schedule[i];
                 matchSchedule += generateMatchTableRow(element);
             }
+            $("#playoffScheduleAlert").css("display","none");
         }
         if (matchSchedule) {
             document.getElementById('scheduleTable').innerHTML += matchSchedule;
         }
         document.getElementById('scheduleProgressBar').style.display = 'none';
         localStorage.playoffList = JSON.stringify(data);
+        $("#scheduleUpdateContainer").html(Date());
     });
     req.send();
 }
 
 function getTeamList() {
     "use strict";
+    $("#teamUpdateContainer").html("Loading team data...");
     var year = document.getElementById('yearPicker');
     var eventPicker = document.getElementById('eventSelector');
     var req2 = new XMLHttpRequest();
@@ -195,6 +202,7 @@ function getTeamList() {
         }
         document.getElementById('teamProgressBar').style.display = 'none';
         localStorage.teamList = JSON.stringify(data);
+        $("#teamUpdateContainer").html(Date());
     });
     req2.send();
 
@@ -244,7 +252,6 @@ function scaleRows() {
     $(".col4").css("width", col4width + "px");
     $(".col5").css("width", col5width + "px");
     $(".col6").css("width", col6width + "px");
-    $("#windowHeight").html("Height: " + height + " px, announceHeight: " + announceHeight + " px, playByPlayHeight: " + playByPlayHeight + " px");
 }
 
 
@@ -273,8 +280,8 @@ function announceDisplay() {
         $("#" + stationList[ii] + "TeamName").html(teamData.nameShort);
         $("#" + stationList[ii] + "CityState").html(teamData.cityState);
         $("#" + stationList[ii] + "RobotName").html(teamData.robotName);
-        $("#" + stationList[ii] + "Organization").html("<b><i>" + teamData.organization + "</i></b>");
-        $("#" + stationList[ii] + "Sponsors").html(teamData.topSponsors);
+        $("#" + stationList[ii] + "Organization").html(teamData.organization);
+        $("#" + stationList[ii] + "Sponsors").html(teamData.sponsors);
         $("#" + stationList[ii] + "Rank").html(teamData.rank);
         $("#" + stationList[ii] + "Awards").html(teamData.awards);
         rankHighlight(stationList[ii] + "Rank", teamData.rank);
@@ -289,6 +296,7 @@ function announceDisplay() {
 
 function getTeamRanks() {
     "use strict";
+    $("#rankUpdateContainer").html("Loading ranking data...");
     var year = document.getElementById('yearPicker');
     var eventPicker = document.getElementById('eventSelector');
     var req3 = new XMLHttpRequest();
@@ -322,6 +330,7 @@ function getTeamRanks() {
                 team.matchesPlayed = data.Rankings[i].matchesPlayed;
                 localStorage['teamData' + data.Rankings[i].teamNumber] = JSON.stringify(team);
             }
+            $("#rankUpdateContainer").html(Date());
         }
 
     });
@@ -333,7 +342,7 @@ function getTeamAwards(teamNumber, year) {
     var eventCodes = JSON.parse(localStorage.events);
     var awards = "";
     var year1 = year - 1;
-    var teamData = JSON.parse(localStorage["teamData"+teamNumber]);
+    var teamData = JSON.parse(localStorage["teamData" + teamNumber]);
 
     var req = new XMLHttpRequest();
     req.open('GET', '/api/' + year + '/awards/' + teamNumber + "/");
@@ -343,7 +352,7 @@ function getTeamAwards(teamNumber, year) {
             if (data.Awards.length > 0) {
 
                 for (var i = 0; i < data.Awards.length; i++) {
-                    awards += year+" "+data.Awards[i].eventCode + ": " + data.Awards[i].name + " | ";
+                    awards += year + " " + data.Awards[i].eventCode + ": " + data.Awards[i].name + " | ";
                 }
             }
         }
@@ -357,17 +366,15 @@ function getTeamAwards(teamNumber, year) {
             var data = JSON.parse(req1.responseText);
             if (data.Awards.length > 0) {
                 for (var i = 0; i < data.Awards.length; i++) {
-                    awards += year1+" "+data.Awards[i].eventCode + ": " + data.Awards[i].name + " | ";
+                    awards += year1 + " " + data.Awards[i].eventCode + ": " + data.Awards[i].name + " | ";
                 }
             }
         }
         if (awards.length > 3) {
-            awards = awards.substr(0,awards.length-3);
+            awards = awards.substr(0, awards.length - 3);
         }
         teamData.awards = awards;
-        console.log(teamNumber + ":" + awards);
-        console.log(JSON.stringify(teamData));
-        localStorage["teamData"+teamNumber] = JSON.stringify(teamData);
+        localStorage["teamData" + teamNumber] = JSON.stringify(teamData);
     });
 
     req.send();
@@ -499,7 +506,7 @@ function generateTeamTableRow(teamData) {
     };
     localStorage['teamData' + teamData.teamNumber] = JSON.stringify(teamInfo);
     getTeamAwards(teamData.teamNumber, year);
-    
+
     return returnData + '</tr>';
 }
 

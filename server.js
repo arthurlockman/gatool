@@ -117,6 +117,12 @@ app.get('/scripts.js', function (req, res) {
     sendFile(res, 'scripts.js', 'text/js');
 });
 
+app.get('/jquery.touchwipe.min.js', function (req, res) {
+    'use strict';
+    sendFile(res, 'jquery.touchwipe.min.js', 'text/js');
+});
+
+
 app.get('/css/style.css', function (req, res) {
     'use strict';
     sendFile(res, 'css/style.css', 'text/css');
