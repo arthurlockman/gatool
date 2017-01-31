@@ -243,8 +243,8 @@ function scaleRows() {
     var col4width = width / 3;
     var col5width = width / 12 * 5;
     var col6width = width / 2;
-    var announceHeight = Math.round((height - $("#navbar").outerHeight() - $("#appTab").outerHeight() - $("#gameButtonsAnnounce").outerHeight() - $("#footer").outerHeight() - $("#announceTableHeader").outerHeight()) / 6 - 2);
-    var playByPlayHeight = Math.round((height - $("#navbar").outerHeight() - $("#appTab").outerHeight() - $("#gameButtonsPlayByPlay").outerHeight() - $("#footer").outerHeight() - $("#announceTableHeader").outerHeight()) / 3 - 4);
+    var announceHeight = Math.round((height - $("#navbar").outerHeight() - $("#appTab").outerHeight() - $("#gameButtonsAnnounce").outerHeight() - $("#footer").outerHeight() - $("#announceTableHeader").outerHeight()) / 6 - 5);
+    var playByPlayHeight = Math.round((height - $("#navbar").outerHeight() - $("#appTab").outerHeight() - $("#gameButtonsPlayByPlay").outerHeight() - $("#footer").outerHeight() - $("#announceTableHeader").outerHeight()) / 3 - 9);
     $(".redAlliancePlayByPlay,.blueAlliancePlayByPlay").css("height", playByPlayHeight + "px");
     $(".redAlliance,.blueAlliance").css("height", announceHeight + "px");
     $(".col2").css("width", col2width + "px");
@@ -270,8 +270,10 @@ function announceDisplay() {
     $("#eventName").html("<b>" + JSON.parse(document.getElementById("eventSelector").value).name + "</b>");
     $("#matchNumber").html("<b>" + currentMatchData.matchNumber + "</b>");
     $("#matchNameAnnounce").html("<b>" + currentMatchData.description + "</b>");
+    $("#topMatchNameAnnounce").html("<b>" + currentMatchData.description + "</b>");
     $("#matchName").html("<b>" + currentMatchData.description + "</b>");
     $("#matchNamePlayByPlay").html("<b>" + currentMatchData.description + "</b>");
+    $("#topMatchNamePlayByPlay").html("<b>" + currentMatchData.description + "</b>");
 
     for (var ii = 0; ii < 6; ii++) {
         var teamData = JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]);

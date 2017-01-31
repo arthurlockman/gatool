@@ -91,6 +91,13 @@
             </div>
             <div id="announceDisplay">
                 <table>
+                    <tr id="topGameButtonsAnnounce" class="row">
+                        <td class="btn-default gatool-button col4" align="center" onClick="getPreviousMatch()">Previous Match</td>
+                        <td class="gatool-button col4" align="center"><span id="topMatchNameAnnounce">Match Name</span></td>
+                        <td class="btn-default gatool-button col4" align="center" onClick="getNextMatch()">Next Match</td>
+                    </tr>
+                </table>
+                   <table>
                     <tr id="announceTableHeader" class="gatool-announce">
                         <td class="col2"><span id="matchNumber">Match Number</span></td>
                         <td class="col3"><span id="matchName">Match Names</span></td>
@@ -178,7 +185,14 @@
                 <p><b>No qualification matches have been scheduled for this event.</b></p>
             </div>
             <div id="playByPlayDisplay" class="gatool-playbyplay" style="display: block">
-                <table id="playByPlayTable">
+                               <table>
+                    <tr id="gameButtonsPlayByPlay" class="row gatool-button-row">
+                        <td class="btn-default gatool-button col4" align="center" onClick="getPreviousMatch()">Previous Match</td>
+                        <td class="gatool-button col4" align="center"><span id="topMatchNamePlayByPlay">Match Name</span></td>
+                        <td class="btn-default gatool-button col4" align="center" onClick="getNextMatch()">Next Match</td>
+                    </tr>
+                </table>
+<table id="playByPlayTable">
                     <tr id="playByPlayRow1" class="row">
                         <td class="col2 blueAlliancePlayByPlay" align="center"><span id="blue1PlaybyPlayteamNumber" class="playByPlayteamNumber">blue1 Team Number</span></td>
                         <td class="col4 blueAlliancePlayByPlay"><span id="blue1PlaybyPlayTeamName">blue1 Team Name</span><br>

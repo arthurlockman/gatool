@@ -136,7 +136,8 @@ opacity: 1;
 }
 .gatool-button {
     font-size: large;
-    height: 50px
+    font-weight: bold;
+    height: 40px
 }
 .gatool-playbyplay {
     border: 1px solid #ccc;
