@@ -90,6 +90,7 @@ opacity: 1;
 .redAlliancePlayByPlay {
     border: 1px solid #ccc;
     align-content: center;
+    text-align: center;
     background-color: red;
     font-size: x-large;
     font-weight: bold;
@@ -102,6 +103,7 @@ opacity: 1;
 .blueAlliancePlayByPlay {
     border: 1px solid #ccc;
     align-content: center;
+    text-align: center;
     background-color: blue;
     font-size: x-large;
     font-weight: bold;
@@ -167,13 +169,18 @@ opacity: 1;
 }
 .playByPlayOrganization {
     font-size: medium;
-    font-style:italic
+    font-style:italic;
+    line-height: 100%
 }
 .playByPlayCity {
     font-size: medium
 }
 .awards {
     font-style: italic;
+    line-height: 1
+}
+.sponsors {
+    line-height: 1;
     font-weight: 900
 }
 .playoffAlert {
@@ -185,6 +192,16 @@ opacity: 1;
 .announceOrganization {
     font-size: 20px;
     font-weight: bold
+}
+.wltTable {
+    border-width: thin;
+    background-color: rgba(255,255,255,0.20);
+    text-align: center;
+    display: block;
+    margin: auto;
+}
+.wltCol {
+    width:33%
 }
 .loadingEvent {
     color: red
@@ -206,6 +223,4 @@ opacity: 1;
 }
 .col6 {
     width: 167px
-}
-.playByPlayTeamName {
 }

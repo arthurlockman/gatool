@@ -286,7 +286,7 @@ function announceDisplay() {
         $("#" + stationList[ii] + "Sponsors").html(teamData.sponsors);
         $("#" + stationList[ii] + "Rank").html(teamData.rank);
         $("#" + stationList[ii] + "Awards").html(teamData.awards);
-        $("#" + stationList[ii] + "WinLossTie").html("QualAverage: "+teamData.qualAverage+"<br>W-L-T: "+teamData.wins+"-"+teamData.losses+"-"+teamData.ties);
+        $("#" + stationList[ii] + "WinLossTie").html("<table class='wltTable'><tr><td class='wltCol'>Rank</td><td class='wltCol'>Qual Avg</td><td class='wltCol'>W-L-T</td></tr><tr><td class='wltCol'>"+teamData.rank+"</td><td class='wltCol'>"+teamData.qualAverage+"</td><td class='wltCol'>"+teamData.wins+"-"+teamData.losses+"-"+teamData.ties+"</td></tr></table>");
         rankHighlight(stationList[ii] + "Rank", teamData.rank);
 
         $('#' + stationList[ii] + 'PlaybyPlayteamNumber').html(currentMatchData.Teams[ii].teamNumber);
