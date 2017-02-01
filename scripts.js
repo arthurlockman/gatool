@@ -286,12 +286,14 @@ function announceDisplay() {
         $("#" + stationList[ii] + "Sponsors").html(teamData.sponsors);
         $("#" + stationList[ii] + "Rank").html(teamData.rank);
         $("#" + stationList[ii] + "Awards").html(teamData.awards);
+        $("#" + stationList[ii] + "WinLossTie").html("QualAverage: "+teamData.qualAverage+"<br>W-L-T: "+teamData.wins+"-"+teamData.losses+"-"+teamData.ties);
         rankHighlight(stationList[ii] + "Rank", teamData.rank);
 
         $('#' + stationList[ii] + 'PlaybyPlayteamNumber').html(currentMatchData.Teams[ii].teamNumber);
         $('#' + stationList[ii] + 'PlaybyPlayTeamName').html(teamData.nameShort);
         $('#' + stationList[ii] + 'PlaybyPlayRobotName').html(teamData.robotName);
-
+        $("#" + stationList[ii] + "PlayByPlayCity").html(teamData.cityState);
+        $("#" + stationList[ii] + "PlayByPlayOrganization").html(teamData.organization);
     }
 }
 

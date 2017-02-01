@@ -107,6 +107,13 @@ opacity: 1;
     font-weight: bold;
     color: white
 }
+.playByPlayTeamName {
+    font-size: x-large
+}
+.playByPlayWinLossTie {
+    font-size: large;
+    font-style: italic
+}
 .ranking {
     align-content: center;
     vertical-align: middle;
@@ -135,7 +142,7 @@ opacity: 1;
 .gatool-button-row {
 }
 .gatool-button {
-    font-size: large;
+    font-size: 25px;
     font-weight: bold;
     height: 40px
 }
@@ -157,6 +164,13 @@ opacity: 1;
 }
 .playByPlayteamNumber {
     font-size: 40px
+}
+.playByPlayOrganization {
+    font-size: medium;
+    font-style:italic
+}
+.playByPlayCity {
+    font-size: medium
 }
 .awards {
     font-style: italic;
@@ -192,4 +206,6 @@ opacity: 1;
 }
 .col6 {
     width: 167px
+}
+.playByPlayTeamName {
 }
