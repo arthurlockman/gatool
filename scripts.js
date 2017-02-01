@@ -154,7 +154,7 @@ function getHybridSchedule() {
     var req1 = new XMLHttpRequest();
     req1.open('GET', '/api/' + year.options[year.selectedIndex].value + '/schedule/' + JSON.parse(eventPicker.options[eventPicker.selectedIndex].value).code + '/playoff');
     req1.addEventListener('load', function () {
-        $("#playoffScheduleAlert").css("display","block");
+        $("#playoffScheduleAlert").css("display", "block");
         var data = JSON.parse(req1.responseText);
         if (data.Schedule.length === 0) {
             document.getElementById('scheduleContainer').innerHTML += '<p><b>No playoff matches have been scheduled for this event.</b></p>';
@@ -164,7 +164,7 @@ function getHybridSchedule() {
                 var element = data.Schedule[i];
                 matchSchedule += generateMatchTableRow(element);
             }
-            $("#playoffScheduleAlert").css("display","none");
+            $("#playoffScheduleAlert").css("display", "none");
         }
         if (matchSchedule) {
             document.getElementById('scheduleTable').innerHTML += matchSchedule;
@@ -243,8 +243,8 @@ function scaleRows() {
     var col4width = width / 3;
     var col5width = width / 12 * 5;
     var col6width = width / 2;
-    var announceHeight = Math.round((height - $("#navbar").outerHeight() - $("#appTab").outerHeight() - $("#gameButtonsAnnounce").outerHeight() - $("#footer").outerHeight() - $("#announceTableHeader").outerHeight()) / 6 - 5);
-    var playByPlayHeight = Math.round((height - $("#navbar").outerHeight() - $("#appTab").outerHeight() - $("#gameButtonsPlayByPlay").outerHeight() - $("#footer").outerHeight() - $("#announceTableHeader").outerHeight()) / 3 - 9);
+    var announceHeight = Math.round((height - $("#navbar").outerHeight() - $("#appTab").outerHeight() - $("#gameButtonsAnnounce").outerHeight() - $("#footer").outerHeight() - $("#announceTableHeader").outerHeight()) / 6 - 10);
+    var playByPlayHeight = Math.round((height - $("#navbar").outerHeight() - $("#appTab").outerHeight() - $("#gameButtonsPlayByPlay").outerHeight() - $("#footer").outerHeight() - $("#announceTableHeader").outerHeight()) / 3 - 12);
     $(".redAlliancePlayByPlay,.blueAlliancePlayByPlay").css("height", playByPlayHeight + "px");
     $(".redAlliance,.blueAlliance").css("height", announceHeight + "px");
     $(".col2").css("width", col2width + "px");
@@ -344,6 +344,8 @@ function getTeamAwards(teamNumber, year) {
     var eventCodes = JSON.parse(localStorage.events);
     var awards = "";
     var year1 = year - 1;
+    var year2 = year - 2;
+
     var teamData = JSON.parse(localStorage["teamData" + teamNumber]);
 
     var req = new XMLHttpRequest();
@@ -372,11 +374,27 @@ function getTeamAwards(teamNumber, year) {
                 }
             }
         }
+        req2.send();
+    });
+
+    var req2 = new XMLHttpRequest();
+    req2.open('GET', '/api/' + year2 + '/awards/' + teamNumber + "/");
+    req2.addEventListener('load', function () {
+        if (req2.responseText.substr(0, 5) !== '"Team') {
+            var data = JSON.parse(req2.responseText);
+            if (data.Awards.length > 0) {
+
+                for (var i = 0; i < data.Awards.length; i++) {
+                    awards += year2 + " " + data.Awards[i].eventCode + ": " + data.Awards[i].name + " | ";
+                }
+            }
+        }
         if (awards.length > 3) {
             awards = awards.substr(0, awards.length - 3);
         }
         teamData.awards = awards;
         localStorage["teamData" + teamNumber] = JSON.stringify(teamData);
+
     });
 
     req.send();
