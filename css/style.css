@@ -175,6 +175,9 @@ opacity: 1;
 .playByPlayCity {
     font-size: medium
 }
+.playByPlayAlliance {
+    font-size: medium
+}
 .awards {
     font-style: italic;
     line-height: 1

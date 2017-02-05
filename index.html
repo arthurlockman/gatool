@@ -66,7 +66,8 @@
                 <p> <b>Last Team Info update:</b> <span id="teamUpdateContainer">no event selected</span> </p>
                 <p> <b>Last Ranking update:</b> <span id="rankUpdateContainer">no event selected</span> </p>
                 <p> <b>Last Schedule update:</b> <span id="scheduleUpdateContainer">no event selected</span></p>
-                <p> <span id="playoffScheduleAlert" class="playoffAlert" onClick="getHybridSchedule()">Tap here to refresh Playoff schedule, when available.</span></p>
+                <p> <b>Last Playoff Alliance update:</b> <span id="allianceUpdateContainer">no event selected</span></p>
+                <p> <span id="playoffScheduleAlert" class="playoffAlert" onClick="getHybridSchedule()">Tap here to refresh Playoff schedule, when available. <img src="images/FIRST_STEAMWORKS_Animated_small.gif" alt=""/></span></p>
             </div>
         </div>
         <div id="schedule" class="tabcontent">
@@ -106,7 +107,7 @@
                     </tr>
                     <tr id="announceRow1" class="redAlliance">
                         <td class="col2"><span id="red1TeamNumber" class="announceTeamNumber">Red1 Team Number</span><br>
-                            <span id="red1RookieYear">Red1 Rookie</span></td>
+                            <span id="red1RookieYear">Red1 Rookie</span><span id="red1Alliance"></span></td>
                         <td class="col3"><span id="red1TeamName" class="teamName">red1 Team Name</span><br>
                             <span id="red1CityState">red1 city</span><br>
                             <span id="red1RobotName" class="robotName">red1 robot name</span></td>
@@ -117,7 +118,7 @@
                     </tr>
                     <tr id="announceRow2" class="redAlliance">
                         <td class="col2"><span id="red2TeamNumber" class="announceTeamNumber">red2 Team Number</span><br>
-                            <span id="red2RookieYear">red2 Rookie</span></td>
+                            <span id="red2RookieYear">red2 Rookie</span><span id="red2Alliance"></span></td>
                         <td class="col3"><span id="red2TeamName" class="teamName">red2 Team Name</span><br>
                             <span id="red2CityState">red2 city</span><br>
                             <span id="red2RobotName" class="robotName">red2 robot name</span></td>
@@ -128,7 +129,7 @@
                     </tr>
                     <tr id="announceRow3" class="redAlliance">
                         <td class="col2"><span id="red3TeamNumber" class="announceTeamNumber">red3 Team Number</span><br>
-                            <span id="red3RookieYear">red3 Rookie</span></td>
+                            <span id="red3RookieYear">red3 Rookie</span><span id="red3Alliance"></span></td>
                         <td class="col3"><span id="red3TeamName" class="teamName">red3 Team Name</span><br>
                             <span id="red3CityState">red3 city</span><br>
                             <span id="red3RobotName" class="robotName">red3 robot name</span></td>
@@ -139,7 +140,7 @@
                     </tr>
                     <tr id="announceRow4" class="blueAlliance">
                         <td class="col2"><span id="blue1TeamNumber" class="announceTeamNumber">blue1 Team Number</span><br>
-                            <span id="blue1RookieYear">blue1 Rookie</span></td>
+                            <span id="blue1RookieYear">blue1 Rookie</span><span id="blue1Alliance"></span></td>
                         <td class="col3"><span id="blue1TeamName" class="teamName">blue1 Team Name</span><br>
                             <span id="blue1CityState">blue1 city</span><br>
                             <span id="blue1RobotName" class="robotName">blue1 robot name</span></td>
@@ -150,7 +151,7 @@
                     </tr>
                     <tr id="announceRow5" class="blueAlliance">
                         <td class="col2"><span id="blue2TeamNumber" class="announceTeamNumber">blue2 Team Number</span><br>
-                            <span id="blue2RookieYear">blue2 Rookie</span></td>
+                            <span id="blue2RookieYear">blue2 Rookie</span><span id="blue2Alliance"></span></td>
                         <td class="col3"><span id="blue2TeamName" class="teamName">blue2 Team Name</span><br>
                             <span id="blue2CityState">blue2 city</span><br>
                             <span id="blue2RobotName" class="robotName">blue2 robot name</span></td>
@@ -161,7 +162,7 @@
                     </tr>
                     <tr id="announceRow6" class="blueAlliance">
                         <td class="col2"><span id="blue3TeamNumber" class="announceTeamNumber">blue3 Team Number</span><br>
-                            <span id="blue3RookieYear">blue3 Rookie</span></td>
+                            <span id="blue3RookieYear">blue3 Rookie</span><span id="blue3Alliance"></span></td>
                         <td class="col3"><span id="blue3TeamName" class="teamName">blue3 Team Name</span><br>
                             <span id="blue3CityState">blue3 city</span><br>
                             <span id="blue3RobotName" class="robotName">blue3 robot name</span></td>
@@ -186,7 +187,7 @@
             </div>
             <div id="playByPlayDisplay" class="gatool-playbyplay" style="display: block">
                 <table>
-                    <tr id="gameButtonsPlayByPlay" class="row gatool-button-row">
+                    <tr id="gameButtonsPlayByPlayTop" class="row gatool-button-row">
                         <td class="btn-default gatool-button col4" align="center" onClick="getPreviousMatch()">Previous Match</td>
                         <td class="gatool-button col4" align="center"><span id="topMatchNamePlayByPlay">Match Name</span></td>
                         <td class="btn-default gatool-button col4" align="center" onClick="getNextMatch()">Next Match</td>
@@ -196,27 +197,31 @@
                     <tr id="playByPlayRow1" class="row">
                         <td class="col2 blueAlliancePlayByPlay" align="center"><p id="blue1PlaybyPlayteamNumber" class="playByPlayteamNumber">blue1</p>
                             <p id="blue1PlayByPlayOrganization" class="playByPlayOrganization">organization</p>
-                            <p id="blue1PlayByPlayCity" class="playByPlayCity">city</p></td>
+                            <p id="blue1PlayByPlayCity" class="playByPlayCity">city</p>
+                            <span id="blue1PlayByPlayAlliance" class="playByPlayAlliance"></span></td>
                         <td class="col4 blueAlliancePlayByPlay"><p class="playByPlayTeamName" id="blue1PlaybyPlayTeamName">blue1 Team Name</p>
                             <p id="blue1PlaybyPlayRobotName" class="playByPlayRobotName">blue1 Robot Name</p>
-                            <p id="blue1WinLossTie" class="playByPlayWinLossTie">win-loss-tie</p>
+                            <p id="blue1WinLossTie" class="playByPlayWinLossTie">win-loss-tie</p></td>
                         <td class="col2 redAlliancePlayByPlay" align="center"><p id="red1PlaybyPlayteamNumber" class="playByPlayteamNumber">red1</p>
                             <p id="red1PlayByPlayOrganization" class="playByPlayOrganization">organization</p>
-                            <p id="red1PlayByPlayCity" class="playByPlayCity">city</p></td>
+                            <p id="red1PlayByPlayCity" class="playByPlayCity">city</p>
+                            <span id="red1PlayByPlayAlliance" class="playByPlayAlliance"></span></td>
                         <td class="col4 redAlliancePlayByPlay"><p id="red1PlaybyPlayTeamName">red1 Team Name</p>
-                            <p id="red1PlaybyPlayRobotName" class="playByPlayRobotName">red1 Robot Name</p>                       
+                            <p id="red1PlaybyPlayRobotName" class="playByPlayRobotName">red1 Robot Name</p>
                             <p id="red1WinLossTie" class="playByPlayWinLossTie">win-loss-tie</p></td>
                     </tr>
                     <tr id="playByPlayRow2" class="row">
                         <td class="col2 blueAlliancePlayByPlay" align="center"><span id="blue2PlaybyPlayteamNumber" class="playByPlayteamNumber">blue2 </span><br>
                             <p id="blue2PlayByPlayOrganization" class="playByPlayOrganization">organization</p>
-                            <p id="blue2PlayByPlayCity" class="playByPlayCity">city</p></td>
+                            <p id="blue2PlayByPlayCity" class="playByPlayCity">city</p>
+                            <span id="blue2PlayByPlayAlliance" class="playByPlayAlliance"></span></td>
                         <td class="col4 blueAlliancePlayByPlay"><p id="blue2PlaybyPlayTeamName">blue2 Team Name</p>
                             <p id="blue2PlaybyPlayRobotName" class="playByPlayRobotName">blue2 Robot Name</p>
                             <p id="blue2WinLossTie" class="playByPlayWinLossTie">win-loss-tie</p></td>
                         <td class="col2 redAlliancePlayByPlay" align="center"><p id="red2PlaybyPlayteamNumber" class="playByPlayteamNumber">red2 </p>
                             <p id="red2PlayByPlayOrganization" class="playByPlayOrganization">organization</p>
-                            <p id="red2PlayByPlayCity" class="playByPlayCity">city</p></td>
+                            <p id="red2PlayByPlayCity" class="playByPlayCity">city</p>
+                            <span id="red2PlayByPlayAlliance" class="playByPlayAlliance"></span></td>
                         <td class="col4 redAlliancePlayByPlay"><p id="red2PlaybyPlayTeamName">red2 Team Name</p>
                             <p id="red2PlaybyPlayRobotName" class="playByPlayRobotName">red2 Robot Name</p>
                             <p id="red2WinLossTie" class="playByPlayWinLossTie">win-loss-tie</p></td>
@@ -224,13 +229,15 @@
                     <tr id="playByPlayRow3" class="row">
                         <td class="col2 blueAlliancePlayByPlay" align="center"><span id="blue3PlaybyPlayteamNumber" class="playByPlayteamNumber">blue3 </span><br>
                             <p id="blue3PlayByPlayOrganization" class="playByPlayOrganization">organization</p>
-                            <p id="blue3PlayByPlayCity" class="playByPlayCity">city</p></td>
+                            <p id="blue3PlayByPlayCity" class="playByPlayCity">city</p>
+                            <span id="blue3PlayByPlayAlliance" class="playByPlayAlliance"></span></td>
                         <td class="col4 blueAlliancePlayByPlay"><p id="blue3PlaybyPlayTeamName">blue3 Team Name</p>
                             <p id="blue3PlaybyPlayRobotName" class="playByPlayRobotName">blue3 Robot Name</p>
                             <p id="blue3WinLossTie" class="playByPlayWinLossTie">win-loss-tie</p></td>
                         <td class="col2 redAlliancePlayByPlay" align="center"><span id="red3PlaybyPlayteamNumber" class="playByPlayteamNumber">red3 </span><br>
                             <p id="red3PlayByPlayOrganization" class="playByPlayOrganization">organization</p>
-                            <p id="red3PlayByPlayCity" class="playByPlayCity">city</p></td>
+                            <p id="red3PlayByPlayCity" class="playByPlayCity">city</p>
+                            <span id="red3PlayByPlayAlliance" class="playByPlayAlliance"></span></td>
                         <td class="col4 redAlliancePlayByPlay"><p id="red3PlaybyPlayTeamName">red3 Team Name</p>
                             <p id="red3PlaybyPlayRobotName" class="playByPlayRobotName">red3 Robot Name</p>
                             <p id="red3WinLossTie" class="playByPlayWinLossTie">win-loss-tie</p></td>

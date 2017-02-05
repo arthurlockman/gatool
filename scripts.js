@@ -3,6 +3,12 @@
 $.getScript('https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js', function () {});
 
 localStorage.currentMatch = 1;
+localStorage.inPlayoffs = false;
+localStorage.Alliances = [];
+localStorage.events = [];
+localStorage.playoffList = [];
+localStorage.qualsList = [];
+localStorage.teamList = [];
 
 window.onload = function () {
     "use strict";
@@ -45,8 +51,8 @@ function handleEventSelection() {
     document.getElementById('playByPlayBanner').style.display = 'block';
     document.getElementById('playByPlayDisplay').style.display = 'none';
     $("#eventName").html('<span class="loadingEvent"><b>Loading event...</b></span>');
-    getHybridSchedule();
     getTeamList();
+    getHybridSchedule();
 }
 
 function loadEventsList() {
@@ -130,10 +136,10 @@ function getHybridSchedule() {
         var data = JSON.parse(req.responseText);
         if (data.Schedule.length === 0) {
             document.getElementById('scheduleContainer').innerHTML = '<b>No qualification matches have been scheduled for this event.</b>';
-            localStorage.qualsList = null;
-            localStorage.playoffList = null;
+            localStorage.qualsList = [];
+            localStorage.playoffList = [];
         } else {
-            document.getElementById('scheduleContainer').innerHTML = '<div class=""><table id="scheduleTable" class="table table-bordered table-responsive table-striped"></table></div>';
+            document.getElementById('scheduleContainer').innerHTML = '<table id="scheduleTable" class="table table-bordered table-responsive table-striped"></table>';
             matchSchedule += '<thead class="thead-default"><tr><td><b>Time</b></td><td><b>Description</b></td><td><b>Match Number</b></td><td><b>Red 1</b></td><td><b>Red 2</b></td><td><b>Red 3</b></td><td><b>Blue 1</b></td><td><b>Blue 2</b></td><td><b>Blue 3</b></td></tr></thead><tbody>';
             for (var i = 0; i < data.Schedule.length; i++) {
                 var element = data.Schedule[i];
@@ -144,9 +150,8 @@ function getHybridSchedule() {
             document.getElementById('announceDisplay').style.display = 'block';
             document.getElementById('playByPlayBanner').style.display = 'none';
             document.getElementById('playByPlayDisplay').style.display = 'block';
-
             announceDisplay();
-            $("#scheduleUpdateContainer").html(Date() + "and looking for Playoff schedule...");
+            $("#scheduleUpdateContainer").html(Date() + "... and looking for Playoff schedule...");
 
         }
         req1.send();
@@ -158,13 +163,15 @@ function getHybridSchedule() {
         var data = JSON.parse(req1.responseText);
         if (data.Schedule.length === 0) {
             document.getElementById('scheduleContainer').innerHTML += '<p><b>No playoff matches have been scheduled for this event.</b></p>';
-            localStorage.playoffList = null;
+            localStorage.playoffList = [];
         } else {
             for (var i = 0; i < data.Schedule.length; i++) {
                 var element = data.Schedule[i];
                 matchSchedule += generateMatchTableRow(element);
             }
             $("#playoffScheduleAlert").css("display", "none");
+            localStorage.inPlayoffs = true;
+            getAllianceList();
         }
         if (matchSchedule) {
             document.getElementById('scheduleTable').innerHTML += matchSchedule;
@@ -172,6 +179,7 @@ function getHybridSchedule() {
         document.getElementById('scheduleProgressBar').style.display = 'none';
         localStorage.playoffList = JSON.stringify(data);
         $("#scheduleUpdateContainer").html(Date());
+
     });
     req.send();
 }
@@ -190,15 +198,13 @@ function getTeamList() {
             localStorage.teamList = null;
         } else {
             var teamList = "";
-            document.getElementById('teamsContainer').innerHTML = '<div class="" style="display:table;"><table id="teamsTable" class="table table-responsive table-bordered table-striped"></table></div>';
+            document.getElementById('teamsContainer').innerHTML = '<table id="teamsTable" class="table table-responsive table-bordered table-striped"></table>';
             teamList += '<thead class="thead-default"><tr><td><b>Number</b></td><td><b>Short Name</b></td><td><b>City</b></td><td><b>Sponsors</b></td><td><b>Organization</b></td><td><b>Rookie Year</b></td><td><b>Robot name</b></td></tr></thead><tbody>';
             for (var i = 0; i < data.teams.length; i++) {
                 var element = data.teams[i];
                 teamList += generateTeamTableRow(element);
             }
             document.getElementById('teamsTable').innerHTML = teamList + "</tbody>";
-            // Notice that even though we're only doing this once, this will create TWO <tbody> tags. That's because when
-            // you call .innerHTML, it's auto-completing the tags for you.
         }
         document.getElementById('teamProgressBar').style.display = 'none';
         localStorage.teamList = JSON.stringify(data);
@@ -206,6 +212,68 @@ function getTeamList() {
     });
     req2.send();
 
+}
+
+
+function getAllianceList() {
+    "use strict";
+    $("#allianceUpdateContainer").html("Loading Alliance data...");
+    var year = document.getElementById('yearPicker');
+    var eventPicker = document.getElementById('eventSelector');
+    var req2 = new XMLHttpRequest();
+    req2.open('GET', '/api/' + year.options[year.selectedIndex].value + '/alliances/' + JSON.parse(eventPicker.options[eventPicker.selectedIndex].value).code);
+    req2.addEventListener('load', function () {
+        var data = JSON.parse(req2.responseText);
+        if (data.Alliances.length === 0) {
+            document.getElementById('allianceUpdateContainer').innerHTML = '<b>No Playoff Alliance data available for this event.</b>';
+            localStorage.Alliances = null;
+        } else {
+            localStorage.Alliances = JSON.stringify(data);
+            for (var i = 0; i < data.Alliances.length; i++) {
+                var element = data.Alliances[i];
+                var team = [];
+                if (element.captain !== null) {
+                    team = JSON.parse(localStorage["teamData" + element.captain]);
+                    team.alliance = element.number;
+                    team.allianceName = element.name;
+                    team.allianceChoice = "Captain";
+                    localStorage["teamData" + element.captain] = JSON.stringify(team);
+                }
+                if (element.round1 !== null) {
+                    team = JSON.parse(localStorage["teamData" + element.round1]);
+                    team.alliance = element.number;
+                    team.allianceName = element.name;
+                    team.allianceChoice = "Round 1 Selection";
+                    localStorage["teamData" + element.round1] = JSON.stringify(team);
+                }
+                if (element.round2 !== null) {
+                    team = JSON.parse(localStorage["teamData" + element.round2]);
+                    team.alliance = element.number;
+                    team.allianceName = element.name;
+                    team.allianceChoice = "Round 2 Selection";
+                    localStorage["teamData" + element.round2] = JSON.stringify(team);
+                }
+                if (element.round3 !== null) {
+                    team = JSON.parse(localStorage["teamData" + element.round3]);
+                    team.alliance = element.number;
+                    team.allianceName = element.name;
+                    team.allianceChoice = "Round 3 Selection";
+                    localStorage["teamData" + element.round3] = JSON.stringify(team);
+                }
+                if (element.backup !== null) {
+                    team = JSON.parse(localStorage["teamData" + element.backup]);
+                    team.alliance = element.number;
+                    team.allianceName = element.name;
+                    team.allianceChoice = "Backup Robot replacing " + element.backupReplaced;
+                    localStorage["teamData" + element.backup] = JSON.stringify(team);
+                }
+            }
+        }
+        $("#allianceUpdateContainer").html(Date());
+    });
+    if (localStorage.inPlayoffs) {
+        req2.send();
+    }
 }
 
 function getNextMatch() {
@@ -219,6 +287,7 @@ function getNextMatch() {
         if (localStorage.currentMatch > qualsList.Schedule.length + playoffList.Schedule.length) {
             localStorage.currentMatch = qualsList.Schedule.length + playoffList.Schedule.length;
         }
+        getAllianceList();
         announceDisplay();
 
     }
@@ -229,8 +298,8 @@ function getPreviousMatch() {
     localStorage.currentMatch--;
     if (localStorage.currentMatch < 1) {
         localStorage.currentMatch = 1;
-
     }
+    getAllianceList();
     announceDisplay();
 }
 
@@ -279,6 +348,10 @@ function announceDisplay() {
         var teamData = JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]);
         $('#' + stationList[ii] + 'TeamNumber').html("<b>" + currentMatchData.Teams[ii].teamNumber + "</b>");
         $('#' + stationList[ii] + 'RookieYear').html(rookieYearDisplay(teamData.rookieYear));
+        if (localStorage.currentMatch > JSON.parse(localStorage.qualsList).Schedule.length) {
+            $('#' + stationList[ii] + 'Alliance').html("<br><b>" + teamData.allianceName + "<br>" + teamData.allianceChoice + "<b>");
+            $('#' + stationList[ii] + 'PlayByPlayAlliance').html("<p><b>" + teamData.allianceName + "<br>" + teamData.allianceChoice + "<b></p>");
+        }
         $("#" + stationList[ii] + "TeamName").html(teamData.nameShort);
         $("#" + stationList[ii] + "CityState").html(teamData.cityState);
         $("#" + stationList[ii] + "RobotName").html(teamData.robotName);
@@ -286,9 +359,9 @@ function announceDisplay() {
         $("#" + stationList[ii] + "Sponsors").html(teamData.sponsors);
         $("#" + stationList[ii] + "Rank").html(teamData.rank);
         $("#" + stationList[ii] + "Awards").html(teamData.awards);
-        $("#" + stationList[ii] + "WinLossTie").html("<table class='wltTable'><tr><td class='wltCol'>Rank</td><td class='wltCol'>Qual Avg</td><td class='wltCol'>W-L-T</td></tr><tr><td class='wltCol'>"+teamData.rank+"</td><td class='wltCol'>"+teamData.qualAverage+"</td><td class='wltCol'>"+teamData.wins+"-"+teamData.losses+"-"+teamData.ties+"</td></tr></table>");
+        $("#" + stationList[ii] + "WinLossTie").html("<table class='wltTable'><tr><td id='" + stationList[ii] + "PlayByPlayRank' class='wltCol'>Rank<br>" + teamData.rank + "</td><td class='wltCol'>Qual Avg<br>" + teamData.qualAverage + "</td><td class='wltCol'>W-L-T<br>" + teamData.wins + "-" + teamData.losses + "-" + teamData.ties + "</td></tr></table>");
+        rankHighlight(stationList[ii] + "PlayByPlayRank", teamData.rank);
         rankHighlight(stationList[ii] + "Rank", teamData.rank);
-
         $('#' + stationList[ii] + 'PlaybyPlayteamNumber').html(currentMatchData.Teams[ii].teamNumber);
         $('#' + stationList[ii] + 'PlaybyPlayTeamName').html(teamData.nameShort);
         $('#' + stationList[ii] + 'PlaybyPlayRobotName').html(teamData.robotName);
@@ -396,7 +469,6 @@ function getTeamAwards(teamNumber, year) {
         }
         teamData.awards = awards;
         localStorage["teamData" + teamNumber] = JSON.stringify(teamData);
-
     });
 
     req.send();
@@ -524,7 +596,11 @@ function generateTeamTableRow(teamData) {
         "topSponsors": topSponsors,
         "organization": organization,
         "rookieYear": teamData.rookieYear,
-        "robotName": teamData.robotName
+        "robotName": teamData.robotName,
+        "awards": "",
+        "alliance": "",
+        "allianceName": "",
+        "allianceChoice": ""
     };
     localStorage['teamData' + teamData.teamNumber] = JSON.stringify(teamInfo);
     getTeamAwards(teamData.teamNumber, year);
@@ -546,7 +622,7 @@ function rankHighlight(station, rank) {
         document.getElementById(station).style.color = "white";
         document.getElementById(station).style.backgroundColor = "green";
     } else if ((rank < 11) && (rank > 8)) {
-        document.getElementById(station).style.color = "";
+        document.getElementById(station).style.color = "black";
         document.getElementById(station).style.backgroundColor = "yellow";
     } else if (rank === 1) {
         document.getElementById(station).style.color = "white";
@@ -557,12 +633,6 @@ function rankHighlight(station, rank) {
         document.getElementById(station).style.backgroundColor = "";
     }
 
-}
-
-function setMatch(elem) {
-    "use strict";
-    localStorage.currentMatch = elem.innerHTML;
-    announceDisplay();
 }
 
 function rookieYearDisplay(year) {
