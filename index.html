@@ -44,7 +44,7 @@
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'teamdata')" id="teamDataTabPicker">Team Data</a></li>
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'announce')" id="announceTabPicker">Announce</a></li>
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'playbyplay')" id="playByPlayTabPicker">Play-by-play</a></li>
-            <!--<li><a href="javascript:void(0)" class="tablinks" onClick="openTab(event, 'teamDataEntry')" id="teamInfoUpdatePicker">Update Team Data</a></li>-->
+            <li><a href="javascript:void(0)" class="tablinks" onClick="openTab(event, 'teamDataEntry')" id="teamInfoUpdatePicker">Update Team Data</a></li>
         </ul>
         <div id="setup" class="tabcontent">
             <p>
@@ -84,9 +84,7 @@
                 <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" 
 						aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width:100%"> Loading... </div>
             </div>
-            <p>
             <div id="teamsContainer">No event selected</div>
-            </p>
         </div>
         <div id="announce" class="tabcontent">
             <div id="announceBanner" style="display: none">
@@ -255,7 +253,7 @@
             </div>
         </div>
         <div id="teamDataEntry" class="tabcontent" >
-            <p>Use this form to update team information for Team <span id="teamNumberUpdate">xxx</span>. Editable fields are shown below. Your changes will be stored locally on your machine and should not be erased if you close your browser. Tap on each item to update its value. Tap <strong>DONE</strong> when you're finished editing.</p>
+            <p>Use this form to update team information for <strong>Team <span id="teamNumberUpdate">xxx</span></strong>. Editable fields are shown below. Your changes will be stored locally on your machine and should not be erased if you close your browser. Tap on each item to update its value. Tap <strong>DONE</strong> when you're finished editing, or browse to another tab to cancel editing. To reset any value to the TIMS value, simply delete it here and tap DONE.</p>
             <form>
                 <div class="form-group">
                     <label for="teamNameUpdate">Team Name</label>
@@ -275,15 +273,15 @@
                 </div>
                 <div class="form-group">
                     <label for="topSponsorsUpdate">Top Sponsors (Enter no more than 5 top sponsors from the full sponsor list below</label>
-                    <input type="text" class="form-control" id="topSponsorsUpdate" placeholder="Enter the team's top 5 sponsors">
+                    <textarea class="form-control" rows="3" id="topSponsorsUpdate" placeholder="Enter the team's top 5 sponsors"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="sponsorsUpdate">Full list of Sponsors</label>
-                    <input type="text" class="form-control" id="sponsorsUpdate" placeholder="Enter the team's Sponsors">
+                    <textarea rows="4" class="form-control" id="sponsorsUpdate" placeholder="Enter the team's Sponsors"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="awardsUpdate">Awards</label>
-                    <input type="text" class="form-control" id="awardsUpdate" placeholder="Enter team awards for no more than the last three years">
+                    <textarea rows="5" class="form-control" id="awardsUpdate" placeholder="Enter team awards for no more than the last three years"></textarea>
                 </div>
                 <div onClick="updateTeamInfoDone()" class="btn btn-primary">Done</div>
             </form>
