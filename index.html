@@ -44,7 +44,7 @@
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'teamdata')" id="teamDataTabPicker">Team Data</a></li>
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'announce')" id="announceTabPicker">Announce</a></li>
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'playbyplay')" id="playByPlayTabPicker">Play-by-play</a></li>
-            <li><a href="javascript:void(0)" class="tablinks" onClick="openTab(event, 'teamDataEntry')" id="teamInfoUpdatePicker">Update Team Data</a></li>
+            <!--<li><a href="javascript:void(0)" class="tablinks" onClick="openTab(event, 'teamDataEntry')" id="teamInfoUpdatePicker">Update Team Data</a></li>-->
         </ul>
         <div id="setup" class="tabcontent">
             <p>
@@ -69,7 +69,8 @@
                 <p> <b>Last Ranking update:</b> <span id="rankUpdateContainer">no ranking data available</span> </p>
                 <p> <b>Last Schedule update:</b> <span id="scheduleUpdateContainer">no event selected</span></p>
                 <p> <b>Last Playoff Alliance update:</b> <span id="allianceUpdateContainer">no Playoff data available</span></p>
-                <p> <span id="playoffScheduleAlert" class="playoffAlert" onClick="getHybridSchedule()">Tap here to refresh Playoff schedule, when available. <img src="images/FIRST_STEAMWORKS_Animated_small.gif" alt=""/></span></p>
+                <p></p>
+                <p> <span id="playoffScheduleAlert" class="btn-default alert playoffAlert" onClick="getHybridSchedule()">Tap here to refresh Playoff schedule, when available. </span><img src="images/FIRST_STEAMWORKS_Animated_small.gif" alt=""/></p><p></p><p><span class="btn-default alert" onClick="resetLocalStorage()">Tap to reset local storage. This will erase all of your stored changes to team data. Use with caution.</span></p>
             </div>
         </div>
         <div id="schedule" class="tabcontent">

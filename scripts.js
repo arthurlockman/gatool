@@ -198,8 +198,8 @@ function getTeamList() {
             localStorage.teamList = null;
         } else {
             var teamList = "";
-            document.getElementById('teamsContainer').innerHTML = '<table id="teamsTable" class="table table-responsive table-bordered table-striped"></table>';
-            teamList += '<thead class="thead-default"><tr><td class="col1"><b>Number</b></td><td class="col2"><b>Short Name</b></td><td class="col2"><b>City</b></td><td class="col3"><b>Sponsors</b></td><td  class="col2"><b>Organization</b></td><td class="col1"><b>Rookie Year</b></td><td class="col1"><b>Robot name</b></td></tr></thead><tbody>';
+            document.getElementById('teamsContainer').innerHTML = '<p>This table is editable. Tap on a team number to change data for a specific team. Edits you make are local to this browser, and they will persist here if you do not clear your browser cache. A future release will sync your changes with the central server. Be patient. </p><table id="teamsTable" class="table table-responsive table-bordered table-striped"></table>';
+            teamList += '<thead class="thead-default"><tr><td class="col1"><b>Team #</b></td><td class="col2"><b>Short Name</b></td><td class="col2"><b>City</b></td><td class="col3"><b>Sponsors</b></td><td  class="col2"><b>Organization</b></td><td class="col1"><b>Rookie Year</b></td><td class="col1"><b>Robot name</b></td></tr></thead><tbody>';
             for (var i = 0; i < data.teams.length; i++) {
                 var element = data.teams[i];
                 teamList += generateTeamTableRow(element);
@@ -872,4 +872,15 @@ function splitArray(array) {
             result = array[0] + ", " + array[1] + ", " + array[2] + ", " + array[3] + ", " + array[4];
     }
     return result;
+}
+
+function resetLocalStorage() {
+    "use strict";
+    var r = confirm("Are you sure you want to reset the localStorage? There is no undo.");
+if (r === true) {
+    localStorage.clear();
+    alert("LocalStorage cleared. Page will now reload to recover data from the server. Select your event after the page reloads.");
+    location.reload();
+}
+    
 }
