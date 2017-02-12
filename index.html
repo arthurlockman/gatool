@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="apple-mobile-web-app-capable" content="yes" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
 <title>gatool</title>
 
 <!-- Bootstrap -->
@@ -33,27 +33,29 @@
 </head>
 
 <body>
-<div id="navbar" class="navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-header theme-showcase" role="main"> <img src="images/FIRST-STEAMWORKS-RGB-h.png" width="100" alt="FIRST STEAMworks Logo"/> <span class="navbar-brand" id="eventName">gatool</span> </div>
-</div>
-<div class="container-fluid" id="body-container">
-    <div id="tabContainer" style="height:100%; display:block">
-        <ul id="appTab" class="tab">
-            <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'setup')" id="setupTabPicker">Setup</a></li>
+<div id="navbar" class="navbar navbar-fixed-top">
+    <ul id="appTab" class="tab">
+           <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'setup')" id="setupTabPicker">Setup</a></li>
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'schedule')" id="scheduleTabPicker">Match Schedule</a></li>
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'teamdata')" id="teamDataTabPicker">Team Data</a></li>
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'announce')" id="announceTabPicker">Announce</a></li>
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'playbyplay')" id="playByPlayTabPicker">Play-by-play</a></li>
             <!--<li><a href="javascript:void(0)" class="tablinks" onClick="openTab(event, 'teamDataEntry')" id="teamInfoUpdatePicker">Update Team Data</a></li>-->
+        <li><img src="images/FIRST-STEAMWORKS-RGB-h.png" width="100" alt="FIRST STEAMworks Logo"/></li>
         </ul>
+</div>
+    <div class="spacer"></div>
+<div class="container-fluid" id="body-container">
+    <div id="tabContainer" style="height:100%; display:block">
         <div id="setup" class="tabcontent">
-            <p>
+            
+               <p>
                 <select class="selectpicker" id="yearPicker" data-width="100%">
                     <option>2017</option>
                     <option>2016</option>
                     <option>2015</option>
-                    <option>2014</option>
-                    <option>2013</option>
+                    <!--<option>2014</option>
+                    <option>2013</option>-->
                 </select>
             </p>
             <p>
@@ -61,6 +63,7 @@
                 </select>
             </p>
             <div id="eventInfoContainer">
+                <p id="eventName" class="eventName">gatool</p>
                 <p> <b>Event Code:</b> <span id="eventCodeContainer">no event selected</span> </p>
                 <p> <b>Event Location:</b> <span id="eventLocationContainer">no event selected</span> </p>
                 <p> <b>Event Dates:</b> <span id="eventDateContainer">no event selected</span> </p>
@@ -70,7 +73,9 @@
                 <p> <b>Last Schedule update:</b> <span id="scheduleUpdateContainer">no event selected</span></p>
                 <p> <b>Last Playoff Alliance update:</b> <span id="allianceUpdateContainer">no Playoff data available</span></p>
                 <p></p>
-                <p> <span id="playoffScheduleAlert" class="btn-default alert playoffAlert" onClick="getHybridSchedule()">Tap here to refresh Playoff schedule, when available. </span><img src="images/FIRST_STEAMWORKS_Animated_small.gif" alt=""/></p><p></p><p><span class="btn-default alert" onClick="resetLocalStorage()">Tap to reset local storage. This will erase all of your stored changes to team data. Use with caution.</span></p>
+                <p> <span id="playoffScheduleAlert" class="btn-default alert playoffAlert" onClick="getHybridSchedule()">Tap here to refresh Playoff schedule, when available. </span><img src="images/FIRST_STEAMWORKS_Animated_small.gif" alt="SteamWorks Logo animated"/></p>
+                <div class="spacer"></div>
+                <p><span class="btn-default alert" onClick="resetLocalStorage()">Tap to reset local storage. This will erase all of your stored changes to team data. Use with caution.</span></p>
             </div>
         </div>
         <div id="schedule" class="tabcontent">
