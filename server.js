@@ -18,7 +18,6 @@ var server = app.listen(8080, function () {
     'use strict';
     var host = server.address().address;
     var port = server.address().port;
-    console.log('Server listening at http://%s:%s', host, port);
 });
 
 function sendFile(res, filename, contentType) {
@@ -51,7 +50,7 @@ router.route('/:year/events').get(function (req, res) {
 
 router.route('/:year/alliances/:eventCode').get(function (req, res) {
     'use strict';
-    unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/alliances/'+req.params.eventCode)
+    unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/alliances/' + req.params.eventCode)
         .headers({
             'Authorization': token.token
         })
@@ -105,9 +104,9 @@ router.route('/:year/rankings/:eventCode/').get(function (req, res) {
         });
 });
 
-router.route('/:year/awards/:eventCode/').get(function (req, res) {
+router.route('/:year/eventawards/:eventCode/').get(function (req, res) {
     'use strict';
-    unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/awards/'+req.params.eventCode)
+    unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/awards/' + req.params.eventCode)
         .headers({
             'Authorization': token.token
         })
@@ -117,6 +116,32 @@ router.route('/:year/awards/:eventCode/').get(function (req, res) {
             });
             res.end(JSON.stringify(response.body), 'utf-8');
         });
+});
+
+router.route('/:year/awards/:teamNumber/').get(function (req, res) {
+    'use strict';
+    db.get("awards." + req.params.teamNumber + "." + req.params.year, function (err, storedRequest) {
+        if (err) {
+            unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/awards/' + req.params.teamNumber)
+                .headers({
+                    'Authorization': token.token
+                })
+                .end(function (response) {
+                    db.put("awards." + req.params.teamNumber + "." + req.params.year, JSON.stringify(response));
+                    res.writeHead(200, {
+                        'Content-type': 'text/html'
+                    });
+                    res.end(JSON.stringify(response.body), 'utf-8');
+                });
+        } else {
+            res.writeHead(200, {
+                'Content-type': 'text/html'
+            });
+            res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
+        }
+
+    });
+
 });
 
 
@@ -144,5 +169,5 @@ app.get('/css/style.css', function (req, res) {
 
 app.get('/images/:filename', function (req, res) {
     'use strict';
-    sendFile(res, './images/'+req.params.filename);
+    sendFile(res, './images/' + req.params.filename);
 });

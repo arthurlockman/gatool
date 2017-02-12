@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="apple-mobile-web-app-capable" content="yes" />
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
@@ -43,6 +44,7 @@
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'teamdata')" id="teamDataTabPicker">Team Data</a></li>
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'announce')" id="announceTabPicker">Announce</a></li>
             <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'playbyplay')" id="playByPlayTabPicker">Play-by-play</a></li>
+            <!--<li><a href="javascript:void(0)" class="tablinks" onClick="openTab(event, 'teamDataEntry')" id="teamInfoUpdatePicker">Update Team Data</a></li>-->
         </ul>
         <div id="setup" class="tabcontent">
             <p>
@@ -64,9 +66,9 @@
                 <p> <b>Event Dates:</b> <span id="eventDateContainer">no event selected</span> </p>
                 <p> <b>Last Event List update:</b> <span id="eventUpdateContainer">no event selected</span> </p>
                 <p> <b>Last Team Info update:</b> <span id="teamUpdateContainer">no event selected</span> </p>
-                <p> <b>Last Ranking update:</b> <span id="rankUpdateContainer">no event selected</span> </p>
+                <p> <b>Last Ranking update:</b> <span id="rankUpdateContainer">no ranking data available</span> </p>
                 <p> <b>Last Schedule update:</b> <span id="scheduleUpdateContainer">no event selected</span></p>
-                <p> <b>Last Playoff Alliance update:</b> <span id="allianceUpdateContainer">no event selected</span></p>
+                <p> <b>Last Playoff Alliance update:</b> <span id="allianceUpdateContainer">no Playoff data available</span></p>
                 <p> <span id="playoffScheduleAlert" class="playoffAlert" onClick="getHybridSchedule()">Tap here to refresh Playoff schedule, when available. <img src="images/FIRST_STEAMWORKS_Animated_small.gif" alt=""/></span></p>
             </div>
         </div>
@@ -252,11 +254,46 @@
                 </table>
             </div>
         </div>
+        <div id="teamDataEntry" class="tabcontent" >
+            <p>Use this form to update team information for Team <span id="teamNumberUpdate">xxx</span>. Editable fields are shown below. Your changes will be stored locally on your machine and should not be erased if you close your browser. Tap on each item to update its value. Tap <strong>DONE</strong> when you're finished editing.</p>
+            <form>
+                <div class="form-group">
+                    <label for="teamNameUpdate">Team Name</label>
+                    <input type="text" class="form-control" id="teamNameUpdate" placeholder="Enter a Team Name">
+                </div>
+                <div class="form-group">
+                    <label for="organizationUpdate">Organization/School</label>
+                    <input type="text" class="form-control" id="organizationUpdate" placeholder="Enter an Organization or School Name">
+                </div>
+                <div class="form-group">
+                    <label for="robotNameUpdate">Robot Name</label>
+                    <input type="text" class="form-control" id="robotNameUpdate" placeholder="Enter a Robot Name">
+                </div>
+                <div class="form-group">
+                    <label for="cityStateUpdate">City, State</label>
+                    <input type="text" class="form-control" id="cityStateUpdate" placeholder="Enter a city and state">
+                </div>
+                <div class="form-group">
+                    <label for="topSponsorsUpdate">Top Sponsors (Enter no more than 5 top sponsors from the full sponsor list below</label>
+                    <input type="text" class="form-control" id="topSponsorsUpdate" placeholder="Enter the team's top 5 sponsors">
+                </div>
+                <div class="form-group">
+                    <label for="sponsorsUpdate">Full list of Sponsors</label>
+                    <input type="text" class="form-control" id="sponsorsUpdate" placeholder="Enter the team's Sponsors">
+                </div>
+                <div class="form-group">
+                    <label for="awardsUpdate">Awards</label>
+                    <input type="text" class="form-control" id="awardsUpdate" placeholder="Enter team awards for no more than the last three years">
+                </div>
+                <div onClick="updateTeamInfoDone()" class="btn btn-primary">Done</div>
+            </form>
+        </div>
     </div>
 </div>
+
 <footer id="footer" class="gatool-footer footer">
     <div>
-        <p class="text-muted">© 2016 Arthur Lockman & James Lockman</p>
+        <p class="text-muted">© 2016 Arthur Lockman & James Lockman, <a href="http://www.northernforce.org/">FIRST Robotics Team 172 Northern Force</a> and the <a href="http://gofarmaine.org">Gorham-Falmouth Alliance for Robotics.</a> Think Pink!</p>
     </div>
 </footer>
 </body>

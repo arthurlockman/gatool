@@ -114,7 +114,9 @@ opacity: 1;
 }
 .playByPlayWinLossTie {
     font-size: large;
-    font-style: italic
+    font-style: italic;
+    align-content: center;
+    text-align: center
 }
 .ranking {
     align-content: center;
@@ -196,10 +198,14 @@ opacity: 1;
     font-size: 20px;
     font-weight: bold
 }
+.teamUpdateTable {
+    
+}
 .wltTable {
     border-width: thin;
     background-color: rgba(255,255,255,0.20);
     text-align: center;
+    align-content: center;
     display: block;
     margin: auto;
 }
@@ -212,18 +218,27 @@ opacity: 1;
 .cell {
     display: inline
 }
+.col1 {
+    width: 83px
+}
 .col2 {
-    width: 500px
+    width: 166px
 }
 .col3 {
-    width: 333px
-}
-.col4 {
     width: 250px
 }
+.col4 {
+    width: 333px
+}
 .col5 {
-    width: 200px
+    width: 416px
 }
 .col6 {
-    width: 167px
+    width: 500px
+}
+.col9 {
+    width: 750px
+}
+.col10 {
+    width: 833px
 }

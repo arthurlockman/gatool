@@ -4,11 +4,11 @@ $.getScript('https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.
 
 localStorage.currentMatch = 1;
 localStorage.inPlayoffs = false;
-localStorage.Alliances = [];
-localStorage.events = [];
-localStorage.playoffList = [];
-localStorage.qualsList = [];
-localStorage.teamList = [];
+localStorage.Alliances = "";
+localStorage.events = "";
+localStorage.playoffList = "";
+localStorage.qualsList = "";
+localStorage.teamList = "";
 
 window.onload = function () {
     "use strict";
@@ -99,26 +99,19 @@ function loadEventsList() {
     req.send();
 }
 
-function openTab(evt, cityName) {
+function openTab(evt, tabID) {
     "use strict";
-    // Declare all variables
-    var i, tabcontent, tablinks;
 
     // Get all elements with class="tabcontent" and hide them
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
+    $(".tabcontent").css('display', 'none');
 
     // Get all elements with class="tablinks" and remove the class "active"
-    tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
+    $(".tablinks").removeClass('active');
 
     // Show the current tab, and add an "active" class to the link that opened the tab
-    document.getElementById(cityName).style.display = "block";
-    evt.currentTarget.className += " active";
+    document.getElementById(tabID).style.display = "block";
+    $("#" + evt.currentTarget).addClass("active");
+    //evt.currentTarget.className += " active";
 
     //resize the window
     scaleRows();
@@ -126,34 +119,40 @@ function openTab(evt, cityName) {
 
 function getHybridSchedule() {
     "use strict";
+    // inform the user that something is going to happen
     $("#scheduleUpdateContainer").html("Loading schedule data...");
     var matchSchedule = "";
     var year = document.getElementById('yearPicker');
     var eventPicker = document.getElementById('eventSelector');
+    // Set up the API requestfor getting the Qualification and Playoff Schedules. When the Quals are loaded, an attempt is made to get the Playoffs.
     var req = new XMLHttpRequest();
     req.open('GET', '/api/' + year.options[year.selectedIndex].value + '/schedule/' + JSON.parse(eventPicker.options[eventPicker.selectedIndex].value).code + '/qual');
     req.addEventListener('load', function () {
         var data = JSON.parse(req.responseText);
+        //Ensure that there is a schedule
         if (data.Schedule.length === 0) {
             document.getElementById('scheduleContainer').innerHTML = '<b>No qualification matches have been scheduled for this event.</b>';
-            localStorage.qualsList = [];
-            localStorage.playoffList = [];
+            localStorage.qualsList = "";
+            localStorage.playoffList = "";
         } else {
-            document.getElementById('scheduleContainer').innerHTML = '<table id="scheduleTable" class="table table-bordered table-responsive table-striped"></table>';
-            matchSchedule += '<thead class="thead-default"><tr><td><b>Time</b></td><td><b>Description</b></td><td><b>Match Number</b></td><td><b>Red 1</b></td><td><b>Red 2</b></td><td><b>Red 3</b></td><td><b>Blue 1</b></td><td><b>Blue 2</b></td><td><b>Blue 3</b></td></tr></thead><tbody>';
+            //we have a schedule. Create the table and displau the schedule.
+            $("#scheduleContainer").html('<table id="scheduleTable" class="table table-bordered table-responsive table-striped"></table>');
+            //document.getElementById('scheduleContainer').innerHTML = '<table id="scheduleTable" class="table table-bordered table-responsive table-striped"></table>';
+            matchSchedule += '<thead class="thead-default"><tr><td class="col2"><b>Time</b></td><td  class="col3"><b>Description</b></td><td class="col1"><b>Match Number</b></td><td class="col1"><b>Red 1</b></td><td class="col1"><b>Red 2</b></td><td class="col1"><b>Red 3</b></td><td class="col1"><b>Blue 1</b></td><td class="col1"><b>Blue 2</b></td><td class="col1"><b>Blue 3</b></td></tr></thead><tbody>';
             for (var i = 0; i < data.Schedule.length; i++) {
                 var element = data.Schedule[i];
                 matchSchedule += generateMatchTableRow(element);
             }
             localStorage.qualsList = JSON.stringify(data);
-            document.getElementById('announceBanner').style.display = 'none';
-            document.getElementById('announceDisplay').style.display = 'block';
-            document.getElementById('playByPlayBanner').style.display = 'none';
-            document.getElementById('playByPlayDisplay').style.display = 'block';
+            $("#announceBanner, #playByPlayBanner").css("display", "none");
+            $("#announceDisplay, #playByPlayDisplay").css("display", "block");
+
+            //refresh the Game Announce and Play by Play displays and prepare to get the Playoff Schedule.
             announceDisplay();
             $("#scheduleUpdateContainer").html(Date() + "... and looking for Playoff schedule...");
 
         }
+        //fetch the playoff schedule
         req1.send();
     });
     var req1 = new XMLHttpRequest();
@@ -163,7 +162,7 @@ function getHybridSchedule() {
         var data = JSON.parse(req1.responseText);
         if (data.Schedule.length === 0) {
             document.getElementById('scheduleContainer').innerHTML += '<p><b>No playoff matches have been scheduled for this event.</b></p>';
-            localStorage.playoffList = [];
+            localStorage.playoffList = "";
         } else {
             for (var i = 0; i < data.Schedule.length; i++) {
                 var element = data.Schedule[i];
@@ -181,6 +180,7 @@ function getHybridSchedule() {
         $("#scheduleUpdateContainer").html(Date());
 
     });
+    //fetch the Qualification schedule
     req.send();
 }
 
@@ -199,7 +199,7 @@ function getTeamList() {
         } else {
             var teamList = "";
             document.getElementById('teamsContainer').innerHTML = '<table id="teamsTable" class="table table-responsive table-bordered table-striped"></table>';
-            teamList += '<thead class="thead-default"><tr><td><b>Number</b></td><td><b>Short Name</b></td><td><b>City</b></td><td><b>Sponsors</b></td><td><b>Organization</b></td><td><b>Rookie Year</b></td><td><b>Robot name</b></td></tr></thead><tbody>';
+            teamList += '<thead class="thead-default"><tr><td class="col1"><b>Number</b></td><td class="col2"><b>Short Name</b></td><td class="col2"><b>City</b></td><td class="col3"><b>Sponsors</b></td><td  class="col2"><b>Organization</b></td><td class="col1"><b>Rookie Year</b></td><td class="col1"><b>Robot name</b></td></tr></thead><tbody>';
             for (var i = 0; i < data.teams.length; i++) {
                 var element = data.teams[i];
                 teamList += generateTeamTableRow(element);
@@ -231,7 +231,7 @@ function getAllianceList() {
             localStorage.Alliances = JSON.stringify(data);
             for (var i = 0; i < data.Alliances.length; i++) {
                 var element = data.Alliances[i];
-                var team = [];
+                var team = {};
                 if (element.captain !== null) {
                     team = JSON.parse(localStorage["teamData" + element.captain]);
                     team.alliance = element.number;
@@ -307,20 +307,26 @@ function scaleRows() {
     "use strict";
     var height = window.innerHeight;
     var width = window.innerWidth - 30;
+    var col1width = width / 12;
     var col2width = width / 6;
     var col3width = width / 4;
     var col4width = width / 3;
     var col5width = width / 12 * 5;
     var col6width = width / 2;
+    var col9width = width / 4 * 3;
+    var col10width = width / 6 * 5;
     var announceHeight = Math.round((height - $("#navbar").outerHeight() - $("#appTab").outerHeight() - $("#gameButtonsAnnounce").outerHeight() - $("#footer").outerHeight() - $("#announceTableHeader").outerHeight()) / 6 - 10);
     var playByPlayHeight = Math.round((height - $("#navbar").outerHeight() - $("#appTab").outerHeight() - $("#gameButtonsPlayByPlay").outerHeight() - $("#footer").outerHeight() - $("#announceTableHeader").outerHeight()) / 3 - 12);
     $(".redAlliancePlayByPlay,.blueAlliancePlayByPlay").css("height", playByPlayHeight + "px");
     $(".redAlliance,.blueAlliance").css("height", announceHeight + "px");
+    $(".col1").css("width", col1width + "px");
     $(".col2").css("width", col2width + "px");
     $(".col3").css("width", col3width + "px");
     $(".col4").css("width", col4width + "px");
     $(".col5").css("width", col5width + "px");
     $(".col6").css("width", col6width + "px");
+    $(".col9").css("width", col9width + "px");
+    $(".col10").css("width", col10width + "px");
 }
 
 
@@ -338,11 +344,11 @@ function announceDisplay() {
     getTeamRanks();
     $("#eventName").html("<b>" + JSON.parse(document.getElementById("eventSelector").value).name + "</b>");
     $("#matchNumber").html("<b>" + currentMatchData.matchNumber + "</b>");
-    $("#matchNameAnnounce").html("<b>" + currentMatchData.description + "</b>");
-    $("#topMatchNameAnnounce").html("<b>" + currentMatchData.description + "</b>");
-    $("#matchName").html("<b>" + currentMatchData.description + "</b>");
-    $("#matchNamePlayByPlay").html("<b>" + currentMatchData.description + "</b>");
-    $("#topMatchNamePlayByPlay").html("<b>" + currentMatchData.description + "</b>");
+    $("#matchNameAnnounce").html("<b>" + currentMatchData.description + " of " + qualsList.Schedule.length + "</b>");
+    $("#topMatchNameAnnounce").html("<b>" + currentMatchData.description + " of " + qualsList.Schedule.length + "</b>");
+    $("#matchName").html("<b>" + currentMatchData.description + " of " + qualsList.Schedule.length + "</b>");
+    $("#matchNamePlayByPlay").html("<b>" + currentMatchData.description + " of " + qualsList.Schedule.length + "</b>");
+    $("#topMatchNamePlayByPlay").html("<b>" + currentMatchData.description + " of " + qualsList.Schedule.length + "</b>");
 
     for (var ii = 0; ii < 6; ii++) {
         var teamData = JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]);
@@ -352,21 +358,61 @@ function announceDisplay() {
             $('#' + stationList[ii] + 'Alliance').html("<br><b>" + teamData.allianceName + "<br>" + teamData.allianceChoice + "<b>");
             $('#' + stationList[ii] + 'PlayByPlayAlliance').html("<p><b>" + teamData.allianceName + "<br>" + teamData.allianceChoice + "<b></p>");
         }
-        $("#" + stationList[ii] + "TeamName").html(teamData.nameShort);
-        $("#" + stationList[ii] + "CityState").html(teamData.cityState);
-        $("#" + stationList[ii] + "RobotName").html(teamData.robotName);
-        $("#" + stationList[ii] + "Organization").html(teamData.organization);
-        $("#" + stationList[ii] + "Sponsors").html(teamData.sponsors);
+        if (teamData.nameShortLocal === "") {
+            $("#" + stationList[ii] + "TeamName").html(teamData.nameShort);
+        } else {
+            $("#" + stationList[ii] + "TeamName").html(teamData.nameShortLocal);
+        }
+        if (teamData.cityStateLocal === "") {
+            $("#" + stationList[ii] + "CityState").html(teamData.cityState);
+        } else {
+            $("#" + stationList[ii] + "CityState").html(teamData.cityStateLocal);
+        }
+        if (teamData.robotNameLocal === "") {
+            $("#" + stationList[ii] + "RobotName").html(teamData.robotName);
+        } else {
+            $("#" + stationList[ii] + "RobotName").html(teamData.robotNameLocal);
+        }
+        if (teamData.organizationLocal === "") {
+            $("#" + stationList[ii] + "Organization").html(teamData.organization);
+        } else {
+            $("#" + stationList[ii] + "Organization").html(teamData.organizationLocal);
+        }
+        if (teamData.sponsorsLocal) {
+            $("#" + stationList[ii] + "Sponsors").html(teamData.sponsors);
+        } else {
+            $("#" + stationList[ii] + "Sponsors").html(teamData.sponsorsLocal);
+        }
+        if (teamData.awardsLocal === "") {
+            $("#" + stationList[ii] + "Awards").html(teamData.awards);
+        } else {
+            $("#" + stationList[ii] + "Awards").html(teamData.awardsLocal);
+        }
         $("#" + stationList[ii] + "Rank").html(teamData.rank);
-        $("#" + stationList[ii] + "Awards").html(teamData.awards);
         $("#" + stationList[ii] + "WinLossTie").html("<table class='wltTable'><tr><td id='" + stationList[ii] + "PlayByPlayRank' class='wltCol'>Rank<br>" + teamData.rank + "</td><td class='wltCol'>Qual Avg<br>" + teamData.qualAverage + "</td><td class='wltCol'>W-L-T<br>" + teamData.wins + "-" + teamData.losses + "-" + teamData.ties + "</td></tr></table>");
         rankHighlight(stationList[ii] + "PlayByPlayRank", teamData.rank);
         rankHighlight(stationList[ii] + "Rank", teamData.rank);
         $('#' + stationList[ii] + 'PlaybyPlayteamNumber').html(currentMatchData.Teams[ii].teamNumber);
-        $('#' + stationList[ii] + 'PlaybyPlayTeamName').html(teamData.nameShort);
-        $('#' + stationList[ii] + 'PlaybyPlayRobotName').html(teamData.robotName);
-        $("#" + stationList[ii] + "PlayByPlayCity").html(teamData.cityState);
-        $("#" + stationList[ii] + "PlayByPlayOrganization").html(teamData.organization);
+        if (teamData.nameShortLocal === "") {
+            $('#' + stationList[ii] + 'PlaybyPlayTeamName').html(teamData.nameShort);
+        } else {
+            $('#' + stationList[ii] + 'PlaybyPlayTeamName').html(teamData.nameShortLocal);
+        }
+        if (teamData.robotNameLocal === "") {
+            $('#' + stationList[ii] + 'PlaybyPlayRobotName').html(teamData.robotName);
+        } else {
+            $('#' + stationList[ii] + 'PlaybyPlayRobotName').html(teamData.robotNameLocal);
+        }
+        if (teamData.cityStateLocal === "") {
+            $("#" + stationList[ii] + "PlayByPlayCity").html(teamData.cityState);
+        } else {
+            $("#" + stationList[ii] + "PlayByPlayCity").html(teamData.cityStateLocal);
+        }
+        if (teamData.organizationLocal === "") {
+            $("#" + stationList[ii] + "PlayByPlayOrganization").html(teamData.organization);
+        } else {
+            $("#" + stationList[ii] + "PlayByPlayOrganization").html(teamData.organizationLocal);
+        }
     }
 }
 
@@ -530,10 +576,48 @@ function getTeamForStation(teamList, station) {
 
 function generateTeamTableRow(teamData) {
     "use strict";
+    var teamInfo = {};
+    if (typeof (localStorage['teamData' + teamData.teamNumber]) !== 'undefined') {
+        teamInfo = JSON.parse(localStorage['teamData' + teamData.teamNumber]);
+    } else {
+        teamInfo = {
+            "nameShort": teamData.nameShort,
+            "cityState": teamData.city + ', ' + teamData.stateProv,
+            "nameFull": teamData.nameFull,
+            "rookieYear": teamData.rookieYear,
+            "robotName": teamData.robotName,
+            "organization": "",
+            "sponsors": "",
+            "topSponsors": "",
+            "awards": "",
+            "alliance": "",
+            "allianceName": "",
+            "allianceChoice": "",
+            "rank": "",
+            "sortOrder1": "",
+            "sortOrder2": "",
+            "sortOrder3": "",
+            "sortOrder4": "",
+            "sortOrder5": "",
+            "sortOrder6": "",
+            "wins": "",
+            "losses": "",
+            "ties": "",
+            "qualAverage": "",
+            "dq": "",
+            "matchesPlayed": "",
+            "nameShortLocal": "",
+            "cityStateLocal": "",
+            "topSponsorsLocal": "",
+            "sponsorsLocal": "",
+            "organizationLocal": "",
+            "robotNameLocal": "",
+            "awardsLocal": ""
+        };
+    }
     var year = document.getElementById('yearPicker').options[document.getElementById('yearPicker').selectedIndex].value;
+    var returnData = "";
     var robotName = "";
-    var returnData = '<tr><td>';
-    var teamInfo = "";
     var organization = "";
     var sponsors = "";
     var topSponsors = "";
@@ -576,32 +660,37 @@ function generateTeamTableRow(teamData) {
         topSponsors = splitArray(topSponsorsArray);
     }
 
-    returnData += teamData.teamNumber + '</td><td>';
-    returnData += teamData.nameShort + '</td><td>';
-    returnData += teamData.city + ", " + teamData.stateProv + '</td><td>';
-    returnData += teamData.nameFull + '</td><td>';
-    returnData += teamData.nameShort + '</td><td>'; //replace with organization function.
-    returnData += rookieYearDisplay(teamData.rookieYear) + '</td><td>';
-    if (teamData.robotName === null) {
-        returnData += "No robot name reported" + '</td>';
+    returnData += '<tr><td class = "btn-default" id="teamTableNumber' + teamData.teamNumber + '" onclick="updateTeamInfo(' + teamData.teamNumber + ')">' + teamData.teamNumber + '</td>';
+    if (teamInfo.nameShortLocal === "") {
+        returnData += '<td id="teamTableName' + teamData.teamNumber + '">' + teamInfo.nameShort + '</td>';
     } else {
-        returnData += teamData.robotName + '</td>';
+        returnData += '<td id="teamTableName' + teamData.teamNumber + '">' + teamInfo.nameShortLocal + '</td>';
+    }
+    if (teamInfo.cityStateLocal === "") {
+        returnData += '<td id="teamTableCityState' + teamData.teamNumber + '">' + teamData.city + ", " + teamData.stateProv + '</td>';
+    } else {
+        returnData += '<td id="teamTableCityState' + teamData.teamNumber + '">' + teamInfo.cityStateLocal + '</td>';
+    }
+    returnData += '<td id="teamTableNameFull' + teamData.teamNumber + '">' + teamData.nameFull + '</td>';
+    if (teamInfo.organizationLocal === "") {
+        returnData += '<td id="teamTableOrganization' + teamData.teamNumber + '">' + organization + '</td>';
+    } else {
+        returnData += '<td id="teamTableNameOrganization' + teamData.teamNumber + '">' + teamInfo.organizationLocal + '</td>';
+    } //replace with organization function.
+    returnData += '<td id="teamTableRookieYear' + teamData.teamNumber + '">' + rookieYearDisplay(teamData.rookieYear) + '</td>';
+    if ((teamData.robotName === null) && (teamInfo.robotNameLocal === "")) {
+        returnData += '<td id="teamTableRobotName' + teamData.teamNumber + '">' + "No robot name reported" + '</td>';
+    } else {
+        if (teamInfo.robotNameLocal === "") {
+            returnData += '<td id="teamTableRobotName' + teamData.teamNumber + '">' + teamData.robotName + '</td>';
+        } else {
+            returnData += '<td id="teamTableRobotName' + teamData.teamNumber + '">' + teamInfo.robotNameLocal + '</td>';
+        }
         robotName = teamData.robotName;
     }
-    teamInfo = {
-        "nameShort": teamData.nameShort,
-        "cityState": teamData.city + ', ' + teamData.stateProv,
-        "nameFull": teamData.nameFull,
-        "sponsors": sponsors,
-        "topSponsors": topSponsors,
-        "organization": organization,
-        "rookieYear": teamData.rookieYear,
-        "robotName": teamData.robotName,
-        "awards": "",
-        "alliance": "",
-        "allianceName": "",
-        "allianceChoice": ""
-    };
+    teamInfo.sponsors = sponsors;
+    teamInfo.topSponsors = topSponsors;
+    teamInfo.organization = organization;
     localStorage['teamData' + teamData.teamNumber] = JSON.stringify(teamInfo);
     getTeamAwards(teamData.teamNumber, year);
 
@@ -633,6 +722,119 @@ function rankHighlight(station, rank) {
         document.getElementById(station).style.backgroundColor = "";
     }
 
+}
+
+function updateTeamInfo(teamNumber) {
+    "use strict";
+    localStorage.currentTeam = teamNumber;
+    var teamData = JSON.parse(localStorage["teamData" + teamNumber]);
+    $("#teamNumberUpdate").html(teamNumber);
+    if (teamData.nameShortLocal === "") {
+        $("#teamNameUpdate").val(teamData.nameShort);
+    } else {
+        {
+            $("#teamNameUpdate").val(teamData.nameShortLocal);
+        }
+    }
+    if (teamData.cityStateLocal === "") {
+        $("#cityStateUpdate").val(teamData.cityState);
+    } else {
+        $("#cityStateUpdate").val(teamData.cityStateLocal);
+    }
+    if (teamData.topSponsorsLocal === "") {
+        $("#topSponsorsUpdate").val(teamData.topSponsors);
+    } else {
+        $("#topSponsorsUpdate").val(teamData.topSponsorsLocal);
+    }
+    if (teamData.sponsorsLocal === "") {
+        $("#sponsorsUpdate").val(teamData.sponsors);
+    } else {
+        $("#sponsorsUpdate").val(teamData.sponsorsLocal);
+    }
+    if (teamData.organizationLocal === "") {
+        $("#organizationUpdate").val(teamData.organization);
+    } else {
+        $("#organizationUpdate").val(teamData.organizationLocal);
+    }
+    if (teamData.robotNameLocal === "") {
+        $("#robotNameUpdate").val(teamData.robotName);
+    } else {
+        $("#robotNameUpdate").val(teamData.robotNameLocal);
+    }
+    if (teamData.awardsLocal === "") {
+        $("#awardsUpdate").val(teamData.awards);
+    } else {
+        $("#awardsUpdate").val(teamData.awardsLocal);
+    }
+    // Get all elements with class="tabcontent" and hide them
+    $(".tabcontent").css('display', 'none');
+
+    // Show the current tab, and add an "active" class to the link that opened the tab
+    document.getElementById("teamDataEntry").style.display = "block";
+}
+
+function updateTeamInfoDone() {
+    "use strict";
+    var teamNumber = localStorage.currentTeam;
+    var teamData = JSON.parse(localStorage["teamData" + teamNumber]);
+
+    if ((teamData.nameShort !== $("#teamNameUpdate").val()) && ($("#teamNameUpdate").val() !== "")) {
+        teamData.nameShortLocal = $("#teamNameUpdate").val();
+        $("#teamTableName" + teamNumber).html($("#teamNameUpdate").val());
+    } else {
+        teamData.nameShortLocal = "";
+        $("#teamTableName" + teamNumber).html(teamData.nameShort);
+    }
+    if ((teamData.cityState !== $("#cityStateUpdate").val()) && ($("#cityStateUpdate").val() !== "")) {
+        teamData.cityStateLocal = $("#cityStateUpdate").val();
+        $("#teamTableCityState" + teamNumber).html($("#cityStateUpdate").val());
+    } else {
+        teamData.cityStateLocal = "";
+        $("#teamTableCityState" + teamNumber).html(teamData.cityState);
+    }
+    if ((teamData.topSponsors !== $("#topSponsorsUpdate").val()) && ($("#topSponsorsUpdate").val() !== "")) {
+        teamData.topSponsorsLocal = $("#topSponsorsUpdate").val();
+        $("#teamTableTopSponsors" + teamNumber).html($("#topSponsorsUpdate").val());
+    } else {
+        teamData.topSponsorsLocal = "";
+        $("#teamTableTopSponsors" + teamNumber).html(teamData.topSponsors);
+    }
+    if ((teamData.sponsors !== $("#sponsorsUpdate").val()) && ($("#sponsorsUpdate").val() !== "")) {
+        teamData.sponsorsLocal = $("#sponsorsUpdate").val();
+        $("#teamTableSponsors" + teamNumber).html($("#sponsorsUpdate").val());
+    } else {
+        teamData.sponsorsLocal = "";
+        $("#teamTableSponsors" + teamNumber).html(teamData.sponsors);
+    }
+    if ((teamData.organization !== $("#organizationUpdate").val()) && ($("#organizationUpdate").val() !== "")) {
+        teamData.organizationLocal = $("#organizationUpdate").val();
+        $("#teamTableOrganization" + teamNumber).html($("#organizationUpdate").val());
+    } else {
+        teamData.organizationLocal = "";
+        $("#teamTableOrganization" + teamNumber).html(teamData.organization);
+    }
+    if ((teamData.robotName !== $("#robotNameUpdate").val()) && ($("#robotNameUpdate").val() !== "")) {
+        teamData.robotNameLocal = $("#robotNameUpdate").val();
+        $("#teamTableRobotName" + teamNumber).html($("#robotNameUpdate").val());
+    } else {
+        teamData.robotNameLocal = "";
+        $("#teamTableRobotName" + teamNumber).html(teamData.robotName);
+    }
+    if ((teamData.awards !== $("#awardsUpdate").val()) && ($("#awardsUpdate").val() !== "")) {
+        teamData.awardsLocal = $("#awardsUpdate").val();
+        $("#teamTableAwards" + teamNumber).html($("#awardsUpdate").val());
+    } else {
+        teamData.awardsLocal = "";
+        $("#teamTableAwards" + teamNumber).html(teamData.awards);
+    }
+
+    localStorage["teamData" + teamNumber] = JSON.stringify(teamData);
+    // Get all elements with class="tabcontent" and hide them
+
+    $(".tabcontent").css('display', 'none');
+
+    // Show the current tab, and add an "active" class to the link that opened the tab
+    document.getElementById("teamdata").style.display = "block";
 }
 
 function rookieYearDisplay(year) {
