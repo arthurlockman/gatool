@@ -378,7 +378,7 @@ function announceDisplay() {
         } else {
             $("#" + stationList[ii] + "Organization").html(teamData.organizationLocal);
         }
-        if (teamData.sponsorsLocal) {
+        if (teamData.sponsorsLocal === "") {
             $("#" + stationList[ii] + "Sponsors").html(teamData.sponsors);
         } else {
             $("#" + stationList[ii] + "Sponsors").html(teamData.sponsorsLocal);
