@@ -9,8 +9,11 @@
 <title>gatool</title>
 
 <!-- Bootstrap -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/bootstrap-theme.min.css">
+<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">-->
+<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">-->
+
 <link rel="stylesheet" href="css/style.css" type="text/css">
 
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -20,36 +23,40 @@
 		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script> -->
+<script src="js/jquery-1.11.3.min.js"></script>
+<!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+--><!--<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script> -->
 <script src="scripts.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<!-- Bootstrap Select -->
+<script src="js/bootstrap.min.js"></script>
+<!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+--><!-- Bootstrap Select -->
 <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.min.css">
+<link rel="stylesheet" href="css/bootstrap-select.min.css">
+<!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.min.css">-->
 <!-- Latest compiled and minified JavaScript -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.min.js"></script>
+<script src="js/bootstrap-select.min.js"></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/js/bootstrap-select.min.js"></script>-->
 </head>
 
 <body>
 <div id="navbar" class="navbar navbar-fixed-top">
     <ul id="appTab" class="tab">
-           <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'setup')" id="setupTabPicker">Setup</a></li>
-            <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'schedule')" id="scheduleTabPicker">Match Schedule</a></li>
-            <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'teamdata')" id="teamDataTabPicker">Team Data</a></li>
-            <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'announce')" id="announceTabPicker">Announce</a></li>
-            <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'playbyplay')" id="playByPlayTabPicker">Play-by-play</a></li>
-            <!--<li><a href="javascript:void(0)" class="tablinks" onClick="openTab(event, 'teamDataEntry')" id="teamInfoUpdatePicker">Update Team Data</a></li>-->
+        <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'setup')" id="setupTabPicker">Setup</a></li>
+        <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'schedule')" id="scheduleTabPicker">Match Schedule</a></li>
+        <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'teamdata')" id="teamDataTabPicker">Team Data</a></li>
+        <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'announce')" id="announceTabPicker">Announce</a></li>
+        <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'playbyplay')" id="playByPlayTabPicker">Play-by-play</a></li>
+        <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'allianceselection')" id="allianceSelectionTabPicker">Alliance Selection</a></li>
+        <!--<li><a href="javascript:void(0)" class="tablinks" onClick="openTab(event, 'teamDataEntry')" id="teamInfoUpdatePicker">Update Team Data</a></li>-->
         <li><img src="images/FIRST-STEAMWORKS-RGB-h.png" width="100" alt="FIRST STEAMworks Logo"/></li>
-        </ul>
+    </ul>
 </div>
-    <div class="spacer"></div>
+<div class="spacer"></div>
 <div class="container-fluid" id="body-container">
     <div id="tabContainer" style="height:100%; display:block">
         <div id="setup" class="tabcontent">
-            
-               <p>
+            <p>
                 <select class="selectpicker" id="yearPicker" data-width="100%">
                     <option>2017</option>
                     <option>2016</option>
@@ -59,7 +66,7 @@
                 </select>
             </p>
             <p>
-                <select class="selectpicker" id="eventSelector" data-width="100%">
+                <select class="selectpicker" data-live-search="true" id="eventSelector" data-width="100%">
                 </select>
             </p>
             <div id="eventInfoContainer">
@@ -258,6 +265,7 @@
                 </table>
             </div>
         </div>
+        <div id="allianceselection" class="tabcontent"> Alliance Selection </div>
         <div id="teamDataEntry" class="tabcontent" >
             <p>Use this form to update team information for <strong>Team <span id="teamNumberUpdate">xxx</span></strong>. Editable fields are shown below. Your changes will be stored locally on your machine and should not be erased if you close your browser. Tap on each item to update its value. Tap <strong>DONE</strong> when you're finished editing, or browse to another tab to cancel editing. To reset any value to the TIMS value, simply delete it here and tap DONE.</p>
             <form>
@@ -294,7 +302,6 @@
         </div>
     </div>
 </div>
-
 <footer id="footer" class="gatool-footer footer">
     <div>
         <p class="text-muted">© 2016 Arthur Lockman & James Lockman, <a href="http://www.northernforce.org/">FIRST Robotics Team 172 Northern Force</a> and the <a href="http://gofarmaine.org">Gorham-Falmouth Alliance for Robotics.</a> Think Pink!</p>

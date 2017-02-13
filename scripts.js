@@ -429,6 +429,7 @@ function getTeamRanks() {
         if (data.Rankings.length === 0) {
             $("#rankingDisplay").html('<b>No Rankings available.</b>');
         } else {
+            localStorage.Rankings = JSON.stringify(data.Rankings);
             if (localStorage.currentMatch > JSON.parse(localStorage.qualsList).Schedule.length) {
                 $("#rankingDisplay").html("<b>Seed<b>");
             } else {
@@ -462,7 +463,6 @@ function getTeamRanks() {
 
 function getTeamAwards(teamNumber, year) {
     "use strict";
-    var eventCodes = JSON.parse(localStorage.events);
     var awards = "";
     var year1 = year - 1;
     var year2 = year - 2;
@@ -472,7 +472,7 @@ function getTeamAwards(teamNumber, year) {
     var req = new XMLHttpRequest();
     req.open('GET', '/api/' + year + '/awards/' + teamNumber + "/");
     req.addEventListener('load', function () {
-        if (req.responseText.substr(0, 5) !== '"Team') {
+        if (req.responseText.substr(0, 5) !== '"Team') {         
             var data = JSON.parse(req.responseText);
             if (data.Awards.length > 0) {
 
@@ -644,7 +644,7 @@ function generateTeamTableRow(teamData) {
         topSponsorsArray[topSponsorsArray.length] = sponsorArray[sponsorArray.length - 1];
     }
     if (organizationArray.length === 1) {
-        organization = organizationArray[0];
+        if (teamData.schoolName === null){organization = organizationArray[0];} else {organization = teamData.schoolName;}
     } else {
         topSponsorsArray[topSponsorsArray.length] = organizationArray.shift();
         sponsors += ", " + topSponsorsArray[topSponsorsArray.length - 1];
