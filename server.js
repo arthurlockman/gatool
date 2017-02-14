@@ -11,7 +11,11 @@ var http = require('http'),
 var token = require("./token.json");
 
 var level = require("level");
-var db = level("./database/");
+var options = {
+    keyEncoding: 'binary',
+    valueEncoding: 'json'
+};
+var db = level("./database/", options);
 
 var server = app.listen(8080, function () {
     'use strict';
@@ -33,58 +37,62 @@ function sendFile(res, filename, contentType) {
 
 app.use('/api', router);
 
-router.route('/:year/events').get(function (req, res) {
-    'use strict';
-    db.get("events." + req.params.year, function (err, storedRequest) {
-        if (err) {
-            console.log("No stored events data for " + req.params.year);
-            unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/events')
-                .headers({
-                    'Authorization': token.token
-                })
-                .end(function (response) {
-                    db.put("events." + req.params.year, JSON.stringify(response));
-                    res.writeHead(200, {
-                        'Content-type': 'text/html'
-                    });
-                    res.end(JSON.stringify(response.body), 'utf-8');
-                });
-        } else {
-            if (req.params.year < 2017) {
-                console.log("Sending stored events data for " + req.params.year + ":" + req.params.eventCode);
-                res.writeHead(200, {
-                    'Content-type': 'text/html'
-                });
-                res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
-            } else {
-                console.log("Reading events data for " + req.params.year + " from FIRST");
-                unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/events')
-                    .headers({
-                        'Authorization': token.token,
-                        'If-Modified-Since': JSON.parse(storedRequest).headers.date
-                    })
-                    .end(function (response) {
-                    console.log(response);
-                        if (response.statusCode === "304") {
-                            console.log("Stored events are current. Sending stored events for " + req.params.year);
-                            res.writeHead(200, {
-                                'Content-type': 'text/html'
-                            });
-                            res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
-                        } else {
-                            console.log("Stored events are stale. Saving result and sending new events for " + req.params.year);
-                            console.log(response.body);
-                            db.put("events." + req.params.year, JSON.stringify(response));
-                            res.writeHead(200, {
-                                'Content-type': 'text/html'
-                            });
-                            res.end(JSON.stringify(response.body), 'utf-8');
-                        }
-                    });
-            }
-        }
-    });
-});
+//router.route('/:year/events').get(function (req, res) {
+//    'use strict';
+//    db.get("eventslist." + req.params.year, function (err, storedRequest) {
+//        if (err) {
+//            console.log("No stored events data for " + req.params.year);
+//            unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/events')
+//                .headers({
+//                    'Authorization': token.token
+//                })
+//                .end(function (response) {
+//                    console.log(response.headers);
+//                    console.log(response.statusCode);
+//                    db.put("eventslist." + req.params.year, JSON.stringify(response));
+//                    res.writeHead(200, {
+//                        'Content-type': 'text/html'
+//                    });
+//                    res.end(JSON.stringify(response.body), 'utf-8');
+//                });
+//        } else {
+//            if (req.params.year < 2017) {
+//                console.log("Sending stored events data for " + req.params.year + ":" + req.params.eventCode);
+//                res.writeHead(200, {
+//                    'Content-type': 'text/html'
+//                });
+//                res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
+//            } else {
+//                console.log("Reading events data for " + req.params.year + " from FIRST");
+//                unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/events')
+//                    .headers({
+//                        'Authorization': token.token,
+//                        'If-Modified-Since': JSON.parse(storedRequest).headers.date
+//                    })
+//                    .end(function (response) {
+//                        console.log('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/events');
+//                        console.log(response.headers);
+//                        console.log(response.statusCode);
+//                        if (response.statusCode === "304") {
+//                            console.log("Stored events are current. Sending stored events for " + req.params.year);
+//                            res.writeHead(200, {
+//                                'Content-type': 'text/html'
+//                            });
+//                            res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
+//                        } else {
+//                            console.log("Stored events are stale. Saving result and sending new events for " + req.params.year);
+//                            console.log(response);
+//                            db.put("eventslist." + req.params.year, JSON.stringify(response));
+//                            res.writeHead(200, {
+//                                'Content-type': 'text/html'
+//                            });
+//                            res.end(JSON.stringify(response.body), 'utf-8');
+//                        }
+//                    });
+//            }
+//        }
+//    });
+//});
 
 router.route('/:year/alliances/:eventCode/').get(function (req, res) {
     'use strict';
@@ -162,7 +170,7 @@ router.route('/:year/schedule/:eventCode/:tlevel').get(function (req, res) {
                 res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
             } else {
                 console.log("Reading schedule data for " + req.params.year + ":" + req.params.eventCode + ":" + req.params.tlevel + " from FIRST");
-                unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/schedule/' + req.params.eventCode + '/' + req.params.tlevel + '/hybrid')                    
+                unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/schedule/' + req.params.eventCode + '/' + req.params.tlevel + '/hybrid')
                     .headers({
                         'Authorization': token.token,
                         'If-Modified-Since': JSON.parse(storedRequest).headers.date
@@ -290,30 +298,6 @@ router.route('/:year/rankings/:eventCode/').get(function (req, res) {
     });
 });
 
-router.route('/:year/eventawards/:eventCode/').get(function (req, res) {
-    'use strict';
-    db.get("eventawards." + req.params.eventCode + "." + req.params.year, function (err, storedRequest) {
-        if (err) {
-            unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/awards/' + req.params.eventCode)
-                .headers({
-                    'Authorization': token.token
-                })
-                .end(function (response) {
-                    res.writeHead(200, {
-                        'Content-type': 'text/html'
-                    });
-                    res.end(JSON.stringify(response.body), 'utf-8');
-                });
-        } else {
-            res.writeHead(200, {
-                'Content-type': 'text/html'
-            });
-            res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
-        }
-
-    });
-});
-
 router.route('/:year/awards/:teamNumber/').get(function (req, res) {
     'use strict';
     db.get("awards." + req.params.teamNumber + "." + req.params.year, function (err, storedRequest) {
@@ -365,19 +349,19 @@ router.route('/:year/awards/:teamNumber/').get(function (req, res) {
     });
 });
 
-//router.route('/:year/events').get(function (req, res) {
-//    'use strict';
-//    unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/events')
-//        .headers({
-//            'Authorization': token.token
-//        })
-//        .end(function (response) {
-//            res.writeHead(200, {
-//                'Content-type': 'text/html'
-//            });
-//            res.end(JSON.stringify(response.body), 'utf-8');
-//        });
-//});
+router.route('/:year/events').get(function (req, res) {
+    'use strict';
+    unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/events')
+        .headers({
+            'Authorization': token.token
+        })
+        .end(function (response) {
+            res.writeHead(200, {
+                'Content-type': 'text/html'
+            });
+            res.end(JSON.stringify(response.body), 'utf-8');
+        });
+});
 
 //router.route('/:year/schedule/:eventCode/:tlevel').get(function (req, res) {
 //    'use strict';
