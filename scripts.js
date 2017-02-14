@@ -9,6 +9,7 @@ localStorage.events = "";
 localStorage.playoffList = "";
 localStorage.qualsList = "";
 localStorage.teamList = "";
+localStorage.currentYear = 2017;
 
 window.onload = function () {
     "use strict";
@@ -18,6 +19,7 @@ window.onload = function () {
     }
     loadEventsList();
     document.getElementById('yearPicker').onchange = function () {
+        
         loadEventsList();
     };
     document.getElementById('eventSelector').onchange = function () {
@@ -36,8 +38,10 @@ function handleEventSelection() {
     "use strict";
     document.getElementById('scheduleProgressBar').style.display = 'block';
     document.getElementById('scheduleContainer').innerHTML = 'Select an Event';
+    
     var e = document.getElementById('eventSelector');
     var data = JSON.parse(e.value);
+    localStorage.currentEvent = data.code;
     var codeText = document.getElementById('eventCodeContainer');
     var locationText = document.getElementById('eventLocationContainer');
     var dateText = document.getElementById('eventDateContainer');
@@ -57,10 +61,11 @@ function handleEventSelection() {
 
 function loadEventsList() {
     "use strict";
-    $("#eventUpdateContainer").html("Loading event data...");
     var e = document.getElementById('yearPicker');
+    localStorage.currentYear = e.options[e.selectedIndex].value;
+    $("#eventUpdateContainer").html("Loading event data...");
     var req = new XMLHttpRequest();
-    req.open('GET', '/api/' + e.options[e.selectedIndex].value + '/events');
+    req.open('GET', '/api/' + localStorage.currentYear + '/events');
     req.addEventListener('load', function () {
         var tmp = JSON.parse(req.responseText).Events;
         var options = [];
@@ -122,11 +127,10 @@ function getHybridSchedule() {
     // inform the user that something is going to happen
     $("#scheduleUpdateContainer").html("Loading schedule data...");
     var matchSchedule = "";
-    var year = document.getElementById('yearPicker');
     var eventPicker = document.getElementById('eventSelector');
     // Set up the API requestfor getting the Qualification and Playoff Schedules. When the Quals are loaded, an attempt is made to get the Playoffs.
     var req = new XMLHttpRequest();
-    req.open('GET', '/api/' + year.options[year.selectedIndex].value + '/schedule/' + JSON.parse(eventPicker.options[eventPicker.selectedIndex].value).code + '/qual');
+    req.open('GET', '/api/' + localStorage.currentYear + '/schedule/' + localStorage.currentEvent + '/qual');
     req.addEventListener('load', function () {
         var data = JSON.parse(req.responseText);
         //Ensure that there is a schedule
@@ -156,7 +160,7 @@ function getHybridSchedule() {
         req1.send();
     });
     var req1 = new XMLHttpRequest();
-    req1.open('GET', '/api/' + year.options[year.selectedIndex].value + '/schedule/' + JSON.parse(eventPicker.options[eventPicker.selectedIndex].value).code + '/playoff');
+    req1.open('GET', '/api/' + localStorage.currentYear + '/schedule/' + localStorage.currentEvent + '/playoff');
     req1.addEventListener('load', function () {
         $("#playoffScheduleAlert").css("display", "block");
         var data = JSON.parse(req1.responseText);
@@ -187,10 +191,9 @@ function getHybridSchedule() {
 function getTeamList() {
     "use strict";
     $("#teamUpdateContainer").html("Loading team data...");
-    var year = document.getElementById('yearPicker');
     var eventPicker = document.getElementById('eventSelector');
     var req2 = new XMLHttpRequest();
-    req2.open('GET', '/api/' + year.options[year.selectedIndex].value + '/teams/' + JSON.parse(eventPicker.options[eventPicker.selectedIndex].value).code);
+    req2.open('GET', '/api/' + localStorage.currentYear + '/teams/' + localStorage.currentEvent);
     req2.addEventListener('load', function () {
         var data = JSON.parse(req2.responseText);
         if (data.teams.length === 0) {
@@ -218,10 +221,9 @@ function getTeamList() {
 function getAllianceList() {
     "use strict";
     $("#allianceUpdateContainer").html("Loading Alliance data...");
-    var year = document.getElementById('yearPicker');
     var eventPicker = document.getElementById('eventSelector');
     var req2 = new XMLHttpRequest();
-    req2.open('GET', '/api/' + year.options[year.selectedIndex].value + '/alliances/' + JSON.parse(eventPicker.options[eventPicker.selectedIndex].value).code);
+    req2.open('GET', '/api/' + localStorage.currentYear + '/alliances/' + localStorage.currentEvent);
     req2.addEventListener('load', function () {
         var data = JSON.parse(req2.responseText);
         if (data.Alliances.length === 0) {
@@ -420,10 +422,9 @@ function announceDisplay() {
 function getTeamRanks() {
     "use strict";
     $("#rankUpdateContainer").html("Loading ranking data...");
-    var year = document.getElementById('yearPicker');
     var eventPicker = document.getElementById('eventSelector');
     var req3 = new XMLHttpRequest();
-    req3.open('GET', '/api/' + year.options[year.selectedIndex].value + '/Rankings/' + JSON.parse(eventPicker.options[eventPicker.selectedIndex].value).code);
+    req3.open('GET', '/api/' + localStorage.currentYear + '/Rankings/' + localStorage.currentEvent);
     req3.addEventListener('load', function () {
         var data = JSON.parse(req3.responseText);
         if (data.Rankings.length === 0) {
@@ -615,7 +616,7 @@ function generateTeamTableRow(teamData) {
             "awardsLocal": ""
         };
     }
-    var year = document.getElementById('yearPicker').options[document.getElementById('yearPicker').selectedIndex].value;
+
     var returnData = "";
     var robotName = "";
     var organization = "";
@@ -692,7 +693,7 @@ function generateTeamTableRow(teamData) {
     teamInfo.topSponsors = topSponsors;
     teamInfo.organization = organization;
     localStorage['teamData' + teamData.teamNumber] = JSON.stringify(teamInfo);
-    getTeamAwards(teamData.teamNumber, year);
+    getTeamAwards(teamData.teamNumber, localStorage.currentYear);
 
     return returnData + '</tr>';
 }
@@ -839,7 +840,7 @@ function updateTeamInfoDone() {
 
 function rookieYearDisplay(year) {
     "use strict";
-    var currrentYear = document.getElementById('yearPicker').options[document.getElementById('yearPicker').selectedIndex].value;
+    var currrentYear = localStorage.currentYear;
     switch (currrentYear - year) {
         case 0:
             return year + " (Rookie Year)";
