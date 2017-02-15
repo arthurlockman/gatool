@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0">
 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <title>gatool</title>
@@ -202,7 +202,7 @@
                 <table>
                     <tr id="gameButtonsPlayByPlayTop" class="row gatool-button-row">
                         <td class="btn-default gatool-button col4" align="center" onClick="getPreviousMatch()">Previous Match</td>
-                        <td class="gatool-button col4" align="center"><span id="topMatchNamePlayByPlay">Match Name</span></td>
+                        <td class="gatool-button col4" align="center" onClick="startTimer()"><span id="topMatchNamePlayByPlay">Match Name</span><br><span id="clock">Tap to start countdown</span></td>
                         <td class="btn-default gatool-button col4" align="center" onClick="getNextMatch()">Next Match</td>
                     </tr>
                 </table>
@@ -267,7 +267,7 @@
         </div>
         <div id="allianceselection" class="tabcontent">
             <p> Alliance Selection</p>
-            <p>yes, Alliance Selection.</p>
+            <p>yes, Alliance Selection</p>
             <p>Coming eventually. </p>
         </div>
         <div id="teamDataEntry" class="tabcontent" >

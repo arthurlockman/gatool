@@ -10,6 +10,15 @@ localStorage.playoffList = "";
 localStorage.qualsList = "";
 localStorage.teamList = "";
 localStorage.currentYear = 2017;
+localStorage.clock = "ready";
+var matchLength = 150;
+var autoLength = 15;
+var endGame = 30;
+localStorage.matchTimer = matchLength;
+
+var matchTimer = setInterval(function () {
+    timer()
+}, 1000);
 
 window.onload = function () {
     "use strict";
@@ -19,7 +28,7 @@ window.onload = function () {
     }
     loadEventsList();
     document.getElementById('yearPicker').onchange = function () {
-        
+
         loadEventsList();
     };
     document.getElementById('eventSelector').onchange = function () {
@@ -38,7 +47,7 @@ function handleEventSelection() {
     "use strict";
     document.getElementById('scheduleProgressBar').style.display = 'block';
     document.getElementById('scheduleContainer').innerHTML = 'Select an Event';
-    
+
     var e = document.getElementById('eventSelector');
     var data = JSON.parse(e.value);
     localStorage.currentEvent = data.code;
@@ -46,7 +55,7 @@ function handleEventSelection() {
     var locationText = document.getElementById('eventLocationContainer');
     var dateText = document.getElementById('eventDateContainer');
     codeText.innerHTML = data.code;
-    locationText.innerHTML = data.venue + " in " + data.city + ", " + data.stateprov + " " + data.country;
+    locationText.innerHTML = data.venue + "" + " in " + data.city + ", " + data.stateprov + " " + data.country;
     var startDate = moment(data.dateStart, 'YYYY-MM-DDTHH:mm:ss').format('MMMM Do');
     var endDate = moment(data.dateEnd, 'YYYY-MM-DDTHH:mm:ss').format('MMMM Do, YYYY');
     dateText.innerHTML = startDate + " to " + endDate;
@@ -115,8 +124,8 @@ function openTab(evt, tabID) {
 
     // Show the current tab, and add an "active" class to the link that opened the tab
     document.getElementById(tabID).style.display = "block";
-    $("#" + evt.currentTarget).addClass("active");
-    //evt.currentTarget.className += " active";
+    //$("#" + evt.currentTarget).addClass("active");
+    evt.currentTarget.className += " active";
 
     //resize the window
     scaleRows();
@@ -473,7 +482,7 @@ function getTeamAwards(teamNumber, year) {
     var req = new XMLHttpRequest();
     req.open('GET', '/api/' + year + '/awards/' + teamNumber + "/");
     req.addEventListener('load', function () {
-        if (req.responseText.substr(0, 5) !== '"Team') {         
+        if (req.responseText.substr(0, 5) !== '"Team') {
             var data = JSON.parse(req.responseText);
             if (data.Awards.length > 0) {
 
@@ -645,7 +654,11 @@ function generateTeamTableRow(teamData) {
         topSponsorsArray[topSponsorsArray.length] = sponsorArray[sponsorArray.length - 1];
     }
     if (organizationArray.length === 1) {
-        if (teamData.schoolName === null){organization = organizationArray[0];} else {organization = teamData.schoolName;}
+        if (teamData.schoolName === null) {
+            organization = organizationArray[0];
+        } else {
+            organization = teamData.schoolName;
+        }
     } else {
         topSponsorsArray[topSponsorsArray.length] = organizationArray.shift();
         sponsors += ", " + topSponsorsArray[topSponsorsArray.length - 1];
@@ -836,6 +849,7 @@ function updateTeamInfoDone() {
 
     // Show the current tab, and add an "active" class to the link that opened the tab
     document.getElementById("teamdata").style.display = "block";
+    document.getElementById('teamDataTabPicker').click();
 }
 
 function rookieYearDisplay(year) {
@@ -878,10 +892,49 @@ function splitArray(array) {
 function resetLocalStorage() {
     "use strict";
     var r = confirm("Are you sure you want to reset the localStorage? There is no undo.");
-if (r === true) {
-    localStorage.clear();
-    alert("LocalStorage cleared. Page will now reload to recover data from the server. Select your event after the page reloads.");
-    location.reload();
+    if (r === true) {
+        localStorage.clear();
+        alert("LocalStorage cleared. Page will now reload to recover data from the server. Select your event after the page reloads.");
+        location.reload();
+    }
 }
-    
+
+function timer() {
+    "use strict";
+    if (localStorage.clock === "running") {
+        // Update the count down every 1 second
+
+        // Get todays date and time
+        localStorage.matchTimer -= 1;
+        if (localStorage.matchTimer >= 0) {
+            if ((matchLength - localStorage.matchTimer) <= autoLength) {
+                $("#clock").html(localStorage.matchTimer + " AUTO (" + (autoLength - (matchLength - localStorage.matchTimer)) + ")");
+            }
+            if ((matchLength - localStorage.matchTimer) > autoLength && (localStorage.matchTimer > endGame)) {
+                $("#clock").html(localStorage.matchTimer + " TELEOP");
+            }
+            if (localStorage.matchTimer <= endGame) {
+                $("#clock").html(localStorage.matchTimer + " ENDGAME");
+            }
+        } else {
+            resetTimer();
+        }
+
+    }
+}
+
+function startTimer() {
+    "use strict";
+    if (localStorage.clock === "running") {
+        resetTimer();
+    } else {
+        localStorage.clock = "running";
+    }
+}
+
+function resetTimer() {
+    "use strict";
+    localStorage.matchTimer = matchLength;
+    localStorage.clock = "ready";
+    $("#clock").html("Tap to start match timer");
 }
