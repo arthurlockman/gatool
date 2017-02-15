@@ -17,7 +17,8 @@ var endGame = 30;
 localStorage.matchTimer = matchLength;
 
 var matchTimer = setInterval(function () {
-    timer()
+    "use strict";
+    timer();
 }, 1000);
 
 window.onload = function () {
@@ -908,12 +909,28 @@ function timer() {
         localStorage.matchTimer -= 1;
         if (localStorage.matchTimer >= 0) {
             if ((matchLength - localStorage.matchTimer) <= autoLength) {
+                $("#timer").css({
+                    "background-color": "orange",
+                    "color": "black"
+                });
                 $("#clock").html(localStorage.matchTimer + " AUTO (" + (autoLength - (matchLength - localStorage.matchTimer)) + ")");
             }
             if ((matchLength - localStorage.matchTimer) > autoLength && (localStorage.matchTimer > endGame)) {
+                $("#timer").css({
+                    "background-color": "green",
+                    "color": "white"
+                });
                 $("#clock").html(localStorage.matchTimer + " TELEOP");
             }
             if (localStorage.matchTimer <= endGame) {
+                $("#timer").css({
+                    "background-color": "red",
+                    "animation-delay": "20s",
+                    "animation-name": "timerHighlight",
+                    "animation-duration": "1s",
+                    "animation-iteration-count": "10",
+                    "color": "white"
+                });
                 $("#clock").html(localStorage.matchTimer + " ENDGAME");
             }
         } else {
@@ -935,6 +952,14 @@ function startTimer() {
 function resetTimer() {
     "use strict";
     localStorage.matchTimer = matchLength;
+    $("#timer").css({
+                    "background-color": "white",
+                    "animation-delay": "0s",
+                    "animation-name": "timerReset",
+                    "animation-duration": "1s",
+                    "animation-iteration-count": "1",
+                    "color": "black"
+                });
     localStorage.clock = "ready";
     $("#clock").html("Tap to start match timer");
 }

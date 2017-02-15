@@ -68,184 +68,204 @@ opacity: 0;
 opacity: 1;
 }
 }
-.string {
-    color: green;
+ @keyframes timerHighlight {
+ from {
+background-color: red;
+     color:white;
+}
+ to {
+background-color: white;
+    color:red;
+}
+}
+ @keyframes timerReset {
+ from {
+color: red;
+     background-color: red;
+}
+ to {
+color: black;
+     background-color: white;
+}
+}
+
+ .string {
+ color: green;
 }
 .number {
-    color: darkorange;
+ color: darkorange;
 }
 .boolean {
-    color: blue;
+ color: blue;
 }
 .null {
-    color: magenta;
+ color: magenta;
 }
 .key {
-    color: red;
+ color: red;
 }
 .redAlliance {
-    border: 1px solid #ccc;
-    background-color: #F7B3B4
+ border: 1px solid #ccc;
+ background-color: #F7B3B4
 }
 .redAlliancePlayByPlay {
-    border: 1px solid #ccc;
-    align-content: center;
-    text-align: center;
-    background-color: red;
-    font-size: x-large;
-    font-weight: bold;
-    color: white
+ border: 1px solid #ccc;
+ align-content: center;
+ text-align: center;
+ background-color: red;
+ font-size: x-large;
+ font-weight: bold;
+ color: white
 }
 .blueAlliance {
-    border: 1px solid #ccc;
-    background-color: #98B4F4
+ border: 1px solid #ccc;
+ background-color: #98B4F4
 }
 .blueAlliancePlayByPlay {
-    border: 1px solid #ccc;
-    align-content: center;
-    text-align: center;
-    background-color: blue;
-    font-size: x-large;
-    font-weight: bold;
-    color: white
+ border: 1px solid #ccc;
+ align-content: center;
+ text-align: center;
+ background-color: blue;
+ font-size: x-large;
+ font-weight: bold;
+ color: white
 }
 .playByPlayTeamName {
-    font-size: x-large
+ font-size: x-large
 }
 .playByPlayWinLossTie {
-    font-size: large;
-    font-style: italic;
-    align-content: center;
-    text-align: center
+ font-size: large;
+ font-style: italic;
+ align-content: center;
+ text-align: center
 }
 .ranking {
-    align-content: center;
-    vertical-align: middle;
-    text-align: center;
-    font-size: xx-large;
-    color: black
+ align-content: center;
+ vertical-align: middle;
+ text-align: center;
+ font-size: xx-large;
+ color: black
 }
 .teamName {
-    font-size: x-large;
-    color: black
+ font-size: x-large;
+ color: black
 }
 .announceTeamNumber {
-    font-size: x-large;
-    color: black
+ font-size: x-large;
+ color: black
 }
 .matchNumber {
-    font-size: x-large
+ font-size: x-large
 }
 .gatool-container {
 }
 .popup {
-    width: auto;
-    height: 180px;
-    background-color: #888888
+ width: auto;
+ height: 180px;
+ background-color: #888888
 }
 .gatool-button-row {
 }
 .gatool-button {
-    font-size: 25px;
-    font-weight: bold;
-    height: 40px
+ font-size: 25px;
+ font-weight: bold;
+ height: 40px
 }
 .gatool-playbyplay {
-    border: 1px solid #ccc;
+ border: 1px solid #ccc;
 }
 .gatool-announce {
-    border: 1px solid #ccc;
-    background-color: white
+ border: 1px solid #ccc;
+ background-color: white
 }
 .robotName {
-    font-style: italic;
-    font-weight: bold;
-    color: #FF4000
+ font-style: italic;
+ font-weight: bold;
+ color: #FF4000
 }
 .playByPlayRobotName {
-    font-style: italic;
-    color: #13CB00
+ font-style: italic;
+ color: #13CB00
 }
 .playByPlayteamNumber {
-    font-size: 40px
+ font-size: 40px
 }
 .playByPlayOrganization {
-    font-size: medium;
-    font-style:italic;
-    line-height: 100%
+ font-size: medium;
+ font-style:italic;
+ line-height: 100%
 }
 .playByPlayCity {
-    font-size: medium
+ font-size: medium
 }
 .playByPlayAlliance {
-    font-size: medium
+ font-size: medium
 }
 .awards {
-    font-style: italic;
-    line-height: 1
+ font-style: italic;
+ line-height: 1
 }
 .sponsors {
-    line-height: 1;
-    font-weight: 900
+ line-height: 1;
+ font-weight: 900
 }
 .playoffAlert {
-    font-style: italic;
-    font-weight: bolder;
-    color: #FF0000;
-    font-size: 20px
+ font-style: italic;
+ font-weight: bolder;
+ color: #FF0000;
+ font-size: 20px
 }
 .announceOrganization {
-    font-size: 20px;
-    font-weight: bold
+ font-size: 20px;
+ font-weight: bold
 }
 .teamUpdateTable {
-    
 }
 .wltTable {
-    border-width: thin;
-    background-color: rgba(255,255,255,0.20);
-    text-align: center;
-    align-content: center;
-    display: block;
-    margin: auto;
+ border-width: thin;
+ background-color: rgba(255,255,255,0.20);
+ text-align: center;
+ align-content: center;
+ display: block;
+ margin: auto;
 }
 .wltCol {
-    width:33%
+ width:33%
 }
 .loadingEvent {
-    color: red
+ color: red
 }
 .cell {
-    display: inline
+ display: inline
 }
 .col1 {
-    width: 83px
+ width: 83px
 }
 .col2 {
-    width: 166px
+ width: 166px
 }
 .col3 {
-    width: 250px
+ width: 250px
 }
 .col4 {
-    width: 333px
+ width: 333px
 }
 .col5 {
-    width: 416px
+ width: 416px
 }
 .col6 {
-    width: 500px
+ width: 500px
 }
 .col9 {
-    width: 750px
+ width: 750px
 }
 .col10 {
-    width: 833px
+ width: 833px
 }
 .spacer {
-    height:15px
+ height:15px
 }
 .eventName {
-    font-size: 20px;
-    font-weight: bold
+ font-size: 20px;
+ font-weight: bold
 }
