@@ -22,6 +22,7 @@ var options = {
     keyEncoding: 'binary',
     valueEncoding: 'json'
 };
+
 var db = level("./database/", options);
 
 //https.createServer(sslOptions,app).listen(8000,function(){});
@@ -211,7 +212,6 @@ router.route('/:year/teams/:eventCode/').get(function (req, res) {
                 })
                 .end(function (response) {
                     db.put("teams." + req.params.eventCode + "." + req.params.year, JSON.stringify(response));
-                    console.log(JSON.stringify(response));
                     res.writeHead(200, {
                         'Content-type': 'text/html'
                     });
