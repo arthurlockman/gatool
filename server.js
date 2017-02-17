@@ -25,7 +25,7 @@ var options = {
 
 var db = level("./database/", options);
 
-https.createServer(sslOptions,app).listen(8000,function(){});
+https.createServer(sslOptions,app).listen(443,function(){});
 
 //var server = app.listen(8080, function () {
 //    'use strict';
