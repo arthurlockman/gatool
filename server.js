@@ -13,7 +13,7 @@ var token = require("./token.json");
 
 var sslOptions = {
     key : fs.readFileSync('server.key'),
-    cert : fs.readFileSync('server.key')
+    cert : fs.readFileSync('server.crt')
 };
 
 var level = require("level");
@@ -24,13 +24,13 @@ var options = {
 };
 var db = level("./database/", options);
 
-//https.createServer(sslOptions,app).listen(8000,function(){});
+https.createServer(sslOptions,app).listen(8000,function(){});
 
-var server = app.listen(8080, function () {
-    'use strict';
-    var host = server.address().address;
-    var port = server.address().port;
-});
+//var server = app.listen(8080, function () {
+//    'use strict';
+//    var host = server.address().address;
+//    var port = server.address().port;
+//});
 
 function sendFile(res, filename, contentType) {
     'use strict';
