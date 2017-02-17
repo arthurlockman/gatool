@@ -1,6 +1,7 @@
 /*global require */
 
 var http = require('http'),
+    https = require('https'),
     fs = require('fs'),
     url = require('url'),
     express = require('express'),
@@ -10,6 +11,11 @@ var http = require('http'),
 
 var token = require("./token.json");
 
+var sslOptions = {
+    key : fs.readFileSync('server.key'),
+    cert : fs.readFileSync('server.key')
+};
+
 var level = require("level");
 var options = {
     keyEncoding: 'binary',
@@ -17,11 +23,13 @@ var options = {
 };
 var db = level("./database/", options);
 
-var server = app.listen(8080, function () {
-    'use strict';
-    var host = server.address().address;
-    var port = server.address().port;
-});
+https.createServer(sslOptions,app).listen(8000,function(){});
+
+//var server = app.listen(8080, function () {
+//    'use strict';
+//    var host = server.address().address;
+//    var port = server.address().port;
+//});
 
 function sendFile(res, filename, contentType) {
     'use strict';
