@@ -328,7 +328,7 @@ function scaleRows() {
     var col9width = width / 4 * 3;
     var col10width = width / 6 * 5;
     var announceHeight = Math.round((height - $("#navbar").outerHeight() - $("#appTab").outerHeight() - $("#gameButtonsAnnounce").outerHeight() - $("#footer").outerHeight() - $("#announceTableHeader").outerHeight()) / 6 - 10);
-    var playByPlayHeight = Math.round((height - $("#navbar").outerHeight() - $("#appTab").outerHeight() - $("#gameButtonsPlayByPlay").outerHeight() - $("#footer").outerHeight() - $("#announceTableHeader").outerHeight()) / 3 - 12);
+    var playByPlayHeight = Math.round((height - $("#navbar").outerHeight() - $("#appTab").outerHeight() - $("#gameButtonsPlayByPlay").outerHeight() - $("#footer").outerHeight() - $("#announceTableHeader").outerHeight()) / 3 - 25);
     $(".redAlliancePlayByPlay,.blueAlliancePlayByPlay").css("height", playByPlayHeight + "px");
     $(".redAlliance,.blueAlliance").css("height", announceHeight + "px");
     $(".col1").css("width", col1width + "px");
@@ -339,6 +339,7 @@ function scaleRows() {
     $(".col6").css("width", col6width + "px");
     $(".col9").css("width", col9width + "px");
     $(".col10").css("width", col10width + "px");
+    $(".spacer").css("height", ($("#navbar").outerHeight()-35)+"px");
 }
 
 
