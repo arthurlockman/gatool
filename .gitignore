@@ -1,11 +1,7 @@
 node_modules/*
 npm-debug.log
 token.json
-
 .idea/*
-
-database/*
-
+database/*.*
 server.crt
-
 server.key
