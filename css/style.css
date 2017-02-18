@@ -31,7 +31,7 @@ ul.tab li a {
     padding: 14px 16px;
     text-decoration: none;
     transition: 0.3s;
-    font-size: 17px;
+    font-size: 14px;
 }
 /* Change background color of links on hover */
 ul.tab li a:hover {
@@ -44,7 +44,7 @@ ul.tab li a:focus, .active {
 /* Style the tab content */
 .tabcontent {
     display: none;
-    padding: 6px 12px;
+    padding: 4px 8px;
     border: 1px solid #ccc;
     border-top: none;
 }
@@ -167,9 +167,8 @@ color: black;
 .gatool-button-row {
 }
 .gatool-button {
- font-size: 25px;
- font-weight: bold;
- height: 40px
+ font-size: 20px;
+ font-weight: bold
 }
 .gatool-playbyplay {
  border: 1px solid #ccc;
@@ -268,4 +267,33 @@ color: black;
 .eventName {
  font-size: 20px;
  font-weight: bold
+}
+
+@media (max-width: 768px){
+    .tabcontent {font-size: 12px}
+    .tab {font-size: 12px}
+    .announceTeamNumber {font-size: 20px}
+    .announceOrganization {font-size: 16px}
+    .teamName {font-size: 16px}
+    .ranking {font-size: 24px}
+    .gatool-playbyplay {font-size: 12px}
+    .playByPlayAlliance {font-size: 12px}
+    .playByPlayCity {font-size: 12px}
+    .playByPlayteamNumber {font-size: 24px}
+    .playByPlayOrganization {font-size: 12px}
+    .playByPlayTeamName {font-size: 18px}
+    .playByPlayRobotName {font-size: 12px}
+    .playByPlayWinLossTie {font-size: 12px}
+    .gatool-button {font-size: 18px;
+    padding: 4px}
+    .tablinks {font-size: 18px;
+    padding: 4px}
+    .navBarImage {display: none}
+    ul.tab li a {
+    font-size: 13px
+}
+}
+
+
+@media (min-width: 768px) and (max-width: 991px){
 }

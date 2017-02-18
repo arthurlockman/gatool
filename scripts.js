@@ -962,5 +962,5 @@ function resetTimer() {
                     "color": "black"
                 });
     localStorage.clock = "ready";
-    $("#clock").html("Tap to start match timer");
+    $("#clock").html("Tap for match timer");
 }
