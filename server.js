@@ -26,6 +26,11 @@ var options = {
 var db = level("./database/", options);
 
 https.createServer(sslOptions,app).listen(443,function(){});
+var httpRedirect = express.createServer();
+httpRedirect.get('*',function(req,res){
+    res.redirect('https://gatool.jameslockman.com'+req.url)
+});
+httpRedirect.listen(80);
 
 //var server = app.listen(8080, function () {
 //    'use strict';
