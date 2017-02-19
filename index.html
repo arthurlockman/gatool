@@ -203,7 +203,7 @@
                     <tr id="gameButtonsPlayByPlayTop" class="row gatool-button-row">
                         <td class="btn-default gatool-button col4" align="center" onClick="getPreviousMatch()">Previous Match</td>
                         <td align="center" class="gatool-button col4" id="timer" onClick="startTimer()"><span id="topMatchNamePlayByPlay">Match Name</span><br>
-                        <span id="clock">Tap for match timer</span></td>
+                            <span id="clock">Tap for match timer</span></td>
                         <td class="btn-default gatool-button col4" align="center" onClick="getNextMatch()">Next Match</td>
                     </tr>
                 </table>
@@ -267,9 +267,52 @@
             </div>
         </div>
         <div id="allianceselection" class="tabcontent">
-            <p> Alliance Selection</p>
+            <div id="allianceSelectionPlaceholder"><p> Alliance Selection</p>
             <p>yes, Alliance Selection</p>
             <p>Coming eventually. </p>
+            </div>
+            <div id="allianceSelectionTable">
+            <table>
+                <tr>
+                    <td id="allianceTeamList1" class="col1"><div class="allianceTeam">List of teams</div></td>
+                    <td id="allianceTeamList2" class="col1"><div class="allianceTeam">List of teams</div></td>
+                    <td id="allianceTeamList3" class="col1"><div class="allianceTeam">List of teams</div></td>
+                    <td id="allianceTeamList4" class="col1"><div class="allianceTeam">List of teams</div></td>
+                    <td class="col1"></td>
+                    <td id="allianceDropTargets" class="col3"><div class = "alliancedrop" id="Alliance1Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 1 Captain</div>
+                        <div class = "alliancedrop" id="Alliance1Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 1 first choice</div>
+                        <div class = "alliancedrop" id="Alliance1Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 1 second choice</div>
+                        <br>
+                        <div class = "alliancedrop" id="Alliance2Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 2 Captain</div>
+                        <div class = "alliancedrop" id="Alliance2Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 2 first choice</div>
+                        <div class = "alliancedrop" id="Alliance2Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 2 second choice</div>
+                        <br>
+                        <div class = "alliancedrop" id="Alliance3Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 3 Captain</div>
+                        <div class = "alliancedrop" id="Alliance3Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 3 first choice</div>
+                        <div class = "alliancedrop" id="Alliance3Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 3 second choice</div>
+                        <br>
+                        <div class = "alliancedrop" id="Alliance4Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 4 Captain</div>
+                        <div class = "alliancedrop" id="Alliance4Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 4 first choice</div>
+                        <div class = "alliancedrop" id="Alliance4Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 4 second choice</div></td>
+                    <td id="allianceDropTargets" class="col3">
+                       <div class = "alliancedrop" id="Alliance5Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 5 Captain</div>
+                        <div class = "alliancedrop" id="Alliance5Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 5 first choice</div>
+                        <div class = "alliancedrop" id="Alliance5Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 5 second choice</div>
+                        <br>
+                        <div class = "alliancedrop" id="Alliance6Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 6 Captain</div>
+                        <div class = "alliancedrop" id="Alliance6Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 6 first choice</div>
+                        <div class = "alliancedrop" id="Allianc6Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 6 second choice</div>
+                        <br>
+                        <div class = "alliancedrop" id="Alliance7Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 7 Captain</div>
+                        <div class = "alliancedrop" id="Alliance7Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 7 first choice</div>
+                        <div class = "alliancedrop" id="Alliance7Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 7 second choice</div>
+                        <br>
+                        <div class = "alliancedrop" id="Alliance8Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 8 Captain</div>
+                        <div class = "alliancedrop" id="Alliance8Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 8 first choice</div>
+                        <div class = "alliancedrop" id="Alliance8Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 8 second choice</div></td>
+                </tr>
+            </table>
+            </div>
         </div>
         <div id="teamDataEntry" class="tabcontent" >
             <p>Use this form to update team information for <strong>Team <span id="teamNumberUpdate">xxx</span></strong>. Editable fields are shown below. Your changes will be stored locally on your machine and should not be erased if you close your browser. Tap on each item to update its value. Tap <strong>DONE</strong> when you're finished editing, or browse to another tab to cancel editing. To reset any value to the TIMS value, simply delete it here and tap DONE.</p>

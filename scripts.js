@@ -339,7 +339,7 @@ function scaleRows() {
     $(".col6").css("width", col6width + "px");
     $(".col9").css("width", col9width + "px");
     $(".col10").css("width", col10width + "px");
-    $(".spacer").css("height", ($("#navbar").outerHeight()-35)+"px");
+    $(".spacer").css("height", ($("#navbar").outerHeight() - 35) + "px");
 }
 
 
@@ -434,24 +434,35 @@ function getTeamRanks() {
     "use strict";
     $("#rankUpdateContainer").html("Loading ranking data...");
     var eventPicker = document.getElementById('eventSelector');
-    var req3 = new XMLHttpRequest();
-    req3.open('GET', '/api/' + localStorage.currentYear + '/Rankings/' + localStorage.currentEvent);
-    req3.addEventListener('load', function () {
-        var data = JSON.parse(req3.responseText);
+    var req = new XMLHttpRequest();
+    req.open('GET', '/api/' + localStorage.currentYear + '/Rankings/' + localStorage.currentEvent);
+    req.addEventListener('load', function () {
+        var data = JSON.parse(req.responseText);
+        var teamList = [];
+        var column = "1";
         if (data.Rankings.length === 0) {
-            $("#rankingDisplay").html('<b>No Rankings available.</b>');
+            $("#rankingDisplay").html('<b>No Rankings available.</b>');           
+            $("#allianceSelectionPlaceholder").css("display","block");
+            $("#allianceSelectionTable").css("display","none");
         } else {
+             $("#allianceSelectionPlaceholder").css("display","none");
+            $("#allianceSelectionTable").css("display","block");
             localStorage.Rankings = JSON.stringify(data.Rankings);
             if (localStorage.currentMatch > JSON.parse(localStorage.qualsList).Schedule.length) {
                 $("#rankingDisplay").html("<b>Seed<b>");
             } else {
                 $("#rankingDisplay").html('<b>Ranking</b>');
             }
+            $("#allianceTeamList1").html("");
+            $("#allianceTeamList2").html("");
+            $("#allianceTeamList3").html("");
+            $("#allianceTeamList4").html("");
 
             //document.getElementById('rankingDisplay').innerHTML = '<b>Ranking</b>';
             for (var i = 0; i < data.Rankings.length; i++) {
                 var team = JSON.parse(localStorage['teamData' + data.Rankings[i].teamNumber]);
                 team.rank = data.Rankings[i].rank;
+                teamList[i] = data.Rankings[i].teamNumber;
                 team.sortOrder1 = data.Rankings[i].sortOrder1;
                 team.sortOrder2 = data.Rankings[i].sortOrder2;
                 team.sortOrder3 = data.Rankings[i].sortOrder3;
@@ -466,11 +477,54 @@ function getTeamRanks() {
                 team.matchesPlayed = data.Rankings[i].matchesPlayed;
                 localStorage['teamData' + data.Rankings[i].teamNumber] = JSON.stringify(team);
             }
+
+            $("#Alliance1Captain").html("Alliance 1 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
+            $("#Alliance2Captain").html("Alliance 2 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
+            $("#Alliance3Captain").html("Alliance 3 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
+            $("#Alliance4Captain").html("Alliance 4 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
+            $("#Alliance5Captain").html("Alliance 5 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
+            $("#Alliance6Captain").html("Alliance 6 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
+            $("#Alliance7Captain").html("Alliance 7 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
+            $("#Alliance8Captain").html("Alliance 8 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
+
+            teamList.sort(function (a, b) {
+                return a - b;
+            });
+
+            for (i = 0; i < teamList.length - 1; i++) {
+                if (i < teamList.length / 4) {
+                    column = "1";
+                } else if (i > teamList.length / 4 && i <= teamList.length / 2) {
+                    column = "2";
+                } else if (i > teamList.length / 2 && i <= teamList.length * 3 / 4) {
+                    column = "3";
+                } else {
+                    column = "4";
+                }
+                $("#allianceTeamList" + column).append("<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[i] + "'>" + teamList[i] + "</div></br>");
+            }
             $("#rankUpdateContainer").html(Date());
         }
 
     });
-    req3.send();
+    req.send();
+}
+
+function drag(ev) {
+    "use strict";
+    ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function allowDrop(ev) {
+    "use strict";
+    ev.preventDefault();
+}
+
+function drop(ev) {
+    "use strict";
+    ev.preventDefault();
+    var data = ev.dataTransfer.getData("text");
+    ev.target.appendChild(document.getElementById(data));
 }
 
 function getTeamAwards(teamNumber, year) {
@@ -954,13 +1008,13 @@ function resetTimer() {
     "use strict";
     localStorage.matchTimer = matchLength;
     $("#timer").css({
-                    "background-color": "white",
-                    "animation-delay": "0s",
-                    "animation-name": "timerReset",
-                    "animation-duration": "1s",
-                    "animation-iteration-count": "1",
-                    "color": "black"
-                });
+        "background-color": "white",
+        "animation-delay": "0s",
+        "animation-name": "timerReset",
+        "animation-duration": "1s",
+        "animation-iteration-count": "1",
+        "color": "black"
+    });
     localStorage.clock = "ready";
     $("#clock").html("Tap for match timer");
 }
