@@ -896,6 +896,9 @@ function generateTeamTableRow(teamData) {
         }
         organization += organizationArray[organizationArray.length - 1];
     }
+    
+    
+    
     topSponsorsArray = topSponsorsArray.slice(0, 5); //take the top 5 sponsors
     if (topSponsorsArray.length === 1) {
         topSponsors = topSponsorsArray[0];
@@ -1112,8 +1115,8 @@ function splitArray(array) {
         case 4:
             result = array[0] + ", " + array[1] + ", " + array[2] + ", " + array[3];
             break;
-        case 4:
-            result = array[0] + ", " + array[1] + ", " + array[2] + ", " + array[3] + ", " + array[4];
+        case 5:
+            result = array[0] + ", " + array[1] + ", " + array[2] + ", " + array[3] + ", " + array[4];        
     }
     return result;
 }

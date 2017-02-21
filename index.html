@@ -54,6 +54,7 @@
         <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'announce')" id="announceTabPicker">Announce</a></li>
         <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'playbyplay')" id="playByPlayTabPicker">Play-by-play</a></li>
         <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'allianceselection')" id="allianceSelectionTabPicker">Alliance Selection</a></li>
+        <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'help')" id="helpTabPicker">Help</a></li>
         <!--<li><a href="javascript:void(0)" class="tablinks" onClick="openTab(event, 'teamDataEntry')" id="teamInfoUpdatePicker">Update Team Data</a></li>-->
         <li><span class="navBarImage"><img src="images/FIRST-STEAMWORKS-RGB-h.png" width="100" alt="FIRST STEAMworks Logo"/></span></li>
     </ul>
@@ -363,6 +364,103 @@
                 </div>
                 <div onClick="updateTeamInfoDone()" class="btn btn-primary">Done</div>
             </form>
+        </div>
+        <div id="help" class="tabcontent">
+            <h2>What is gatool?</h2>
+            <p> gatool is a tool to provide FIRST Game Announcers with up to date information while announcing events during the FIRST Robotics season. As a web-based tool, it uses up-to-date information about the event to provide a comprehensive set of useful data to Game Announcers. It is designed to work on desktops, laptops and tablet devices. In a pinch, it can be used on a mobile phone.</p>
+            <p>If you are disinclined to read the documentation below, we've made a short video so you can see it in action. </p>
+            <p>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/ma56jcPbj8E" frameborder="0" allowfullscreen></iframe>
+            </p>
+            <h2>How do I use gatool?</h2>
+            <p>gatool is organized in tabs. Each tab provides focused information to the user to help with specific aspects of a competition. The basic flow is</p>
+            <ol>
+                <li><a href="#setup">Select your event</a></li>
+                <li><a href="#matchschedule">Adjust team data</a></li>
+                <li>Qualification Matches</li>
+                <ol type="i">
+                    <li><a href="#announce">Announce teams</a></li>
+                    <li><a href="#playbyplay">Call play-by-play</a></li>
+                </ol>
+                <li><a href="allianceselection">Announce Alliance Selection</a></li>
+                <li>Playoff Matches</li>
+                <ol type="i">
+                    <li><a href="#announce">Announce teams</a></li>
+                    <li><a href="#playbyplay">Call play-by-play</a></li>
+                </ol>
+                <li>Awards (not supported in the app at this time, but the Team list very useful for Awards.</li>
+            </ol>
+            <p>The ultimate goal of the gatool is to reduce paper and empower Game Announcers with more relevant and more up-to-date match data.</p>
+            <h3 id="setup">Setup</h3>
+            <p>The Setup tab is where you select your event. Choose a year, then the event. On a laptop or desktop, you will have a search filter for the events. On tablets and mobile devices, you will need to scroll to find your event.</p>
+            <p><img src="images/gatoolStatus.png" alt="gatool Setup screen instructions." width="750"></p>
+            <p>The screen will display status information about the data that are available for the event. These data are read directly from FIRST, and they are updated throughout the competition by the Field Management System. As the event progresses, more data will be available and the status indicators will change.</p>
+            <p><img src="images/gatoolEventFilter.png" alt="gatool Setup screen search bar." width="750"></p>
+            <p>When a match schedule for the event is available, <strong>Loading Event... </strong>will change to the event name. This is your clue that the match schedule is loaded and you are ready to go to work. </p>
+            <p><img src="images/gatoolFullyLoaded.png" alt="gatool Setup screen instructions." width="750"></p>
+            <p>Once you complete Alliance Selection, return to this page to load the Playoff schedule. </p>
+            <p>At the bottom of the screen, there is a button to reset the local data. You can update team information locally, and the updates are stored in your browser. These changes are persistent, so you can make changes in one event and they will be there for the next event, so long as you don't reset the local storage. Use this button only as a troubleshooting step in the case that the tool stops working. </p>
+            <h3 id="matchschedule">Match Schedule</h3>
+            <p>The Match Schedule tab displays the match schedule data. This is up-to-date data from FIRST. You can always re-load the schedule from the Setup page to update the match start times. The Match Schedule is read only, and it will exapnd to include Playoff matches once they become available. </p>
+            <p><img src="images/gatoolMatchSchedule.png" alt="gatool AMtch Schedule Scren." width="750"></p>
+            <h3>Team Data</h3>
+            <p>The Team Data tab displays information about the teams that are registered for the event. The table displays the current data from FIRST, but it allows you to modify what you see in the Announce and Play-by-play screens.</p>
+            <p><img src="images/gatoolTeamData.png" width="750px" alt="Team Data page"></p>
+            <p>Tap on a team number to open its details page.&nbsp;Edit any of the data in the form and tap <strong>Done</strong> to save the changes. These changes will appear in the Announce and Play-by-play screens. Like Rush say, these changes aren't permanent, so if you want to revert any change to the FIRST data, simple clear the field in the details page and tap <strong>Done</strong>. Any updated information is stored in the browser's local storage, so it should persist even if you close the browser or switch events. A future release will provide a mechanism for you to post your changes to the gatool database so that all Game Annouincers can benefit from your sleuthing.</p>
+            <p><img src="images/gatoolTeamDataUpdate.png" width="750px" alt="Team Data details page"></p>
+            <h3 id="announce">Announce</h3>
+            <p>Once you have interviewed the teams and have updated their robot names and sponsors (and other items, of course!) in your gatool, you are ready to announce. There are two screens for match announging: <strong>Announce</strong> and <strong>Play-by-play.</strong>&nbsp;</p>
+            <p>The Announce screen is organized to make it easy for you and your emcee to announce the teams before a match. The screen presents the teams in announce order, so you should be able to read from top to bottom. The current match is indicated at the top and bottom of the screen. Also, there are buttons to cycle through the matches. You can use these buttons to preview upcoming matches or to review previous matches. Each time you tap the Next Match or Previous Match buttons, a call is made to retrieve current ranking data. It is best to switch between matches right before your current match to fetch the latest results from FIRST. </p>
+            <p>The Announce screen includes a lot of information about the teams, including:</p>
+            <ul>
+                <li>Team number</li>
+                <li>Rookie year </li>
+                <li>Team Name</li>
+                <li>Hometown</li>
+                <li>Robot name </li>
+                <li>Organization or school </li>
+                <li>Sponsors</li>
+                <li>Awards</li>
+                <li>Current event ranking</li>
+            </ul>
+            <p>Ranking is color coded to help build excitement. The number 1 alliance is highlighted in orange. Numbers 2 through 8 are highlighted in green. Numbers 9 and 10 are highlighted in yellow.</p>
+            <p><img src="images/gatoolAnnounce.png" width="750-px" alt="Announce screen details"></p>
+            <h3 id="playbyplay">Play-by-play</h3>
+            <p>The Play-by-play screen is organized to make it easy for you to provide colorful and relevant commentary during a match. The screen presents the teams from the perspective of the scoring table,with Blue Alliance on the left and Red Alliance on the right. The current match is indicated at the top and bottom of the screen. Also, there are buttons to cycle through the matches. You can use these buttons to preview upcoming matches or to review previous matches. Each time you tap the Next Match or Previous Match buttons, a call is made to retrieve current ranking data. It is best to switch between matches right before your current match to fetch the latest results from FIRST. </p>
+            <p>The Announce screen includes a reduced set of information about the teams, including:</p>
+            <ul>
+                <li>Team number</li>
+                <li>Team Name</li>
+                <li>Hometown</li>
+                <li>Robot name </li>
+                <li>Organization or school </li>
+                <li>Current event ranking</li>
+                <li>Qualification average</li>
+                <li>Win-loss-tie record </li>
+            </ul>
+            <p>Ranking is color coded to help build excitement and it follows the scheme from the Announce screen.</p>
+            <p><img src="images/gatoolPlayByPlay.png" width="750-px" alt="Play-byplay screen details"></p>
+            <p>At the top center of the screen, there is a match timer. This is a handy tool to help you identify the time remaining in the match and what phase of the match is currently active. Tap it once to start the timer, and tap it at any time to reset the timer. The phases of the timer include:</p>
+            <p><strong>Autonomous. </strong>During the Autonomous period, the timer is orange and counts down to the end of Autonomous period.</p>
+            <p><img src="images/gatoolAuto.png"></p>
+            <p><strong>Teleoperated. </strong>During the Teleoperated period, the timer is green and counts down to the Endgame, which begins when 30 seconds remain in the match.</p>
+            <p></p>
+            <p><img src="images/gatoolTeleop.png"></p>
+            <p><strong>Endgame. </strong>During the Endgame, the timer is red. When 10 seconds remain in the match, it will cycle alternatingly red and white until time expires.</p>
+            <p><img src="images/gatoolEndgame0.png"><img src ="images/gatoolEndgame1.png"> <img src="images/gatoolEndgame2.png"></p>
+            <h3 id="allianceselection">Alliance Selection</h3>
+            <p>The Alliance Selection tab is designed to help you and your emcee inform and entertain during Alliance Selection. Often the most confusing part of any FIRST event, Alliance Selection is a critical component of the FIRST competition philosophy. In many venues, there is no clear view of the scoring screen, which can help teams make selection choices. Also, it is difficult for a Game Announcer to search through a long list of teams in order to call out their names, schools and home towns after their number is called by the Alliance Captain.</p>
+            <p>The Alliance Selection tab uses a drag and drop interface to help ease the stress of Alliance Selection, and it is intended to be used by both emcees and Game Announcers. Upon comletion of Qualification matches, be sure to update the rankings by cycling backward and forward on the Announce or Play-by-play screens to ensure that you have the latest ranking data.</p>
+            <p>Team Captains are organized according to the ranking at the completion of Qualification play, and the Alliance Captains are pre-populated in their Alliances. The Alliances are on the right hand side of the screen inside of a red-bordered box. The current Alliance pick is also highlighted with a red border. To make a selection, click or tap on a team number and drag it onto the Alliances. As you drag the team, the team number, name, hometown and organization will appear above the available teams on the left. This is to help the Game Announcer provide details about the team as they come onto the field to accept of decline the offer to play. </p>
+            <p><img src="images/gatoolAlliance0.png" width="750px" alt="Alliance Selection"></p>
+            <p>When you drag the team onto the Alliances, the Alliances will turn blue to let you know that you can drop the team. If you drop the team, they will be committed to the highlighted Alliance position, the team will be removed from the list of available teams, and the highlighted Alliance choice will advance to the next choice. <strong>DO NOT DROP THE TEAM ON THE ALLIANCES UNLESS YOU ARE CERTAIN that the team will accept the offer.</strong> If you do, you will advance the selection process, and<strong><em> there is no undo currently</em></strong>. Simply drop the team outside of the Alliances and they will go back to their original position.</p>
+            <p>In the example below, Team 5902 was dragged from the available teams onto the Alliances. The Alliances have turned blue, and the team number has become "Are you sure?" This is a reminder that when you drop the team, it will be committed to the available Alliance choice. </p>
+            <p><img src="images/gatoolAlliance1.png" width="750px" alt="Alliance Selection"></p>
+            <p>Alliance Captains who have not yet chosen their first Alliance partner are also eligible for Alliance selection. If you move an Alliance Captain and drop it on the Alliances, it will move to the highlighted Alliance choice, and all of the Captains below their rank will advance one slot. In addition, a new number 8 Captain will come out of the available alliance pool according to the qualification rankings. As before, do not drop them on the Alliances until they accept the offer from a higher ranked Captain. If they refuse the offer, simply drop them outside of the Alliances and they will go back to their own Alliance Captain position.</p>
+            <p><img src="images/gatoolAlliance2.png" width="750px" alt="Alliance Selection"></p>
+            <p>We have designed the Alliance Selection screen with simplicity and utility in mind. We hope that Emcees, Game Announcers and event coordinators will find it useful.</p>
+            <h3>Help</h3>
+            <p>This help screen. </p>
         </div>
     </div>
 </div>
