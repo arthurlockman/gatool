@@ -15,6 +15,10 @@ var matchLength = 150;
 var autoLength = 15;
 var endGame = 30;
 localStorage.matchTimer = matchLength;
+var allianceTeamList = [];
+var allianceListUnsorted = [];
+var AllianceSelectionOrder = ["Alliance1Round1", "Alliance2Round1", "Alliance3Round1", "Alliance4Round1", "Alliance5Round1", "Alliance6Round1", "Alliance7Round1", "Alliance8Round1", "Alliance8Round2", "Alliance7Round2", "Alliance6Round2", "Alliance5Round2", "Alliance4Round2", "Alliance3Round2", "Alliance2Round2", "Alliance1Round2"];
+var currentAllianceChoice = 0;
 
 var matchTimer = setInterval(function () {
     "use strict";
@@ -43,6 +47,16 @@ window.onload = function () {
 window.addEventListener("resize", scaleRows);
 
 
+function prepareAllianceSelection() {
+    "use strict";
+    allianceTeamList = [];
+    allianceListUnsorted = [];
+    AllianceSelectionOrder = ["Alliance1Round1", "Alliance2Round1", "Alliance3Round1", "Alliance4Round1", "Alliance5Round1", "Alliance6Round1", "Alliance7Round1", "Alliance8Round1", "Alliance8Round2", "Alliance7Round2", "Alliance6Round2", "Alliance5Round2", "Alliance4Round2", "Alliance3Round2", "Alliance2Round2", "Alliance1Round2"];
+    currentAllianceChoice = 0;
+
+    $("#allianceSelectionTable").html('<table><tr><td><table><tr><td colspan="5" class="ranking" id="allianceInfo">Selected Alliance Info goes here.</td></tr><tr><td id="allianceTeamList1" class="col1"><div class="allianceTeam">List of teams</div></td><td id="allianceTeamList2" class="col1"><div class="allianceTeam">List of teams</div></td><td id="allianceTeamList3" class="col1"><div class="allianceTeam">List of teams</div></td><td id="allianceTeamList4" class="col1"><div class="allianceTeam">List of teams</div></td><td id="allianceTeamList5" class="col1"><div class="allianceTeam">List of teams</div></td></tr></table></td><td class="col1"></td><td class="col6 dropzone"><table><tr><td id="allianceDropTargets1" class="col3"><div class = "alliancedrop" id="Alliance1Captain">Alliance 1 Captain</div><div class = "alliancedrop dropzone" id="Alliance1Round1" >Alliance 1 first choice</div><div class = "alliancedrop" id="Alliance1Round2" >Alliance 1 second choice</div><br><div class = "alliancedrop" id="Alliance2Captain" >Alliance 2 Captain</div><div class = "alliancedrop" id="Alliance2Round1" >Alliance 2 first choice</div><div class = "alliancedrop" id="Alliance2Round2" >Alliance 2 second choice</div><br><div class = "alliancedrop" id="Alliance3Captain" >Alliance 3 Captain</div><div class = "alliancedrop" id="Alliance3Round1" >Alliance 3 first choice</div><div class = "alliancedrop" id="Alliance3Round2" >Alliance 3 second choice</div><br><div class = "alliancedrop" id="Alliance4Captain" >Alliance 4 Captain</div><div class = "alliancedrop" id="Alliance4Round1" >Alliance 4 first choice</div><div class = "alliancedrop" id="Alliance4Round2" >Alliance 4 second choice</div></td><td id="allianceDropTargets2" class="col3"><div class = "alliancedrop" id="Alliance5Captain" >Alliance 5 Captain</div><div class = "alliancedrop" id="Alliance5Round1" >Alliance 5 first choice</div><div class = "alliancedrop" id="Alliance5Round2" >Alliance 5 second choice</div><br><div class = "alliancedrop" id="Alliance6Captain" >Alliance 6 Captain</div><div class = "alliancedrop" id="Alliance6Round1" >Alliance 6 first choice</div><div class = "alliancedrop" id="Alliance6Round2" >Alliance 6 second choice</div><br><div class = "alliancedrop" id="Alliance7Captain" >Alliance 7 Captain</div><div class = "alliancedrop" id="Alliance7Round1" >Alliance 7 first choice</div><div class = "alliancedrop" id="Alliance7Round2" >Alliance 7 second choice</div><br><div class = "alliancedrop" id="Alliance8Captain" >Alliance 8 Captain</div><div class = "alliancedrop" id="Alliance8Round1" >Alliance 8 first choice</div><div class = "alliancedrop" id="Alliance8Round2" >Alliance 8 second choice</div></td></tr></table></td></tr></table>');
+
+}
 
 function handleEventSelection() {
     "use strict";
@@ -67,6 +81,7 @@ function handleEventSelection() {
     $("#eventName").html('<span class="loadingEvent"><b>Loading event...</b></span>');
     getTeamList();
     getHybridSchedule();
+    prepareAllianceSelection();
 }
 
 function loadEventsList() {
@@ -438,31 +453,26 @@ function getTeamRanks() {
     req.open('GET', '/api/' + localStorage.currentYear + '/Rankings/' + localStorage.currentEvent);
     req.addEventListener('load', function () {
         var data = JSON.parse(req.responseText);
-        var teamList = [];
-        var column = "1";
         if (data.Rankings.length === 0) {
-            $("#rankingDisplay").html('<b>No Rankings available.</b>');           
-            $("#allianceSelectionPlaceholder").css("display","block");
-            $("#allianceSelectionTable").css("display","none");
+            $("#rankingDisplay").html('<b>No Rankings available.</b>');
+            $("#allianceSelectionPlaceholder").css("display", "block");
+            $("#allianceSelectionTable").css("display", "none");
         } else {
-             $("#allianceSelectionPlaceholder").css("display","none");
-            $("#allianceSelectionTable").css("display","block");
+            $("#allianceSelectionPlaceholder").css("display", "none");
+            $("#allianceSelectionTable").css("display", "block");
             localStorage.Rankings = JSON.stringify(data.Rankings);
             if (localStorage.currentMatch > JSON.parse(localStorage.qualsList).Schedule.length) {
                 $("#rankingDisplay").html("<b>Seed<b>");
             } else {
                 $("#rankingDisplay").html('<b>Ranking</b>');
             }
-            $("#allianceTeamList1").html("");
-            $("#allianceTeamList2").html("");
-            $("#allianceTeamList3").html("");
-            $("#allianceTeamList4").html("");
 
             //document.getElementById('rankingDisplay').innerHTML = '<b>Ranking</b>';
             for (var i = 0; i < data.Rankings.length; i++) {
                 var team = JSON.parse(localStorage['teamData' + data.Rankings[i].teamNumber]);
                 team.rank = data.Rankings[i].rank;
-                teamList[i] = data.Rankings[i].teamNumber;
+                allianceTeamList[i] = data.Rankings[i].teamNumber;
+                allianceListUnsorted[i] = data.Rankings[i].teamNumber;
                 team.sortOrder1 = data.Rankings[i].sortOrder1;
                 team.sortOrder2 = data.Rankings[i].sortOrder2;
                 team.sortOrder3 = data.Rankings[i].sortOrder3;
@@ -478,54 +488,217 @@ function getTeamRanks() {
                 localStorage['teamData' + data.Rankings[i].teamNumber] = JSON.stringify(team);
             }
 
-            $("#Alliance1Captain").html("Alliance 1 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
-            $("#Alliance2Captain").html("Alliance 2 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
-            $("#Alliance3Captain").html("Alliance 3 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
-            $("#Alliance4Captain").html("Alliance 4 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
-            $("#Alliance5Captain").html("Alliance 5 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
-            $("#Alliance6Captain").html("Alliance 6 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
-            $("#Alliance7Captain").html("Alliance 7 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
-            $("#Alliance8Captain").html("Alliance 8 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
+            $("#Alliance1Captain").html("Alliance 1 Captain<div class ='allianceTeam allianceCaptain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "'>" + allianceTeamList.shift() + "</div>");
+            $("#Alliance2Captain").html("Alliance 2 Captain<div class ='allianceTeam allianceCaptain draggable allianceAvailable' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "'>" + allianceTeamList.shift() + "</div>");
+            $("#Alliance3Captain").html("Alliance 3 Captain<div class ='allianceTeam allianceCaptain draggable allianceAvailable' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "'>" + allianceTeamList.shift() + "</div>");
+            $("#Alliance4Captain").html("Alliance 4 Captain<div class ='allianceTeam allianceCaptain draggable allianceAvailable' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "'>" + allianceTeamList.shift() + "</div>");
+            $("#Alliance5Captain").html("Alliance 5 Captain<div class ='allianceTeam allianceCaptain draggable allianceAvailable' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "'>" + allianceTeamList.shift() + "</div>");
+            $("#Alliance6Captain").html("Alliance 6 Captain<div class ='allianceTeam allianceCaptain draggable allianceAvailable' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "'>" + allianceTeamList.shift() + "</div>");
+            $("#Alliance7Captain").html("Alliance 7 Captain<div class ='allianceTeam allianceCaptain draggable allianceAvailable' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "'>" + allianceTeamList.shift() + "</div>");
+            $("#Alliance8Captain").html("Alliance 8 Captain<div class ='allianceTeam allianceCaptain draggable allianceAvailable' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "'>" + allianceTeamList.shift() + "</div>");
 
-            teamList.sort(function (a, b) {
-                return a - b;
-            });
+            allianceTeamList = sortAllianceTeams(allianceTeamList);
 
-            for (i = 0; i < teamList.length - 1; i++) {
-                if (i < teamList.length / 4) {
-                    column = "1";
-                } else if (i > teamList.length / 4 && i <= teamList.length / 2) {
-                    column = "2";
-                } else if (i > teamList.length / 2 && i <= teamList.length * 3 / 4) {
-                    column = "3";
-                } else {
-                    column = "4";
-                }
-                $("#allianceTeamList" + column).append("<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[i] + "'>" + teamList[i] + "</div></br>");
-            }
             $("#rankUpdateContainer").html(Date());
         }
-
     });
     req.send();
 }
 
-function drag(ev) {
+function displayAllianceCaptains(startingPosition) {
     "use strict";
-    ev.dataTransfer.setData("text", ev.target.id);
+    for (var i = startingPosition; i <= 8; i++) {
+        $("#Alliance" + i + "Captain").html("Alliance " + i + " Captain<div class ='allianceTeam allianceCaptain draggable allianceAvailable' teamnumber='" + allianceListUnsorted[i - 1] + "' id='allianceTeam" + allianceListUnsorted[i - 1] + "'>" + allianceListUnsorted[i - 1] + "</div>");
+    }
+    for (i = 1; i <= startingPosition + 1; i++) {
+        $("#allianceTeam" + allianceListUnsorted[i]).removeClass("draggable");
+    }
 }
 
-function allowDrop(ev) {
+function sortAllianceTeams(teamList) {
     "use strict";
-    ev.preventDefault();
+    var column = 1;
+    $("#allianceTeamList1").html("");
+    $("#allianceTeamList2").html("");
+    $("#allianceTeamList3").html("");
+    $("#allianceTeamList4").html("");
+    $("#allianceTeamList5").html("");
+
+    teamList.sort(function (a, b) {
+        return a - b;
+    });
+
+    for (var i = 0; i < teamList.length - 1; i++) {
+        if (i < teamList.length / 5) {
+            column = "1";
+        } else if (i > teamList.length / 5 && i <= teamList.length * 2 / 5) {
+            column = "2";
+        } else if (i > teamList.length * 2 / 5 && i <= teamList.length * 3 / 5) {
+            column = "3";
+        } else if (i > teamList.length * 3 / 5 && i <= teamList.length * 4 / 5) {
+            column = "4";
+        } else {
+            column = "5";
+        }
+        $("#allianceTeamList" + column).append("<div class ='allianceTeam draggable allianceAvailable' teamnumber='" + teamList[i] + "' id='allianceTeam" + teamList[i] + "'>" + teamList[i] + "</div></br>");
+    }
+    return teamList;
 }
 
-function drop(ev) {
+// target elements with the "draggable" class
+interact('.draggable').draggable({
+    // enable inertial throwing
+    inertia: true,
+    // keep the element within the area of it's parent
+    restrict: {
+        restriction: "#allianceSelectionTable",
+        endOnly: true,
+        elementRect: {
+            top: 0,
+            left: 0,
+            bottom: 1,
+            right: 1
+        }
+    },
+    // enable autoScroll
+    autoScroll: true,
+
+    // call this function on every dragmove event
+    onmove: dragMoveListener,
+
+    // call this function on every dragend event
+    onend: function (event) {
+        "use strict";
+        var teamnumber = event.target.getAttribute("teamnumber");
+        event.target.textContent = teamnumber;
+        event.target.style.transform = 'translate(0px, 0px)';
+        event.target.removeAttribute("data-x");
+        event.target.removeAttribute("data-y");
+    }
+});
+
+// enable draggables to be dropped into this
+interact('.dropzone').dropzone({
+    // only accept elements matching this CSS selector
+    accept: '.allianceAvailable',
+    // Require a 50% element overlap for a drop to be possible
+    overlap: 0.5,
+
+    // listen for drop related events:
+
+    ondropactivate: function (event) {
+        // add active dropzone feedback
+        "use strict";
+        var draggableElement = event.relatedTarget,
+            dropzoneElement = event.target;
+        var currentTeamInfo = JSON.parse(localStorage["teamData" + draggableElement.getAttribute("teamnumber")]);
+        dropzoneElement.classList.add('drop-active');
+        var selectedTeamInfo = "Team " + draggableElement.getAttribute("teamnumber") + " ";
+        if (currentTeamInfo.nameShortLocal === "") {selectedTeamInfo += currentTeamInfo.nameShort;} else {selectedTeamInfo += currentTeamInfo.nameShortLocal;}
+        selectedTeamInfo += " is from ";
+        if (currentTeamInfo.cityStateLocal === "") {selectedTeamInfo += currentTeamInfo.cityState;} else {selectedTeamInfo += currentTeamInfo.cityStateLocal;}
+        selectedTeamInfo += "</br>";
+        if (currentTeamInfo.organizationLocal === "") {selectedTeamInfo += currentTeamInfo.organization;} else {selectedTeamInfo += currentTeamInfo.organizationLocal;}
+        $("#allianceInfo").html(selectedTeamInfo);
+    },
+    ondragenter: function (event) {
+        "use strict";
+        var draggableElement = event.relatedTarget,
+            dropzoneElement = event.target;
+
+        // feedback the possibility of a drop
+        dropzoneElement.classList.add('drop-target');
+        draggableElement.classList.add('can-drop');
+        draggableElement.textContent = "Are you sure?";
+    },
+    ondragleave: function (event) {
+        "use strict";
+        // remove the drop feedback style
+        var draggableElement = event.relatedTarget,
+            dropzoneElement = event.target;
+        var currentTeamInfo = JSON.parse(localStorage["teamData" + draggableElement.getAttribute("teamnumber")]);
+
+        dropzoneElement.classList.remove('drop-target');
+        draggableElement.classList.remove('can-drop');
+        var selectedTeamInfo = "Team " + draggableElement.getAttribute("teamnumber") + " ";
+        if (currentTeamInfo.nameShortLocal === "") {selectedTeamInfo += currentTeamInfo.nameShort;} else {selectedTeamInfo += currentTeamInfo.nameShortLocal;}
+        selectedTeamInfo += " is from ";
+        if (currentTeamInfo.cityStateLocal === "") {selectedTeamInfo += currentTeamInfo.cityState;} else {selectedTeamInfo += currentTeamInfo.cityStateLocal;}
+        selectedTeamInfo += "</br>";
+        if (currentTeamInfo.organizationLocal === "") {selectedTeamInfo += currentTeamInfo.organization;} else {selectedTeamInfo += currentTeamInfo.organizationLocal;}
+        $("#allianceInfo").html(selectedTeamInfo);
+    },
+    ondrop: function (event) {
+        "use strict";
+        //handle the drop
+        //remove the target and set up the next target
+        //remove the team from the available list, set the new starting point, and re-sort the list.
+        //set the new drop target
+        //display the new list
+
+        var droppedTeam = event.relatedTarget.id;
+
+        event.relatedTarget.style.webkitTransform = 'translate(0px, 0px)';
+        event.relatedTarget.style.transform = 'translate(0px, 0px)';
+
+        $("#" + droppedTeam).removeClass("draggable allianceAvailable allianceCaptain");
+        console.log("removed classes from " + droppedTeam);
+        console.log($("#" + droppedTeam).hasClass("allianceCaptain"));
+        //pull the dropped team from both lists and display the teams again
+        var index = allianceListUnsorted.indexOf(parseInt(droppedTeam.slice(12)));
+        if (index > -1) {
+            allianceListUnsorted.splice(index, 1);
+        }
+
+        index = allianceTeamList.indexOf(parseInt(droppedTeam.slice(12)));
+        if (index > -1) {
+            allianceTeamList.splice(index, 1);
+        }
+
+        displayAllianceCaptains(currentAllianceChoice);
+        sortAllianceTeams(allianceTeamList);
+
+        var dropCaptain = allianceListUnsorted[currentAllianceChoice];
+        console.log("Drop target: " + event.target.id + " and Captain: " + dropCaptain + " and dropped item: " + event.relatedTarget.id);
+
+        $("#" + AllianceSelectionOrder[currentAllianceChoice]).append(event.relatedTarget);
+        $("#" + AllianceSelectionOrder[currentAllianceChoice]).removeClass("dropzone");
+
+        currentAllianceChoice++;
+        $("#allianceTeam" + dropCaptain).removeClass("draggable");
+
+        $("#" + AllianceSelectionOrder[currentAllianceChoice]).addClass("dropzone");
+
+        event.relatedTarget.textContent = droppedTeam.slice(12);
+    },
+    ondropdeactivate: function (event) {
+        "use strict";
+        // remove active dropzone feedback
+        event.target.classList.remove('drop-active');
+        event.target.classList.remove('drop-target');
+    }
+});
+
+function dragMoveListener(event) {
     "use strict";
-    ev.preventDefault();
-    var data = ev.dataTransfer.getData("text");
-    ev.target.appendChild(document.getElementById(data));
+    var target = event.target,
+        // keep the dragged position in the data-x/data-y attributes
+        x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
+        y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+    // translate the element
+    target.style.webkitTransform =
+        target.style.transform =
+        'translate(' + x + 'px, ' + y + 'px)';
+
+    // update the posiion attributes
+    target.setAttribute('data-x', x);
+    target.setAttribute('data-y', y);
 }
+
+
+
+
 
 function getTeamAwards(teamNumber, year) {
     "use strict";

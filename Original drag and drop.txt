@@ -1,0 +1,73 @@
+$("#Alliance1Captain").html("Alliance 1 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
+            $("#Alliance2Captain").html("Alliance 2 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
+            $("#Alliance3Captain").html("Alliance 3 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
+            $("#Alliance4Captain").html("Alliance 4 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
+            $("#Alliance5Captain").html("Alliance 5 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
+            $("#Alliance6Captain").html("Alliance 6 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
+            $("#Alliance7Captain").html("Alliance 7 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
+            $("#Alliance8Captain").html("Alliance 8 Captain<div class ='allianceTeam' draggable='true' ondragstart='drag(event)' id='allianceTeam" + teamList[0] + "'>" + teamList.shift() + "</div>");
+			
+			
+			
+			
+			
+			
+
+			function drag(ev) {
+			    "use strict";
+			    ev.dataTransfer.setData("text", ev.target.id);
+			}
+
+			function allowDrop(ev) {
+			    "use strict";
+			    ev.preventDefault();
+			}
+
+			function drop(ev) {
+			    "use strict";
+			    ev.preventDefault();
+			    var data = ev.dataTransfer.getData("text");
+			    ev.target.appendChild(document.getElementById(data));
+			}
+			
+			
+			
+			
+			
+			
+			
+			
+
+              
+              
+               <div class = "alliancedrop" id="Alliance1Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 1 Captain</div>
+                <div class = "alliancedrop" id="Alliance1Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 1 first choice</div>
+                <div class = "alliancedrop" id="Alliance1Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 1 second choice</div>
+                <br>
+                <div class = "alliancedrop" id="Alliance2Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 2 Captain</div>
+                <div class = "alliancedrop" id="Alliance2Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 2 first choice</div>
+                <div class = "alliancedrop" id="Alliance2Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 2 second choice</div>
+                <br>
+                <div class = "alliancedrop" id="Alliance3Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 3 Captain</div>
+                <div class = "alliancedrop" id="Alliance3Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 3 first choice</div>
+                <div class = "alliancedrop" id="Alliance3Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 3 second choice</div>
+                <br>
+                <div class = "alliancedrop" id="Alliance4Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 4 Captain</div>
+                <div class = "alliancedrop" id="Alliance4Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 4 first choice</div>
+                <div class = "alliancedrop" id="Alliance4Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 4 second choice</div></td>
+            <td id="allianceDropTargets" class="col3">
+               <div class = "alliancedrop" id="Alliance5Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 5 Captain</div>
+                <div class = "alliancedrop" id="Alliance5Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 5 first choice</div>
+                <div class = "alliancedrop" id="Alliance5Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 5 second choice</div>
+                <br>
+                <div class = "alliancedrop" id="Alliance6Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 6 Captain</div>
+                <div class = "alliancedrop" id="Alliance6Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 6 first choice</div>
+                <div class = "alliancedrop" id="Allianc6Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 6 second choice</div>
+                <br>
+                <div class = "alliancedrop" id="Alliance7Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 7 Captain</div>
+                <div class = "alliancedrop" id="Alliance7Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 7 first choice</div>
+                <div class = "alliancedrop" id="Alliance7Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 7 second choice</div>
+                <br>
+                <div class = "alliancedrop" id="Alliance8Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 8 Captain</div>
+                <div class = "alliancedrop" id="Alliance8Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 8 first choice</div>
+                <div class = "alliancedrop" id="Alliance8Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 8 second choice</div></td>

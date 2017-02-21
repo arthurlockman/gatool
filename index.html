@@ -26,11 +26,17 @@
 <script src="js/jquery-1.11.3.min.js"></script>
 <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 --><!--<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script> -->
-<script src="scripts.js"></script>
-<!-- Include all compiled plugins (below), or include individual files as needed -->
+<!-- Interact.js -->
+<!--<script src="js/interact.min.js"></script>-->
+<script src="//cdnjs.cloudflare.com/ajax/libs/interact.js/1.2.6/interact.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
---><!-- Bootstrap Select -->
+-->
+
+<script src="scripts.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+
+<!-- Bootstrap Select -->
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="css/bootstrap-select.min.css">
 <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.1/css/bootstrap-select.min.css">-->
@@ -267,51 +273,61 @@
             </div>
         </div>
         <div id="allianceselection" class="tabcontent">
-            <div id="allianceSelectionPlaceholder"><p> Alliance Selection</p>
-            <p>yes, Alliance Selection</p>
-            <p>Coming eventually. </p>
+            <div id="allianceSelectionPlaceholder">
+                <p> When it's time for alliance selection, simply drag a team to the highlighted position. All other teams will shift appropriately. When you drag a team, its particulars will appear above the available team numbers.</p>
             </div>
             <div id="allianceSelectionTable">
-            <table>
-                <tr>
-                    <td id="allianceTeamList1" class="col1"><div class="allianceTeam">List of teams</div></td>
-                    <td id="allianceTeamList2" class="col1"><div class="allianceTeam">List of teams</div></td>
-                    <td id="allianceTeamList3" class="col1"><div class="allianceTeam">List of teams</div></td>
-                    <td id="allianceTeamList4" class="col1"><div class="allianceTeam">List of teams</div></td>
-                    <td class="col1"></td>
-                    <td id="allianceDropTargets" class="col3"><div class = "alliancedrop" id="Alliance1Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 1 Captain</div>
-                        <div class = "alliancedrop" id="Alliance1Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 1 first choice</div>
-                        <div class = "alliancedrop" id="Alliance1Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 1 second choice</div>
-                        <br>
-                        <div class = "alliancedrop" id="Alliance2Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 2 Captain</div>
-                        <div class = "alliancedrop" id="Alliance2Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 2 first choice</div>
-                        <div class = "alliancedrop" id="Alliance2Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 2 second choice</div>
-                        <br>
-                        <div class = "alliancedrop" id="Alliance3Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 3 Captain</div>
-                        <div class = "alliancedrop" id="Alliance3Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 3 first choice</div>
-                        <div class = "alliancedrop" id="Alliance3Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 3 second choice</div>
-                        <br>
-                        <div class = "alliancedrop" id="Alliance4Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 4 Captain</div>
-                        <div class = "alliancedrop" id="Alliance4Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 4 first choice</div>
-                        <div class = "alliancedrop" id="Alliance4Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 4 second choice</div></td>
-                    <td id="allianceDropTargets" class="col3">
-                       <div class = "alliancedrop" id="Alliance5Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 5 Captain</div>
-                        <div class = "alliancedrop" id="Alliance5Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 5 first choice</div>
-                        <div class = "alliancedrop" id="Alliance5Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 5 second choice</div>
-                        <br>
-                        <div class = "alliancedrop" id="Alliance6Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 6 Captain</div>
-                        <div class = "alliancedrop" id="Alliance6Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 6 first choice</div>
-                        <div class = "alliancedrop" id="Allianc6Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 6 second choice</div>
-                        <br>
-                        <div class = "alliancedrop" id="Alliance7Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 7 Captain</div>
-                        <div class = "alliancedrop" id="Alliance7Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 7 first choice</div>
-                        <div class = "alliancedrop" id="Alliance7Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 7 second choice</div>
-                        <br>
-                        <div class = "alliancedrop" id="Alliance8Captain" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 8 Captain</div>
-                        <div class = "alliancedrop" id="Alliance8Choice1" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 8 first choice</div>
-                        <div class = "alliancedrop" id="Alliance8Choice2" ondrop="drop(event)" ondragover="allowDrop(event)">Alliance 8 second choice</div></td>
-                </tr>
-            </table>
+                <table>
+                    <tr>
+                        <td><table>
+                                <tr>
+                                    <td colspan="5" class="ranking" id="allianceInfo">Selected Alliance Info goes here.</td>
+                                </tr>
+                                <tr>
+                                    <td id="allianceTeamList1" class="col1"><div class="allianceTeam">List of teams</div></td>
+                                    <td id="allianceTeamList2" class="col1"><div class="allianceTeam">List of teams</div></td>
+                                    <td id="allianceTeamList3" class="col1"><div class="allianceTeam">List of teams</div></td>
+                                    <td id="allianceTeamList4" class="col1"><div class="allianceTeam">List of teams</div></td>
+                                    <td id="allianceTeamList5" class="col1"><div class="allianceTeam">List of teams</div></td>
+                                </tr>
+                            </table></td>
+                        <td class="col1"></td>
+                        <td class="col6 dropzone"><table>
+                                <tr>
+                                    <td id="allianceDropTargets1" class="col3"><div class = "alliancedrop" id="Alliance1Captain">Alliance 1 Captain</div>
+                                        <div class = "alliancedrop dropzone" id="Alliance1Round1" >Alliance 1 first choice</div>
+                                        <div class = "alliancedrop" id="Alliance1Round2" >Alliance 1 second choice</div>
+                                        <br>
+                                        <div class = "alliancedrop" id="Alliance2Captain" >Alliance 2 Captain</div>
+                                        <div class = "alliancedrop" id="Alliance2Round1" >Alliance 2 first choice</div>
+                                        <div class = "alliancedrop" id="Alliance2Round2" >Alliance 2 second choice</div>
+                                        <br>
+                                        <div class = "alliancedrop" id="Alliance3Captain" >Alliance 3 Captain</div>
+                                        <div class = "alliancedrop" id="Alliance3Round1" >Alliance 3 first choice</div>
+                                        <div class = "alliancedrop" id="Alliance3Round2" >Alliance 3 second choice</div>
+                                        <br>
+                                        <div class = "alliancedrop" id="Alliance4Captain" >Alliance 4 Captain</div>
+                                        <div class = "alliancedrop" id="Alliance4Round1" >Alliance 4 first choice</div>
+                                        <div class = "alliancedrop" id="Alliance4Round2" >Alliance 4 second choice</div></td>
+                                    <td id="allianceDropTargets2" class="col3"><div class = "alliancedrop" id="Alliance5Captain" >Alliance 5 Captain</div>
+                                        <div class = "alliancedrop" id="Alliance5Round1" >Alliance 5 first choice</div>
+                                        <div class = "alliancedrop" id="Alliance5Round2" >Alliance 5 second choice</div>
+                                        <br>
+                                        <div class = "alliancedrop" id="Alliance6Captain" >Alliance 6 Captain</div>
+                                        <div class = "alliancedrop" id="Alliance6Round1" >Alliance 6 first choice</div>
+                                        <div class = "alliancedrop" id="Alliance6Round2" >Alliance 6 second choice</div>
+                                        <br>
+                                        <div class = "alliancedrop" id="Alliance7Captain" >Alliance 7 Captain</div>
+                                        <div class = "alliancedrop" id="Alliance7Round1" >Alliance 7 first choice</div>
+                                        <div class = "alliancedrop" id="Alliance7Round2" >Alliance 7 second choice</div>
+                                        <br>
+                                        <div class = "alliancedrop" id="Alliance8Captain" >Alliance 8 Captain</div>
+                                        <div class = "alliancedrop" id="Alliance8Round1" >Alliance 8 first choice</div>
+                                        <div class = "alliancedrop" id="Alliance8Round2" >Alliance 8 second choice</div></td>
+                                </tr>
+                            </table></td>
+                    </tr>
+                </table>
             </div>
         </div>
         <div id="teamDataEntry" class="tabcontent" >
