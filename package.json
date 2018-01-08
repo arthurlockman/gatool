@@ -1,20 +1,26 @@
 {
-    "name": "gatool",
-    "version": "0.5.0",
-    "description": "This site is a set of tools and services to provide FIRST Game Announcers with real-time access to match data.",
-    "author": "James Lockman, Arthur Lockman",
-    "license": "MIT",
-    "scripts": {
-        "start": "node server.js"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/arthurlockman/gatool"
-    },
-    "dependencies": {
-        "express": "^4.14.0",
-        "level": "^1.5.0",
-        "mysql": "^2.5.4",
-        "unirest": "^0.5.1"
-    }
+  "name": "gatool",
+  "version": "0.5.0",
+  "description": "This site is a set of tools and services to provide FIRST Game Announcers with real-time access to match data.",
+  "author": "James Lockman, Arthur Lockman",
+  "license": "MIT",
+  "scripts": {
+    "start": "node gatool/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arthurlockman/gatool"
+  },
+  "dependencies": {
+    "bcrypt": "^1.0.2",
+    "body-parser": "^1.16.1",
+    "cookie": "^0.3.1",
+    "escape-html": "^1.0.3",
+    "express": "^4.14.0",
+    "level": "^1.5.0",
+    "mysql": "^2.5.4",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "unirest": "^0.5.1"
+  }
 }
