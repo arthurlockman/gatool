@@ -128,8 +128,8 @@
                     </select>
                 </p>
                 <p><input name="showEventNames" id="showEventNames" type="checkbox" value="true" checked>&nbsp;Show Event Names instead of codes</p>
-                <p><input name="offseason" id="offseason" type="checkbox" value="false">&nbsp;Offseason/Offline Mode. <br>Use when your event does not appear in the Events dropdown under the Season selector.<br>
-                <div id="offseasonSetup" class="alert-info offseason">You can upload schedules in the Match Schedule Screen. You will need a Quals Schedule and Playoff Schedule, provided by your FTA as an XLSX export from FMS. On a tablet, use DropBox or a similar service to get the file on the device, and then select it from DrobBox using the button on the Match Schedule Screen.</div></p>
+                <p><input name="offseason" id="offseason" type="checkbox" value="false">&nbsp;Offseason/Offline Mode. <br>Use when your event does not appear in the Events dropdown under the Season selector.</p>
+                <div id="offseasonSetup" class="alert-info offseason">You can upload schedules in the Match Schedule Screen. You will need a Quals Schedule and Playoff Schedule, provided by your FTA as an XLSX export from FMS. On a tablet, use DropBox or a similar service to get the file on the device, and then select it from DrobBox using the button on the Match Schedule Screen.</div>
                 <p onclick="resetLocalStorage()" class="btn btn-danger alert col-md-12 col-xs-12 col-sm-12"><span class="glyphicon glyphicon-refresh">&nbsp;</span>Reset local storage.</p>
                 <p onclick="logout()" class="btn btn-primary alert col-md-12 col-xs-12 col-sm-12"><span class="glyphicon glyphicon-log-out">&nbsp;</span>Logout of gatool.</p>
                 <p onclick="saveTeamUpdates()" class="btn btn-info alert col-md-12 col-xs-12 col-sm-12"><span class="glyphicon glyphicon-cloud-upload">&nbsp;</span>Save to gatool Cloud.</p>
@@ -137,14 +137,14 @@
             </div>
         </div>
          <div id="offSeason" class="tabcontent">
-             <div id="offSeasonContainer"><p>You can import data from a spreadsheet to populate offseason data in offline mode. There are three steps: <ul><li>upload a team list</li><li>Upload a quals schedule</li><li>Upload Playoff Schedules (this step repeats as the schedule matures during Playoffs)</li></ul></p>
+             <div id="offSeasonContainer">You can import data from a spreadsheet to populate offseason data in offline mode. There are three steps: <ul><li>upload a team list</li><li>Upload a quals schedule</li><li>Upload Playoff Schedules (this step repeats as the schedule matures during Playoffs)</li></ul>
              <p>Please enter the following information about your event:</p>
-             Event Name
-             Event City
-             Event State
-             Event Country
-             Start date
-             End date
+             Event Name<br>
+             Event City<br>
+             Event State<br>
+             Event Country<br>
+             Start date<br>
+             End date<br>
              <p><label>Use this area to paste your team list. The team list should have a header row, and the row containing the team numbers MUST be called "teamNumber" (no quotes) This is essential.</label></p>
     <p><textarea id="offSeasonTeamListInput" class="input-lg"></textarea><br>
     <button id="offseasonTeamListToJSON">Convert to Team List</button></p></div>
@@ -745,8 +745,7 @@
                 <li>Slides, Slips, Strafes, Creeps across the field </li>
                 <li>Racing the clock </li>
                 <li>Stokes the Boiler</li>
-            </ul>
-            </p>
+            </ul></p>
         </div>
     </div>
 </div>
