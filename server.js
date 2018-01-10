@@ -1,6 +1,6 @@
 /*global require */
 
-var secureHTTP = true;
+var secureHTTP = false;
 
 var http = require('http'),
     https = require('https'),

@@ -58,9 +58,9 @@ localStorage.matchHighScore = 0;
 localStorage.highScoreDetails = "{}";
 
 // Cache the prior years events to reduce server calls.
-localStorage.events2015 = '{"ABCA":"Western Canada Regional","ARCHIMEDES":"FIRST Championship - Archimedes Subdivision","ARFA":"Arkansas Rock City Regional","ARTE":"FIRST Championship - ARTE Division","AUSY":"Australia Regional","AZCH":"Arizona East Regional","AZPX":"Arizona West Regional","CALB":"Los Angeles Regional sponsored by The Roddenberry Foundation","CAMA":"Central Valley Regional","CARM":"Inland Empire Regional","CARSON":"FIRST Championship - Carson Subdivision","CARVER":"FIRST Championship - Carver Subdivision","CASA":"Sacramento Regional","CASD":"San Diego Regional ","CASJ":"Silicon Valley Regional sponsored by Google.org","CAVE":"Ventura Regional","CMP":"FIRST Championship","CODE":"Colorado Regional","CTHAR":"NE District - Hartford Event","CTWAT":"NE District - Waterbury Event","CUCA":"FIRST Championship - CUCA Division","CURIE":"FIRST Championship - Curie Subdivision","DCWA":"Greater DC Regional","FLFO":"South Florida Regional ","FLOR":"Orlando Regional","GACA":"FIRST Championship - GACA Division","GADU":"Peachtree Regional","GALILEO":"FIRST Championship - Galileo Subdivision","GAPE":"Georgia Southern Classic Regional","HIHO":"Hawaii Regional","HOPPER":"FIRST Championship - Hopper Subdivision","ILCH":"Midwest Regional","ILIL":"Central Illinois Regional","INCMP":"Indiana FIRST District Championship","ININD":"IN District - Indianapolis Event","INKOK":"IN District - Kokomo City of Firsts Event sponsored by AndyMark","INWLA":"IN District - Purdue Event","IRI":"Indiana Robotics Invitational","ISTA":"Israel Regional","LAKE":"Bayou Regional","MABOS":"NE District - Northeastern University Event","MANDA":"NE District - UMass - Dartmouth Event","MAREA":"NE District - Reading Event","MASPR":"NE District - Pioneer Valley Event","MDCP":"Chesapeake Regional","MELEW":"NE District - Pine Tree Event","MIBED":"FIM District - Bedford Event","MICEN":"FIM District - Center Line Event","MICMP":"FIRST in Michigan District Championship","MIESC":"FIM District - Escanaba Event","MIFLA":"FIM District - Woodhaven Event","MIGUL":"FIM District - Gull Lake Event","MIHOW":"FIM District - Howell Event","MIKEN":"FIM District - Kentwood Event","MIKET":"FIM District - Kettering University Event","MILAN":"FIM District - Lansing Event","MILIV":"FIM District - Livonia Event","MIMID":"FIM District - Great Lakes Bay Region Event","MISJO":"FIM District - St. Joseph Event","MISOU":"FIM District - Southfield Event","MISTA":"FIM District - Standish Event","MITRY":"FIM District - Troy Event","MITVC":"FIM District - Traverse City Event","MIWAT":"FIM District - Waterford Event","MIWMI":"FIM District - West Michigan Event","MNDU":"Lake Superior Regional","MNDU2":"Northern Lights Regional","MNMI":"Minnesota 10000 Lakes Regional","MNMI2":"Minnesota North Star Regional","MOKC":"Greater Kansas City Regional","MOSL":"St. Louis Regional","MRCMP":"Mid-Atlantic Robotics District Championship","MXMC":"Mexico City Regional ","NCRE":"North Carolina Regional","NECMP":"NE FIRST District Championship presented by United Technologies","NEHO":"FIRST Championship - NEHO Division","NEWTON":"FIRST Championship - Newton Subdivision","NHDUR":"NE District - UNH Event","NHNAS":"NE District - Granite State Event","NJBRI":"MAR District - Bridgewater-Raritan Event","NJFLA":"MAR District - Mt. Olive Event","NJNBR":"MAR District - North Brunswick Event","NJTAB":"MAR District - Seneca Event","NVLV":"Las Vegas Regional","NYLI":"SBPLI Long Island Regional","NYNY":"New York City Regional","NYRO":"Finger Lakes Regional ","NYTR":"New York Tech Valley Regional","OHCI":"Queen City Regional","OHCL":"Buckeye Regional","OKOK":"Oklahoma Regional ","ONNB":"North Bay Regional","ONTO":"Greater Toronto East Regional ","ONTO2":"Greater Toronto Central Regional","ONWA":"Waterloo Regional ","ONWI":"Windsor Essex Great Lakes Regional","ORORE":"PNW District - Oregon City Event","ORPHI":"PNW District - Philomath Event","ORWIL":"PNW District - Wilsonville Event","PADRE":"MAR District - Upper Darby Event","PAHAT":"MAR District - Hatboro-Horsham Event","PAPHI":"MAR District - Springside Chestnut Hill Event","PAPI":"Greater Pittsburgh Regional","PNCMP":"Pacific Northwest District Championship","QCMO":"FRC Festival de Robotique - Montreal Regional","RISMI":"NE District - Rhode Island Event","SCMB":"Palmetto Regional","TESLA":"FIRST Championship - Tesla Subdivision","TNKN":"Smoky Mountains Regional","TXDA":"Dallas Regional","TXHO":"Lone Star Regional","TXLU":"Hub City Regional","TXSA":"Alamo Regional sponsored by Rackspace Hosting","UTWV":"Utah Regional","VARI":"Virginia Regional","WAAHS":"PNW District - Auburn Event","WAAMV":"PNW District - Auburn Mountainview Event","WAELL":"PNW District - Central Washington University Event","WAMOU":"PNW District - Mount Vernon Event","WASHO":"PNW District - Shorewood Event","WASNO":"PNW District - Glacier Peak Event","WASPO":"PNW District - West Valley Event","WIMI":"Wisconsin Regional"}';
-localStorage.events2016 = '{"ABCA":"Western Canada Regional","ALHU":"Rocket City Regional","ARCHIMEDES":"FIRST Championship - Archimedes Subdivision","ARLR":"Arkansas Rock City Regional","ARTE":"FIRST Championship - ARTE Division","AUSY":"Australia Regional","AZFL":"Arizona North Regional","AZPX":"Arizona West Regional","CADA":"Sacramento Regional","CALB":"Los Angeles Regional","CAMA":"Central Valley Regional","CAPL":"Orange County Regional","CARSON":"FIRST Championship - Carson Subdivision","CARVER":"FIRST Championship - Carver Subdivision","CASD":"San Diego Regional","CASJ":"Silicon Valley Regional presented by Google.org","CAVE":"Ventura Regional","CHCMP":"FIRST Chesapeake District Championship sponsored by Booz Allen Hamilton","CMP":"FIRST Championship","CODE":"Colorado Regional","CTHAR":"NE District - Hartford Event","CTWAT":"NE District - Waterbury Event","CUCA":"FIRST Championship - CUCA Division","CURIE":"FIRST Championship - Curie Subdivision","FLOR":"Orlando Regional","FLWP":"South Florida Regional ","GAALB":"PCH District - Albany Event","GACA":"FIRST Championship - GACA Division","GACMP":"Peachtree District State Championship","GACOL":"PCH District - Columbus Event","GADAL":"PCH District - Dalton Event","GAKEN":"PCH District - Kennesaw Event","GALILEO":"FIRST Championship - Galileo Subdivision","HEAT":"Summer Heat","HIHO":"Hawaii Regional","HOPPER":"FIRST Championship - Hopper Subdivision","IACF":"Iowa Regional","IDBO":"Idaho Regional","ILCH":"Midwest Regional","ILPE":"Central Illinois Regional","INCMP":"Indiana State Championship","INPMH":"IN District - Perry Meridian Event","INWCH":"IN District - Walker Warren Event","INWLA":"IN District - Tippecanoe Event","IRI":"Indiana Robotics Invitational","ISTA":"Israel Regional","LAKE":"Bayou Regional","MABOS":"NE District - Boston Event","MANDA":"NE District - UMass-Dartmouth Event","MAREA":"NE District - North Shore Event","MAWOR":"NE District - WPI Event","MDBET":"CHS District - Greater DC Event","MDBLR":"CHS District - Northern Maryland Event","MDEDG":"CHS District - Central Maryland Event","MELEW":"NE District - Pine Tree Event","MIANN":"FIM District - Ann Arbor Skyline Event","MIBRO":"FIM District - Woodhaven Event","MICEN":"FIM District - Center Line Event","MICMP":"Michigan State Championship","MIESC":"FIM District - Escanaba Event","MIHOW":"FIM District - Howell Event","MIKE2":"FIM District - Kettering University Event #2","MIKEN":"FIM District - East Kentwood Event","MIKET":"FIM District - Kettering University Event #1","MILAK":"FIM District - Lakeview Event","MILAN":"FIM District - Lansing Event","MILIV":"FIM District - Livonia Event","MILSU":"FIM District - Lake Superior State University Event","MIMAR":"FIM District - Marysville Event","MIMID":"FIM District - Midland Event","MISJO":"FIM District - St. Joseph Event","MISOU":"FIM District - Southfield Event","MISTA":"FIM District - Standish-Sterling Event","MITRY":"FIM District - Troy Event","MITVC":"FIM District - Traverse City Event","MIWAT":"FIM District - Waterford Event","MIWMI":"FIM District - West Michigan Event","MNDU":"Lake Superior Regional","MNDU2":"Northern Lights Regional","MNMI":"Minnesota 10000 Lakes Regional","MNMI2":"Minnesota North Star Regional","MOKC":"Greater Kansas City Regional","MOSL":"St. Louis Regional","MRCMP":"Mid-Atlantic Robotics District Championship","MXMC":"Mexico City Regional ","NCASH":"NC District - UNC Asheville Event","NCBUI":"NC District - Campbell University/Johnston Community College Event","NCCMP":"NC FIRST Robotics State Championship","NCMCL":"NC District - Guilford County Event","NCRAL":"NC District - Wake County Event","NECMP":"New England District Championship","NEHO":"FIRST Championship - NEHO Division","NEWTON":"FIRST Championship - Newton Subdivision","NHDUR":"NE District - UNH Event","NHGRS":"NE District - Granite State Event","NJBRI":"MAR District - Bridgewater-Raritan Event","NJFLA":"MAR District - Mt. Olive Event","NJSKI":"MAR District - Montgomery Event","NJTAB":"MAR District - Seneca Event","NVLV":"Las Vegas Regional","NYLI":"SBPLI Long Island Regional","NYNY":"New York City Regional","NYRO":"Finger Lakes Regional ","NYTR":"New York Tech Valley Regional","OHCI":"Queen City Regional","OHCL":"Buckeye Regional","OKOK":"Oklahoma Regional ","ONNB":"North Bay Regional","ONTO":"Greater Toronto East Regional ","ONTO2":"Greater Toronto Central Regional","ONWA":"Waterloo Regional ","ONWI":"Windsor Essex Great Lakes Regional","ORORE":"PNW District - Clackamas Academy of Industrial Science Event","ORPHI":"PNW District - Philomath Event","ORWIL":"PNW District - Wilsonville Event","PACA":"Greater Pittsburgh Regional","PAHAT":"MAR District - Hatboro-Horsham Event","PAPHI":"MAR District - Springside Chestnut Hill Event","PAWCH":"MAR District - Westtown Event","PNCMP":"Pacific Northwest District Championship sponsored by Autodesk","QCMO":"FRC Festival de Robotique - Montreal Regional","RIPRO":"NE District - Rhode Island Event","SCMB":"Palmetto Regional","TESLA":"FIRST Championship - Tesla Subdivision","TNKN":"Smoky Mountains Regional","TXDA":"Dallas Regional","TXHO":"Lone Star Regional","TXLU":"Hub City Regional","TXSA":"Alamo Regional sponsored by Rackspace Hosting","UTWV":"Utah Regional","VABLA":"CHS District - Southwest Virginia Event","VADOS":"CHS District - Central Virginia Event","VAHAY":"CHS District - Northern Virginia Event","VAPOR":"CHS District - Hampton Roads Event","WAAHS":"PNW District - Auburn Event","WAAMV":"PNW District - Auburn Mountainview Event","WAELL":"PNW District - Central Washington University Event","WAMOU":"PNW District - Mount Vernon Event","WASNO":"PNW District - Glacier Peak Event","WASPO":"PNW District - West Valley Event","WEEK0":"Week 0","WIMI":"Wisconsin Regional","WVROX":"West Virginia ROX"}';
 
+localStorage.events2016 = '{"ABCA":"Western Canada Regional","ALHU":"Rocket City Regional","ARCHIMEDES":"FIRST Championship - Archimedes Subdivision","ARLR":"Arkansas Rock City Regional","ARTE":"FIRST Championship - ARTE Division","AUSY":"Australia Regional","AZFL":"Arizona North Regional","AZPX":"Arizona West Regional","CADA":"Sacramento Regional","CALB":"Los Angeles Regional","CAMA":"Central Valley Regional","CAPL":"Orange County Regional","CARSON":"FIRST Championship - Carson Subdivision","CARVER":"FIRST Championship - Carver Subdivision","CASD":"San Diego Regional","CASJ":"Silicon Valley Regional presented by Google.org","CAVE":"Ventura Regional","CHCMP":"FIRST Chesapeake District Championship sponsored by Booz Allen Hamilton","CMP":"FIRST Championship","CODE":"Colorado Regional","CTHAR":"NE District - Hartford Event","CTWAT":"NE District - Waterbury Event","CUCA":"FIRST Championship - CUCA Division","CURIE":"FIRST Championship - Curie Subdivision","FLOR":"Orlando Regional","FLWP":"South Florida Regional ","GAALB":"PCH District - Albany Event","GACA":"FIRST Championship - GACA Division","GACMP":"Peachtree District State Championship","GACOL":"PCH District - Columbus Event","GADAL":"PCH District - Dalton Event","GAKEN":"PCH District - Kennesaw Event","GALILEO":"FIRST Championship - Galileo Subdivision","HEAT":"Summer Heat","HIHO":"Hawaii Regional","HOPPER":"FIRST Championship - Hopper Subdivision","IACF":"Iowa Regional","IDBO":"Idaho Regional","ILCH":"Midwest Regional","ILPE":"Central Illinois Regional","INCMP":"Indiana State Championship","INPMH":"IN District - Perry Meridian Event","INWCH":"IN District - Walker Warren Event","INWLA":"IN District - Tippecanoe Event","IRI":"Indiana Robotics Invitational","ISTA":"Israel Regional","LAKE":"Bayou Regional","MABOS":"NE District - Boston Event","MANDA":"NE District - UMass-Dartmouth Event","MAREA":"NE District - North Shore Event","MAWOR":"NE District - WPI Event","MDBET":"CHS District - Greater DC Event","MDBLR":"CHS District - Northern Maryland Event","MDEDG":"CHS District - Central Maryland Event","MELEW":"NE District - Pine Tree Event","MIANN":"FIM District - Ann Arbor Skyline Event","MIBRO":"FIM District - Woodhaven Event","MICEN":"FIM District - Center Line Event","MICMP":"Michigan State Championship","MIESC":"FIM District - Escanaba Event","MIHOW":"FIM District - Howell Event","MIKE2":"FIM District - Kettering University Event #2","MIKEN":"FIM District - East Kentwood Event","MIKET":"FIM District - Kettering University Event #1","MILAK":"FIM District - Lakeview Event","MILAN":"FIM District - Lansing Event","MILIV":"FIM District - Livonia Event","MILSU":"FIM District - Lake Superior State University Event","MIMAR":"FIM District - Marysville Event","MIMID":"FIM District - Midland Event","MISJO":"FIM District - St. Joseph Event","MISOU":"FIM District - Southfield Event","MISTA":"FIM District - Standish-Sterling Event","MITRY":"FIM District - Troy Event","MITVC":"FIM District - Traverse City Event","MIWAT":"FIM District - Waterford Event","MIWMI":"FIM District - West Michigan Event","MNDU":"Lake Superior Regional","MNDU2":"Northern Lights Regional","MNMI":"Minnesota 10000 Lakes Regional","MNMI2":"Minnesota North Star Regional","MOKC":"Greater Kansas City Regional","MOSL":"St. Louis Regional","MRCMP":"Mid-Atlantic Robotics District Championship","MXMC":"Mexico City Regional ","NCASH":"NC District - UNC Asheville Event","NCBUI":"NC District - Campbell University/Johnston Community College Event","NCCMP":"NC FIRST Robotics State Championship","NCMCL":"NC District - Guilford County Event","NCRAL":"NC District - Wake County Event","NECMP":"New England District Championship","NEHO":"FIRST Championship - NEHO Division","NEWTON":"FIRST Championship - Newton Subdivision","NHDUR":"NE District - UNH Event","NHGRS":"NE District - Granite State Event","NJBRI":"MAR District - Bridgewater-Raritan Event","NJFLA":"MAR District - Mt. Olive Event","NJSKI":"MAR District - Montgomery Event","NJTAB":"MAR District - Seneca Event","NVLV":"Las Vegas Regional","NYLI":"SBPLI Long Island Regional","NYNY":"New York City Regional","NYRO":"Finger Lakes Regional ","NYTR":"New York Tech Valley Regional","OHCI":"Queen City Regional","OHCL":"Buckeye Regional","OKOK":"Oklahoma Regional ","ONNB":"North Bay Regional","ONTO":"Greater Toronto East Regional ","ONTO2":"Greater Toronto Central Regional","ONWA":"Waterloo Regional ","ONWI":"Windsor Essex Great Lakes Regional","ORORE":"PNW District - Clackamas Academy of Industrial Science Event","ORPHI":"PNW District - Philomath Event","ORWIL":"PNW District - Wilsonville Event","PACA":"Greater Pittsburgh Regional","PAHAT":"MAR District - Hatboro-Horsham Event","PAPHI":"MAR District - Springside Chestnut Hill Event","PAWCH":"MAR District - Westtown Event","PNCMP":"Pacific Northwest District Championship sponsored by Autodesk","QCMO":"FRC Festival de Robotique - Montreal Regional","RIPRO":"NE District - Rhode Island Event","SCMB":"Palmetto Regional","TESLA":"FIRST Championship - Tesla Subdivision","TNKN":"Smoky Mountains Regional","TXDA":"Dallas Regional","TXHO":"Lone Star Regional","TXLU":"Hub City Regional","TXSA":"Alamo Regional sponsored by Rackspace Hosting","UTWV":"Utah Regional","VABLA":"CHS District - Southwest Virginia Event","VADOS":"CHS District - Central Virginia Event","VAHAY":"CHS District - Northern Virginia Event","VAPOR":"CHS District - Hampton Roads Event","WAAHS":"PNW District - Auburn Event","WAAMV":"PNW District - Auburn Mountainview Event","WAELL":"PNW District - Central Washington University Event","WAMOU":"PNW District - Mount Vernon Event","WASNO":"PNW District - Glacier Peak Event","WASPO":"PNW District - West Valley Event","WEEK0":"Week 0","WIMI":"Wisconsin Regional","WVROX":"West Virginia ROX"}';
+localStorage.events2017='{"ABCA":"Western Canada Regional","ALHU":"Rocket City Regional","ARCHIMEDES":"FIRST Championship - St. Louis - Archimedes Subdivision","ARDA":"FIRST Championship - St. Louis - ARDA Division","ARLI":"Arkansas Rock City Regional","AUSC":"Southern Cross Regional","AUSP":"South Pacific Regional","AZCMP":"Sanghi Foundation FRC AZ State Championship","AZFL":"Arizona North Regional","AZPX":"Arizona West Regional","BC18":"BattleCry 18","CADA":"Sacramento Regional","CAIR":"Orange County Regional","CALB":"Los Angeles Regional","CAMA":"Central Valley Regional","CANE":"FIRST Championship - Houston - CANE Division","CARSON":"FIRST Championship - St. Louis - Carson Subdivision","CARVER":"FIRST Championship - Houston - Carver Subdivision","CASD":"San Diego Regional presented by Qualcomm","CASF":"San Francisco Regional","CASJ":"Silicon Valley Regional","CATE":"FIRST Championship - St. Louis - CATE Division","CAVE":"Ventura Regional","CHCMP":"FIRST Chesapeake District Championship sponsored by Booz Allen Hamilton","CMPMO":"FIRST Championship - St. Louis","CMPTX":"FIRST Championship - Houston","CODE":"Colorado Regional","CTHAR":"NE District - Hartford Event","CTTD":"Cow Town ThrowDown","CTWAT":"NE District - Waterbury Event","CUDA":"FIRST Championship - St. Louis - CUDA Division","CURIE":"FIRST Championship - St. Louis - Curie Subdivision","DALY":"FIRST Championship - St. Louis - Daly Subdivision","DARWIN":"FIRST Championship - St. Louis - Darwin Subdivision","EMCC":"East Metro Collaborative Competition","FLOR":"Orlando Regional","FLWP":"South Florida Regional ","FOC":"Festival of Champions","FOC17":"Festival of Champions","GAALB":"PCH District - Albany Event","GACMP":"Peachtree State Championship","GACOL":"PCH District - Columbus Event","GADAL":"PCH District - Dalton Event","GAGAI":"PCH District - Gainesville Event","GALILEO":"FIRST Championship - Houston - Galileo Subdivision","GARO":"FIRST Championship - Houston - GARO Division","GGGT":"Gitchi Gummi Get-Together","GRITS":"Georgia Robotics Invitational Tournament & Showcase","GUSH":"Shenzhen Regional","HIHO":"Hawaii Regional","HOPPER":"FIRST Championship - Houston - Hopper Subdivision","HOTU":"FIRST Championship - Houston - HOTU Division","IACF":"Iowa Regional","IDBO":"Idaho Regional","ILCH":"Midwest Regional","ILPE":"Central Illinois Regional","INCMP":"Indiana State Championship","INMIS":"IN District - St. Joseph Event","INPMH":"IN District - Perry Meridian Event","INWLA":"IN District - Tippecanoe Event","IRI":"Indiana Robotics Invitational","IROC":"IROC","ISCMP":"FIRST Israel District Championship","ISDE1":"ISR District Event #1","ISDE2":"ISR District Event #2","ISDE3":"ISR District Event #3","ISDE4":"ISR District Event #4","LAKE":"Bayou Regional","MABOS":"NE District - Greater Boston Event","MABRI":"NE District - SE Mass Event","MAREA":"NE District - North Shore Event","MAWOR":"NE District - Worcester Polytechnic Institute Event","MDBET":"CHS District - Greater DC Event sponsored by Accenture","MDBOB":"Battle O’ Baltimore","MDEDG":"CHS District - Central Maryland Event sponsored by Leidos","MDOWI":"CHS District - Northern Maryland Event","MELEW":"NE District - Pine Tree Event","MEMS":"Mainely SPIRIT 7","MESH":"Summer Heat","MIANN":"FIM District - Ann Arbor Pioneer Event","MIBRO":"FIM District - Woodhaven Event","MICEN":"FIM District - Center Line Event","MICMP":"Michigan State Championship","MICMP1":"Michigan State Championship - Consumers Energy Division","MICMP2":"Michigan State Championship - Dow Division","MICMP3":"Michigan State Championship - DTE Energy Foundation Division","MICMP4":"Michigan State Championship - Ford Division","MIESC":"FIM District - Escanaba Event","MIGAY":"FIM District - Gaylord Event","MIGUL":"FIM District - Gull Lake Event","MIHOW":"FIM District - Howell Event","MIKE2":"FIM District - Kettering University Event #2","MIKEN":"FIM District - East Kentwood Event","MIKET":"FIM District - Kettering University Event #1","MILAK":"FIM District - Lakeview Event","MILAN":"FIM District - Lansing Event","MILIV":"FIM District - Livonia Event","MILSU":"FIM District - Lake Superior State University Event","MIMAR":"FIM District - Marysville Event","MIMID":"FIM District - Midland Event","MISHE":"FIM District - Shepherd Event","MISJO":"FIM District - St. Joseph Event","MISOU":"FIM District - Southfield Event","MITRY":"FIM District - Troy Event","MITVC":"FIM District - Traverse City Event","MIWAT":"FIM District - Waterford Event","MIWMI":"FIM District - West Michigan Event","MNCL":"Northern Minnesota Robotics Conference Tournament","MNCMP":"MSHSL FIRST State Robotics Championship","MNDU":"Lake Superior Regional","MNDU2":"Northern Lights Regional","MNMI":"Minnesota 10000 Lakes Regional","MNMI2":"Minnesota North Star Regional","MNRI":"Minnesota Robotics Invitational","MOKC":"Greater Kansas City Regional","MOSL":"St. Louis Regional","MRCMP":"FIRST Mid-Atlantic District Championship sponsored by Johnson & Johnson","MXTL":"Toluca Regional","MXTO":"Laguna Regional","NCASH":"NC District - UNC Asheville Event","NCCMP":"FIRST North Carolina State Championship","NCGRE":"NC District - Greensboro Event","NCRAL":"NC District - Raleigh Event","NCWIN":"NC District - Pitt County Event","NECMP":"New England District Championship","NEWTON":"FIRST Championship - Houston - Newton Subdivision","NHBED":"NE District - Southern NH Event","NHBOB":"Battle Of the Bay","NHGRS":"NE District - Granite State Event","NHRR":"RiverRage 21","NJBE":"Brunswick Eruption","NJBRI":"MAR District - Bridgewater-Raritan Event","NJFLA":"MAR District - Mount Olive Event","NJSKI":"MAR District - Montgomery Event","NJTAB":"MAR District - Seneca Event","NTTR":"North Texas Tournament of Robots","NVLV":"Las Vegas Regional","NYLI":"SBPLI Long Island Regional","NYNY":"New York City Regional","NYRO":"Finger Lakes Regional ","NYSU":"Hudson Valley Regional","NYTR":"New York Tech Valley Regional","OHCL":"Buckeye Regional","OHSP":"Miami Valley Regional","OKOK":"Oklahoma Regional ","ONBAR":"ONT District - Georgian College Event","ONCMP":"FIRST Ontario Provincial Championship","ONHA2":"STEMley Cup","ONHAM":"ONT District - McMaster University Event","ONLON":"ONT District - Western University, Engineering Event","ONNOB":"ONT District - North Bay Event","ONOSH":"ONT District - Durham College Event","ONTO1":"ONT District - Ryerson University Event","ONTO2":"ONT District - Victoria Park Collegiate Event","ONWAT":"ONT District - University of Waterloo Event","ONWIN":"ONT District - Windsor Essex Great Lakes Event","ORLAK":"PNW District - Lake Oswego Event","ORORE":"PNW District - Clackamas Academy of Industrial Science Event","ORWIL":"PNW District - Wilsonville Event","PACA":"Greater Pittsburgh Regional","PAHAT":"MAR District - Hatboro-Horsham Event","PAPHI":"MAR District - Springside Chestnut Hill Academy Event","PAWCH":"MAR District - Westtown Event","PNCMP":"Pacific Northwest District Championship","QCMO":"Festival de Robotique - Montreal Regional","R2OC":"Rock River Off-Season Competition","RIPRO":"NE District - Rhode Island Event","ROEBLING":"FIRST Championship - Houston - Roebling Subdivision","SCMB":"Palmetto Regional","TESLA":"FIRST Championship - St. Louis - Tesla Subdivision","TNKN":"Smoky Mountains Regional","TURING":"FIRST Championship - Houston - Turing Subdivision","TXDA":"Dallas Regional","TXHO":"Lone Star Central Regional","TXLU":"Hub City Regional","TXRI":"Texas Robotics Invitational","TXRR":"Texas Robot Roundup","TXSA":"Alamo Regional","TXTR":"The Remix","TXWA":"Brazos Valley Regional","TXWO":"Lone Star North Regional","UTWV":"Utah Regional","VABLA":"CHS District - Southwest Virginia Event","VAGLE":"CHS District - Central Virginia Event","VAHAY":"CHS District - Northern Virginia Event sponsored by Bechtel","VAPOR":"CHS District - Hampton Roads Event sponsored by Newport News Shipbuilding","WAAHS":"PNW District - Auburn Event","WAAMV":"PNW District - Auburn Mountainview Event","WAELL":"PNW District - Central Washington University Event","WAGG":"Washington Girls Generation","WAMOU":"PNW District - Mount Vernon Event","WAPP":"Peak Performance","WASNO":"PNW District - Glacier Peak Event","WASPO":"PNW District - West Valley Event","WEEK0":"Week 0","WILA":"Seven Rivers Regional","WIMI":"Wisconsin Regional"}';
 
 //Set up the applicatton variables.
 var playoffResults = {};
@@ -701,7 +701,7 @@ function getRegularSeasonSchedule() {
     req.open('GET', apiURL + localStorage.currentYear + '/schedule/' + localStorage.currentEvent + '/qual');
     req.addEventListener('load', function () {
         var data = JSON.parse(req.responseText);
-        //Ensure that there is a schedule
+        //Ensure that there is a Quals schedule
         if (data.Schedule.length === 0) {
             $('#scheduleContainer').html('<b>No qualification matches have been scheduled for this event.</b>');
             localStorage.qualsList = '{"Schedule":[]}';
@@ -789,7 +789,7 @@ function getRegularSeasonSchedule() {
         $('#scheduleProgressBar').hide();
         localStorage.playoffList = JSON.stringify(data);
         $("#scheduleUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
-        announceDisplay();
+        if (matchSchedule) {announceDisplay();}
 
     });
 
@@ -1205,8 +1205,8 @@ function announceDisplay() {
     if (inChamps() || (inSubdivision() && (localStorage.currentMatch > qualsList.Schedule.length))) {
         teamCount = 8;
         $(".champsDisplay").show();
-        var red1 = currentMatchData.Teams[0].teamNumber;
-        var blue1 = currentMatchData.Teams[3].teamNumber;
+        var red1 = currentMatchData.teams[0].teamNumber;
+        var blue1 = currentMatchData.teams[3].teamNumber;
         redAlliance = $.grep(alliances, function (element, index) {
             return (element.captain === red1 || element.round1 === red1 || element.round2 === red1 || element.round3 === red1 || element.backup === red1);
         });
@@ -1218,7 +1218,7 @@ function announceDisplay() {
         blueTeams = [blueAlliance[0].captain, blueAlliance[0].round1, blueAlliance[0].round2, blueAlliance[0].round3, blueAlliance[0].backup];
     }
 
-    if ((currentMatchData.description.split(" ")[0] !== "Qualification") && (currentMatchData.description.split(" ")[0] !== "Einstein") && (localStorage.currentYear === "2017")) {
+    if ((currentMatchData.description.split(" ")[0] !== "Qualification") && (currentMatchData.description.split(" ")[0] !== "Einstein") && (Number(localStorage.currentYear) >= 2017)) {
         $("#matchNameAnnounce").html(parsePlayoffMatchName(currentMatchData.description));
         $("#topMatchNameAnnounce").html(localStorage.eventName + "<br>" + parsePlayoffMatchName(currentMatchData.description));
         $("#matchName").html(parsePlayoffMatchName(currentMatchData.description));
@@ -1233,11 +1233,11 @@ function announceDisplay() {
     $("#eventHighScorePlayByPlay").html("<b>Current High Score: " + localStorage.matchHighScore + "<br>from " + localStorage.highScoreDetails + "</b>");
 
     function checkTeam(element) {
-        return element !== currentMatchData.Teams[ii].teamNumber;
+        return element !== currentMatchData.teams[ii].teamNumber;
     }
 
     for (var ii = 0; ii < teamCount; ii++) {
-//        var missingTeam = (localStorage['teamData' + currentMatchData.Teams[ii].teamNumber] || false);
+//        var missingTeam = (localStorage['teamData' + currentMatchData.teams[ii].teamNumber] || false);
 //        if (missingTeam) {
 
         if (ii < 3) {
@@ -1247,21 +1247,21 @@ function announceDisplay() {
             blueTeams = blueTeams.filter(checkTeam);
         }
         if (ii === 6) {
-            currentMatchData.Teams[ii] = {
+            currentMatchData.teams[ii] = {
                 "teamNumber": redTeams[0]
             };
         }
         if (ii === 7) {
-            currentMatchData.Teams[ii] = {
+            currentMatchData.teams[ii] = {
                 "teamNumber": blueTeams[0]
             };
         }
-        var teamData = JSON.parse(localStorage['teamData' + currentMatchData.Teams[ii].teamNumber]);
-        $('#' + stationList[ii] + 'TeamNumber').html("<b>" + currentMatchData.Teams[ii].teamNumber + "</b>");
-        $('#' + stationList[ii] + 'PlaybyPlayteamNumber').html(currentMatchData.Teams[ii].teamNumber);
+        var teamData = JSON.parse(localStorage['teamData' + currentMatchData.teams[ii].teamNumber]);
+        $('#' + stationList[ii] + 'TeamNumber').html("<b>" + currentMatchData.teams[ii].teamNumber + "</b>");
+        $('#' + stationList[ii] + 'PlaybyPlayteamNumber').html(currentMatchData.teams[ii].teamNumber);
         if ((localStorage.currentMatch > qualsList.Schedule.length) || inChamps() || (inMiChamps() && (localStorage.currentYear >= 2017))) {
-            document.getElementById(stationList[ii] + 'TeamNumber').setAttribute("onclick", "replaceTeam('" + stationList[ii] + "','" + currentMatchData.Teams[ii].teamNumber + "')");
-            document.getElementById(stationList[ii] + 'PlaybyPlayteamNumber').setAttribute("onclick", "replaceTeam('" + stationList[ii] + "','" + currentMatchData.Teams[ii].teamNumber + "')");
+            document.getElementById(stationList[ii] + 'TeamNumber').setAttribute("onclick", "replaceTeam('" + stationList[ii] + "','" + currentMatchData.teams[ii].teamNumber + "')");
+            document.getElementById(stationList[ii] + 'PlaybyPlayteamNumber').setAttribute("onclick", "replaceTeam('" + stationList[ii] + "','" + currentMatchData.teams[ii].teamNumber + "')");
         } else {
             document.getElementById(stationList[ii] + 'TeamNumber').setAttribute("onclick", "");
             document.getElementById(stationList[ii] + 'PlaybyPlayteamNumber').setAttribute("onclick", "");
@@ -1358,8 +1358,8 @@ function announceDisplay() {
             $("#" + stationList[ii] + "PlaybyPlayNotes").html('Notes: "' + teamData.teamNotesLocal + '"');
         }
 //        } else {
-//        console.log("missing team: "+currentMatchData.Teams[ii].teamNumber);
-//        getTeamData(currentMatchData.Teams[ii],localStorage.currentYear);}
+//        console.log("missing team: "+currentMatchData.teams[ii].teamNumber);
+//        getTeamData(currentMatchData.teams[ii],localStorage.currentYear);}
 //    }
 }}
 
@@ -1879,7 +1879,8 @@ function getTeamAwards(teamNumber, year) {
 
         if (req.responseText.substr(0, 5) !== '"Team') {
             var data = JSON.parse(req.responseText);
-            if (data.Awards.length > 0) {
+            //console.log(teamData.rookieYear+" "+year+"/awards/"+teamNumber+": "+req.responseText);
+            if ((data.Awards !== '{"Awards":[]}') && (req.responseText.substr(0,5)!=='"Malf')) {
                 for (var i = 0; i < data.Awards.length; i++) {
                     awardName = data.Awards[i].name;
                     awardHilight = awardsHilight(awardName);
@@ -1897,7 +1898,7 @@ function getTeamAwards(teamNumber, year) {
                 }
             }
         }
-        if (localStorage.awardDepth > 1) {
+        if ((localStorage.awardDepth > 1) && (teamData.rookieYear <= year1) ) {
             req1.send();
         } else {
             if (awards.length > 4) {
@@ -1929,11 +1930,12 @@ function getTeamAwards(teamNumber, year) {
         if (req1.responseText.substr(0, 5) !== '"Team') {
             if (year1 === 2016) {
                 eventNames = JSON.parse(localStorage.events2016);
-            } else if (year1 === 2015) {
-                eventNames = JSON.parse(localStorage.events2015);
+            } else if (year1 === 2017) {
+                eventNames = JSON.parse(localStorage.events2017);
             }
             var data = JSON.parse(req1.responseText);
-            if (data.Awards.length > 0) {
+            //console.log(teamData.rookieYear+" "+year1+"/awards/"+teamNumber+": "+req1.responseText);
+            if ((data.Awards !== '{"Awards":[]}') && (req1.responseText.substr(0,5)!=='"Malf')) {
                 for (var i = 0; i < data.Awards.length; i++) {
                     awardName = data.Awards[i].name;
                     awardHilight = awardsHilight(awardName);
@@ -1950,7 +1952,7 @@ function getTeamAwards(teamNumber, year) {
                 }
             }
         }
-        if (localStorage.awardDepth > 2) {
+        if ((localStorage.awardDepth > 2) && (teamData.rookieYear <= year2) ) {
             req2.send();
         } else {
             if (awards.length > 4) {
@@ -1981,11 +1983,12 @@ function getTeamAwards(teamNumber, year) {
         if (req2.responseText.substr(0, 5) !== '"Team') {
             if (year2 === 2016) {
                 eventNames = JSON.parse(localStorage.events2016);
-            } else if (year2 === 2015) {
-                eventNames = JSON.parse(localStorage.events2015);
+            } else if (year2 === 2017) {
+                eventNames = JSON.parse(localStorage.events2017);
             }
             var data = JSON.parse(req2.responseText);
-            if (data.Awards.length > 0) {
+            //console.log(teamData.rookieYear+" "+year2+"/awards/"+teamNumber+": "+req2.responseText);
+            if ((data.Awards !== '{"Awards":[]}') && (req2.responseText.substr(0,5)!=='"Malf')) {
 
                 for (var i = 0; i < data.Awards.length; i++) {
                     awardName = data.Awards[i].name;
@@ -2021,7 +2024,9 @@ function getTeamAwards(teamNumber, year) {
         }
     });
 
-    req.send();
+    if (teamData.rookieYear <= year) {
+        req.send();
+    }
 }
 
 function getTeamData(teamList, year) {
@@ -2079,16 +2084,16 @@ function generateMatchTableRow(matchData) {
         matchWinner = "No results yet";
         returnData += 'No data.</td><td>';
     }
-    returnData += '<span class = "redAllianceTeam">' + getTeamForStation(matchData.Teams, 'Red1').teamNumber + '</span><br><span class = "blueAllianceTeam">' + getTeamForStation(matchData.Teams, 'Blue1').teamNumber + '</span></td><td>';
-    returnData += '<span class = "redAllianceTeam">' + getTeamForStation(matchData.Teams, 'Red2').teamNumber + '</span><br><span class = "blueAllianceTeam">' + getTeamForStation(matchData.Teams, 'Blue2').teamNumber + '</span></td><td>';
-    returnData += '<span class = "redAllianceTeam">' + getTeamForStation(matchData.Teams, 'Red3').teamNumber + '</span><br><span class = "blueAllianceTeam">' + getTeamForStation(matchData.Teams, 'Blue3').teamNumber + '</span></td>';
+    returnData += '<span class = "redAllianceTeam">' + getTeamForStation(matchData.teams, 'Red1').teamNumber + '</span><br><span class = "blueAllianceTeam">' + getTeamForStation(matchData.teams, 'Blue1').teamNumber + '</span></td><td>';
+    returnData += '<span class = "redAllianceTeam">' + getTeamForStation(matchData.teams, 'Red2').teamNumber + '</span><br><span class = "blueAllianceTeam">' + getTeamForStation(matchData.teams, 'Blue2').teamNumber + '</span></td><td>';
+    returnData += '<span class = "redAllianceTeam">' + getTeamForStation(matchData.teams, 'Red3').teamNumber + '</span><br><span class = "blueAllianceTeam">' + getTeamForStation(matchData.teams, 'Blue3').teamNumber + '</span></td>';
 
-//    returnData += getTeamForStation(matchData.Teams, 'Red1').teamNumber + '</td><td>';
-//    returnData += getTeamForStation(matchData.Teams, 'Red2').teamNumber + '</td><td>';
-//    returnData += getTeamForStation(matchData.Teams, 'Red3').teamNumber + '</td><td>';
-//    returnData += getTeamForStation(matchData.Teams, 'Blue1').teamNumber + '</td><td>';
-//    returnData += getTeamForStation(matchData.Teams, 'Blue2').teamNumber + '</td><td>';
-//    returnData += getTeamForStation(matchData.Teams, 'Blue3').teamNumber + '</td>';
+//    returnData += getTeamForStation(matchData.teams, 'Red1').teamNumber + '</td><td>';
+//    returnData += getTeamForStation(matchData.teams, 'Red2').teamNumber + '</td><td>';
+//    returnData += getTeamForStation(matchData.teams, 'Red3').teamNumber + '</td><td>';
+//    returnData += getTeamForStation(matchData.teams, 'Blue1').teamNumber + '</td><td>';
+//    returnData += getTeamForStation(matchData.teams, 'Blue2').teamNumber + '</td><td>';
+//    returnData += getTeamForStation(matchData.teams, 'Blue3').teamNumber + '</td>';
     
     if (matchData.scoreBlueFinal > localStorage.matchHighScore) {
         localStorage.matchHighScore = matchData.scoreBlueFinal;
