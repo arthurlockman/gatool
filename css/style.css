@@ -203,6 +203,29 @@ color: black;
     border: 1px solid #ccc;
     background-color: white
 }
+.gatool-footer {
+    /*position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: white;*/
+    border-top: #FC4FCD;
+    border-top-width: medium;
+    border-top-style: solid;
+    margin-top: 10px;
+}
+.HOFRed {
+    font-style: italic;
+    font-weight: bold;
+    color: blue;
+    line-height: 1
+}
+.HOFBlue {
+    font-style: italic;
+    font-weight: bold;
+    color: red;
+    line-height: 1
+}
 .robotName {
     font-style: italic;
     font-weight: bold;
