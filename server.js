@@ -4,20 +4,24 @@ var secureHTTP = require("./secureHTTP.json");
 
 var http = require('http'),
     https = require('https'),
+    compression = require('compression'),
     fs = require('fs'),
     url = require('url'),
     express = require('express'),
     app = express(),
     router = express.Router(),
-    unirest = require('unirest');
+    unirest = require('unirest'),
+    apicache = require('apicache');
+
+var cache = apicache.middleware;
 
 var token = require("./token.json");
 var tbatoken = require("./tbatoken.json");
 
 
 //var list = require("./newusers.json");
-var list = [{username:'1265216415@qq.com',password:'GuoyongLovesFIRST!'},{username:'88craver@gmail.com',password:'JeffLovesFIRST!'},{username:'acyran96@gmail.com',password:'AdamLovesFIRST!'},{username:'agrady131@gmail.com',password:'AndyLovesFIRST!'},{username:'ahjones@lssu.edu',password:'AndrewLovesFIRST!'},{username:'alexkwilcox@outlook.com',password:'AlexanderLovesFIRST!'},{username:'alibessette15@gmail.com',password:'AlisonLovesFIRST!'},{username:'allengregoryiv@gmail.com',password:'AllenLovesFIRST!'},{username:'amandapiergallini@gmail.com',password:'AmandaLovesFIRST!'},{username:'anthonycaliciuri@gmail.com',password:'AnthonyLovesFIRST!'},{username:'asyd.reign@hotmail.com',password:'SydneyLovesFIRST!'},{username:'b-basile@ti.com',password:'BartLovesFIRST!'},{username:'bearjcc@gmail.com',password:'JosephLovesFIRST!'},{username:'ben@techfire225.org',password:'BenLovesFIRST!'},{username:'beryl@berylsbox.com',password:'BerylLovesFIRST!'},{username:'bgraham111@earthlink.net',password:'BrianLovesFIRST!'},{username:'blair@usfirst.org',password:'BlairLovesFIRST!'},{username:'blarkin106@gmail.com',password:'BrendanLovesFIRST!'},{username:'bonzack@aol.com',password:'BarryLovesFIRST!'},{username:'brett@andymark.com',password:'BrettLovesFIRST!'},{username:'brettwo@outlook.com',password:'BrettLovesFIRST!'},{username:'brockdarnold@yahoo.com',password:'BrockLovesFIRST!'},{username:'bsenson@gmail.com',password:'BenLovesFIRST!'},{username:'calvinwtran@gmail.com',password:'CalvinLovesFIRST!'},{username:'ceneubecker@hawkmail.hfcc.edu',password:'CharlesLovesFIRST!'},{username:'cesarmenchacarivera@gmail.com',password:'CesarLovesFIRST!'},{username:'cgoodgame@gmail.com',password:'ClifLovesFIRST!'},{username:'charles.offor@tdsb.on.ca',password:'CharlesLovesFIRST!'},{username:'chris.tucker@microchip.com',password:'ChrisLovesFIRST!'},{username:'christopher.r.copelan@nasa.gov',password:'ChristopherLovesFIRST!'},{username:'cingram825@fioptics.com',password:'CharlesLovesFIRST!'},{username:'clutch1058@gmail.com',password:'BrandonLovesFIRST!'},{username:'colin.mildenberger@team2052.com',password:'ColinLovesFIRST!'},{username:'collinfultz@gmail.com',password:'CollinLovesFIRST!'},{username:'crissyrhs@hotmail.com',password:'CrystalLovesFIRST!'},{username:'daniel_conder@comcast.com',password:'DanielLovesFIRST!'},{username:'danny@andymark.com',password:'DannyLovesFIRST!'},{username:'danrrichardson@gmail.com',password:'DanielLovesFIRST!'},{username:'davempowers@ymail.com',password:'DavidLovesFIRST!'},{username:'david.boyd@usstem.org',password:'DavidLovesFIRST!'},{username:'david.j.verbrugge@gmail.com',password:'DavidLovesFIRST!'},{username:'david.m.seidel@jpl.nasa.gov',password:'DavidLovesFIRST!'},{username:'davidfv1964@gmail.com',password:'DavidLovesFIRST!'},{username:'deiland@ebrschools.org',password:'DanielLovesFIRST!'},{username:'dgreen@firstinspires.org',password:'DanLovesFIRST!'},{username:'dirtvoice@hotmail.com',password:'ScottLovesFIRST!'},{username:'dmgeerobotics@gmail.com',password:'DarinLovesFIRST!'},{username:'dntbaker@aol.com',password:'DarrelLovesFIRST!'},{username:'don.knight@gm.com',password:'DonaldLovesFIRST!'},{username:'edward.s.ewald@lmco.com',password:'EdwardLovesFIRST!'},{username:'elcochese@gmail.com',password:'TimothyLovesFIRST!'},{username:'emily.ifill@gmail.com',password:'EmilyLovesFIRST!'},{username:'eric_eckhardt@hotmail.com',password:'EricLovesFIRST!'},{username:'ericdelsanto@gmail.com',password:'EricLovesFIRST!'},{username:'erstech@gmail.com',password:'EricLovesFIRST!'},{username:'especki@uark.edu',password:'EricLovesFIRST!'},{username:'fibopilot@yahoo.com',password:'DavidLovesFIRST!'},{username:'flame112997@gmail.com',password:'RachelLovesFIRST!'},{username:'fogwellsm@msoe.edu',password:'SarahLovesFIRST!'},{username:'gaffey.brian@gmail.com',password:'BrianLovesFIRST!'},{username:'gandersn1@gmail.com',password:'GeorgeLovesFIRST!'},{username:'gavmac928@gmail.com',password:'GavinLovesFIRST!'},{username:'gchen605@hotmail.com',password:'GeorgeLovesFIRST!'},{username:'george.wallace@gmail.com',password:'GeorgeLovesFIRST!'},{username:'georgeackley@gmail.com',password:'GeorgeLovesFIRST!'},{username:'gwilkins@ieee.org',password:'GregoryLovesFIRST!'},{username:'harold11215@gmail.com',password:'HaroldLovesFIRST!'},{username:'hayworthzach@gmail.com',password:'ZachLovesFIRST!'},{username:'hello@rthr.me',password:'ArthurLovesFIRST!'},{username:'iahatzil@mtu.edu',password:'IanLovesFIRST!'},{username:'imarcellana@gmail.com',password:'IanLovesFIRST!'},{username:'info@cityofmyrtlebeach.com',password:'MarkLovesFIRST!'},{username:'iotten@eupschools.org',password:'IsiahLovesFIRST!'},{username:'jahurd95@gmail.com',password:'JoelLovesFIRST!'},{username:'jamesbm1983@gmail.com',password:'BenLovesFIRST!'},{username:'jathomas@tcco.com',password:'JamesLovesFIRST!'},{username:'jerryshikarides@gmail.com',password:'JeremyLovesFIRST!'},{username:'jez@chrysler.com',password:'JimLovesFIRST!'},{username:'jlockman@adobe.com',password:'JamesLovesFIRST!'},{username:'jmontois340@gmail.com',password:'JustinLovesFIRST!'},{username:'john.taylor.n@gmail.com',password:'JTLovesFIRST!'},{username:'jojobaguilar@gmail.com',password:'JojoLovesFIRST!'},{username:'jondarr.bradshaw@gmail.com',password:'JonDarrLovesFIRST!'},{username:'jonellgregor@gmail.com',password:'JonellLovesFIRST!'},{username:'jonjack@gmail.com',password:'JonLovesFIRST!'},{username:'jorgearotter@gmail.com',password:'JorgeLovesFIRST!'},{username:'josh@iv597.com',password:'JoshuaLovesFIRST!'},{username:'joshb98@comcast.net',password:'JoshuaLovesFIRST!'},{username:'joshuapgoodman@gmail.com',password:'JoshuaLovesFIRST!'},{username:'jrspencer00@gmail.com',password:'JamesLovesFIRST!'},{username:'jrueb@cableone.net',password:'JeanineLovesFIRST!'},{username:'jung41131@gmail.com',password:'PatrickLovesFIRST!'},{username:'kate.v.suarez@gmail.com',password:'KateLovesFIRST!'},{username:'katie.stevens1923@gmail.com',password:'KatieLovesFIRST!'},{username:'kelsie.atiyeh@gmail.com',password:'KelsieLovesFIRST!'},{username:'kevinro@firstwa.org',password:'KevinLovesFIRST!'},{username:'kkanagas@gmail.com',password:'KarthikLovesFIRST!'},{username:'kmkennedy888@gmail.com',password:'KeeganLovesFIRST!'},{username:'kocajj@gmail.com',password:'JustinLovesFIRST!'},{username:'kori.bowns@gmail.com',password:'KoriLovesFIRST!'},{username:'kwhood@wpde.com',password:'KirbyLovesFIRST!'},{username:'laplante@vt.edu',password:'SamanthaLovesFIRST!'},{username:'laurenbreadner@rogers.com',password:'LaurenLovesFIRST!'},{username:'libby.kamen@gmail.com',password:'LibbyLovesFIRST!'},{username:'logan.c.farrell@gmail.com',password:'LoganLovesFIRST!'},{username:'lyncas@gmail.com',password:'AndrewLovesFIRST!'},{username:'lynnyanyo@gmail.com',password:'LynnLovesFIRST!'},{username:'mackenzieerinpech@gmail.com',password:'MackenzieLovesFIRST!'},{username:'malay_shashank@hotmail.com',password:'MalayLovesFIRST!'},{username:'marlene_pap@hotmail.com',password:'MarleneLovesFIRST!'},{username:'martydavsi@gmail.com',password:'MartinLovesFIRST!'},{username:'mason.m.markee@gmail.com',password:'MasonLovesFIRST!'},{username:'mbirkel91@gmail.com',password:'MatthewLovesFIRST!'},{username:'meghan.gallant@ccsc.com.cn',password:'MeghanLovesFIRST!'},{username:'methodicalmoose24@gmail.com',password:'NicholasLovesFIRST!'},{username:'mford@kcp.com',password:'FrankLovesFIRST!'},{username:'minibcan@gmail.com',password:'BryanLovesFIRST!'},{username:'mkaurich@usra.edu',password:'MichaelLovesFIRST!'},{username:'mooretep@cox.net',password:'PeterLovesFIRST!'},{username:'mpenn@horrycountyschools.net',password:'MindiLovesFIRST!'},{username:'mr.kwells@yahoo.com',password:'KendallLovesFIRST!'},{username:'mstarke340@gmail.com',password:'MikeLovesFIRST!'},{username:'mterilli@hotmail.com',password:'MarkLovesFIRST!'},{username:'music4david@gmail.com',password:'DavidLovesFIRST!'},{username:'mwjjjg@gmail.com',password:'MartyLovesFIRST!'},{username:'nastout1993@gmail.com',password:'NicoleLovesFIRST!'},{username:'natalie.lanie@gmail.com',password:'NatalieLovesFIRST!'},{username:'nataliealiealie@gmail.com',password:'NatalieLovesFIRST!'},{username:'nate.t.vetter@gmail.com',password:'NathanielLovesFIRST!'},{username:'ndpurdy@hotmail.com',password:'NathanLovesFIRST!'},{username:'nick@hammes.me',password:'NicholasLovesFIRST!'},{username:'niskijoseph@comcast.net',password:'JosephLovesFIRST!'},{username:'noitisnt.tony@gmail.com',password:'AnthonyLovesFIRST!'},{username:'olsen2826@gmail.com',password:'NikLovesFIRST!'},{username:'patrick.brew@gmail.com',password:'PatrickLovesFIRST!'},{username:'paulinetasci@gmail.com',password:'PaulineLovesFIRST!'},{username:'philipleete@gmail.com',password:'PhilipLovesFIRST!'},{username:'poffor22@gmail.com',password:'PaulLovesFIRST!'},{username:'preveen_sripalan@hotmail.com',password:'PreveenLovesFIRST!'},{username:'rachelbaker097@gmail.com',password:'RachelLovesFIRST!'},{username:'rdognaux@gmail.com',password:'RyanLovesFIRST!'},{username:'reaganwhitney@gmail.com',password:'ReaganLovesFIRST!'},{username:'recona266@gmail.com',password:'NicholasLovesFIRST!'},{username:'resqjak@comcast.net',password:'JohnLovesFIRST!'},{username:'rgarland@mitre.org',password:'RichardLovesFIRST!'},{username:'rich@achievescience.com',password:'RichardLovesFIRST!'},{username:'rick.kramer08@gmail.com',password:'RichardLovesFIRST!'},{username:'rizzotech@gmail.com',password:'MichaelLovesFIRST!'},{username:'rjmccann58@gmail.com',password:'RichardLovesFIRST!'},{username:'robotbillmd@gmail.com',password:'BillLovesFIRST!'},{username:'ryankamptv@gmail.com',password:'RyanLovesFIRST!'},{username:'sabradford@aaamichigan.com',password:'ScottLovesFIRST!'},{username:'sadat003@umn.edu',password:'SamiraLovesFIRST!'},{username:'samanthalscharles@gmail.com',password:'SamanthaLovesFIRST!'},{username:'samir13k@gmail.com',password:'SamirLovesFIRST!'},{username:'seanclancy16@yahoo.com',password:'SeanLovesFIRST!'},{username:'shimi002@umn.edu',password:'YojiLovesFIRST!'},{username:'sorahl@outlook.com',password:'JohnLovesFIRST!'},{username:'stephaniesteuri@gmail.com',password:'StephanieLovesFIRST!'},{username:'steve@nchawleys.com',password:'StevenLovesFIRST!'},{username:'stevebissen@gmail.com',password:'SteveLovesFIRST!'},{username:'steven-smith@ti.com',password:'StevenLovesFIRST!'},{username:'steven.r.wall@gmail.com',password:'StevenLovesFIRST!'},{username:'sydney.grewe@gmail.com',password:'SydneyLovesFIRST!'},{username:'sydney.mosher@ndsu.edu',password:'SydneyLovesFIRST!'},{username:'tanick@eastman.com',password:'ToneyLovesFIRST!'},{username:'tawexler@gmail.com',password:'ThomasLovesFIRST!'},{username:'tcbarto@gmail.com',password:'ToddLovesFIRST!'},{username:'tdnader@comcast.net',password:'ThomasLovesFIRST!'},{username:'thenolafive@gmail.com',password:'ChristopherLovesFIRST!'},{username:'timothyp@adobe.com',password:'TimLovesFIRST!'},{username:'toribell13@yahoo.com',password:'VictoriaLovesFIRST!'},{username:'torinoelbrock@gmail.com',password:'ToriLovesFIRST!'},{username:'tristanemmett47@gmail.com',password:'TristanLovesFIRST!'},{username:'trivedi.pranit@gmail.com',password:'PranitLovesFIRST!'},{username:'tskoons623@gmail.com',password:'TimothyLovesFIRST!'},{username:'tslourenco@wpi.edu',password:'ThomasLovesFIRST!'},{username:'tyler.joe.owen@gmail.com',password:'TylerLovesFIRST!'},{username:'tylerolds@waverobotics.com',password:'TylerLovesFIRST!'},{username:'voigh053@umn.edu',password:'JaredLovesFIRST!'},{username:'william.bauman@gm.com',password:'WilliamLovesFIRST!'},{username:'xiawei7798@163.com',password:'SongyunLovesFIRST!'},{username:'yali.barak@gmail.com',password:'YaliLovesFIRST!'},{username:'zachorr139@gmail.com',password:'ZacharyLovesFIRST!'}];
-//var list = [];
+//var list = [{username:'1265216415@qq.com',password:'GuoyongLovesFIRST!'},{username:'88craver@gmail.com',password:'JeffLovesFIRST!'}];
+var list = [];
 
 var bcrypt = require('bcrypt');
 var saltRounds = 10;
@@ -45,6 +49,7 @@ var offseasonEvents = level("./offseasonEvents/", options);
 var teamData = level("./teamdata/",options);
 
 var bodyParser = require('body-parser');
+app.use(compression());
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({
     extended: true
@@ -91,7 +96,7 @@ function injectUser(username, password) {
 
 app.use('/api', router);
 
-router.route('/:year/events').get(function (req, res) {
+router.route('/:year/events').get(cache('1 day'),function (req, res) {
     'use strict';
     unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/events')
         .headers({
@@ -288,7 +293,7 @@ router.route('/getTeamUpdate/:teamNumber/').get(function (req, res) {
 
         } else {
             if (teamData.startsWith('{"name')) {
-                console.log("Bad data found for " + req.params.teamNumber + ": " + teamData);
+                //console.log("Bad data found for " + req.params.teamNumber + ": " + teamData);
                 teamUpdate.del(req.params.teamNumber);
                 res.writeHead(200, {
                     'Content-type': 'text/html'
@@ -368,7 +373,7 @@ router.route('/:year/alliances/:eventCode/').get(function (req, res) {
     //    });
 });
 
-router.route('/:year/schedule/:eventCode/:tlevel').get(function (req, res) {
+router.route('/:year/schedule/:eventCode/:tlevel').get(cache('15 seconds'),function (req, res) {
     'use strict';
     unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/schedule/' + req.params.eventCode + '/' + req.params.tlevel + '/hybrid')
         .headers({
@@ -432,7 +437,7 @@ router.route('/:year/schedule/:eventCode/:tlevel').get(function (req, res) {
 });
 
 
-router.route('/:year/teamdata/:team/').get(function (req, res) {
+router.route('/:year/teamdata/:team/').get(cache('12 hours'), function (req, res) {
     'use strict';
     //    unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/teams/?teamNumber=' + req.params.team)
     //        .headers({
@@ -446,13 +451,13 @@ router.route('/:year/teamdata/:team/').get(function (req, res) {
     //        });
     teamData.get(req.params.team + "." + req.params.year, function (err, storedRequest) {
         if (err) {
-            console.log("No stored team data for " + req.params.year + ":" + req.params.team);
+            //console.log("No stored team data for " + req.params.year + ":" + req.params.team);
             unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/teams/?teamNumber=' + req.params.team)
                 .headers({
                     'Authorization': token.token
                 })
                 .end(function (response) {
-                console.log("Response code:"+response.statusCode+"<br>"+JSON.stringify(response.headers));
+                //console.log("Response code:"+response.statusCode+"<br>"+JSON.stringify(response.headers));
                     teamData.put(req.params.team + "." + req.params.year, JSON.stringify(response));
                     res.writeHead(200, {
                         'Content-type': 'text/html'
@@ -461,22 +466,22 @@ router.route('/:year/teamdata/:team/').get(function (req, res) {
                 });
         } else {
 
-            console.log("Reading stored team data for " + req.params.year + ":" + req.params.team + " from FIRST");
+            //console.log("Reading stored team data for " + req.params.year + ":" + req.params.team + " from FIRST");
             unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/teams/?teamNumber=' + req.params.team)
                 .headers({
                     'Authorization': token.token,
                     'If-Modified-Since': JSON.parse(storedRequest).headers["date"]
                 })
                 .end(function (response) {
-                console.log("Response code:"+response.statusCode+"<br>"+JSON.stringify(response.headers));
+                //console.log("Response code:"+response.statusCode+"<br>"+JSON.stringify(response.headers));
                     if (response.statusCode === 304) {
-                        console.log("Stored team data are current. Sending  stored team data for " + req.params.year + ":" + req.params.team);
+                        //console.log("Stored team data are current. Sending  stored team data for " + req.params.year + ":" + req.params.team);
                         res.writeHead(200, {
                             'Content-type': 'text/html'
                         });
                         res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
                     } else {
-                        console.log("Stored team data are stale. Saving result and sending new team data for " + req.params.year + ":" + req.params.team);
+                        //console.log("Stored team data are stale. Saving result and sending new team data for " + req.params.year + ":" + req.params.team);
                         teamData.put(req.params.team + "." + req.params.year, JSON.stringify(response));
                         res.writeHead(200, {
                             'Content-type': 'text/html'
@@ -490,17 +495,17 @@ router.route('/:year/teamdata/:team/').get(function (req, res) {
 
 });
 
-router.route('/:year/newteamdata/:team/').get(function (req, res) {
+router.route('/:year/newteamdata/:team/').get(cache('12 hours'), function (req, res) {
     'use strict';
     teamData.get(req.params.team + "." + req.params.year, function (err, storedRequest) {
         if (err) {
-            console.log("No stored team data for " + req.params.year + ":" + req.params.team);
+            //console.log("No stored team data for " + req.params.year + ":" + req.params.team);
             unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/teams/?teamNumber=' + req.params.team)
                 .headers({
                     'Authorization': token.token
                 })
                 .end(function (response) {
-                console.log("Response code:"+response.statusCode+"<br>"+JSON.stringify(response.headers));
+                //console.log("Response code:"+response.statusCode+"<br>"+JSON.stringify(response.headers));
                     teamData.put(req.params.team + "." + req.params.year, JSON.stringify(response));
                     res.writeHead(200, {
                         'Content-type': 'text/html'
@@ -509,22 +514,22 @@ router.route('/:year/newteamdata/:team/').get(function (req, res) {
                 });
         } else {
 
-            console.log("Reading stored team data for " + req.params.year + ":" + req.params.team + " from FIRST");
+            //console.log("Reading stored team data for " + req.params.year + ":" + req.params.team + " from FIRST");
             unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/teams/?teamNumber=' + req.params.team)
                 .headers({
                     'Authorization': token.token,
                     'If-Modified-Since': JSON.parse(storedRequest).headers["date"]
                 })
                 .end(function (response) {
-                console.log("Response code:"+response.statusCode+"<br>"+JSON.stringify(response.headers));
+                //console.log("Response code:"+response.statusCode+"<br>"+JSON.stringify(response.headers));
                     if (response.statusCode === 304) {
-                        console.log("Stored team data are current. Sending  stored team data for " + req.params.year + ":" + req.params.team);
+                        //console.log("Stored team data are current. Sending  stored team data for " + req.params.year + ":" + req.params.team);
                         res.writeHead(200, {
                             'Content-type': 'text/html'
                         });
                         res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
                     } else {
-                        console.log("Stored team data are stale. Saving result and sending new team data for " + req.params.year + ":" + req.params.team);
+                        //console.log("Stored team data are stale. Saving result and sending new team data for " + req.params.year + ":" + req.params.team);
                         teamData.put(req.params.team + "." + req.params.year, JSON.stringify(response));
                         res.writeHead(200, {
                             'Content-type': 'text/html'
@@ -540,7 +545,7 @@ router.route('/:year/newteamdata/:team/').get(function (req, res) {
 
 
 
-router.route('/:year/registrations/:event/').get(function (req, res) {
+router.route('/:year/registrations/:event/').get(cache('10 minutes'), function (req, res) {
     'use strict';
     unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/registrations/?eventCode=' + req.params.event)
         .headers({
@@ -556,7 +561,7 @@ router.route('/:year/registrations/:event/').get(function (req, res) {
 
 
 
-router.route('/:year/teams/:eventCode/:page').get(function (req, res) {
+router.route('/:year/teams/:eventCode/:page').get(cache('120 minutes'), function (req, res) {
     'use strict';
     unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/teams/?eventcode=' + req.params.eventCode + "&page=" + req.params.page)
         .headers({
@@ -706,7 +711,7 @@ router.route('/:year/offseasonteams/:eventCode/:page').get(function (req, res) {
 });
 
 
-router.route('/:year/rankings/:eventCode/').get(function (req, res) {
+router.route('/:year/rankings/:eventCode/').get(cache('15 seconds'), function (req, res) {
     'use strict';
     unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/rankings/' + req.params.eventCode)
         .headers({
@@ -768,7 +773,7 @@ router.route('/:year/rankings/:eventCode/').get(function (req, res) {
     //    });
 });
 
-router.route('/:year/awards/:teamNumber/').get(function (req, res) {
+router.route('/:year/awards/:teamNumber/').get(cache('1 hours'), function (req, res) {
     'use strict';
     //             unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/awards/' + req.params.teamNumber)
     //                .headers({
@@ -914,27 +919,27 @@ app.get('/favicon.ico', function (req, res) {
     sendFile(res, 'favicon.ico');
 });
 
-app.get('/scripts.js', function (req, res) {
+app.get('/scripts.js', cache('24 hours'), function (req, res) {
     'use strict';
     sendFile(res, 'scripts.js', 'text/js');
 });
 
-app.get('/css/:filename', function (req, res) {
+app.get('/css/:filename', cache('24 hours'), function (req, res) {
     'use strict';
     sendFile(res, './css/' + req.params.filename, 'text/css');
 });
 
-app.get('/images/:filename', function (req, res) {
+app.get('/images/:filename', cache('24 hours'), function (req, res) {
     'use strict';
     sendFile(res, './images/' + req.params.filename);
 });
 
-app.get('/js/:filename', function (req, res) {
+app.get('/js/:filename', cache('24 hours'), function (req, res) {
     'use strict';
     sendFile(res, './js/' + req.params.filename);
 });
 
-app.get('/fonts/:filename', function (req, res) {
+app.get('/fonts/:filename', cache('24 hours'), function (req, res) {
     'use strict';
     sendFile(res, './fonts/' + req.params.filename);
 });
