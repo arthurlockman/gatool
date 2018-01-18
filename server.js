@@ -11,12 +11,14 @@ var http = require('http'),
     app = express(),
     router = express.Router(),
     unirest = require('unirest'),
-    apicache = require('apicache');
+    apicache = require('apicache'),
+    Promise = require('promise');
 
 var cache = apicache.middleware;
 
 var token = require("./token.json");
 var tbatoken = require("./tbatoken.json");
+var currentYear = 2018;
 
 
 //var list = require("./newusers.json");
@@ -46,7 +48,7 @@ var users = level("./users/", options);
 var teamUpdate = level("./teamUpdate/", options);
 var teamAwards = level("./teamAwards/", options);
 var offseasonEvents = level("./offseasonEvents/", options);
-var teamData = level("./teamdata/",options);
+var teamData = level("./teamdata/", options);
 
 var bodyParser = require('body-parser');
 app.use(compression());
@@ -96,7 +98,7 @@ function injectUser(username, password) {
 
 app.use('/api', router);
 
-router.route('/:year/events').get(cache('1 day'),function (req, res) {
+router.route('/:year/events').get(cache('1 day'), function (req, res) {
     'use strict';
     unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/events')
         .headers({
@@ -124,7 +126,7 @@ router.route('/:year/events').get(cache('1 day'),function (req, res) {
     //                    res.end(JSON.stringify(response.body), 'utf-8');
     //                });
     //        } else {
-    //            if (req.params.year < 2017) {
+    //            if (req.params.year < currentYear) {
     //                //console.log("Sending stored events data for " + req.params.year + ":" + req.params.eventCode);
     //                res.writeHead(200, {
     //                    'Content-type': 'text/html'
@@ -160,10 +162,10 @@ router.route('/:year/events').get(cache('1 day'),function (req, res) {
 
 router.route('/:year/offseasoneventsv2').get(function (req, res) {
     'use strict';
-    unirest.get('https://www.thebluealliance.com/api/v2/events/'+ req.params.year)
+    unirest.get('https://www.thebluealliance.com/api/v2/events/' + req.params.year)
         .headers({
             'X-TBA-App-Id': tbatoken.header,
-            'X-TBA-Auth-Key' : tbatoken.token
+            'X-TBA-Auth-Key': tbatoken.token
         })
         .end(function (response) {
             var offseasonevents = response.body;
@@ -173,7 +175,7 @@ router.route('/:year/offseasoneventsv2').get(function (req, res) {
                 var address = [];
                 if (offseasonevents[i].event_type_string === "Offseason") {
                     if (offseasonevents[i].venue_address === null) {
-                        address = ["no venue","no venue address","no city, no state, no country"];
+                        address = ["no venue", "no venue address", "no city, no state, no country"];
                     } else {
                         address = offseasonevents[i].venue_address.split("\n");
                     }
@@ -212,24 +214,24 @@ router.route('/:year/offseasoneventsv2').get(function (req, res) {
 
 router.route('/:year/offseasonevents').get(function (req, res) {
     'use strict';
-    unirest.get('https://www.thebluealliance.com/api/v3/events/'+ req.params.year)
+    unirest.get('https://www.thebluealliance.com/api/v3/events/' + req.params.year)
         .headers({
             'X-TBA-App-Id': tbatoken.header,
-            'X-TBA-Auth-Key' : tbatoken.token
+            'X-TBA-Auth-Key': tbatoken.token
         })
         .end(function (response) {
             var offseasonevents = response.body;
             var result = [];
             var output = {};
             for (var i = 1; i < offseasonevents.length; i++) {
-                
+
                 if (offseasonevents[i].event_type_string === "Offseason") {
                     if (offseasonevents[i].address === null) {
                         offseasonevents[i].address = "No venue address reported";
-                    } 
+                    }
                     if (offseasonevents[i].location_name === null) {
                         offseasonevents[i].location_name = "No venue name reported";
-                    } 
+                    }
                     if (offseasonevents[i].city === null) {
                         offseasonevents[i].city = "No venue city reported";
                     }
@@ -339,7 +341,7 @@ router.route('/:year/alliances/:eventCode/').get(function (req, res) {
     //                    res.end(JSON.stringify(response.body), 'utf-8');
     //                });
     //        } else {
-    //            if (req.params.year < 2017) {
+    //            if (req.params.year < currentYear) {
     //                //console.log("Sending stored alliances data for " + req.params.year + ":" + req.params.eventCode);
     //                res.writeHead(200, {
     //                    'Content-type': 'text/html'
@@ -373,7 +375,7 @@ router.route('/:year/alliances/:eventCode/').get(function (req, res) {
     //    });
 });
 
-router.route('/:year/schedule/:eventCode/:tlevel').get(cache('15 seconds'),function (req, res) {
+router.route('/:year/schedule/:eventCode/:tlevel').get(cache('15 seconds'), function (req, res) {
     'use strict';
     unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/schedule/' + req.params.eventCode + '/' + req.params.tlevel + '/hybrid')
         .headers({
@@ -401,7 +403,7 @@ router.route('/:year/schedule/:eventCode/:tlevel').get(cache('15 seconds'),funct
     //                    res.end(JSON.stringify(response.body), 'utf-8');
     //                });
     //        } else {
-    //            if (req.params.year < 2017) {
+    //            if (req.params.year < currentYear) {
     //                //console.log("Sending stored schedule data for " + req.params.year + ":" + req.params.eventCode + ":" + req.params.tlevel);
     //                res.writeHead(200, {
     //                    'Content-type': 'text/html'
@@ -457,7 +459,7 @@ router.route('/:year/teamdata/:team/').get(cache('12 hours'), function (req, res
                     'Authorization': token.token
                 })
                 .end(function (response) {
-                //console.log("Response code:"+response.statusCode+"<br>"+JSON.stringify(response.headers));
+                    //console.log("Response code:"+response.statusCode+"<br>"+JSON.stringify(response.headers));
                     teamData.put(req.params.team + "." + req.params.year, JSON.stringify(response));
                     res.writeHead(200, {
                         'Content-type': 'text/html'
@@ -473,7 +475,7 @@ router.route('/:year/teamdata/:team/').get(cache('12 hours'), function (req, res
                     'If-Modified-Since': JSON.parse(storedRequest).headers["date"]
                 })
                 .end(function (response) {
-                //console.log("Response code:"+response.statusCode+"<br>"+JSON.stringify(response.headers));
+                    //console.log("Response code:"+response.statusCode+"<br>"+JSON.stringify(response.headers));
                     if (response.statusCode === 304) {
                         //console.log("Stored team data are current. Sending  stored team data for " + req.params.year + ":" + req.params.team);
                         res.writeHead(200, {
@@ -505,7 +507,7 @@ router.route('/:year/newteamdata/:team/').get(cache('12 hours'), function (req, 
                     'Authorization': token.token
                 })
                 .end(function (response) {
-                //console.log("Response code:"+response.statusCode+"<br>"+JSON.stringify(response.headers));
+                    //console.log("Response code:"+response.statusCode+"<br>"+JSON.stringify(response.headers));
                     teamData.put(req.params.team + "." + req.params.year, JSON.stringify(response));
                     res.writeHead(200, {
                         'Content-type': 'text/html'
@@ -521,7 +523,7 @@ router.route('/:year/newteamdata/:team/').get(cache('12 hours'), function (req, 
                     'If-Modified-Since': JSON.parse(storedRequest).headers["date"]
                 })
                 .end(function (response) {
-                //console.log("Response code:"+response.statusCode+"<br>"+JSON.stringify(response.headers));
+                    //console.log("Response code:"+response.statusCode+"<br>"+JSON.stringify(response.headers));
                     if (response.statusCode === 304) {
                         //console.log("Stored team data are current. Sending  stored team data for " + req.params.year + ":" + req.params.team);
                         res.writeHead(200, {
@@ -589,7 +591,7 @@ router.route('/:year/teams/:eventCode/:page').get(cache('120 minutes'), function
     //                    res.end(JSON.stringify(response.body), 'utf-8');
     //                });
     //        } else {
-    //            if (req.params.year < 2017) {
+    //            if (req.params.year < currentYear) {
     //                //console.log("Sending stored teams data for " + req.params.year + ":" + req.params.eventCode);
     //                res.writeHead(200, {
     //                    'Content-type': 'text/html'
@@ -627,7 +629,7 @@ router.route('/:year/teams/:eventCode/:page').get(cache('120 minutes'), function
 
 router.route('/:year/offseasonteamsv2/:eventCode/:page').get(function (req, res) {
     'use strict';
-    unirest.get('https://www.thebluealliance.com/api/v2/event/'+req.params.eventCode + '/teams')
+    unirest.get('https://www.thebluealliance.com/api/v2/event/' + req.params.eventCode + '/teams')
         .headers({
             'X-TBA-App-Id': tbatoken.header
         })
@@ -635,24 +637,26 @@ router.route('/:year/offseasonteamsv2/:eventCode/:page').get(function (req, res)
             var offseasonteams = response.body;
             var result = [];
             var output = {};
-            offseasonteams.sort(function(a,b) {return parseInt(a.team_number)-parseInt(b.team_number);});
+            offseasonteams.sort(function (a, b) {
+                return parseInt(a.team_number) - parseInt(b.team_number);
+            });
             for (var i = 1; i < offseasonteams.length; i++) {
-                    var tmp = {
-                        "teamNumber": offseasonteams[i].team_number,
-                        "nameFull": offseasonteams[i].name,
-                        "nameShort": offseasonteams[i].nickname,
-                        "schoolName": null,
-                        "city": offseasonteams[i].locality,
-                        "stateProv": offseasonteams[i].region,
-                        "country": offseasonteams[i].country_name,
-                        "website": offseasonteams[i].website,
-                        "rookieYear": offseasonteams[i].rookie_year,
-                        "robotName": null,
-                        "districtCode": null,
-                        "homeCMP": null
-                    };
-                    result.push(tmp);
-                
+                var tmp = {
+                    "teamNumber": offseasonteams[i].team_number,
+                    "nameFull": offseasonteams[i].name,
+                    "nameShort": offseasonteams[i].nickname,
+                    "schoolName": null,
+                    "city": offseasonteams[i].locality,
+                    "stateProv": offseasonteams[i].region,
+                    "country": offseasonteams[i].country_name,
+                    "website": offseasonteams[i].website,
+                    "rookieYear": offseasonteams[i].rookie_year,
+                    "robotName": null,
+                    "districtCode": null,
+                    "homeCMP": null
+                };
+                result.push(tmp);
+
             }
             output.teams = result;
             output.teamCountTotal = result.length;
@@ -669,33 +673,35 @@ router.route('/:year/offseasonteamsv2/:eventCode/:page').get(function (req, res)
 
 router.route('/:year/offseasonteams/:eventCode/:page').get(function (req, res) {
     'use strict';
-    unirest.get('https://www.thebluealliance.com/api/v3/event/'+req.params.eventCode + '/teams')
+    unirest.get('https://www.thebluealliance.com/api/v3/event/' + req.params.eventCode + '/teams')
         .headers({
             'X-TBA-App-Id': tbatoken.header,
-            'X-TBA-Auth-Key' : tbatoken.token
+            'X-TBA-Auth-Key': tbatoken.token
         })
         .end(function (response) {
             var offseasonteams = response.body;
             var result = [];
             var output = {};
-            offseasonteams.sort(function(a,b) {return parseInt(a.team_number)-parseInt(b.team_number);});
+            offseasonteams.sort(function (a, b) {
+                return parseInt(a.team_number) - parseInt(b.team_number);
+            });
             for (var i = 1; i < offseasonteams.length; i++) {
-                    var tmp = {
-                        "teamNumber": offseasonteams[i].team_number,
-                        "nameFull": offseasonteams[i].name,
-                        "nameShort": offseasonteams[i].nickname,
-                        "schoolName": null,
-                        "city": offseasonteams[i].city,
-                        "stateProv": offseasonteams[i].state_prov,
-                        "country": offseasonteams[i].country,
-                        "website": offseasonteams[i].website,
-                        "rookieYear": offseasonteams[i].rookie_year,
-                        "robotName": null,
-                        "districtCode": null,
-                        "homeCMP": null
-                    };
-                    result.push(tmp);
-                
+                var tmp = {
+                    "teamNumber": offseasonteams[i].team_number,
+                    "nameFull": offseasonteams[i].name,
+                    "nameShort": offseasonteams[i].nickname,
+                    "schoolName": null,
+                    "city": offseasonteams[i].city,
+                    "stateProv": offseasonteams[i].state_prov,
+                    "country": offseasonteams[i].country,
+                    "website": offseasonteams[i].website,
+                    "rookieYear": offseasonteams[i].rookie_year,
+                    "robotName": null,
+                    "districtCode": null,
+                    "homeCMP": null
+                };
+                result.push(tmp);
+
             }
             output.teams = result;
             output.teamCountTotal = result.length;
@@ -739,7 +745,7 @@ router.route('/:year/rankings/:eventCode/').get(cache('15 seconds'), function (r
     //                    res.end(JSON.stringify(response.body), 'utf-8');
     //                });
     //        } else {
-    //            if (req.params.year < 2017) {
+    //            if (req.params.year < currentYear) {
     //                //console.log("Sending stored rankings data for " + req.params.year + ":" + req.params.eventCode);
     //                res.writeHead(200, {
     //                    'Content-type': 'text/html'
@@ -794,7 +800,7 @@ router.route('/:year/awards/:teamNumber/').get(cache('1 hours'), function (req, 
                     'Authorization': token.token
                 })
                 .end(function (response) {
-                    if (req.params.year < 2017) {
+                    if (req.params.year < currentYear) {
                         teamAwards.put(req.params.teamNumber + ":" + req.params.year, JSON.stringify(response));
                     }
                     res.writeHead(200, {
@@ -803,7 +809,7 @@ router.route('/:year/awards/:teamNumber/').get(cache('1 hours'), function (req, 
                     res.end(JSON.stringify(response.body), 'utf-8');
                 });
         } else {
-            if (req.params.year < 2017) {
+            if (req.params.year < currentYear) {
                 //console.log("Sending stored awards data for " + req.params.year + ":" + req.params.teamNumber);
                 res.writeHead(200, {
                     'Content-type': 'text/html'
@@ -837,6 +843,213 @@ router.route('/:year/awards/:teamNumber/').get(cache('1 hours'), function (req, 
     });
 });
 
+
+router.route('/:year/awardsv2/:teamNumber/').get(function (req, res) {
+    'use strict';
+    //console.log("awardsv2 start");
+    var promises = [];
+    var teamNumber = req.params.teamNumber;
+    var year = req.params.year,
+        year1 = String(Number(year) - 1),
+        year2 = String(Number(year) - 2);
+
+    promises.push(new Promise(function (resolve, reject) {
+        teamAwards.get(teamNumber + ":" + year, function (err, storedRequest) {
+            if (err) {
+                //console.log("No stored awards data for " + year + ":" + teamNumber);
+                unirest.get('https://frc-api.firstinspires.org/v2.0/' + year + '/awards/' + teamNumber)
+                    .headers({
+                        'Authorization': token.token
+                    })
+                    .end(function (response) {
+                        if (year < currentYear) {
+                            teamAwards.put(teamNumber + ":" + year, JSON.stringify(response));
+                        }
+                        //console.log(year + ": Returning new data from FIRST: " + JSON.stringify(response.body));
+                        resolve(response.body);
+                    });
+            } else {
+                if (year < currentYear) {
+                    //console.log("Sending stored awards data for " + year + ":" + teamNumber);
+                    //console.log(year + ": Returning stored data from gatool: " + JSON.stringify(JSON.parse(storedRequest).body));
+                    resolve(JSON.parse(storedRequest).body);
+
+                } else {
+                    //console.log("Reading awards data for " + year + ":" + teamNumber + " from FIRST");
+                    unirest.get('https://frc-api.firstinspires.org/v2.0/' + year + '/awards/' + teamNumber)
+                        .headers({
+                            'Authorization': token.token,
+                            'If-Modified-Since': JSON.parse(storedRequest).headers.date
+                        })
+                        .end(function (response) {
+                            if (response.statusCode === 304) {
+                                //console.log("Stored awards are current. Sending stored awards for " + year + ":" + teamNumber);
+                                //console.log(year + ": Returning stored data from gatool: " + JSON.stringify(JSON.parse(storedRequest).body));
+                                resolve(JSON.parse(storedRequest).body);
+                            } else {
+                                //console.log("Stored awards are stale. Saving result and sending new awards for " + year + ":" + teamNumber);
+                                //console.log(year + ": Storing response and returning new data from FIRST: " + JSON.stringify(response.body));
+                                teamAwards.put(teamNumber + ":" + year, JSON.stringify(response));
+                                resolve(response.body);
+                            }
+                        });
+                }
+            }
+        });
+
+    }));
+
+    promises.push(new Promise(function (resolve, reject) {
+        teamAwards.get(teamNumber + ":" + year1, function (err, storedRequest) {
+            if (err) {
+                //console.log("No stored awards data for " + year + ":" + teamNumber);
+                unirest.get('https://frc-api.firstinspires.org/v2.0/' + year1 + '/awards/' + teamNumber)
+                    .headers({
+                        'Authorization': token.token
+                    })
+                    .end(function (response) {
+                        if (year1 < currentYear) {
+                            teamAwards.put(teamNumber + ":" + year1, JSON.stringify(response));
+                            //console.log(year1 + ": Returning new data from FIRST: " + JSON.stringify(response.body));
+                            resolve(response.body);
+                        }
+                    });
+            } else {
+                if (year1 < currentYear) {
+                    //console.log("Sending stored awards data for " + year + ":" + teamNumber);
+                    //console.log(year1 + ": Returning stored data from gatool: " + JSON.stringify(JSON.parse(storedRequest).body));
+                    resolve(JSON.parse(storedRequest).body);
+
+                } else {
+                    //console.log("Reading awards data for " + year + ":" + teamNumber + " from FIRST");
+                    unirest.get('https://frc-api.firstinspires.org/v2.0/' + year1 + '/awards/' + teamNumber)
+                        .headers({
+                            'Authorization': token.token,
+                            'If-Modified-Since': JSON.parse(storedRequest).headers.date
+                        })
+                        .end(function (response) {
+                            if (response.statusCode === 304) {
+                                //console.log("Stored awards are current. Sending stored awards for " + year + ":" + teamNumber);
+                                //console.log(year1 + ": Returning stored data from gatool: " + JSON.stringify(JSON.parse(storedRequest).body));
+                                resolve(JSON.parse(storedRequest).body);
+                            } else {
+                                //console.log("Stored awards are stale. Saving result and sending new awards for " + year + ":" + teamNumber);
+                                //console.log(year1 + ": Storing response and returning new data from FIRST: " + JSON.stringify(response.body));
+                                teamAwards.put(teamNumber + ":" + year1, JSON.stringify(response));
+                                resolve(response.body);
+                            }
+                        });
+                }
+            }
+        });
+
+    }));
+
+    promises.push(new Promise(function (resolve, reject) {
+        teamAwards.get(teamNumber + ":" + year2, function (err, storedRequest) {
+            if (err) {
+                //console.log("No stored awards data for " + year2 + ":" + teamNumber);
+                unirest.get('https://frc-api.firstinspires.org/v2.0/' + year2 + '/awards/' + teamNumber)
+                    .headers({
+                        'Authorization': token.token
+                    })
+                    .end(function (response) {
+                        if (year2 < currentYear) {
+                            teamAwards.put(teamNumber + ":" + year2, JSON.stringify(response));
+                            //console.log(year2 + ": Returning new data from FIRST: " + JSON.stringify(response.body));
+                            resolve(response.body);
+                        }
+                    });
+            } else {
+                if (year2 < currentYear) {
+                    //console.log("Sending stored awards data for " + year2 + ":" + teamNumber);
+                    //console.log(year2 + ": Returning stored data from gatool: " + JSON.stringify(JSON.parse(storedRequest).body));
+                    resolve(JSON.parse(storedRequest).body);
+
+                } else {
+                    //console.log("Reading awards data for " + year2 + ":" + teamNumber + " from FIRST");
+                    unirest.get('https://frc-api.firstinspires.org/v2.0/' + year2 + '/awards/' + teamNumber)
+                        .headers({
+                            'Authorization': token.token,
+                            'If-Modified-Since': JSON.parse(storedRequest).headers.date
+                        })
+                        .end(function (response) {
+                            if (response.statusCode === 304) {
+                                //console.log("Stored awards are current. Sending stored awards for " + year2 + ":" + teamNumber);
+                                //console.log(year2 + ": Returning stored data from gatool: " + JSON.stringify(JSON.parse(storedRequest).body));
+                                resolve(JSON.parse(storedRequest).body);
+                            } else {
+                                //console.log("Stored awards are stale. Saving result and sending new awards for " + year2 + ":" + teamNumber);
+                                //console.log(year2 + ": Storing response and returning new data from FIRST: " + JSON.stringify(response.body));
+                                teamAwards.put(teamNumber + ":" + year2, JSON.stringify(response));
+                                resolve(response.body);
+                            }
+                        });
+                }
+            }
+        });
+
+    }));
+
+    //console.log("sending Promises");
+    Promise.all(promises).then(function (values) {
+        //console.log("promise values: " + JSON.stringify(values));
+        res.writeHead(200, {
+            'Content-type': 'text/html'
+        });
+        res.end(JSON.stringify(values), 'utf-8');
+        //console.log("done");
+    });
+
+
+});
+
+function getAwards(teamNumber, year) {
+    "use strict";
+    teamAwards.get(teamNumber + ":" + year, function (err, storedRequest) {
+        if (err) {
+            //console.log("No stored awards data for " + year + ":" + teamNumber);
+            unirest.get('https://frc-api.firstinspires.org/v2.0/' + year + '/awards/' + teamNumber)
+                .headers({
+                    'Authorization': token.token
+                })
+                .end(function (response) {
+                    if (year < currentYear) {
+                        teamAwards.put(teamNumber + ":" + year, JSON.stringify(response));
+                        //console.log(year + ": Returning new data from FIRST: " + JSON.stringify(response.body));
+                        return response.body;
+                    }
+                });
+        } else {
+            if (year < currentYear) {
+                //console.log("Sending stored awards data for " + year + ":" + teamNumber);
+                //console.log(year + ": Returning stored data from gatool: " + JSON.stringify(JSON.parse(storedRequest).body));
+                return JSON.parse(storedRequest).body;
+
+            } else {
+                //console.log("Reading awards data for " + year + ":" + teamNumber + " from FIRST");
+                unirest.get('https://frc-api.firstinspires.org/v2.0/' + year + '/awards/' + teamNumber)
+                    .headers({
+                        'Authorization': token.token,
+                        'If-Modified-Since': JSON.parse(storedRequest).headers.date
+                    })
+                    .end(function (response) {
+                        if (response.statusCode === 304) {
+                            //console.log("Stored awards are current. Sending stored awards for " + year + ":" + teamNumber);
+                            //console.log(year + ": Returning stored data from gatool: " + JSON.stringify(JSON.parse(storedRequest).body));
+                            return JSON.parse(storedRequest).body;
+                        } else {
+                            //console.log("Stored awards are stale. Saving result and sending new awards for " + year + ":" + teamNumber);
+                            //console.log(year + ": Storing response and returning new data from FIRST: " + JSON.stringify(response.body));
+                            teamAwards.put(teamNumber + ":" + year, JSON.stringify(response));
+                            return response.body;
+                        }
+                    });
+            }
+        }
+    });
+
+}
 
 app.get('/', function (req, res) {
     'use strict';
