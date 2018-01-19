@@ -866,13 +866,15 @@ router.route('/:year/awardsv2/:teamNumber/').get(function (req, res) {
                             teamAwards.put(teamNumber + ":" + year, JSON.stringify(response));
                         }
                         //console.log(year + ": Returning new data from FIRST: " + JSON.stringify(response.body));
-                        resolve(response.body);
+
+                        resolve(cleanupAwards(response.body));
+
                     });
             } else {
                 if (year < currentYear) {
                     //console.log("Sending stored awards data for " + year + ":" + teamNumber);
                     //console.log(year + ": Returning stored data from gatool: " + JSON.stringify(JSON.parse(storedRequest).body));
-                    resolve(JSON.parse(storedRequest).body);
+                    resolve(cleanupAwards(JSON.parse(storedRequest).body));
 
                 } else {
                     //console.log("Reading awards data for " + year + ":" + teamNumber + " from FIRST");
@@ -885,12 +887,12 @@ router.route('/:year/awardsv2/:teamNumber/').get(function (req, res) {
                             if (response.statusCode === 304) {
                                 //console.log("Stored awards are current. Sending stored awards for " + year + ":" + teamNumber);
                                 //console.log(year + ": Returning stored data from gatool: " + JSON.stringify(JSON.parse(storedRequest).body));
-                                resolve(JSON.parse(storedRequest).body);
+                                resolve(cleanupAwards(JSON.parse(storedRequest).body));
                             } else {
                                 //console.log("Stored awards are stale. Saving result and sending new awards for " + year + ":" + teamNumber);
                                 //console.log(year + ": Storing response and returning new data from FIRST: " + JSON.stringify(response.body));
                                 teamAwards.put(teamNumber + ":" + year, JSON.stringify(response));
-                                resolve(response.body);
+                                resolve(cleanupAwards(response.body));
                             }
                         });
                 }
@@ -911,14 +913,14 @@ router.route('/:year/awardsv2/:teamNumber/').get(function (req, res) {
                         if (year1 < currentYear) {
                             teamAwards.put(teamNumber + ":" + year1, JSON.stringify(response));
                             //console.log(year1 + ": Returning new data from FIRST: " + JSON.stringify(response.body));
-                            resolve(response.body);
+                            resolve(cleanupAwards(response.body));
                         }
                     });
             } else {
                 if (year1 < currentYear) {
                     //console.log("Sending stored awards data for " + year + ":" + teamNumber);
                     //console.log(year1 + ": Returning stored data from gatool: " + JSON.stringify(JSON.parse(storedRequest).body));
-                    resolve(JSON.parse(storedRequest).body);
+                    resolve(cleanupAwards(JSON.parse(storedRequest).body));
 
                 } else {
                     //console.log("Reading awards data for " + year + ":" + teamNumber + " from FIRST");
@@ -931,12 +933,12 @@ router.route('/:year/awardsv2/:teamNumber/').get(function (req, res) {
                             if (response.statusCode === 304) {
                                 //console.log("Stored awards are current. Sending stored awards for " + year + ":" + teamNumber);
                                 //console.log(year1 + ": Returning stored data from gatool: " + JSON.stringify(JSON.parse(storedRequest).body));
-                                resolve(JSON.parse(storedRequest).body);
+                                resolve(cleanupAwards(JSON.parse(storedRequest).body));
                             } else {
                                 //console.log("Stored awards are stale. Saving result and sending new awards for " + year + ":" + teamNumber);
                                 //console.log(year1 + ": Storing response and returning new data from FIRST: " + JSON.stringify(response.body));
                                 teamAwards.put(teamNumber + ":" + year1, JSON.stringify(response));
-                                resolve(response.body);
+                                resolve(cleanupAwards(response.body));
                             }
                         });
                 }
@@ -957,14 +959,14 @@ router.route('/:year/awardsv2/:teamNumber/').get(function (req, res) {
                         if (year2 < currentYear) {
                             teamAwards.put(teamNumber + ":" + year2, JSON.stringify(response));
                             //console.log(year2 + ": Returning new data from FIRST: " + JSON.stringify(response.body));
-                            resolve(response.body);
+                            resolve(cleanupAwards(response.body));
                         }
                     });
             } else {
                 if (year2 < currentYear) {
                     //console.log("Sending stored awards data for " + year2 + ":" + teamNumber);
                     //console.log(year2 + ": Returning stored data from gatool: " + JSON.stringify(JSON.parse(storedRequest).body));
-                    resolve(JSON.parse(storedRequest).body);
+                    resolve(cleanupAwards(JSON.parse(storedRequest).body));
 
                 } else {
                     //console.log("Reading awards data for " + year2 + ":" + teamNumber + " from FIRST");
@@ -977,12 +979,12 @@ router.route('/:year/awardsv2/:teamNumber/').get(function (req, res) {
                             if (response.statusCode === 304) {
                                 //console.log("Stored awards are current. Sending stored awards for " + year2 + ":" + teamNumber);
                                 //console.log(year2 + ": Returning stored data from gatool: " + JSON.stringify(JSON.parse(storedRequest).body));
-                                resolve(JSON.parse(storedRequest).body);
+                                resolve(cleanupAwards(JSON.parse(storedRequest).body));
                             } else {
                                 //console.log("Stored awards are stale. Saving result and sending new awards for " + year2 + ":" + teamNumber);
                                 //console.log(year2 + ": Storing response and returning new data from FIRST: " + JSON.stringify(response.body));
                                 teamAwards.put(teamNumber + ":" + year2, JSON.stringify(response));
-                                resolve(response.body);
+                                resolve(cleanupAwards(response.body));
                             }
                         });
                 }
@@ -1003,6 +1005,19 @@ router.route('/:year/awardsv2/:teamNumber/').get(function (req, res) {
 
 
 });
+
+
+function cleanupAwards(award) {
+    "use strict";
+    //console.log(typeof award);
+    if ((typeof award) === "object") {
+        return (award);
+    }else {
+        
+        return (JSON.parse('{"Awards":[]}'));
+    
+    }
+}
 
 function getAwards(teamNumber, year) {
     "use strict";
