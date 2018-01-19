@@ -60,7 +60,7 @@ localStorage.highScoreDetails = "{}";
 // Cache the prior years events to reduce server calls.
 
 localStorage.events2016 = '{"ABCA":"Western Canada Regional","ALHU":"Rocket City Regional","ARCHIMEDES":"FIRST Championship - Archimedes Subdivision","ARLR":"Arkansas Rock City Regional","ARTE":"FIRST Championship - ARTE Division","AUSY":"Australia Regional","AZFL":"Arizona North Regional","AZPX":"Arizona West Regional","CADA":"Sacramento Regional","CALB":"Los Angeles Regional","CAMA":"Central Valley Regional","CAPL":"Orange County Regional","CARSON":"FIRST Championship - Carson Subdivision","CARVER":"FIRST Championship - Carver Subdivision","CASD":"San Diego Regional","CASJ":"Silicon Valley Regional presented by Google.org","CAVE":"Ventura Regional","CHCMP":"FIRST Chesapeake District Championship sponsored by Booz Allen Hamilton","CMP":"FIRST Championship","CODE":"Colorado Regional","CTHAR":"NE District - Hartford Event","CTWAT":"NE District - Waterbury Event","CUCA":"FIRST Championship - CUCA Division","CURIE":"FIRST Championship - Curie Subdivision","FLOR":"Orlando Regional","FLWP":"South Florida Regional ","GAALB":"PCH District - Albany Event","GACA":"FIRST Championship - GACA Division","GACMP":"Peachtree District State Championship","GACOL":"PCH District - Columbus Event","GADAL":"PCH District - Dalton Event","GAKEN":"PCH District - Kennesaw Event","GALILEO":"FIRST Championship - Galileo Subdivision","HEAT":"Summer Heat","HIHO":"Hawaii Regional","HOPPER":"FIRST Championship - Hopper Subdivision","IACF":"Iowa Regional","IDBO":"Idaho Regional","ILCH":"Midwest Regional","ILPE":"Central Illinois Regional","INCMP":"Indiana State Championship","INPMH":"IN District - Perry Meridian Event","INWCH":"IN District - Walker Warren Event","INWLA":"IN District - Tippecanoe Event","IRI":"Indiana Robotics Invitational","ISTA":"Israel Regional","LAKE":"Bayou Regional","MABOS":"NE District - Boston Event","MANDA":"NE District - UMass-Dartmouth Event","MAREA":"NE District - North Shore Event","MAWOR":"NE District - WPI Event","MDBET":"CHS District - Greater DC Event","MDBLR":"CHS District - Northern Maryland Event","MDEDG":"CHS District - Central Maryland Event","MELEW":"NE District - Pine Tree Event","MIANN":"FIM District - Ann Arbor Skyline Event","MIBRO":"FIM District - Woodhaven Event","MICEN":"FIM District - Center Line Event","MICMP":"Michigan State Championship","MIESC":"FIM District - Escanaba Event","MIHOW":"FIM District - Howell Event","MIKE2":"FIM District - Kettering University Event #2","MIKEN":"FIM District - East Kentwood Event","MIKET":"FIM District - Kettering University Event #1","MILAK":"FIM District - Lakeview Event","MILAN":"FIM District - Lansing Event","MILIV":"FIM District - Livonia Event","MILSU":"FIM District - Lake Superior State University Event","MIMAR":"FIM District - Marysville Event","MIMID":"FIM District - Midland Event","MISJO":"FIM District - St. Joseph Event","MISOU":"FIM District - Southfield Event","MISTA":"FIM District - Standish-Sterling Event","MITRY":"FIM District - Troy Event","MITVC":"FIM District - Traverse City Event","MIWAT":"FIM District - Waterford Event","MIWMI":"FIM District - West Michigan Event","MNDU":"Lake Superior Regional","MNDU2":"Northern Lights Regional","MNMI":"Minnesota 10000 Lakes Regional","MNMI2":"Minnesota North Star Regional","MOKC":"Greater Kansas City Regional","MOSL":"St. Louis Regional","MRCMP":"Mid-Atlantic Robotics District Championship","MXMC":"Mexico City Regional ","NCASH":"NC District - UNC Asheville Event","NCBUI":"NC District - Campbell University/Johnston Community College Event","NCCMP":"NC FIRST Robotics State Championship","NCMCL":"NC District - Guilford County Event","NCRAL":"NC District - Wake County Event","NECMP":"New England District Championship","NEHO":"FIRST Championship - NEHO Division","NEWTON":"FIRST Championship - Newton Subdivision","NHDUR":"NE District - UNH Event","NHGRS":"NE District - Granite State Event","NJBRI":"MAR District - Bridgewater-Raritan Event","NJFLA":"MAR District - Mt. Olive Event","NJSKI":"MAR District - Montgomery Event","NJTAB":"MAR District - Seneca Event","NVLV":"Las Vegas Regional","NYLI":"SBPLI Long Island Regional","NYNY":"New York City Regional","NYRO":"Finger Lakes Regional ","NYTR":"New York Tech Valley Regional","OHCI":"Queen City Regional","OHCL":"Buckeye Regional","OKOK":"Oklahoma Regional ","ONNB":"North Bay Regional","ONTO":"Greater Toronto East Regional ","ONTO2":"Greater Toronto Central Regional","ONWA":"Waterloo Regional ","ONWI":"Windsor Essex Great Lakes Regional","ORORE":"PNW District - Clackamas Academy of Industrial Science Event","ORPHI":"PNW District - Philomath Event","ORWIL":"PNW District - Wilsonville Event","PACA":"Greater Pittsburgh Regional","PAHAT":"MAR District - Hatboro-Horsham Event","PAPHI":"MAR District - Springside Chestnut Hill Event","PAWCH":"MAR District - Westtown Event","PNCMP":"Pacific Northwest District Championship sponsored by Autodesk","QCMO":"FRC Festival de Robotique - Montreal Regional","RIPRO":"NE District - Rhode Island Event","SCMB":"Palmetto Regional","TESLA":"FIRST Championship - Tesla Subdivision","TNKN":"Smoky Mountains Regional","TXDA":"Dallas Regional","TXHO":"Lone Star Regional","TXLU":"Hub City Regional","TXSA":"Alamo Regional sponsored by Rackspace Hosting","UTWV":"Utah Regional","VABLA":"CHS District - Southwest Virginia Event","VADOS":"CHS District - Central Virginia Event","VAHAY":"CHS District - Northern Virginia Event","VAPOR":"CHS District - Hampton Roads Event","WAAHS":"PNW District - Auburn Event","WAAMV":"PNW District - Auburn Mountainview Event","WAELL":"PNW District - Central Washington University Event","WAMOU":"PNW District - Mount Vernon Event","WASNO":"PNW District - Glacier Peak Event","WASPO":"PNW District - West Valley Event","WEEK0":"Week 0","WIMI":"Wisconsin Regional","WVROX":"West Virginia ROX"}';
-localStorage.events2017='{"ABCA":"Western Canada Regional","ALHU":"Rocket City Regional","ARCHIMEDES":"FIRST Championship - St. Louis - Archimedes Subdivision","ARDA":"FIRST Championship - St. Louis - ARDA Division","ARLI":"Arkansas Rock City Regional","AUSC":"Southern Cross Regional","AUSP":"South Pacific Regional","AZCMP":"Sanghi Foundation FRC AZ State Championship","AZFL":"Arizona North Regional","AZPX":"Arizona West Regional","BC18":"BattleCry 18","CADA":"Sacramento Regional","CAIR":"Orange County Regional","CALB":"Los Angeles Regional","CAMA":"Central Valley Regional","CANE":"FIRST Championship - Houston - CANE Division","CARSON":"FIRST Championship - St. Louis - Carson Subdivision","CARVER":"FIRST Championship - Houston - Carver Subdivision","CASD":"San Diego Regional presented by Qualcomm","CASF":"San Francisco Regional","CASJ":"Silicon Valley Regional","CATE":"FIRST Championship - St. Louis - CATE Division","CAVE":"Ventura Regional","CHCMP":"FIRST Chesapeake District Championship sponsored by Booz Allen Hamilton","CMPMO":"FIRST Championship - St. Louis","CMPTX":"FIRST Championship - Houston","CODE":"Colorado Regional","CTHAR":"NE District - Hartford Event","CTTD":"Cow Town ThrowDown","CTWAT":"NE District - Waterbury Event","CUDA":"FIRST Championship - St. Louis - CUDA Division","CURIE":"FIRST Championship - St. Louis - Curie Subdivision","DALY":"FIRST Championship - St. Louis - Daly Subdivision","DARWIN":"FIRST Championship - St. Louis - Darwin Subdivision","EMCC":"East Metro Collaborative Competition","FLOR":"Orlando Regional","FLWP":"South Florida Regional ","FOC":"Festival of Champions","FOC17":"Festival of Champions","GAALB":"PCH District - Albany Event","GACMP":"Peachtree State Championship","GACOL":"PCH District - Columbus Event","GADAL":"PCH District - Dalton Event","GAGAI":"PCH District - Gainesville Event","GALILEO":"FIRST Championship - Houston - Galileo Subdivision","GARO":"FIRST Championship - Houston - GARO Division","GGGT":"Gitchi Gummi Get-Together","GRITS":"Georgia Robotics Invitational Tournament & Showcase","GUSH":"Shenzhen Regional","HIHO":"Hawaii Regional","HOPPER":"FIRST Championship - Houston - Hopper Subdivision","HOTU":"FIRST Championship - Houston - HOTU Division","IACF":"Iowa Regional","IDBO":"Idaho Regional","ILCH":"Midwest Regional","ILPE":"Central Illinois Regional","INCMP":"Indiana State Championship","INMIS":"IN District - St. Joseph Event","INPMH":"IN District - Perry Meridian Event","INWLA":"IN District - Tippecanoe Event","IRI":"Indiana Robotics Invitational","IROC":"IROC","ISCMP":"FIRST Israel District Championship","ISDE1":"ISR District Event #1","ISDE2":"ISR District Event #2","ISDE3":"ISR District Event #3","ISDE4":"ISR District Event #4","LAKE":"Bayou Regional","MABOS":"NE District - Greater Boston Event","MABRI":"NE District - SE Mass Event","MAREA":"NE District - North Shore Event","MAWOR":"NE District - Worcester Polytechnic Institute Event","MDBET":"CHS District - Greater DC Event sponsored by Accenture","MDBOB":"Battle O’ Baltimore","MDEDG":"CHS District - Central Maryland Event sponsored by Leidos","MDOWI":"CHS District - Northern Maryland Event","MELEW":"NE District - Pine Tree Event","MEMS":"Mainely SPIRIT 7","MESH":"Summer Heat","MIANN":"FIM District - Ann Arbor Pioneer Event","MIBRO":"FIM District - Woodhaven Event","MICEN":"FIM District - Center Line Event","MICMP":"Michigan State Championship","MICMP1":"Michigan State Championship - Consumers Energy Division","MICMP2":"Michigan State Championship - Dow Division","MICMP3":"Michigan State Championship - DTE Energy Foundation Division","MICMP4":"Michigan State Championship - Ford Division","MIESC":"FIM District - Escanaba Event","MIGAY":"FIM District - Gaylord Event","MIGUL":"FIM District - Gull Lake Event","MIHOW":"FIM District - Howell Event","MIKE2":"FIM District - Kettering University Event #2","MIKEN":"FIM District - East Kentwood Event","MIKET":"FIM District - Kettering University Event #1","MILAK":"FIM District - Lakeview Event","MILAN":"FIM District - Lansing Event","MILIV":"FIM District - Livonia Event","MILSU":"FIM District - Lake Superior State University Event","MIMAR":"FIM District - Marysville Event","MIMID":"FIM District - Midland Event","MISHE":"FIM District - Shepherd Event","MISJO":"FIM District - St. Joseph Event","MISOU":"FIM District - Southfield Event","MITRY":"FIM District - Troy Event","MITVC":"FIM District - Traverse City Event","MIWAT":"FIM District - Waterford Event","MIWMI":"FIM District - West Michigan Event","MNCL":"Northern Minnesota Robotics Conference Tournament","MNCMP":"MSHSL FIRST State Robotics Championship","MNDU":"Lake Superior Regional","MNDU2":"Northern Lights Regional","MNMI":"Minnesota 10000 Lakes Regional","MNMI2":"Minnesota North Star Regional","MNRI":"Minnesota Robotics Invitational","MOKC":"Greater Kansas City Regional","MOSL":"St. Louis Regional","MRCMP":"FIRST Mid-Atlantic District Championship sponsored by Johnson & Johnson","MXTL":"Toluca Regional","MXTO":"Laguna Regional","NCASH":"NC District - UNC Asheville Event","NCCMP":"FIRST North Carolina State Championship","NCGRE":"NC District - Greensboro Event","NCRAL":"NC District - Raleigh Event","NCWIN":"NC District - Pitt County Event","NECMP":"New England District Championship","NEWTON":"FIRST Championship - Houston - Newton Subdivision","NHBED":"NE District - Southern NH Event","NHBOB":"Battle Of the Bay","NHGRS":"NE District - Granite State Event","NHRR":"RiverRage 21","NJBE":"Brunswick Eruption","NJBRI":"MAR District - Bridgewater-Raritan Event","NJFLA":"MAR District - Mount Olive Event","NJSKI":"MAR District - Montgomery Event","NJTAB":"MAR District - Seneca Event","NTTR":"North Texas Tournament of Robots","NVLV":"Las Vegas Regional","NYLI":"SBPLI Long Island Regional","NYNY":"New York City Regional","NYRO":"Finger Lakes Regional ","NYSU":"Hudson Valley Regional","NYTR":"New York Tech Valley Regional","OHCL":"Buckeye Regional","OHSP":"Miami Valley Regional","OKOK":"Oklahoma Regional ","ONBAR":"ONT District - Georgian College Event","ONCMP":"FIRST Ontario Provincial Championship","ONHA2":"STEMley Cup","ONHAM":"ONT District - McMaster University Event","ONLON":"ONT District - Western University, Engineering Event","ONNOB":"ONT District - North Bay Event","ONOSH":"ONT District - Durham College Event","ONTO1":"ONT District - Ryerson University Event","ONTO2":"ONT District - Victoria Park Collegiate Event","ONWAT":"ONT District - University of Waterloo Event","ONWIN":"ONT District - Windsor Essex Great Lakes Event","ORLAK":"PNW District - Lake Oswego Event","ORORE":"PNW District - Clackamas Academy of Industrial Science Event","ORWIL":"PNW District - Wilsonville Event","PACA":"Greater Pittsburgh Regional","PAHAT":"MAR District - Hatboro-Horsham Event","PAPHI":"MAR District - Springside Chestnut Hill Academy Event","PAWCH":"MAR District - Westtown Event","PNCMP":"Pacific Northwest District Championship","QCMO":"Festival de Robotique - Montreal Regional","R2OC":"Rock River Off-Season Competition","RIPRO":"NE District - Rhode Island Event","ROEBLING":"FIRST Championship - Houston - Roebling Subdivision","SCMB":"Palmetto Regional","TESLA":"FIRST Championship - St. Louis - Tesla Subdivision","TNKN":"Smoky Mountains Regional","TURING":"FIRST Championship - Houston - Turing Subdivision","TXDA":"Dallas Regional","TXHO":"Lone Star Central Regional","TXLU":"Hub City Regional","TXRI":"Texas Robotics Invitational","TXRR":"Texas Robot Roundup","TXSA":"Alamo Regional","TXTR":"The Remix","TXWA":"Brazos Valley Regional","TXWO":"Lone Star North Regional","UTWV":"Utah Regional","VABLA":"CHS District - Southwest Virginia Event","VAGLE":"CHS District - Central Virginia Event","VAHAY":"CHS District - Northern Virginia Event sponsored by Bechtel","VAPOR":"CHS District - Hampton Roads Event sponsored by Newport News Shipbuilding","WAAHS":"PNW District - Auburn Event","WAAMV":"PNW District - Auburn Mountainview Event","WAELL":"PNW District - Central Washington University Event","WAGG":"Washington Girls Generation","WAMOU":"PNW District - Mount Vernon Event","WAPP":"Peak Performance","WASNO":"PNW District - Glacier Peak Event","WASPO":"PNW District - West Valley Event","WEEK0":"Week 0","WILA":"Seven Rivers Regional","WIMI":"Wisconsin Regional"}';
+localStorage.events2017 = '{"ABCA":"Western Canada Regional","ALHU":"Rocket City Regional","ARCHIMEDES":"FIRST Championship - St. Louis - Archimedes Subdivision","ARDA":"FIRST Championship - St. Louis - ARDA Division","ARLI":"Arkansas Rock City Regional","AUSC":"Southern Cross Regional","AUSP":"South Pacific Regional","AZCMP":"Sanghi Foundation FRC AZ State Championship","AZFL":"Arizona North Regional","AZPX":"Arizona West Regional","BC18":"BattleCry 18","CADA":"Sacramento Regional","CAIR":"Orange County Regional","CALB":"Los Angeles Regional","CAMA":"Central Valley Regional","CANE":"FIRST Championship - Houston - CANE Division","CARSON":"FIRST Championship - St. Louis - Carson Subdivision","CARVER":"FIRST Championship - Houston - Carver Subdivision","CASD":"San Diego Regional presented by Qualcomm","CASF":"San Francisco Regional","CASJ":"Silicon Valley Regional","CATE":"FIRST Championship - St. Louis - CATE Division","CAVE":"Ventura Regional","CHCMP":"FIRST Chesapeake District Championship sponsored by Booz Allen Hamilton","CMPMO":"FIRST Championship - St. Louis","CMPTX":"FIRST Championship - Houston","CODE":"Colorado Regional","CTHAR":"NE District - Hartford Event","CTTD":"Cow Town ThrowDown","CTWAT":"NE District - Waterbury Event","CUDA":"FIRST Championship - St. Louis - CUDA Division","CURIE":"FIRST Championship - St. Louis - Curie Subdivision","DALY":"FIRST Championship - St. Louis - Daly Subdivision","DARWIN":"FIRST Championship - St. Louis - Darwin Subdivision","EMCC":"East Metro Collaborative Competition","FLOR":"Orlando Regional","FLWP":"South Florida Regional ","FOC":"Festival of Champions","FOC17":"Festival of Champions","GAALB":"PCH District - Albany Event","GACMP":"Peachtree State Championship","GACOL":"PCH District - Columbus Event","GADAL":"PCH District - Dalton Event","GAGAI":"PCH District - Gainesville Event","GALILEO":"FIRST Championship - Houston - Galileo Subdivision","GARO":"FIRST Championship - Houston - GARO Division","GGGT":"Gitchi Gummi Get-Together","GRITS":"Georgia Robotics Invitational Tournament & Showcase","GUSH":"Shenzhen Regional","HIHO":"Hawaii Regional","HOPPER":"FIRST Championship - Houston - Hopper Subdivision","HOTU":"FIRST Championship - Houston - HOTU Division","IACF":"Iowa Regional","IDBO":"Idaho Regional","ILCH":"Midwest Regional","ILPE":"Central Illinois Regional","INCMP":"Indiana State Championship","INMIS":"IN District - St. Joseph Event","INPMH":"IN District - Perry Meridian Event","INWLA":"IN District - Tippecanoe Event","IRI":"Indiana Robotics Invitational","IROC":"IROC","ISCMP":"FIRST Israel District Championship","ISDE1":"ISR District Event #1","ISDE2":"ISR District Event #2","ISDE3":"ISR District Event #3","ISDE4":"ISR District Event #4","LAKE":"Bayou Regional","MABOS":"NE District - Greater Boston Event","MABRI":"NE District - SE Mass Event","MAREA":"NE District - North Shore Event","MAWOR":"NE District - Worcester Polytechnic Institute Event","MDBET":"CHS District - Greater DC Event sponsored by Accenture","MDBOB":"Battle O’ Baltimore","MDEDG":"CHS District - Central Maryland Event sponsored by Leidos","MDOWI":"CHS District - Northern Maryland Event","MELEW":"NE District - Pine Tree Event","MEMS":"Mainely SPIRIT 7","MESH":"Summer Heat","MIANN":"FIM District - Ann Arbor Pioneer Event","MIBRO":"FIM District - Woodhaven Event","MICEN":"FIM District - Center Line Event","MICMP":"Michigan State Championship","MICMP1":"Michigan State Championship - Consumers Energy Division","MICMP2":"Michigan State Championship - Dow Division","MICMP3":"Michigan State Championship - DTE Energy Foundation Division","MICMP4":"Michigan State Championship - Ford Division","MIESC":"FIM District - Escanaba Event","MIGAY":"FIM District - Gaylord Event","MIGUL":"FIM District - Gull Lake Event","MIHOW":"FIM District - Howell Event","MIKE2":"FIM District - Kettering University Event #2","MIKEN":"FIM District - East Kentwood Event","MIKET":"FIM District - Kettering University Event #1","MILAK":"FIM District - Lakeview Event","MILAN":"FIM District - Lansing Event","MILIV":"FIM District - Livonia Event","MILSU":"FIM District - Lake Superior State University Event","MIMAR":"FIM District - Marysville Event","MIMID":"FIM District - Midland Event","MISHE":"FIM District - Shepherd Event","MISJO":"FIM District - St. Joseph Event","MISOU":"FIM District - Southfield Event","MITRY":"FIM District - Troy Event","MITVC":"FIM District - Traverse City Event","MIWAT":"FIM District - Waterford Event","MIWMI":"FIM District - West Michigan Event","MNCL":"Northern Minnesota Robotics Conference Tournament","MNCMP":"MSHSL FIRST State Robotics Championship","MNDU":"Lake Superior Regional","MNDU2":"Northern Lights Regional","MNMI":"Minnesota 10000 Lakes Regional","MNMI2":"Minnesota North Star Regional","MNRI":"Minnesota Robotics Invitational","MOKC":"Greater Kansas City Regional","MOSL":"St. Louis Regional","MRCMP":"FIRST Mid-Atlantic District Championship sponsored by Johnson & Johnson","MXTL":"Toluca Regional","MXTO":"Laguna Regional","NCASH":"NC District - UNC Asheville Event","NCCMP":"FIRST North Carolina State Championship","NCGRE":"NC District - Greensboro Event","NCRAL":"NC District - Raleigh Event","NCWIN":"NC District - Pitt County Event","NECMP":"New England District Championship","NEWTON":"FIRST Championship - Houston - Newton Subdivision","NHBED":"NE District - Southern NH Event","NHBOB":"Battle Of the Bay","NHGRS":"NE District - Granite State Event","NHRR":"RiverRage 21","NJBE":"Brunswick Eruption","NJBRI":"MAR District - Bridgewater-Raritan Event","NJFLA":"MAR District - Mount Olive Event","NJSKI":"MAR District - Montgomery Event","NJTAB":"MAR District - Seneca Event","NTTR":"North Texas Tournament of Robots","NVLV":"Las Vegas Regional","NYLI":"SBPLI Long Island Regional","NYNY":"New York City Regional","NYRO":"Finger Lakes Regional ","NYSU":"Hudson Valley Regional","NYTR":"New York Tech Valley Regional","OHCL":"Buckeye Regional","OHSP":"Miami Valley Regional","OKOK":"Oklahoma Regional ","ONBAR":"ONT District - Georgian College Event","ONCMP":"FIRST Ontario Provincial Championship","ONHA2":"STEMley Cup","ONHAM":"ONT District - McMaster University Event","ONLON":"ONT District - Western University, Engineering Event","ONNOB":"ONT District - North Bay Event","ONOSH":"ONT District - Durham College Event","ONTO1":"ONT District - Ryerson University Event","ONTO2":"ONT District - Victoria Park Collegiate Event","ONWAT":"ONT District - University of Waterloo Event","ONWIN":"ONT District - Windsor Essex Great Lakes Event","ORLAK":"PNW District - Lake Oswego Event","ORORE":"PNW District - Clackamas Academy of Industrial Science Event","ORWIL":"PNW District - Wilsonville Event","PACA":"Greater Pittsburgh Regional","PAHAT":"MAR District - Hatboro-Horsham Event","PAPHI":"MAR District - Springside Chestnut Hill Academy Event","PAWCH":"MAR District - Westtown Event","PNCMP":"Pacific Northwest District Championship","QCMO":"Festival de Robotique - Montreal Regional","R2OC":"Rock River Off-Season Competition","RIPRO":"NE District - Rhode Island Event","ROEBLING":"FIRST Championship - Houston - Roebling Subdivision","SCMB":"Palmetto Regional","TESLA":"FIRST Championship - St. Louis - Tesla Subdivision","TNKN":"Smoky Mountains Regional","TURING":"FIRST Championship - Houston - Turing Subdivision","TXDA":"Dallas Regional","TXHO":"Lone Star Central Regional","TXLU":"Hub City Regional","TXRI":"Texas Robotics Invitational","TXRR":"Texas Robot Roundup","TXSA":"Alamo Regional","TXTR":"The Remix","TXWA":"Brazos Valley Regional","TXWO":"Lone Star North Regional","UTWV":"Utah Regional","VABLA":"CHS District - Southwest Virginia Event","VAGLE":"CHS District - Central Virginia Event","VAHAY":"CHS District - Northern Virginia Event sponsored by Bechtel","VAPOR":"CHS District - Hampton Roads Event sponsored by Newport News Shipbuilding","WAAHS":"PNW District - Auburn Event","WAAMV":"PNW District - Auburn Mountainview Event","WAELL":"PNW District - Central Washington University Event","WAGG":"Washington Girls Generation","WAMOU":"PNW District - Mount Vernon Event","WAPP":"Peak Performance","WASNO":"PNW District - Glacier Peak Event","WASPO":"PNW District - West Valley Event","WEEK0":"Week 0","WILA":"Seven Rivers Regional","WIMI":"Wisconsin Regional"}';
 
 var hallOfFame = JSON.parse('[{"Year":1992,"Chairmans":191,"Challenge":"Maize Craize","Winner1":126,"Winner2":null,"Winner3":null,"Winner4":null,"Winner5":null},{"Year":1993,"Chairmans":7,"Challenge":"Rug Rage","Winner1":148,"Winner2":null,"Winner3":null,"Winner4":null,"Winner5":null},{"Year":1994,"Chairmans":191,"Challenge":"Tower Power ","Winner1":144,"Winner2":null,"Winner3":null,"Winner4":null,"Winner5":null},{"Year":1995,"Chairmans":151,"Challenge":"Ramp-n-Roll","Winner1":100,"Winner2":null,"Winner3":null,"Winner4":null,"Winner5":null},{"Year":1996,"Chairmans":144,"Challenge":"Hexagon Havoc","Winner1":73,"Winner2":null,"Winner3":null,"Winner4":null,"Winner5":null},{"Year":1997,"Chairmans":47,"Challenge":"Toroid Terror","Winner1":71,"Winner2":null,"Winner3":null,"Winner4":null,"Winner5":null},{"Year":1998,"Chairmans":23,"Challenge":"Ladder Logic","Winner1":45,"Winner2":null,"Winner3":null,"Winner4":null,"Winner5":null},{"Year":1999,"Chairmans":120,"Challenge":"Double Trouble","Winner1":1,"Winner2":48,"Winner3":176,"Winner4":null,"Winner5":null},{"Year":2000,"Chairmans":16,"Challenge":"Co-Opertition FIRST","Winner1":25,"Winner2":232,"Winner3":255,"Winner4":null,"Winner5":null},{"Year":2001,"Chairmans":22,"Challenge":"Diabolical Dynamics","Winner1":71,"Winner2":125,"Winner3":279,"Winner4":294,"Winner5":365},{"Year":2002,"Chairmans":175,"Challenge":"Zone Zeal","Winner1":66,"Winner2":71,"Winner3":173,"Winner4":null,"Winner5":null},{"Year":2003,"Chairmans":103,"Challenge":"Stack Attack","Winner1":65,"Winner2":111,"Winner3":469,"Winner4":null,"Winner5":null},{"Year":2004,"Chairmans":254,"Challenge":"FIRST Frenzy - Raising the Bar","Winner1":71,"Winner2":435,"Winner3":494,"Winner4":null,"Winner5":null},{"Year":2005,"Chairmans":67,"Challenge":"Triple Play","Winner1":330,"Winner2":67,"Winner3":503,"Winner4":null,"Winner5":null},{"Year":2006,"Chairmans":111,"Challenge":"Aim High","Winner1":217,"Winner2":296,"Winner3":522,"Winner4":null,"Winner5":null},{"Year":2007,"Chairmans":365,"Challenge":"Rack-n-Roll","Winner1":177,"Winner2":190,"Winner3":987,"Winner4":null,"Winner5":null},{"Year":2008,"Chairmans":842,"Challenge":"FIRST Overdrive","Winner1":1114,"Winner2":217,"Winner3":148,"Winner4":null,"Winner5":null},{"Year":2009,"Chairmans":236,"Challenge":"Lunacy","Winner1":111,"Winner2":67,"Winner3":971,"Winner4":null,"Winner5":null},{"Year":2010,"Chairmans":341,"Challenge":"Breakaway!","Winner1":294,"Winner2":67,"Winner3":177,"Winner4":null,"Winner5":null},{"Year":2011,"Chairmans":359,"Challenge":"LogoMotion","Winner1":254,"Winner2":111,"Winner3":973,"Winner4":null,"Winner5":null},{"Year":2012,"Chairmans":1114,"Challenge":"Rebound Rumble","Winner1":180,"Winner2":16,"Winner3":25,"Winner4":null,"Winner5":null},{"Year":2013,"Chairmans":1538,"Challenge":"ULTIMATE ASCENT","Winner1":1241,"Winner2":1477,"Winner3":610,"Winner4":null,"Winner5":null},{"Year":2014,"Chairmans":27,"Challenge":"Arial Assist","Winner1":254,"Winner2":469,"Winner3":2848,"Winner4":74,"Winner5":null},{"Year":2015,"Chairmans":597,"Challenge":"Recycle Rush","Winner1":118,"Winner2":1671,"Winner3":1678,"Winner4":5012,"Winner5":null},{"Year":2016,"Chairmans":987,"Challenge":"FIRST Stronghold","Winner1":330,"Winner2":2481,"Winner3":120,"Winner4":1086,"Winner5":null},{"Year":2017,"Chairmans":3132,"Challenge":"STEAMworks Houston","Winner1":973,"Winner2":1011,"Winner3":2928,"Winner4":5499,"Winner5":null},{"Year":2017,"Chairmans":2614,"Challenge":"STEAMworks StLouis","Winner1":2767,"Winner2":254,"Winner3":862,"Winner4":1676,"Winner5":null},{"Year":2017,"Chairmans":null,"Challenge":"Festival of Champions","Winner1":2767,"Winner2":254,"Winner3":862,"Winner4":1676,"Winner5":null}]');
 
@@ -121,23 +121,16 @@ var apiURL = "/api/";
 //Now that we have the variables all set up and all of the necessary JS and CSS are loaded, we can run the app.
 window.onload = function () {
     "use strict";
-    
-    $("#loadingFeedback").html("Loading core functions...");
-    
-    $("#loadingFeedback").html("Restoring settings...");
-    
-    $("#loadingFeedback").html("Enabling offseason support...");
-    
-    $("#loadingFeedback").html("gatool loaded!");
-    
+
     //hide the schedule progress bar. We'll show it if we need it.
     $('#scheduleProgressBar').hide();
-    
+
     //change the Select Picker behavior to support Mobile browsers with native controls
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
         $('.selectpicker').selectpicker('mobile');
     }
-    
+
+    $("#loadingFeedback").html("Restoring settings...");
     //Set the controls to the previous selected values
     //Set currentYear value
     if (localStorage.currentYear) {
@@ -161,6 +154,8 @@ window.onload = function () {
     //Set awardDepth value
     $("#awardDepthPicker").selectpicker('val', localStorage.awardDepth);
 
+    $("#loadingFeedback").html("Enabling controls...");
+
     //Configure the yearPicker function
     document.getElementById('yearPicker').onchange = function () {
         localStorage.currentYear = $("#yearPicker").val();
@@ -168,7 +163,7 @@ window.onload = function () {
         loadEventsList();
         initEnvironment();
     };
-    
+
     //configure the Event Selector function
     document.getElementById('eventSelector').onchange = function () {
         handleEventSelection();
@@ -313,7 +308,7 @@ window.onload = function () {
         }
         loadEventsList();
     };
-    
+
     // Handle showEventNames toggle in loading. 
     if ($("#showEventNames").bootstrapSwitch('state')) {
         localStorage.showEventNames = "true";
@@ -321,6 +316,7 @@ window.onload = function () {
         localStorage.showEventNames = "false";
     }
 
+    $("#loadingFeedback").html("Setting up offseason mode...");
     //Setup the Offseason schedule upload and reset buttons. See their respective fuctions for details.
     document.getElementById("QualsFiles").addEventListener('change', handleQualsFiles, false);
     document.getElementById("PlayoffFiles").addEventListener('change', handlePlayoffFiles, false);
@@ -345,15 +341,19 @@ window.onload = function () {
         }
 
     });
-
+    console.log("replacing cheat sheet image");
+    $('#cheatSheetImage').html('<img src="images/Power-Up-Cheatsheet-gatool.png" width="100%" alt="Steamworks Cheatsheet">');
     $('#allianceSelectionTable').hide();
     $('#allianceUndoButton').hide();
-    
+
     //Load the events list based on the restored values
     loadEventsList();
 
     scaleRows();
     document.getElementById('setupTabPicker').click();
+    $("#loadingFeedback").html("gatool ready to play!");
+    $("#loadingFeedback").fadeOut();
+    
 
 };
 
@@ -559,7 +559,7 @@ function loadEventsList() {
                     'value': JSON.stringify(option.value),
                     'class': optionClass,
                     'id': 'eventSelector' + option.value.code
-                }).text(optionPrefix+option.text+optionPostfix));
+                }).text(optionPrefix + option.text + optionPostfix));
         });
         if (!localStorage.eventSelector) {
             sel.selectpicker('refresh');
@@ -791,7 +791,9 @@ function getRegularSeasonSchedule() {
         $('#scheduleProgressBar').hide();
         localStorage.playoffList = JSON.stringify(data);
         $("#scheduleUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
-        if (matchSchedule) {announceDisplay();}
+        if (matchSchedule) {
+            announceDisplay();
+        }
 
     });
 
@@ -1038,6 +1040,7 @@ function getTeamList(year, pageNumber) {
                 getTeamList(year, parseInt(pageNumber) + 1);
             } else {
                 localStorage.teamList = JSON.stringify(eventTeamList);
+                getTeamAwardsAsync(eventTeamList, year);
                 getHybridSchedule();
                 displayAwardsTeams();
                 lastSchedulePage = true;
@@ -1051,6 +1054,22 @@ function getTeamList(year, pageNumber) {
     req.send();
 
 }
+
+function getTeamAwardsAsync(teamList, currentYear) {
+    "use strict";
+    var teamAwardRequests = [];
+    teamList.forEach((item, index) => {
+        teamAwardRequests.push(new Promise((resolve, reject) => {
+            //console.log(item.teamNumber);
+            getTeamAwards(item.teamNumber, currentYear);
+            resolve();
+        }));
+    })
+    Promise.all(teamAwardRequests).then((value) => {
+        //console.log('finished');
+    });
+}
+
 
 function getAllianceList() {
     "use strict";
@@ -1239,8 +1258,8 @@ function announceDisplay() {
     }
 
     for (var ii = 0; ii < teamCount; ii++) {
-//        var missingTeam = (localStorage['teamData' + currentMatchData.teams[ii].teamNumber] || false);
-//        if (missingTeam) {
+        //        var missingTeam = (localStorage['teamData' + currentMatchData.teams[ii].teamNumber] || false);
+        //        if (missingTeam) {
 
         if (ii < 3) {
             redTeams = redTeams.filter(checkTeam);
@@ -1261,7 +1280,7 @@ function announceDisplay() {
         var teamData = JSON.parse(localStorage['teamData' + currentMatchData.teams[ii].teamNumber]);
         $('#' + stationList[ii] + 'TeamNumber').html("<b>" + currentMatchData.teams[ii].teamNumber + "</b>");
         $('#' + stationList[ii] + 'PlaybyPlayteamNumber').html(currentMatchData.teams[ii].teamNumber);
-        inHallOfFame(currentMatchData.teams[ii].teamNumber,stationList[ii]);
+        inHallOfFame(currentMatchData.teams[ii].teamNumber, stationList[ii]);
         if ((localStorage.currentMatch > qualsList.Schedule.length) || inChamps() || (inMiChamps() && (localStorage.currentYear >= 2017))) {
             document.getElementById(stationList[ii] + 'TeamNumber').setAttribute("onclick", "replaceTeam('" + stationList[ii] + "','" + currentMatchData.teams[ii].teamNumber + "')");
             document.getElementById(stationList[ii] + 'PlaybyPlayteamNumber').setAttribute("onclick", "replaceTeam('" + stationList[ii] + "','" + currentMatchData.teams[ii].teamNumber + "')");
@@ -1360,11 +1379,9 @@ function announceDisplay() {
             $("#" + stationList[ii] + "Notes").html('Notes: "' + teamData.teamNotesLocal + '"');
             $("#" + stationList[ii] + "PlaybyPlayNotes").html('Notes: "' + teamData.teamNotesLocal + '"');
         }
-//        } else {
-//        console.log("missing team: "+currentMatchData.teams[ii].teamNumber);
-//        getTeamData(currentMatchData.teams[ii],localStorage.currentYear);}
-//    }
-}}
+
+    }
+}
 
 function replaceTeam(station, originalTeam) {
     "use strict";
@@ -1440,9 +1457,9 @@ function getTeamRanks() {
             var ranksList = '<thead  id="ranksTableHead" class="thead-default"><tr><td class="col1"><b>Team #</b></td><td class="col1"><b>Rank</b></td><td class="col2"><b>Team Name</b></td><td class = "col1"><b>RP Avg.</b></td><td class="col1"><b>Wins</b></td><td  class="col1"><b>Losses</b></td><td class="col1"><b>Ties</b></td><td class="col1"><b>Qual Avg</b></td><td class="col1"><b>DQ</b></td><td class="col1"><b>Matches Played</b></td></tr></thead><tbody>';
 
             for (var i = 0; i < data.Rankings.length; i++) {
-//                var missingTeam = (localStorage['teamData' + data.Rankings[i].teamNumber] || false);
-//                if (missingTeam) {
-                                                                
+                //                var missingTeam = (localStorage['teamData' + data.Rankings[i].teamNumber] || false);
+                //                if (missingTeam) {
+
                 var team = JSON.parse(localStorage['teamData' + data.Rankings[i].teamNumber]);
 
                 team.rank = data.Rankings[i].rank;
@@ -1465,9 +1482,7 @@ function getTeamRanks() {
                 $("#teamTableRank" + data.Rankings[i].teamNumber).attr("class", teamTableRankHighlight(data.Rankings[i].rank));
                 ranksList += updateRanksTableRow(team, data.Rankings[i].teamNumber);
                 localStorage['teamData' + data.Rankings[i].teamNumber] = JSON.stringify(team);
-//                } else {
-//                console.log("missing team: "+data.Rankings[i].teamNumber);
-//                getTeamData(data.Rankings[i],localStorage.currentYear);}
+
             }
             $("#ranksProgressBar").hide();
             $('#ranksTable').html(ranksList + "</tbody>");
@@ -1861,8 +1876,6 @@ function getTeamAwards(teamNumber, year) {
     teamAwardCalls++;
     $('#teamDataTabPicker').addClass('alert-danger');
     var awards = "";
-    var year1 = year - 1;
-    var year2 = year - 2;
     var eventNames = JSON.parse(localStorage.events);
 
     var teamData = JSON.parse(localStorage["teamData" + teamNumber]);
@@ -1874,140 +1887,33 @@ function getTeamAwards(teamNumber, year) {
     var awardName = "";
 
     var req = new XMLHttpRequest();
-    req.open('GET', apiURL + year + '/awards/' + teamNumber + "/");
+    req.open('GET', apiURL + year + '/awardsv2/' + teamNumber + "/");
     req.addEventListener('load', function () {
         teamLoadProgressBar++;
         $('#teamloadprogressbar').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
         $('#teamProgressBarLoading').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
 
-        if (req.responseText.substr(0, 5) !== '"Team') {
-            var data = JSON.parse(req.responseText);
-            //console.log(teamData.rookieYear+" "+year+"/awards/"+teamNumber+": "+req.responseText);
-            if ((data.Awards !== '{"Awards":[]}') && (req.responseText.substr(0,5)!=='"Malf')) {
-                for (var i = 0; i < data.Awards.length; i++) {
-                    awardName = data.Awards[i].name;
+        var data = JSON.parse(req.responseText);
+        //console.log(teamData.rookieYear+" "+year+"/awards/"+teamNumber+": "+req.responseText);
+        for (var j = 0; j <= 2; j++) {
+            if ((data[j].Awards !== '{"Awards":[]}') && (j<localStorage.awardDepth)){
+                for (var i = 0; i < data[j].Awards.length; i++) {
+                    awardName = data[j].Awards[i].name;
                     awardHilight = awardsHilight(awardName);
 
                     if (localStorage.showEventNames === "true") {
-                        if (eventNames[data.Awards[i].eventCode]) {
-                            awards += awardHilight.before + year + " " + eventNames[data.Awards[i].eventCode] + ": " + awardName + awardHilight.after + localStorage.awardSeparator;
+                        if (eventNames[data[j].Awards[i].eventCode]) {
+                            awards += awardHilight.before + String(year - j) + " " + eventNames[data[j].Awards[i].eventCode] + ": " + awardName + awardHilight.after + localStorage.awardSeparator;
                         } else {
-                            awards += awardHilight.before + year + " " + data.Awards[i].eventCode + ": " + awardName + awardHilight.after + localStorage.awardSeparator;
+                            awards += awardHilight.before + String(year - j) + " " + data[j].Awards[i].eventCode + ": " + awardName + awardHilight.after + localStorage.awardSeparator;
                         }
                     } else {
-                        awards += awardHilight.before + year + " " + data.Awards[i].eventCode + ": " + awardName + awardHilight.after + localStorage.awardSeparator;
+                        awards += awardHilight.before + String(year - j) + " " + data[j].Awards[i].eventCode + ": " + awardName + awardHilight.after + localStorage.awardSeparator;
                     }
 
                 }
             }
-        }
-        if ((localStorage.awardDepth > 1) && (teamData.rookieYear <= year1) ) {
-            req1.send();
-        } else {
-            if (awards.length > 4) {
-                awards = awards.substr(0, awards.length - 4);
-            }
-            teamData.awards = awards;
-            localStorage["teamData" + teamNumber] = JSON.stringify(teamData);
-            teamAwardCalls--;
-            if ((teamAwardCalls === 0) && (teamUpdateCalls === 0) && (lastSchedulePage)) {
-                $('#teamDataTabPicker').removeClass('alert-danger');
-                $('#teamDataTabPicker').addClass('alert-success');
-                $('#teamloadprogress').hide();
-                $('#teamProgressBar').hide();
-                teamLoadProgressBar = 0;
-                $('#teamloadprogressbar').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
-                $('#teamProgressBarLoading').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
 
-            }
-        }
-    });
-
-    var req1 = new XMLHttpRequest();
-    req1.open('GET', apiURL + year1 + '/awards/' + teamNumber + "/");
-    req1.addEventListener('load', function () {
-        teamLoadProgressBar++;
-        $('#teamloadprogressbar').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
-        $('#teamProgressBarLoading').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
-
-        if (req1.responseText.substr(0, 5) !== '"Team') {
-            if (year1 === 2016) {
-                eventNames = JSON.parse(localStorage.events2016);
-            } else if (year1 === 2017) {
-                eventNames = JSON.parse(localStorage.events2017);
-            }
-            var data = JSON.parse(req1.responseText);
-            //console.log(teamData.rookieYear+" "+year1+"/awards/"+teamNumber+": "+req1.responseText);
-            if ((data.Awards !== '{"Awards":[]}') && (req1.responseText.substr(0,5)!=='"Malf')) {
-                for (var i = 0; i < data.Awards.length; i++) {
-                    awardName = data.Awards[i].name;
-                    awardHilight = awardsHilight(awardName);
-
-                    if (localStorage.showEventNames === "true") {
-                        if (eventNames[data.Awards[i].eventCode]) {
-                            awards += awardHilight.before + year1 + " " + eventNames[data.Awards[i].eventCode] + ": " + awardName + awardHilight.after + localStorage.awardSeparator;
-                        } else {
-                            awards += awardHilight.before + year1 + " " + data.Awards[i].eventCode + ": " + awardName + awardHilight.after + localStorage.awardSeparator;
-                        }
-                    } else {
-                        awards += awardHilight.before + year1 + " " + data.Awards[i].eventCode + ": " + awardName + awardHilight.after + localStorage.awardSeparator;
-                    }
-                }
-            }
-        }
-        if ((localStorage.awardDepth > 2) && (teamData.rookieYear <= year2) ) {
-            req2.send();
-        } else {
-            if (awards.length > 4) {
-                awards = awards.substr(0, awards.length - 4);
-            }
-            teamData.awards = awards;
-            localStorage["teamData" + teamNumber] = JSON.stringify(teamData);
-            teamAwardCalls--;
-            if ((teamAwardCalls === 0) && (teamUpdateCalls === 0) && (lastSchedulePage)) {
-                $('#teamDataTabPicker').removeClass('alert-danger');
-                $('#teamDataTabPicker').addClass('alert-success');
-                $('#teamloadprogress').hide();
-                $('#teamProgressBar').hide();
-                teamLoadProgressBar = 0;
-                $('#teamloadprogressbar').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
-                $('#teamProgressBarLoading').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
-
-            }
-        }
-    });
-
-    var req2 = new XMLHttpRequest();
-    req2.open('GET', apiURL + year2 + '/awards/' + teamNumber + "/");
-    req2.addEventListener('load', function () {
-        teamLoadProgressBar++;
-        $('#teamloadprogressbar').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
-        $('#teamProgressBarLoading').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
-        if (req2.responseText.substr(0, 5) !== '"Team') {
-            if (year2 === 2016) {
-                eventNames = JSON.parse(localStorage.events2016);
-            } else if (year2 === 2017) {
-                eventNames = JSON.parse(localStorage.events2017);
-            }
-            var data = JSON.parse(req2.responseText);
-            //console.log(teamData.rookieYear+" "+year2+"/awards/"+teamNumber+": "+req2.responseText);
-            if ((data.Awards !== '{"Awards":[]}') && (req2.responseText.substr(0,5)!=='"Malf')) {
-
-                for (var i = 0; i < data.Awards.length; i++) {
-                    awardName = data.Awards[i].name;
-                    awardHilight = awardsHilight(awardName);
-
-                    if (localStorage.showEventNames === "true") {
-                        if (eventNames[data.Awards[i].eventCode]) {
-                            awards += awardHilight.before + year2 + " " + eventNames[data.Awards[i].eventCode] + ": " + awardName + awardHilight.after + localStorage.awardSeparator;
-                        } else {
-                            awards += awardHilight.before + year2 + " " + data.Awards[i].eventCode + ": " + awardName + awardHilight.after + localStorage.awardSeparator;
-                        }
-                    } else {
-                        awards += awardHilight.before + year2 + " " + data.Awards[i].eventCode + ": " + awardName + awardHilight.after + localStorage.awardSeparator;
-                    }
-                }
-            }
         }
         if (awards.length > 4) {
             awards = awards.substr(0, awards.length - 4);
@@ -2025,6 +1931,7 @@ function getTeamAwards(teamNumber, year) {
             $('#teamProgressBarLoading').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
 
         }
+
     });
 
     if (teamData.rookieYear <= year) {
@@ -2034,28 +1941,30 @@ function getTeamAwards(teamNumber, year) {
 
 function getTeamData(teamList, year) {
     "use strict";
+    var teamDataLoadPromises = [];
     $('#teamDataTabPicker').addClass('alert-danger');
-    var req = new XMLHttpRequest();
-    var team = teamList.shift();
-    req.open('GET', apiURL + year + '/teamdata/' + team.teamNumber + "/");
-    req.addEventListener('load', function () {
-        if (req.responseText.substr(0, 5) !== '"Team') {
-            var data = JSON.parse(req.responseText);
-            if (data.teams.length > 0) {
-                var teamData = data.teams[0];
-                $("#teamsTable").append(generateTeamTableRow(teamData));
-                eventTeamList.push(data.teams[0]);
-                //localStorage.teamList = JSON.stringify(eventTeamList);
-            }
-            if (teamList.length > 0) {
-                getTeamData(teamList, year);
-            } else {
-                $('#teamDataTabPicker').removeClass('alert-danger');
-                $('#teamDataTabPicker').addClass('alert-success');
-            }
-        }
+    for (var team in teamList) {
+        teamDataLoadPromises.push(new Promise((resolve, reject) => {
+            var req = new XMLHttpRequest();
+            req.addEventListener('load', function () {
+                if (req.responseText.substr(0, 5) !== '"Team') {
+                    var data = JSON.parse(req.responseText);
+                    if (data.teams.length > 0) {
+                        var teamData = data.teams[0];
+                        $("#teamsTable").append(generateTeamTableRow(teamData));
+                        eventTeamList.push(data.teams[0]);
+                        //localStorage.teamList = JSON.stringify(eventTeamList);
+                        resolve();
+                    }
+                }
+            });
+            req.send();
+        }));
+    }
+    Promise.all(teamDataLoadPromises).then((value) => {
+        $('#teamDataTabPicker').removeClass('alert-danger');
+        $('#teamDataTabPicker').addClass('alert-success');
     });
-    req.send();
 }
 
 function generateMatchTableRow(matchData) {
@@ -2070,7 +1979,7 @@ function generateMatchTableRow(matchData) {
         } else {
             returnData += "Scheduled:<br>" + moment(matchData.startTime, 'YYYY-MM-DDTHH:mm:ss').format('ddd hh:mm:ss A') + '</td><td>';
         }
-        
+
     }
     returnData += matchData.description + '</td><td>';
     returnData += matchData.matchNumber + '</td><td>';
@@ -2091,13 +2000,13 @@ function generateMatchTableRow(matchData) {
     returnData += '<span class = "redAllianceTeam">' + getTeamForStation(matchData.teams, 'Red2').teamNumber + '</span><br><span class = "blueAllianceTeam">' + getTeamForStation(matchData.teams, 'Blue2').teamNumber + '</span></td><td>';
     returnData += '<span class = "redAllianceTeam">' + getTeamForStation(matchData.teams, 'Red3').teamNumber + '</span><br><span class = "blueAllianceTeam">' + getTeamForStation(matchData.teams, 'Blue3').teamNumber + '</span></td>';
 
-//    returnData += getTeamForStation(matchData.teams, 'Red1').teamNumber + '</td><td>';
-//    returnData += getTeamForStation(matchData.teams, 'Red2').teamNumber + '</td><td>';
-//    returnData += getTeamForStation(matchData.teams, 'Red3').teamNumber + '</td><td>';
-//    returnData += getTeamForStation(matchData.teams, 'Blue1').teamNumber + '</td><td>';
-//    returnData += getTeamForStation(matchData.teams, 'Blue2').teamNumber + '</td><td>';
-//    returnData += getTeamForStation(matchData.teams, 'Blue3').teamNumber + '</td>';
-    
+    //    returnData += getTeamForStation(matchData.teams, 'Red1').teamNumber + '</td><td>';
+    //    returnData += getTeamForStation(matchData.teams, 'Red2').teamNumber + '</td><td>';
+    //    returnData += getTeamForStation(matchData.teams, 'Red3').teamNumber + '</td><td>';
+    //    returnData += getTeamForStation(matchData.teams, 'Blue1').teamNumber + '</td><td>';
+    //    returnData += getTeamForStation(matchData.teams, 'Blue2').teamNumber + '</td><td>';
+    //    returnData += getTeamForStation(matchData.teams, 'Blue3').teamNumber + '</td>';
+
     if (matchData.scoreBlueFinal > localStorage.matchHighScore) {
         localStorage.matchHighScore = matchData.scoreBlueFinal;
         localStorage.highScoreDetails = matchData.description;
@@ -2355,7 +2264,7 @@ function generateTeamTableRow(teamData) {
     teamInfo.topSponsors = topSponsors;
     teamInfo.organization = organization;
     localStorage['teamData' + teamData.teamNumber] = JSON.stringify(teamInfo);
-    getTeamAwards(teamData.teamNumber, localStorage.currentYear);
+    //getTeamAwards(teamData.teamNumber, localStorage.currentYear);
 
     return returnData + '</tr>';
 }
@@ -2553,16 +2462,18 @@ function updateTeamInfoDone(cloudSave) {
         teamData.robotNameLocal = "";
         $("#teamTableRobotName" + teamNumber).html(teamData.robotName);
     }
-//    if ((teamData.awards !== $("#awardsUpdate").val()) && ($("#awardsUpdate").val() !== "")) {
-//        teamData.awardsLocal = $("#awardsUpdate").val();
-//        $("#teamTableAwards" + teamNumber).html($("#awardsUpdate").val());
-//    } else {
-//        teamData.awardsLocal = "";
-//        $("#teamTableAwards" + teamNumber).html(teamData.awards);
-//    }
-    
-    if ($("#awardsUpdate").html() === "<br>") {$("#awardsUpdate").html("");}
-    
+    //    if ((teamData.awards !== $("#awardsUpdate").val()) && ($("#awardsUpdate").val() !== "")) {
+    //        teamData.awardsLocal = $("#awardsUpdate").val();
+    //        $("#teamTableAwards" + teamNumber).html($("#awardsUpdate").val());
+    //    } else {
+    //        teamData.awardsLocal = "";
+    //        $("#teamTableAwards" + teamNumber).html(teamData.awards);
+    //    }
+
+    if ($("#awardsUpdate").html() === "<br>") {
+        $("#awardsUpdate").html("");
+    }
+
     if ((teamData.awards !== $("#awardsUpdate").html()) && ($("#awardsUpdate").html() !== "")) {
         teamData.awardsLocal = $("#awardsUpdate").html();
         $("#teamTableAwards" + teamNumber).html($("#awardsUpdate").html());
@@ -3026,18 +2937,18 @@ function timer() {
             if (localStorage.offseason === "true") {
                 $("#matchTime").html('<b><span id="currentTime"></span></b><br>Starts:<br>' + currentMatchData.startTime);
             } else {
-            $("#matchTime").html('<b><span id="currentTime"></span></b><br>Starts:<br>' + moment(currentMatchData.startTime).fromNow());
-            
-            timeDifference = moment(Date.now()).diff(currentMatchData.startTime, "minutes");
-            if (timeDifference < 0) {
-                $("#matchTimeContainer").addClass("alert-success");
-            } else if ((timeDifference >= 0) && (timeDifference < 10)) {
-                $("#matchTimeContainer").addClass("alert-success");
-            } else if ((timeDifference >= 10) && (timeDifference < 20)) {
-                $("#matchTimeContainer").addClass("alert-warning");
-            } else if (timeDifference >= 20) {
-                $("#matchTimeContainer").addClass("alert-danger");
-            }
+                $("#matchTime").html('<b><span id="currentTime"></span></b><br>Starts:<br>' + moment(currentMatchData.startTime).fromNow());
+
+                timeDifference = moment(Date.now()).diff(currentMatchData.startTime, "minutes");
+                if (timeDifference < 0) {
+                    $("#matchTimeContainer").addClass("alert-success");
+                } else if ((timeDifference >= 0) && (timeDifference < 10)) {
+                    $("#matchTimeContainer").addClass("alert-success");
+                } else if ((timeDifference >= 10) && (timeDifference < 20)) {
+                    $("#matchTimeContainer").addClass("alert-warning");
+                } else if (timeDifference >= 20) {
+                    $("#matchTimeContainer").addClass("alert-danger");
+                }
             }
             $("#matchTimeContainer").removeClass();
             $("#matchTimeContainer").addClass("col2");
@@ -3192,24 +3103,24 @@ function awardsHilight(awardName) {
     }
 }
 
-function inHallOfFame(team,position) {
+function inHallOfFame(team, position) {
     "use strict";
     var hofDisplay = "";
-    $("#"+position+"HOF").hide();
-    for (i=0;i<hallOfFame.length;i++) {
+    $("#" + position + "HOF").hide();
+    for (i = 0; i < hallOfFame.length; i++) {
         if (team === hallOfFame[i].Chairmans) {
-            hofDisplay += hallOfFame[i].Year + " "+ hallOfFame[i].Challenge+" Chairman's Award"+localStorage.awardSeparator;
+            hofDisplay += hallOfFame[i].Year + " " + hallOfFame[i].Challenge + " Chairman's Award" + localStorage.awardSeparator;
         }
         if ((team === hallOfFame[i].Winner1) || (team === hallOfFame[i].Winner2) || (team === hallOfFame[i].Winner3) || (team === hallOfFame[i].Winner4) || (team === hallOfFame[i].Winner5)) {
-            hofDisplay += hallOfFame[i].Year + " "+ hallOfFame[i].Challenge+" Winner"+localStorage.awardSeparator;
+            hofDisplay += hallOfFame[i].Year + " " + hallOfFame[i].Challenge + " Winner" + localStorage.awardSeparator;
         }
     }
-    if (hofDisplay !== ""){
-        hofDisplay = hofDisplay.slice(0,hofDisplay.length - localStorage.awardSeparator.length);
-        $("#"+position+"HOF").html(hofDisplay);
-        $("#"+position+"HOF").show();
+    if (hofDisplay !== "") {
+        hofDisplay = hofDisplay.slice(0, hofDisplay.length - localStorage.awardSeparator.length);
+        $("#" + position + "HOF").html(hofDisplay);
+        $("#" + position + "HOF").show();
     }
-    
+
 }
 
 function handleQualsFiles(e) {
@@ -3320,22 +3231,26 @@ function handleQualsFiles(e) {
                 }
             }
             formattedSchedule.Schedule = innerSchedule;
-            
-            teamListArray.sort(function(a, b){return a-b;});
-            
-            for (i=0;i<teamListArray.length;i++){
-                teamToInsert = {"teamNumber":teamListArray[i]};
+
+            teamListArray.sort(function (a, b) {
+                return a - b;
+            });
+
+            for (i = 0; i < teamListArray.length; i++) {
+                teamToInsert = {
+                    "teamNumber": teamListArray[i]
+                };
                 teamList.push(teamToInsert);
             }
-            
+
             $("#eventTeamCount").html(teamList.length);
-            
+
             $('#teamsContainer').html('<p class = "eventName">' + localStorage.eventName + '</p><p>This table is editable. Tap on a team number to change data for a specific team. Edits you make are local to this browser, and they will persist here if you do not clear your browser cache. You can save your changes to the gatool Cloud on the team details page or on the Setup Screen. Cells <span class="bg-success"> highlighted in green</span> have been modified, either by you or by other gatool users. </p><table id="teamsTable" class="table table-condensed table-responsive table-bordered table-striped"></table><p><button type="button" id="billAucoinNuclearOption" class="btn btn-danger" onclick="resetAwards()">Reset stored awards to their TIMS values</button></p>');
             teamTable += '<thead  id="teamsTableHead" class="thead-default"><tr><td class="col1"><b>Team #</b></td><td class="col1"><b>Rank</b></td><td class="col2"><b>Team Name</b></td><td class="col2"><b>City</b></td><td class="col2"><b>Top 5 Sponsors</b></td><td class="col2"><b>Organization</b></td><td class="col1"><b>Rookie Year</b></td><td class="col1"><b>Robot name</b></td></tr></thead><tbody></tbody>';
             $('#teamsTable').html(teamTable);
-            
-            getTeamData(teamList,localStorage.currentYear);
-            
+
+            getTeamData(teamList, localStorage.currentYear);
+
             localStorage.qualsList = JSON.stringify(formattedSchedule);
             getHybridSchedule();
             $("#QualsFiles").hide();
@@ -3428,7 +3343,7 @@ function handlePlayoffFiles(e) {
                         }]
                     };
                     innerSchedule.push(tempRow);
-                }   
+                }
             }
             formattedSchedule.Schedule = innerSchedule;
             localStorage.playoffList = JSON.stringify(formattedSchedule);
