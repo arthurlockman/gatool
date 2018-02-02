@@ -12,7 +12,8 @@ var http = require('http'),
     router = express.Router(),
     unirest = require('unirest'),
     apicache = require('apicache'),
-    Promise = require('promise');
+    Promise = require('promise'),
+    cors = require('cors');
 
 var cache = apicache.middleware;
 
@@ -51,6 +52,7 @@ var offseasonEvents = level("./offseasonEvents/", options);
 var teamData = level("./teamdata/", options);
 
 var bodyParser = require('body-parser');
+app.use(cors()); //enable cors for mobile and desktop apps
 app.use(compression());
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({
@@ -106,7 +108,7 @@ router.route('/:year/events').get(cache('1 day'), function (req, res) {
         })
         .end(function (response) {
             res.writeHead(200, {
-                'Content-type': 'text/html'
+                'Content-type': 'application/json'
             });
             res.end(JSON.stringify(response.body), 'utf-8');
         });
@@ -121,7 +123,7 @@ router.route('/:year/events').get(cache('1 day'), function (req, res) {
     //                .end(function (response) {
     //                    db.put("eventslist." + req.params.year, JSON.stringify(response));
     //                    res.writeHead(200, {
-    //                        'Content-type': 'text/html'
+    //                        'Content-type': 'application/json'
     //                    });
     //                    res.end(JSON.stringify(response.body), 'utf-8');
     //                });
@@ -129,7 +131,7 @@ router.route('/:year/events').get(cache('1 day'), function (req, res) {
     //            if (req.params.year < currentYear) {
     //                //console.log("Sending stored events data for " + req.params.year + ":" + req.params.eventCode);
     //                res.writeHead(200, {
-    //                    'Content-type': 'text/html'
+    //                    'Content-type': 'application/json'
     //                });
     //                res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
     //            } else {
@@ -143,14 +145,14 @@ router.route('/:year/events').get(cache('1 day'), function (req, res) {
     //                        if (response.statusCode === 304) {
     //                            //console.log("Stored events are current. Sending stored events for " + req.params.year);
     //                            res.writeHead(200, {
-    //                                'Content-type': 'text/html'
+    //                                'Content-type': 'application/json'
     //                            });
     //                            res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
     //                        } else {
     //                            //console.log("Stored events are stale. Saving result and sending new events for " + req.params.year);
     //                            db.put("eventslist." + req.params.year, JSON.stringify(response));
     //                            res.writeHead(200, {
-    //                                'Content-type': 'text/html'
+    //                                'Content-type': 'application/json'
     //                            });
     //                            res.end(JSON.stringify(response.body), 'utf-8');
     //                        }
@@ -205,7 +207,7 @@ router.route('/:year/offseasoneventsv2').get(function (req, res) {
             output.Events = result;
             output.eventCount = result.length;
             res.writeHead(200, {
-                'Content-type': 'text/html'
+                'Content-type': 'application/json'
             });
             res.end(JSON.stringify(output), 'utf-8');
         });
@@ -267,9 +269,73 @@ router.route('/:year/offseasonevents').get(function (req, res) {
             output.Events = result;
             output.eventCount = result.length;
             res.writeHead(200, {
-                'Content-type': 'text/html'
+                'Content-type': 'application/json'
             });
             res.end(JSON.stringify(output), 'utf-8');
+        });
+
+});
+
+router.route('/:year/avatars/:eventCode/').get(cache('1 day'), function (req, res) {
+    'use strict';
+    var promises = [],
+        avatars = {},
+        year = req.params.year,
+        eventCode = req.params.eventCode;
+    //get the first page of results
+    unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/avatars?eventCode=' + req.params.eventCode)
+        .headers({
+            'Authorization': token.token
+        })
+        .end(function (response) {
+            if (response.body !== "Invalid Season Requested : No applicable data for specified season") {
+                var awardsResponse = response.body;
+                if (awardsResponse.pageCurrent === awardsResponse.pageTotal) {
+                    res.writeHead(200, {
+                        'Content-type': 'application/json'
+                    });
+                    res.end(JSON.stringify(awardsResponse), 'utf-8');
+                } else {
+                    avatars = awardsResponse;
+                    for (var i = 2; i <= awardsResponse.pageTotal; i++) {
+                        promises.push(new Promise(function (resolve, reject) {
+                            unirest.get('https://frc-api.firstinspires.org/v2.0/' + year + '/avatars?eventCode=' + eventCode + "&page=" + i)
+                                .headers({
+                                    'Authorization': token.token
+                                })
+                                .end(function (response) {
+                                    resolve(response.body);
+
+                                });
+
+
+                        }));
+
+                    }
+                    //send all of the requests for the remaining pages
+                    Promise.all(promises).then(function (values) {
+                        var awardsList = avatars.teams;
+                        for (var i = 0; i < values.length; i++) {
+                            awardsList = awardsList.concat(values[i].teams);
+                        }
+                        avatars.teams = awardsList;
+                        res.writeHead(200, {
+                            'Content-type': 'application/json'
+                        });
+                        res.end(JSON.stringify(avatars), 'utf-8');
+
+                    });
+                }
+
+
+            } else {
+                res.writeHead(200, {
+                    'Content-type': 'application/json'
+                });
+                res.end('{"teams":[],"teamCountTotal":0,"teamCountPage":0,"pageCurrent":0,"pageTotal":0}', 'utf-8');
+            }
+
+
         });
 
 });
@@ -322,7 +388,7 @@ router.route('/:year/alliances/:eventCode/').get(function (req, res) {
         })
         .end(function (response) {
             res.writeHead(200, {
-                'Content-type': 'text/html'
+                'Content-type': 'application/json'
             });
             res.end(JSON.stringify(response.body), 'utf-8');
         });
@@ -336,7 +402,7 @@ router.route('/:year/alliances/:eventCode/').get(function (req, res) {
     //                .end(function (response) {
     //                    db.put("alliances." + req.params.eventCode + "." + req.params.year, JSON.stringify(response));
     //                    res.writeHead(200, {
-    //                        'Content-type': 'text/html'
+    //                        'Content-type': 'application/json'
     //                    });
     //                    res.end(JSON.stringify(response.body), 'utf-8');
     //                });
@@ -344,7 +410,7 @@ router.route('/:year/alliances/:eventCode/').get(function (req, res) {
     //            if (req.params.year < currentYear) {
     //                //console.log("Sending stored alliances data for " + req.params.year + ":" + req.params.eventCode);
     //                res.writeHead(200, {
-    //                    'Content-type': 'text/html'
+    //                    'Content-type': 'application/json'
     //                });
     //                res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
     //            } else {
@@ -358,14 +424,14 @@ router.route('/:year/alliances/:eventCode/').get(function (req, res) {
     //                        if (response.statusCode === 304) {
     //                            //console.log("Stored alliances are current. Sending stored alliances for " + req.params.year + ":" + req.params.eventCode);
     //                            res.writeHead(200, {
-    //                                'Content-type': 'text/html'
+    //                                'Content-type': 'application/json'
     //                            });
     //                            res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
     //                        } else {
     //                            //console.log("Stored alliances are stale. Saving result and sending new alliances for " + req.params.year + ":" + req.params.eventCode);
     //                            db.put("alliances." + req.params.eventCode + "." + req.params.year, JSON.stringify(response));
     //                            res.writeHead(200, {
-    //                                'Content-type': 'text/html'
+    //                                'Content-type': 'application/json'
     //                            });
     //                            res.end(JSON.stringify(response.body), 'utf-8');
     //                        }
@@ -383,7 +449,7 @@ router.route('/:year/schedule/:eventCode/:tlevel').get(cache('15 seconds'), func
         })
         .end(function (response) {
             res.writeHead(200, {
-                'Content-type': 'text/html'
+                'Content-type': 'application/json'
             });
             res.end(JSON.stringify(response.body), 'utf-8');
         });
@@ -398,7 +464,7 @@ router.route('/:year/schedule/:eventCode/:tlevel').get(cache('15 seconds'), func
     //                .end(function (response) {
     //                    db.put("schedule." + req.params.eventCode + "." + req.params.year + "." + req.params.tlevel, JSON.stringify(response));
     //                    res.writeHead(200, {
-    //                        'Content-type': 'text/html'
+    //                        'Content-type': 'application/json'
     //                    });
     //                    res.end(JSON.stringify(response.body), 'utf-8');
     //                });
@@ -406,7 +472,7 @@ router.route('/:year/schedule/:eventCode/:tlevel').get(cache('15 seconds'), func
     //            if (req.params.year < currentYear) {
     //                //console.log("Sending stored schedule data for " + req.params.year + ":" + req.params.eventCode + ":" + req.params.tlevel);
     //                res.writeHead(200, {
-    //                    'Content-type': 'text/html'
+    //                    'Content-type': 'application/json'
     //                });
     //                res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
     //            } else {
@@ -421,14 +487,14 @@ router.route('/:year/schedule/:eventCode/:tlevel').get(cache('15 seconds'), func
     //                        if (response.statusCode === 304) {
     //                            //console.log("Stored schedule are current. Sending stored schedule for " + req.params.year + ":" + req.params.eventCode + ":" + req.params.tlevel);
     //                            res.writeHead(200, {
-    //                                'Content-type': 'text/html'
+    //                                'Content-type': 'application/json'
     //                            });
     //                            res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
     //                        } else {
     //                            //console.log("Stored schedule are stale. Saving result and sending new schedule for " + req.params.year + ":" + req.params.eventCode + ":" + req.params.tlevel);
     //                            db.put("schedule." + req.params.eventCode + "." + req.params.year + "." + req.params.tlevel, JSON.stringify(response));
     //                            res.writeHead(200, {
-    //                                'Content-type': 'text/html'
+    //                                'Content-type': 'application/json'
     //                            });
     //                            res.end(JSON.stringify(response.body), 'utf-8');
     //                        }
@@ -447,7 +513,7 @@ router.route('/:year/teamdata/:team/').get(cache('12 hours'), function (req, res
     //        })
     //        .end(function (response) {
     //            res.writeHead(200, {
-    //                'Content-type': 'text/html'
+    //                'Content-type': 'application/json'
     //            });
     //            res.end(JSON.stringify(response.body), 'utf-8');
     //        });
@@ -462,7 +528,7 @@ router.route('/:year/teamdata/:team/').get(cache('12 hours'), function (req, res
                     //console.log("Response code:"+response.statusCode+"<br>"+JSON.stringify(response.headers));
                     teamData.put(req.params.team + "." + req.params.year, JSON.stringify(response));
                     res.writeHead(200, {
-                        'Content-type': 'text/html'
+                        'Content-type': 'application/json'
                     });
                     res.end(JSON.stringify(response.body), 'utf-8');
                 });
@@ -479,14 +545,14 @@ router.route('/:year/teamdata/:team/').get(cache('12 hours'), function (req, res
                     if (response.statusCode === 304) {
                         //console.log("Stored team data are current. Sending  stored team data for " + req.params.year + ":" + req.params.team);
                         res.writeHead(200, {
-                            'Content-type': 'text/html'
+                            'Content-type': 'application/json'
                         });
                         res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
                     } else {
                         //console.log("Stored team data are stale. Saving result and sending new team data for " + req.params.year + ":" + req.params.team);
                         teamData.put(req.params.team + "." + req.params.year, JSON.stringify(response));
                         res.writeHead(200, {
-                            'Content-type': 'text/html'
+                            'Content-type': 'application/json'
                         });
                         res.end(JSON.stringify(response.body), 'utf-8');
                     }
@@ -510,7 +576,7 @@ router.route('/:year/newteamdata/:team/').get(cache('12 hours'), function (req, 
                     //console.log("Response code:"+response.statusCode+"<br>"+JSON.stringify(response.headers));
                     teamData.put(req.params.team + "." + req.params.year, JSON.stringify(response));
                     res.writeHead(200, {
-                        'Content-type': 'text/html'
+                        'Content-type': 'application/json'
                     });
                     res.end(JSON.stringify(response.body), 'utf-8');
                 });
@@ -527,14 +593,14 @@ router.route('/:year/newteamdata/:team/').get(cache('12 hours'), function (req, 
                     if (response.statusCode === 304) {
                         //console.log("Stored team data are current. Sending  stored team data for " + req.params.year + ":" + req.params.team);
                         res.writeHead(200, {
-                            'Content-type': 'text/html'
+                            'Content-type': 'application/json'
                         });
                         res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
                     } else {
                         //console.log("Stored team data are stale. Saving result and sending new team data for " + req.params.year + ":" + req.params.team);
                         teamData.put(req.params.team + "." + req.params.year, JSON.stringify(response));
                         res.writeHead(200, {
-                            'Content-type': 'text/html'
+                            'Content-type': 'application/json'
                         });
                         res.end(JSON.stringify(response.body), 'utf-8');
                     }
@@ -555,7 +621,7 @@ router.route('/:year/registrations/:event/').get(cache('10 minutes'), function (
         })
         .end(function (response) {
             res.writeHead(200, {
-                'Content-type': 'text/html'
+                'Content-type': 'application/json'
             });
             res.end(JSON.stringify(response.body), 'utf-8');
         });
@@ -571,7 +637,7 @@ router.route('/:year/teams/:eventCode/:page').get(cache('120 minutes'), function
         })
         .end(function (response) {
             res.writeHead(200, {
-                'Content-type': 'text/html'
+                'Content-type': 'application/json'
             });
             res.end(JSON.stringify(response.body), 'utf-8');
         });
@@ -586,7 +652,7 @@ router.route('/:year/teams/:eventCode/:page').get(cache('120 minutes'), function
     //                .end(function (response) {
     //                    db.put("teams." + req.params.eventCode + "." + req.params.year, JSON.stringify(response));
     //                    res.writeHead(200, {
-    //                        'Content-type': 'text/html'
+    //                        'Content-type': 'application/json'
     //                    });
     //                    res.end(JSON.stringify(response.body), 'utf-8');
     //                });
@@ -594,7 +660,7 @@ router.route('/:year/teams/:eventCode/:page').get(cache('120 minutes'), function
     //            if (req.params.year < currentYear) {
     //                //console.log("Sending stored teams data for " + req.params.year + ":" + req.params.eventCode);
     //                res.writeHead(200, {
-    //                    'Content-type': 'text/html'
+    //                    'Content-type': 'application/json'
     //                });
     //                res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
     //            } else {
@@ -608,14 +674,14 @@ router.route('/:year/teams/:eventCode/:page').get(cache('120 minutes'), function
     //                        if (response.statusCode === 304) {
     //                            //console.log("Stored teams are current. Sending stored teams for " + req.params.year + ":" + req.params.eventCode);
     //                            res.writeHead(200, {
-    //                                'Content-type': 'text/html'
+    //                                'Content-type': 'application/json'
     //                            });
     //                            res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
     //                        } else {
     //                            //console.log("Stored teams are stale. Saving result and sending new teams for " + req.params.year + ":" + req.params.eventCode);
     //                            db.put("teams." + req.params.eventCode + "." + req.params.year, JSON.stringify(response));
     //                            res.writeHead(200, {
-    //                                'Content-type': 'text/html'
+    //                                'Content-type': 'application/json'
     //                            });
     //                            res.end(JSON.stringify(response.body), 'utf-8');
     //                        }
@@ -664,7 +730,7 @@ router.route('/:year/offseasonteamsv2/:eventCode/:page').get(function (req, res)
             output.pageCurrent = 1;
             output.pageTotal = 1;
             res.writeHead(200, {
-                'Content-type': 'text/html'
+                'Content-type': 'application/json'
             });
             res.end(JSON.stringify(output), 'utf-8');
         });
@@ -709,7 +775,7 @@ router.route('/:year/offseasonteams/:eventCode/:page').get(function (req, res) {
             output.pageCurrent = 1;
             output.pageTotal = 1;
             res.writeHead(200, {
-                'Content-type': 'text/html'
+                'Content-type': 'application/json'
             });
             res.end(JSON.stringify(output), 'utf-8');
         });
@@ -725,7 +791,7 @@ router.route('/:year/rankings/:eventCode/').get(cache('15 seconds'), function (r
         })
         .end(function (response) {
             res.writeHead(200, {
-                'Content-type': 'text/html'
+                'Content-type': 'application/json'
             });
             res.end(JSON.stringify(response.body), 'utf-8');
         });
@@ -740,7 +806,7 @@ router.route('/:year/rankings/:eventCode/').get(cache('15 seconds'), function (r
     //                .end(function (response) {
     //                    db.put("rankings." + req.params.eventCode + "." + req.params.year, JSON.stringify(response));
     //                    res.writeHead(200, {
-    //                        'Content-type': 'text/html'
+    //                        'Content-type': 'application/json'
     //                    });
     //                    res.end(JSON.stringify(response.body), 'utf-8');
     //                });
@@ -748,7 +814,7 @@ router.route('/:year/rankings/:eventCode/').get(cache('15 seconds'), function (r
     //            if (req.params.year < currentYear) {
     //                //console.log("Sending stored rankings data for " + req.params.year + ":" + req.params.eventCode);
     //                res.writeHead(200, {
-    //                    'Content-type': 'text/html'
+    //                    'Content-type': 'application/json'
     //                });
     //                res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
     //            } else {
@@ -762,14 +828,14 @@ router.route('/:year/rankings/:eventCode/').get(cache('15 seconds'), function (r
     //                        if (response.statusCode === 304) {
     //                            //console.log("Stored rankings are current. Sending stored rankings for " + req.params.year + ":" + req.params.eventCode);
     //                            res.writeHead(200, {
-    //                                'Content-type': 'text/html'
+    //                                'Content-type': 'application/json'
     //                            });
     //                            res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
     //                        } else {
     //                            //console.log("Stored rankings are stale. Saving result and sending new rankings for " + req.params.year + ":" + req.params.eventCode);
     //                            db.put("rankings." + req.params.eventCode + "." + req.params.year, JSON.stringify(response));
     //                            res.writeHead(200, {
-    //                                'Content-type': 'text/html'
+    //                                'Content-type': 'application/json'
     //                            });
     //                            res.end(JSON.stringify(response.body), 'utf-8');
     //                        }
@@ -787,7 +853,7 @@ router.route('/:year/awards/:teamNumber/').get(cache('1 hours'), function (req, 
     //                })
     //                .end(function (response) {
     //                    res.writeHead(200, {
-    //                        'Content-type': 'text/html'
+    //                        'Content-type': 'application/json'
     //                    });
     //                    res.end(JSON.stringify(response.body), 'utf-8');
     //                });
@@ -804,7 +870,7 @@ router.route('/:year/awards/:teamNumber/').get(cache('1 hours'), function (req, 
                         teamAwards.put(req.params.teamNumber + ":" + req.params.year, JSON.stringify(response));
                     }
                     res.writeHead(200, {
-                        'Content-type': 'text/html'
+                        'Content-type': 'application/json'
                     });
                     res.end(JSON.stringify(response.body), 'utf-8');
                 });
@@ -812,7 +878,7 @@ router.route('/:year/awards/:teamNumber/').get(cache('1 hours'), function (req, 
             if (req.params.year < currentYear) {
                 //console.log("Sending stored awards data for " + req.params.year + ":" + req.params.teamNumber);
                 res.writeHead(200, {
-                    'Content-type': 'text/html'
+                    'Content-type': 'application/json'
                 });
                 res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
             } else {
@@ -826,14 +892,14 @@ router.route('/:year/awards/:teamNumber/').get(cache('1 hours'), function (req, 
                         if (response.statusCode === 304) {
                             //console.log("Stored awards are current. Sending stored awards for " + req.params.year + ":" + req.params.teamNumber);
                             res.writeHead(200, {
-                                'Content-type': 'text/html'
+                                'Content-type': 'application/json'
                             });
                             res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
                         } else {
                             //console.log("Stored awards are stale. Saving result and sending new awards for " + req.params.year + ":" + req.params.teamNumber);
                             teamAwards.put(req.params.teamNumber + ":" + req.params.year, JSON.stringify(response));
                             res.writeHead(200, {
-                                'Content-type': 'text/html'
+                                'Content-type': 'application/json'
                             });
                             res.end(JSON.stringify(response.body), 'utf-8');
                         }
@@ -844,7 +910,7 @@ router.route('/:year/awards/:teamNumber/').get(cache('1 hours'), function (req, 
 });
 
 
-router.route('/:year/awardsv2/:teamNumber/').get(function (req, res) {
+router.route('/:year/awardsv2/:teamNumber/').get(cache('1 hours'), function (req, res) {
     'use strict';
     //console.log("awardsv2 start");
     var promises = [];
@@ -997,7 +1063,7 @@ router.route('/:year/awardsv2/:teamNumber/').get(function (req, res) {
     Promise.all(promises).then(function (values) {
         //console.log("promise values: " + JSON.stringify(values));
         res.writeHead(200, {
-            'Content-type': 'text/html'
+            'Content-type': 'application/json'
         });
         res.end(JSON.stringify(values), 'utf-8');
         //console.log("done");
@@ -1012,10 +1078,10 @@ function cleanupAwards(award) {
     //console.log(typeof award);
     if ((typeof award) === "object") {
         return (award);
-    }else {
-        
+    } else {
+
         return (JSON.parse('{"Awards":[]}'));
-    
+
     }
 }
 
