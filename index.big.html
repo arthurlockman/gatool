@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="css/bootstrap-theme.min.css" type="text/css">
 <link rel="stylesheet" href="css/bootstrap-switch.min.css" type="text/css">
 <link rel="stylesheet" href="css/bootstrap-dialog.min.css" type="text/css">
-    <link rel="stylesheet" href="css/bootstrap-select.min.css" type="text/css">
+<link rel="stylesheet" href="css/bootstrap-select.min.css" type="text/css">
 <link rel="stylesheet" href="css/style.min.css" type="text/css">
 
 <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -34,8 +34,8 @@
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 
 <script src="js/bootstrap-select.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="js/require.js" type="text/javascript" charset="utf-8"></script>
-<script src="js/loader.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/w3.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/scripts.min.js" type="text/javascript" charset="utf-8"></script>
 </head>
 
 <body>
@@ -175,7 +175,29 @@
             <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" 
 						aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" id="teamProgressBarLoading" style="width:100%"> Loading... </div>
         </div>
-        <div id="teamsContainer">No teams available.</div>
+        <div id="teamsContainer">
+            <p class = "eventName"><span id="teamsTableEventName">Event team list unavailable.</span></p>
+            <p>This table is editable and sortable. Tap on a team number to change data for a specific team. Edits you make are local to this browser, and they will persist here if you do not clear your browser cache. You can save your changes to the gatool Cloud on the team details page or on the Setup Screen. Cells  highlighted in green have been modified, either by you or by other gatool users. </p>
+            <table id="teamsTable" class="table table-condensed table-responsive table-bordered table-striped">
+                <thead  id="teamsTableHead" class="thead-default">
+                    <tr>
+                        <td onclick="w3.sortHTMLAsNumber('#teamsTable','.teamsTableRow', '.teamDataNumber')" class="col1"><b>Team #</b></td>
+                        <td onclick="w3.sortHTMLAsNumber('#teamsTable','.teamsTableRow', 'td:nth-child(2)')" class="col1"><b>Rank</b></td>
+                        <td onclick="w3.sortHTML('#teamsTable','.teamsTableRow', '.teamTableName')" class="col2"><b>Team Name</b></td>
+                        <td onclick="w3.sortHTML('#teamsTable','.teamsTableRow', 'td:nth-child(4)')" class="col2"><b>City</b></td>
+                        <td onclick="w3.sortHTML('#teamsTable','.teamsTableRow', 'td:nth-child(5)')" class="col2"><b>Top 5 Sponsors</b></td>
+                        <td onclick="w3.sortHTML('#teamsTable','.teamsTableRow', 'td:nth-child(6)')" class="col2"><b>Organization</b></td>
+                        <td onclick="w3.sortHTML('#teamsTable','.teamsTableRow', 'td:nth-child(7)')" class="col1"><b>Rookie Year</b></td>
+                        <td onclick="w3.sortHTML('#teamsTable','.teamsTableRow', 'td:nth-child(8)')" class="col1"><b>Robot name</b></td>
+                    </tr>
+                </thead>
+                <tbody id="teamsTableBody">
+                </tbody>
+            </table>
+            <p>
+                <button type="button" id="billAucoinNuclearOption" class="btn btn-danger" onclick="resetAwards()">Reset stored awards to their TIMS values</button>
+            </p>
+        </div>
     </div>
     <div id="teamRanks" class="tabcontent container-fluid">
         <div class="progress" id="ranksProgressBar">
@@ -596,13 +618,12 @@
     </div>
     <div id="help" class="tabcontent container-fluid">
         <div id="topOfHelp" class="container-fluid">
-                       <h2>What is gatool?</h2>
+            <h2>What is gatool?</h2>
             <p> gatool is a tool to provide FIRST Game Announcers with up to date information while announcing events during the FIRST Robotics season. As a web-based tool, it uses up-to-date information about the event to provide a comprehensive set of useful data to Game Announcers. It is designed to work on desktops, laptops and tablet devices. In a pinch, it can be used on a mobile phone.</p>
             <p>If you are disinclined to read the documentation referenced below, we've made a short video so you can see it in action. </p>
-            <p> <a href="https://youtu.be/-n96KgtgYF0" target="new">Watch an overview of gatool on YouTube.</a> </p>
+            <p> <a href="https://youtu.be/8XuMEX_Mofs" target="new">Watch an overview of gatool on YouTube.</a> </p>
             <h3>You can get more detailed help by <a href="/help" target="new">visiting our help page.</a> We removed the content here to improve loading time at events.</h3>
         </div>
-        
     </div>
     <div id="cheatsheet" class="tabcontent container-fluid">
         <p><span id="cheatSheetImage"></span></p>
@@ -626,10 +647,8 @@
             <li>Free Look (FMS selection)</li>
             <li>Griefer (defensive Robot)</li>
             <li>Invisible Wall (Null Zone in Autonomous)</li>
-            
             <li>Lag</li>
             <li>Magic (Boosts, Forces, and Levitation)</li>
-            
             <li>Noob  (Rookies)</li>
             <li>Overpowered</li>
             <li>Rage Quit</li>
@@ -639,7 +658,7 @@
             <li>Polygons</li>
         </ul>
     </div>
-    </div>
+</div>
 <footer id="footer" class="container container-fluid gatool-footer footer">
     <div>
         <p id="loadingFeedback">Loading gatool...</p>

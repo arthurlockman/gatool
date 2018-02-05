@@ -94,6 +94,7 @@ var currentMatchData = {};
 var teamCountTotal = 0;
 var teamLoadProgressBar = 0;
 var lastSchedulePage = false;
+var haveRanks = false;
 for (var i = 1; i < 9; i++) {
     allianceChoices['Alliance' + i + 'Captain'] = "";
 }
@@ -113,6 +114,8 @@ var champDivisions = ["ARDA", "CANE", "CATE", "CUDA", "GARO", "HOTU"];
 var champs = ["CMP", "CMPTX", "CMPMO"];
 var miDivisions = ["MICMP1", "MICMP2", "MICMP3", "MICMP4"];
 var miChamps = ["MICMP"];
+
+
 
 //The apiURL determines the endpoint for API calls. On the web, it's the site itself. In the mobile app, we need to declare the complete API URL.
 var apiURL = "/api/";
@@ -341,7 +344,6 @@ window.onload = function () {
         }
 
     });
-    console.log("replacing cheat sheet image");
     $('#cheatSheetImage').html('<img src="images/Power-Up-Cheatsheet-gatool.png" width="100%" alt="Steamworks Cheatsheet">');
     $('#allianceSelectionTable').hide();
     $('#allianceUndoButton').hide();
@@ -353,7 +355,7 @@ window.onload = function () {
     document.getElementById('setupTabPicker').click();
     $("#loadingFeedback").html("gatool ready to play!");
     $("#loadingFeedback").fadeOut();
-    
+
 
 };
 
@@ -385,6 +387,7 @@ function initEnvironment() {
     teamUpdateCalls = 0;
     teamCountTotal = 0;
     lastSchedulePage = false;
+    haveRanks = false;
     $('#ranksContainer').html("No Rankings available.");
     $('#allianceSelectionTable').hide();
     $('#allianceUndoButton').hide();
@@ -425,6 +428,7 @@ function handleEventSelection() {
 
 
     eventTeamList = [];
+    haveRanks = false;
     eventQualsSchedule = [];
     eventPlayoffSchedule = [];
     localStorage.currentMatch = 1;
@@ -952,15 +956,11 @@ function updateTeamTable(sortColumn) {
             return 0;
         });
     }
-
-    $('#teamsContainer').html('<p class = "eventName">' + localStorage.eventName + '</p><p>This table is editable. Tap on a team number to change data for a specific team. Edits you make are local to this browser, and they will persist here if you do not clear your browser cache. You can save your changes to the gatool Cloud on the team details page or on the Setup Screen. Cells <span class="bg-success"> highlighted in green</span> have been modified, either by you or by other gatool users. </p><table id="teamsTable" class="table table-condensed table-responsive table-bordered table-striped"></table>');
-    var teamList = '<thead  id="teamsTableHead" class="thead-default"><tr><td class="col1"><b>Team #</b></td><td class="col1"><b>Rank</b></td><td class="col2"><b>Team Name</b></td><td class="col2"><b>City</b></td><td class="col2"><b>Top 5 Sponsors</b></td><td  class="col2"><b>Organization</b></td><td class="col1"><b>Rookie Year</b></td><td class="col1"><b>Robot name</b></td></tr></thead><tbody>';
+    $("#teamsTableBody").empty();
     for (var i = 0; i < teamData.length; i++) {
         var element = teamData[i];
-        teamList += updateTeamTableRow(element);
+        $('#teamsTableBody').append(updateTeamTableRow(element));
     }
-    $('#teamsTable').html(teamList + "</tbody>");
-    $('<p><button type="button" id="billAucoinNuclearOption" class="btn btn-danger" onclick="resetAwards()">Reset stored awards to their TIMS values</button></p>').insertAfter('#teamsTable');
 
 }
 
@@ -979,35 +979,28 @@ function getTeamList(year, pageNumber) {
         var data = "";
         $('#teamloadprogress').show();
         $('#teamProgressBar').show();
+        $("#teamsTableBody").empty();
         if (req.responseText.includes('"teams":')) {
             data = JSON.parse(req.responseText);
         } else {
             data = JSON.parse('{"teams":[],"teamCountTotal":0,"teamCountPage":0,"pageCurrent":0,"pageTotal":0}');
         }
         if (data.teams.length === 0 && pageNumber === 1) {
-            $('#teamsContainer').html('<b>No teams have registered for this event.</b>');
+            $('#teamsTableEventName').html('Event team list unavailable.');
             $("#eventTeamCount").html(data.teamCountTotal);
             teamCountTotal = data.teamCountTotal;
             localStorage.teamList = "";
         } else {
-            var teamList = "";
             if (pageNumber === 1) {
                 $("#eventTeamCount").html(data.teamCountTotal);
                 teamCountTotal = data.teamCountTotal * $('#awardDepthPicker').val();
-
-                $('#teamsContainer').html('<p class = "eventName">' + localStorage.eventName + '</p><p>This table is editable. Tap on a team number to change data for a specific team. Edits you make are local to this browser, and they will persist here if you do not clear your browser cache. You can save your changes to the gatool Cloud on the team details page or on the Setup Screen. Cells <span class="bg-success"> highlighted in green</span> have been modified, either by you or by other gatool users. </p><table id="teamsTable" class="table table-condensed table-responsive table-bordered table-striped"></table><p><button type="button" id="billAucoinNuclearOption" class="btn btn-danger" onclick="resetAwards()">Reset stored awards to their TIMS values</button></p>');
-                teamList += '<thead  id="teamsTableHead" class="thead-default"><tr><td class="col1"><b>Team #</b></td><td class="col1"><b>Rank</b></td><td class="col2"><b>Team Name</b></td><td class="col2"><b>City</b></td><td class="col2"><b>Top 5 Sponsors</b></td><td  class="col2"><b>Organization</b></td><td class="col1"><b>Rookie Year</b></td><td class="col1"><b>Robot name</b></td></tr></thead><tbody>';
+                $('#teamsTableEventName').html(localStorage.eventName);
             }
 
             for (var i = 0; i < data.teams.length; i++) {
                 var element = data.teams[i];
-                teamList += generateTeamTableRow(element);
+                $('#teamsTableBody').append(generateTeamTableRow(element));
                 eventTeamList.push(data.teams[i]);
-            }
-            if (pageNumber === 1) {
-                $('#teamsTable').html(teamList + "</tbody>");
-            } else {
-                $('#teamsTable').append(teamList);
             }
 
             //clear out old rank data for the teams we've loaded
@@ -1041,6 +1034,7 @@ function getTeamList(year, pageNumber) {
             } else {
                 localStorage.teamList = JSON.stringify(eventTeamList);
                 getTeamAwardsAsync(eventTeamList, year);
+                getAvatars();
                 getHybridSchedule();
                 displayAwardsTeams();
                 lastSchedulePage = true;
@@ -1048,12 +1042,37 @@ function getTeamList(year, pageNumber) {
         }
 
         $("#teamUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
-        //$("#teamDataTabPicker").removeClass("alert-danger");
-        //$("#teamDataTabPicker").addClass("alert-success");
     });
     req.send();
 
 }
+
+function getAvatars() {
+    "use strict";
+    var req = new XMLHttpRequest();
+    req.open('GET', apiURL + localStorage.currentYear + '/avatars/' + localStorage.currentEvent);
+    req.addEventListener('load', function () {
+        var data = JSON.parse(req.responseText);
+        var teamData = {};
+        for (var i = 0; i < data.teams.length; i++) {
+            teamData = JSON.parse(localStorage["teamData" + data.teams[i].teamNumber]);
+            if (data.teams[i].encodedAvatar !== null) {
+                teamData.avatar = data.teams[i].encodedAvatar;
+                $("#avatar" + data.teams[i].teamNumber).html('<img src="data:image/png;base64,' + teamData.avatar + '">&nbsp;');
+            } else {
+                teamData.avatar = "null";
+                $("#avatar" + data.teams[i].teamNumber).html("");
+            }
+            localStorage["teamData" + data.teams[i].teamNumber] = JSON.stringify(teamData);
+
+        }
+
+    });
+    req.send();
+
+
+}
+
 
 function getTeamAwardsAsync(teamList, currentYear) {
     "use strict";
@@ -1064,7 +1083,7 @@ function getTeamAwardsAsync(teamList, currentYear) {
             getTeamAwards(item.teamNumber, currentYear);
             resolve();
         }));
-    })
+    });
     Promise.all(teamAwardRequests).then((value) => {
         //console.log('finished');
     });
@@ -1445,8 +1464,27 @@ function getTeamRanks() {
             var teamList = JSON.parse(localStorage.teamList);
             for (var j = 0; j < teamList.length; j++) {
                 allianceListUnsorted[j] = teamList[j].teamNumber;
+                var team = JSON.parse(localStorage['teamData' + teamList[j].teamNumber]);
+
+                team.rank = "";
+                team.sortOrder1 = "";
+                team.sortOrder2 = "";
+                team.sortOrder3 = "";
+                team.sortOrder4 = "";
+                team.sortOrder5 = "";
+                team.sortOrder6 = "";
+                team.wins = "";
+                team.losses = "";
+                team.ties = "";
+                team.qualAverage = "";
+                team.dq = "";
+                team.matchesPlayed = "";
+                $("#teamTableRank" + teamList[j].teamNumber).html("");
+                $("#teamTableRank" + teamList[j].teamNumber).attr("class", teamTableRankHighlight(100));
+                localStorage['teamData' + teamList[j].teamNumber] = JSON.stringify(team);
             }
         } else {
+            haveRanks = true;
             localStorage.Rankings = JSON.stringify(data.Rankings);
             if (localStorage.currentMatch > JSON.parse(localStorage.qualsList).Schedule.length) {
                 $("#rankingDisplay").html("<b>Qual Seed<b>");
@@ -1896,7 +1934,7 @@ function getTeamAwards(teamNumber, year) {
         var data = JSON.parse(req.responseText);
         //console.log(teamData.rookieYear+" "+year+"/awards/"+teamNumber+": "+req.responseText);
         for (var j = 0; j <= 2; j++) {
-            if ((data[j].Awards !== '{"Awards":[]}') && (j<localStorage.awardDepth)){
+            if ((data[j].Awards !== '{"Awards":[]}') && (j < localStorage.awardDepth)) {
                 for (var i = 0; i < data[j].Awards.length; i++) {
                     awardName = data[j].Awards[i].name;
                     awardHilight = awardsHilight(awardName);
@@ -2063,17 +2101,21 @@ function updateTeamTableRow(teamData) {
     "use strict";
     var teamInfo = JSON.parse(localStorage['teamData' + teamData.teamNumber]);
     var lastVisit = "";
+    var avatar = "";
     if (teamInfo.lastVisit === "No recent visit") {
         lastVisit = "No recent visit";
     } else {
         lastVisit = moment(teamInfo.lastVisit).fromNow();
     }
-    var returnData = '<tr><td class = "btn-default" id="teamTableNumber' + teamData.teamNumber + '" onclick="updateTeamInfo(' + teamData.teamNumber + ')"><span class="teamDataNumber">' + teamData.teamNumber + '</span><br><span id="lastVisit' + teamData.teamNumber + '" teamNumber = "' + teamData.teamNumber + '"  lastvisit = "' + teamInfo.lastVisit + '">' + lastVisit + '</span></td>';
+    var returnData = '<tr class="teamsTableRow"><td class = "btn-default" id="teamTableNumber' + teamData.teamNumber + '" onclick="updateTeamInfo(' + teamData.teamNumber + ')"><span class="teamDataNumber">' + teamData.teamNumber + '</span><br><span id="lastVisit' + teamData.teamNumber + '" teamNumber = "' + teamData.teamNumber + '"  lastvisit = "' + teamInfo.lastVisit + '">' + lastVisit + '</span></td>';
     returnData += '<td id="teamTableRank' + teamData.teamNumber + '" class="rank0"></td>';
+    if ((teamInfo.avatar !== "null") && (localStorage.currentYear = "2018" && (typeof teamInfo !== "undefined"))) {
+        avatar = '<img src="data:image/png;base64,' + teamInfo.avatar + '">&nbsp;';
+    }
     if (teamInfo.nameShortLocal === "") {
-        returnData += '<td id="teamTableName' + teamData.teamNumber + '">' + teamInfo.nameShort + '</td>';
+        returnData += '<td id="teamTableName' + teamData.teamNumber + '">' + '<span id="avatar' + teamData.teamNumber + '">' + avatar + '</span><span class="teamTableName">' + teamInfo.nameShort + '</span></td>';
     } else {
-        returnData += '<td  class="bg-success" id="teamTableName' + teamData.teamNumber + '">' + teamInfo.nameShortLocal + '</td>';
+        returnData += '<td  class="bg-success" id="teamTableName' + teamData.teamNumber + '">' + '<span id="avatar' + teamData.teamNumber + '">' + avatar + '</span><span class="teamTableName">' + teamInfo.nameShortLocal + '</span></td>';
     }
     if (teamInfo.cityStateLocal === "") {
         returnData += '<td id="teamTableCityState' + teamData.teamNumber + '">' + teamInfo.cityState + '</td>';
@@ -2109,6 +2151,7 @@ function updateTeamTableRow(teamData) {
 function generateTeamTableRow(teamData) {
     "use strict";
     var teamInfo = {};
+    var avatar = "";
     if (typeof (localStorage['teamData' + teamData.teamNumber]) !== 'undefined') {
         teamInfo = JSON.parse(localStorage['teamData' + teamData.teamNumber]);
     } else {
@@ -2147,6 +2190,7 @@ function generateTeamTableRow(teamData) {
             "awardsLocal": "",
             "teamMottoLocal": "",
             "teamNotesLocal": "",
+            "avatar": "null",
             "lastVisit": "No recent visit"
         };
     }
@@ -2226,13 +2270,16 @@ function generateTeamTableRow(teamData) {
         lastVisit = moment(teamInfo.lastVisit).fromNow();
     }
     //Return the Team Table
-    returnData += '<tr><td class = "btn-default" id="teamTableNumber' + teamData.teamNumber + '" onclick="updateTeamInfo(' + teamData.teamNumber + ')"><span class="teamDataNumber">' + teamData.teamNumber + '</span><br><span id="lastVisit' + teamData.teamNumber + '" teamNumber = "' + teamData.teamNumber + '" lastvisit = "' + teamInfo.lastVisit + '">' + lastVisit + '</span></td>';
+    returnData += '<tr class="teamsTableRow"><td class = "btn-default" id="teamTableNumber' + teamData.teamNumber + '" onclick="updateTeamInfo(' + teamData.teamNumber + ')"><span class="teamDataNumber">' + teamData.teamNumber + '</span><br><span id="lastVisit' + teamData.teamNumber + '" teamNumber = "' + teamData.teamNumber + '" lastvisit = "' + teamInfo.lastVisit + '">' + lastVisit + '</span></td>';
     //returnData += '<td id="teamTableRank' + teamData.teamNumber + '" class="'+teamTableRankHighlight(teamInfo.rank)+'">' + teamInfo.rank + '</td>';
     returnData += '<td id="teamTableRank' + teamData.teamNumber + '" class="rank0"></td>';
+    if ((teamInfo.avatar !== "null") && (localStorage.currentYear = "2018")) {
+        avatar = '<img src="data:image/png;base64,' + teamInfo.avatar + '">&nbsp;';
+    }
     if (teamInfo.nameShortLocal === "") {
-        returnData += '<td id="teamTableName' + teamData.teamNumber + '">' + teamInfo.nameShort + '</td>';
+        returnData += '<td id="teamTableName' + teamData.teamNumber + '">' + '<span id="avatar' + teamData.teamNumber + '">' + avatar + '</span><span class="teamTableName">' + teamInfo.nameShort + '</span></td>';
     } else {
-        returnData += '<td  class="bg-success" id="teamTableName' + teamData.teamNumber + '">' + teamInfo.nameShortLocal + '</td>';
+        returnData += '<td  class="bg-success" id="teamTableName' + teamData.teamNumber + '">' + '<span id="avatar' + teamData.teamNumber + '">' + avatar + '</span><span class="teamTableName">' + teamInfo.nameShortLocal + '</span></td>';
     }
     if (teamInfo.cityStateLocal === "") {
         returnData += '<td id="teamTableCityState' + teamData.teamNumber + '">' + teamData.city + ", " + teamData.stateProv + '</td>';
@@ -2264,7 +2311,6 @@ function generateTeamTableRow(teamData) {
     teamInfo.topSponsors = topSponsors;
     teamInfo.organization = organization;
     localStorage['teamData' + teamData.teamNumber] = JSON.stringify(teamInfo);
-    //getTeamAwards(teamData.teamNumber, localStorage.currentYear);
 
     return returnData + '</tr>';
 }
@@ -3245,9 +3291,7 @@ function handleQualsFiles(e) {
 
             $("#eventTeamCount").html(teamList.length);
 
-            $('#teamsContainer').html('<p class = "eventName">' + localStorage.eventName + '</p><p>This table is editable. Tap on a team number to change data for a specific team. Edits you make are local to this browser, and they will persist here if you do not clear your browser cache. You can save your changes to the gatool Cloud on the team details page or on the Setup Screen. Cells <span class="bg-success"> highlighted in green</span> have been modified, either by you or by other gatool users. </p><table id="teamsTable" class="table table-condensed table-responsive table-bordered table-striped"></table><p><button type="button" id="billAucoinNuclearOption" class="btn btn-danger" onclick="resetAwards()">Reset stored awards to their TIMS values</button></p>');
-            teamTable += '<thead  id="teamsTableHead" class="thead-default"><tr><td class="col1"><b>Team #</b></td><td class="col1"><b>Rank</b></td><td class="col2"><b>Team Name</b></td><td class="col2"><b>City</b></td><td class="col2"><b>Top 5 Sponsors</b></td><td class="col2"><b>Organization</b></td><td class="col1"><b>Rookie Year</b></td><td class="col1"><b>Robot name</b></td></tr></thead><tbody></tbody>';
-            $('#teamsTable').html(teamTable);
+            $('#teamsListEventName').html(localStorage.eventName);
 
             getTeamData(teamList, localStorage.currentYear);
 

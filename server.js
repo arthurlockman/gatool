@@ -1215,7 +1215,7 @@ app.get('/favicon.ico', function (req, res) {
 
 app.get('/scripts.js', cache('24 hours'), function (req, res) {
     'use strict';
-    sendFile(res, 'scripts.js', 'text/js');
+    sendFile(res, 'scripts.js', 'text/javascript');
 });
 
 app.get('/css/:filename', cache('24 hours'), function (req, res) {
@@ -1230,7 +1230,7 @@ app.get('/images/:filename', cache('24 hours'), function (req, res) {
 
 app.get('/js/:filename', cache('24 hours'), function (req, res) {
     'use strict';
-    sendFile(res, './js/' + req.params.filename);
+    sendFile(res, './js/' + req.params.filename, 'text/javascript');
 });
 
 app.get('/fonts/:filename', cache('24 hours'), function (req, res) {
