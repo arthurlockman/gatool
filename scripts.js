@@ -96,6 +96,7 @@ var teamCountTotal = 0;
 var teamLoadProgressBar = 0;
 var lastSchedulePage = false;
 var haveRanks = false;
+var highScores = {};
 for (var i = 1; i < 9; i++) {
     allianceChoices['Alliance' + i + 'Captain'] = "";
 }
@@ -498,7 +499,7 @@ function handleEventSelection() {
     }
     getTeamList(localStorage.currentYear, 1);
     localStorage.matchHighScore = 0;
-    localStorage.highScoreDetails = "";
+    localStorage.highScoreDetails = "{}";
     $("#eventName").html("<b>" + JSON.parse(document.getElementById("eventSelector").value).name + "</b>");
     $("#eventNameAllianceSelection").html("<b>" + localStorage.eventName + "</b><br>");
     $("#eventNameAwards").html("<b>" + localStorage.eventName + "</b><br>");
@@ -547,7 +548,7 @@ function handleOffseasonEventSelection() {
     }
     getTeamList(localStorage.currentYear, 1);
     localStorage.matchHighScore = 0;
-    localStorage.highScoreDetails = "";
+    localStorage.highScoreDetails = "{}";
     $("#eventName").html("<b>" + JSON.parse(document.getElementById("eventSelector").value).name + "</b>");
     $("#eventNameAllianceSelection").html("<b>" + localStorage.eventName + "</b><br>");
     $("#eventNameAwards").html("<b>" + localStorage.eventName + "</b><br>");
@@ -980,21 +981,9 @@ function handleMatchSelection(element) {
     updateMatchResults();
 }
 
-function updateTeamTable(sortColumn) {
+function updateTeamTable() {
     "use strict";
-    //var teamData = JSON.parse(localStorage.teamList);
     var teamData = eventTeamList.slice(0);
-    if (sortColumn === "Rank") {
-        teamData.sort(function (a, b) {
-            if (a.Rank < b.Rank) {
-                return -1;
-            }
-            if (a.Rank > b.Rank) {
-                return 1;
-            }
-            return 0;
-        });
-    }
     $("#teamsTableBody").empty();
     for (var i = 0; i < teamData.length; i++) {
         var element = teamData[i];
@@ -1018,7 +1007,9 @@ function getTeamList(year, pageNumber) {
         var data = "";
         $('#teamloadprogress').show();
         $('#teamProgressBar').show();
-        $("#teamsTableBody").empty();
+        if (pageNumber === 1) {
+            $("#teamsTableBody").empty();
+        }
         if (req.responseText.includes('"teams":')) {
             data = JSON.parse(req.responseText);
         } else {
@@ -1066,6 +1057,8 @@ function getTeamList(year, pageNumber) {
                 team.lastVisit = "No recent visit";
 
                 localStorage['teamData' + eventTeamList[j].teamNumber] = JSON.stringify(team);
+                highScores['"' + eventTeamList[j].teamNumber + '.score"'] = 0;
+                highScores['"' + eventTeamList[j].teamNumber + '.description"'] = "";
             }
 
             if (data.pageCurrent < data.pageTotal) {
@@ -1400,7 +1393,7 @@ function announceDisplay() {
             $("#" + stationList[ii] + "WinLossTie").html("<p class='playByPlayChampsAlliance'>" + teamData.allianceName + "<br>" + teamData.allianceChoice + "</p>");
             rankHighlight(stationList[ii] + "Rank", teamData.rank);
         } else {
-            $("#" + stationList[ii] + "WinLossTie").html("<table class='wltTable'><tr><td id='" + stationList[ii] + "PlayByPlayRank' class='wltCol'>Rank " + teamData.rank + "<br>AV RP " + teamData.sortOrder1 + "</td><td class='wltCol'>Qual Avg<br>" + teamData.qualAverage + "</td><td class='wltCol'>W-L-T<br>" + teamData.wins + "-" + teamData.losses + "-" + teamData.ties + "</td></tr></table>");
+            $("#" + stationList[ii] + "WinLossTie").html("<table class='wltTable'><tr><td id='" + stationList[ii] + "PlayByPlayRank' class='wltCol'>Rank " + teamData.rank + "<br>AV RP " + teamData.sortOrder1 + "</td><td class='wltCol'>Qual Avg<br>" + teamData.qualAverage + "</td><td class='wltCol'>W-L-T<br>" + teamData.wins + "-" + teamData.losses + "-" + teamData.ties + "</td></tr><tr><td colspan='3'>Event high score: " + highScores['"' + currentMatchData.teams[ii].teamNumber + '.score"'] + "<br>in " + highScores['"' + currentMatchData.teams[ii].teamNumber + '.description"'] + "</td></tr></table>");
             rankHighlight(stationList[ii] + "PlayByPlayRank", teamData.rank);
             rankHighlight(stationList[ii] + "Rank", teamData.rank);
         }
@@ -2029,7 +2022,7 @@ function getTeamData(teamList, year) {
                     var data = JSON.parse(req.responseText);
                     if (data.teams.length > 0) {
                         var teamData = data.teams[0];
-                        $("#teamsTable").append(generateTeamTableRow(teamData));
+                        $("#teamsTableBody").append(generateTeamTableRow(teamData));
                         eventTeamList.push(data.teams[0]);
                         //localStorage.teamList = JSON.stringify(eventTeamList);
                         resolve();
@@ -2078,21 +2071,42 @@ function generateMatchTableRow(matchData) {
     returnData += '<span class = "redAllianceTeam">' + getTeamForStation(matchData.teams, 'Red2').teamNumber + '</span><br><span class = "blueAllianceTeam">' + getTeamForStation(matchData.teams, 'Blue2').teamNumber + '</span></td><td>';
     returnData += '<span class = "redAllianceTeam">' + getTeamForStation(matchData.teams, 'Red3').teamNumber + '</span><br><span class = "blueAllianceTeam">' + getTeamForStation(matchData.teams, 'Blue3').teamNumber + '</span></td>';
 
-    //    returnData += getTeamForStation(matchData.teams, 'Red1').teamNumber + '</td><td>';
-    //    returnData += getTeamForStation(matchData.teams, 'Red2').teamNumber + '</td><td>';
-    //    returnData += getTeamForStation(matchData.teams, 'Red3').teamNumber + '</td><td>';
-    //    returnData += getTeamForStation(matchData.teams, 'Blue1').teamNumber + '</td><td>';
-    //    returnData += getTeamForStation(matchData.teams, 'Blue2').teamNumber + '</td><td>';
-    //    returnData += getTeamForStation(matchData.teams, 'Blue3').teamNumber + '</td>';
-
+    //Track the high scoring match
     if (matchData.scoreBlueFinal > localStorage.matchHighScore) {
         localStorage.matchHighScore = matchData.scoreBlueFinal;
-        localStorage.highScoreDetails = matchData.description;
+        localStorage.highScoreDetails = matchData.description + "<br>(" + getTeamForStation(matchData.teams, 'Blue1').teamNumber + ", " + getTeamForStation(matchData.teams, 'Blue2').teamNumber + ", " + getTeamForStation(matchData.teams, 'Blue3').teamNumber + ")";
     }
     if (matchData.scoreRedFinal > localStorage.matchHighScore) {
         localStorage.matchHighScore = matchData.scoreRedFinal;
-        localStorage.highScoreDetails = matchData.description;
+        localStorage.highScoreDetails = matchData.description + "<br>(" + getTeamForStation(matchData.teams, 'Red1').teamNumber + ", " + getTeamForStation(matchData.teams, 'Red2').teamNumber + ", " + getTeamForStation(matchData.teams, 'Red3').teamNumber + ")";
     }
+
+    //Track each team's high score
+    if (highScores['"' + getTeamForStation(matchData.teams, 'Blue1').teamNumber + '.score"'] < matchData.scoreBlueFinal) {
+        highScores['"' + getTeamForStation(matchData.teams, 'Blue1').teamNumber + '.score"'] = matchData.scoreBlueFinal;
+        highScores['"' + getTeamForStation(matchData.teams, 'Blue1').teamNumber + '.description"'] = matchData.description;
+    }
+    if (highScores['"' + getTeamForStation(matchData.teams, 'Blue2').teamNumber + '.score"'] < matchData.scoreBlueFinal) {
+        highScores['"' + getTeamForStation(matchData.teams, 'Blue2').teamNumber + '.score"'] = matchData.scoreBlueFinal;
+        highScores['"' + getTeamForStation(matchData.teams, 'Blue2').teamNumber + '.description"'] = matchData.description;
+    }
+    if (highScores['"' + getTeamForStation(matchData.teams, 'Blue3').teamNumber + '.score"'] < matchData.scoreBlueFinal) {
+        highScores['"' + getTeamForStation(matchData.teams, 'Blue3').teamNumber + '.score"'] = matchData.scoreBlueFinal;
+        highScores['"' + getTeamForStation(matchData.teams, 'Blue3').teamNumber + '.description"'] = matchData.description;
+    }
+    if (highScores['"' + getTeamForStation(matchData.teams, 'Red1').teamNumber + '.score"'] < matchData.scoreRedFinal) {
+        highScores['"' + getTeamForStation(matchData.teams, 'Red1').teamNumber + '.score"'] = matchData.scoreRedFinal;
+        highScores['"' + getTeamForStation(matchData.teams, 'Red1').teamNumber + '.description"'] = matchData.description;
+    }
+    if (highScores['"' + getTeamForStation(matchData.teams, 'Red2').teamNumber + '.score"'] < matchData.scoreRedFinal) {
+        highScores['"' + getTeamForStation(matchData.teams, 'Red2').teamNumber + '.score"'] = matchData.scoreRedFinal;
+        highScores['"' + getTeamForStation(matchData.teams, 'Red2').teamNumber + '.description"'] = matchData.description;
+    }
+    if (highScores['"' + getTeamForStation(matchData.teams, 'Red3').teamNumber + '.score"'] < matchData.scoreRedFinal) {
+        highScores['"' + getTeamForStation(matchData.teams, 'Red3').teamNumber + '.score"'] = matchData.scoreRedFinal;
+        highScores['"' + getTeamForStation(matchData.teams, 'Red3').teamNumber + '.description"'] = matchData.description;
+    }
+
     playoffResults[matchData.description] = matchWinner;
     return returnData + '</tr>';
 }
