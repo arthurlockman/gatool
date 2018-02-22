@@ -52,9 +52,8 @@
         <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'help')" id="helpTabPicker"><span class="glyphicon glyphicon-flag" aria-hidden="true"></span> <span class="mobileHide">Help</span></a></li>
         <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'cheatsheet')" id="cheatsheetTabPicker"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> <span class="mobileHide">Cheat Sheet</span></a></li>
         <!--<li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'offSeason')" id="offSeasonTabPicker"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> <span class="mobileHide">Off Season Event</span></a></li>--> 
-        <!--<li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'teamDataEntry')" id="teamInfoUpdatePicker">Update Team Data</a></li>-->
-        
-        <li><span class="navBarImage"></span></li>
+        <!--<li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'teamDataEntry')" id="teamInfoUpdatePicker">Update Team Data</a></li>--> 
+        <!--<li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'scoreDetails')" id="scoreDetailsPicker">Score details</a></li>-->
     </ul>
 </div>
 <div class="spacer"></div>
@@ -184,7 +183,7 @@
                         <td onclick="w3.sortHTMLAsNumber('#teamsTable','.teamsTableRow', '.teamDataNumber')" class="col1"><b>Team #</b></td>
                         <td onclick="w3.sortHTMLAsNumber('#teamsTable','.teamsTableRow', 'td:nth-child(2)')" class="col1"><b>Rank</b></td>
                         <td onclick="w3.sortHTML('#teamsTable','.teamsTableRow', '.teamTableName')" class="col2"><b>Team Name</b></td>
-                        <td onclick="w3.sortHTML('#teamsTable','.teamsTableRow', 'td:nth-child(4)')" class="col2"><b>City</b></td>
+                        <td onclick="w3.sortHTML('#teamsTable','.teamsTableRow', '.cityStateSort')" class="col2"><b>City</b></td>
                         <td onclick="w3.sortHTML('#teamsTable','.teamsTableRow', 'td:nth-child(5)')" class="col2"><b>Top 5 Sponsors</b></td>
                         <td onclick="w3.sortHTML('#teamsTable','.teamsTableRow', 'td:nth-child(6)')" class="col2"><b>Organization</b></td>
                         <td onclick="w3.sortHTML('#teamsTable','.teamsTableRow', 'td:nth-child(7)')" class="col1"><b>Rookie Year</b></td>
@@ -195,7 +194,8 @@
                 </tbody>
             </table>
             <p align="center">
-                <button type="button" id="billAucoinNuclearOption" class="btn btn-danger" onclick="resetAwards()">Reset stored awards to their TIMS values</button> <button type="button" id="resetVisitTimes" class="btn btn-danger" onclick="resetVisits()">Reset visit times. Use at the start of each day.</button>
+                <button type="button" id="billAucoinNuclearOption" class="btn btn-danger" onclick="resetAwards()">Reset stored awards to their TIMS values</button>
+                <button type="button" id="resetVisitTimes" class="btn btn-danger" onclick="resetVisits()">Reset visit times. Use at the start of each day.</button>
             </p>
         </div>
     </div>
@@ -657,6 +657,26 @@
             <li>Boss</li>
             <li>Polygons</li>
         </ul>
+    </div>
+    <div id="scoreDetails" class="tabcontent container-fluid">
+        <div class="container container-fluid">
+            <h2>Match Score details</h2>
+            <h4> Match number <span id="scoreDetailsMatchNumber">number</span> | Match Level <span id="scoreDetailsMatchLevel">quals</span></h4>
+            <table class="table table-striped" id="scoreTable">
+                <thead>
+                    <tr>
+                        <th scope="col">Red Alliance</th>
+                        <th scope="col">Blue Alliance</th>
+                    </tr>
+                </thead>
+                <tbody id="scoreTableBody">
+                    <tr>
+                        <td>Some detail</td>
+                        <td>Some other detail</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 <footer id="footer" class="container container-fluid gatool-footer footer">

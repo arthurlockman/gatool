@@ -465,6 +465,9 @@ color: black;
 .alertButton {
     margin-bottom: 10px
 }
+.cityStateSort {
+    display: none
+}
 
 @media (max-width: 768px) {
 p {

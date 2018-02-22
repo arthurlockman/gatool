@@ -23,7 +23,7 @@ var currentYear = 2018;
 
 
 //var list = require("./newusers.json");
-//var list = [{username:'1265216415@qq.com',password:'GuoyongLovesFIRST!'},{username:'88craver@gmail.com',password:'JeffLovesFIRST!'}];
+//var list = [{username:'sid@trashdid.com', password:'SiddarthLovesFIRST!'}];
 var list = [];
 
 var bcrypt = require('bcrypt');
@@ -100,7 +100,7 @@ function injectUser(username, password) {
 
 app.use('/api', router);
 
-router.route('/:year/events').get(cache('1 day'), function (req, res) {
+router.route('/:year/events').get(function (req, res) {
     'use strict';
     unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/events')
         .headers({
@@ -276,6 +276,27 @@ router.route('/:year/offseasonevents').get(function (req, res) {
 
 });
 
+router.route('/:year/scores/:eventCode/:tlevel/:start/:end').get(function (req, res) {
+    'use strict';
+    var matchRange = "";
+    if (req.params.start === req.params.end) {
+        matchRange = "?matchNumber=" + req.params.start;
+    } else {
+        matchRange = "?start=" + req.params.start + "&end=" + req.params.end;
+    }
+    unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/scores/' + req.params.eventCode + '/' + req.params.tlevel + matchRange)
+        .headers({
+            'Authorization': token.token,
+            'Accept': 'application/json'
+        })
+        .end(function (response) {
+            res.writeHead(200, {
+                'Content-type': 'application/json'
+            });
+            res.end(JSON.stringify(response.body), 'utf-8');
+        });
+});
+
 router.route('/:year/avatars/:eventCode/').get(cache('1 day'), function (req, res) {
     'use strict';
     var promises = [],
@@ -285,7 +306,8 @@ router.route('/:year/avatars/:eventCode/').get(cache('1 day'), function (req, re
     //get the first page of results
     unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/avatars?eventCode=' + req.params.eventCode)
         .headers({
-            'Authorization': token.token
+            'Authorization': token.token,
+            'Accept': 'application/json'
         })
         .end(function (response) {
             if (response.body !== "Invalid Season Requested : No applicable data for specified season") {
@@ -301,7 +323,8 @@ router.route('/:year/avatars/:eventCode/').get(cache('1 day'), function (req, re
                         promises.push(new Promise(function (resolve, reject) {
                             unirest.get('https://frc-api.firstinspires.org/v2.0/' + year + '/avatars?eventCode=' + eventCode + "&page=" + i)
                                 .headers({
-                                    'Authorization': token.token
+                                    'Authorization': token.token,
+            'Accept': 'application/json'
                                 })
                                 .end(function (response) {
                                     resolve(response.body);
@@ -384,7 +407,8 @@ router.route('/:year/alliances/:eventCode/').get(function (req, res) {
     'use strict';
     unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/alliances/' + req.params.eventCode)
         .headers({
-            'Authorization': token.token
+            'Authorization': token.token,
+            'Accept': 'application/json'
         })
         .end(function (response) {
             res.writeHead(200, {
@@ -445,7 +469,8 @@ router.route('/:year/schedule/:eventCode/:tlevel').get(cache('15 seconds'), func
     'use strict';
     unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/schedule/' + req.params.eventCode + '/' + req.params.tlevel + '/hybrid')
         .headers({
-            'Authorization': token.token
+            'Authorization': token.token,
+            'Accept': 'application/json'
         })
         .end(function (response) {
             res.writeHead(200, {
@@ -522,7 +547,8 @@ router.route('/:year/teamdata/:team/').get(cache('12 hours'), function (req, res
             //console.log("No stored team data for " + req.params.year + ":" + req.params.team);
             unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/teams/?teamNumber=' + req.params.team)
                 .headers({
-                    'Authorization': token.token
+                    'Authorization': token.token,
+            'Accept': 'application/json'
                 })
                 .end(function (response) {
                     //console.log("Response code:"+response.statusCode+"<br>"+JSON.stringify(response.headers));
@@ -538,7 +564,8 @@ router.route('/:year/teamdata/:team/').get(cache('12 hours'), function (req, res
             unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/teams/?teamNumber=' + req.params.team)
                 .headers({
                     'Authorization': token.token,
-                    'If-Modified-Since': JSON.parse(storedRequest).headers["date"]
+                    'If-Modified-Since': JSON.parse(storedRequest).headers["date"],
+            'Accept': 'application/json'
                 })
                 .end(function (response) {
                     //console.log("Response code:"+response.statusCode+"<br>"+JSON.stringify(response.headers));
@@ -570,7 +597,8 @@ router.route('/:year/newteamdata/:team/').get(cache('12 hours'), function (req, 
             //console.log("No stored team data for " + req.params.year + ":" + req.params.team);
             unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/teams/?teamNumber=' + req.params.team)
                 .headers({
-                    'Authorization': token.token
+                    'Authorization': token.token,
+            'Accept': 'application/json'
                 })
                 .end(function (response) {
                     //console.log("Response code:"+response.statusCode+"<br>"+JSON.stringify(response.headers));
@@ -586,7 +614,8 @@ router.route('/:year/newteamdata/:team/').get(cache('12 hours'), function (req, 
             unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/teams/?teamNumber=' + req.params.team)
                 .headers({
                     'Authorization': token.token,
-                    'If-Modified-Since': JSON.parse(storedRequest).headers["date"]
+                    'If-Modified-Since': JSON.parse(storedRequest).headers["date"],
+            'Accept': 'application/json'
                 })
                 .end(function (response) {
                     //console.log("Response code:"+response.statusCode+"<br>"+JSON.stringify(response.headers));
@@ -617,7 +646,8 @@ router.route('/:year/registrations/:event/').get(cache('10 minutes'), function (
     'use strict';
     unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/registrations/?eventCode=' + req.params.event)
         .headers({
-            'Authorization': token.token
+            'Authorization': token.token,
+            'Accept': 'application/json'
         })
         .end(function (response) {
             res.writeHead(200, {
@@ -633,7 +663,8 @@ router.route('/:year/teams/:eventCode/:page').get(cache('120 minutes'), function
     'use strict';
     unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/teams/?eventcode=' + req.params.eventCode + "&page=" + req.params.page)
         .headers({
-            'Authorization': token.token
+            'Authorization': token.token,
+            'Accept': 'application/json'
         })
         .end(function (response) {
             res.writeHead(200, {
@@ -787,7 +818,8 @@ router.route('/:year/rankings/:eventCode/').get(cache('15 seconds'), function (r
     'use strict';
     unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/rankings/' + req.params.eventCode)
         .headers({
-            'Authorization': token.token
+            'Authorization': token.token,
+            'Accept': 'application/json'
         })
         .end(function (response) {
             res.writeHead(200, {
@@ -863,7 +895,8 @@ router.route('/:year/awards/:teamNumber/').get(cache('1 hours'), function (req, 
             //console.log("No stored awards data for " + req.params.year + ":" + req.params.teamNumber);
             unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/awards/' + req.params.teamNumber)
                 .headers({
-                    'Authorization': token.token
+                    'Authorization': token.token,
+            'Accept': 'application/json'
                 })
                 .end(function (response) {
                     if (req.params.year < currentYear) {
@@ -886,7 +919,8 @@ router.route('/:year/awards/:teamNumber/').get(cache('1 hours'), function (req, 
                 unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/awards/' + req.params.teamNumber)
                     .headers({
                         'Authorization': token.token,
-                        'If-Modified-Since': JSON.parse(storedRequest).headers.date
+                        'If-Modified-Since': JSON.parse(storedRequest).headers.date,
+            'Accept': 'application/json'
                     })
                     .end(function (response) {
                         if (response.statusCode === 304) {
@@ -925,7 +959,8 @@ router.route('/:year/awardsv2/:teamNumber/').get(cache('1 hours'), function (req
                 //console.log("No stored awards data for " + year + ":" + teamNumber);
                 unirest.get('https://frc-api.firstinspires.org/v2.0/' + year + '/awards/' + teamNumber)
                     .headers({
-                        'Authorization': token.token
+                        'Authorization': token.token,
+            'Accept': 'application/json'
                     })
                     .end(function (response) {
                         if (year < currentYear) {
@@ -947,7 +982,8 @@ router.route('/:year/awardsv2/:teamNumber/').get(cache('1 hours'), function (req
                     unirest.get('https://frc-api.firstinspires.org/v2.0/' + year + '/awards/' + teamNumber)
                         .headers({
                             'Authorization': token.token,
-                            'If-Modified-Since': JSON.parse(storedRequest).headers.date
+                            'If-Modified-Since': JSON.parse(storedRequest).headers.date,
+            'Accept': 'application/json'
                         })
                         .end(function (response) {
                             if (response.statusCode === 304) {
@@ -973,7 +1009,8 @@ router.route('/:year/awardsv2/:teamNumber/').get(cache('1 hours'), function (req
                 //console.log("No stored awards data for " + year + ":" + teamNumber);
                 unirest.get('https://frc-api.firstinspires.org/v2.0/' + year1 + '/awards/' + teamNumber)
                     .headers({
-                        'Authorization': token.token
+                        'Authorization': token.token,
+            'Accept': 'application/json'
                     })
                     .end(function (response) {
                         if (year1 < currentYear) {
@@ -993,7 +1030,8 @@ router.route('/:year/awardsv2/:teamNumber/').get(cache('1 hours'), function (req
                     unirest.get('https://frc-api.firstinspires.org/v2.0/' + year1 + '/awards/' + teamNumber)
                         .headers({
                             'Authorization': token.token,
-                            'If-Modified-Since': JSON.parse(storedRequest).headers.date
+                            'If-Modified-Since': JSON.parse(storedRequest).headers.date,
+            'Accept': 'application/json'
                         })
                         .end(function (response) {
                             if (response.statusCode === 304) {
@@ -1019,7 +1057,8 @@ router.route('/:year/awardsv2/:teamNumber/').get(cache('1 hours'), function (req
                 //console.log("No stored awards data for " + year2 + ":" + teamNumber);
                 unirest.get('https://frc-api.firstinspires.org/v2.0/' + year2 + '/awards/' + teamNumber)
                     .headers({
-                        'Authorization': token.token
+                        'Authorization': token.token,
+            'Accept': 'application/json'
                     })
                     .end(function (response) {
                         if (year2 < currentYear) {
@@ -1039,7 +1078,8 @@ router.route('/:year/awardsv2/:teamNumber/').get(cache('1 hours'), function (req
                     unirest.get('https://frc-api.firstinspires.org/v2.0/' + year2 + '/awards/' + teamNumber)
                         .headers({
                             'Authorization': token.token,
-                            'If-Modified-Since': JSON.parse(storedRequest).headers.date
+                            'If-Modified-Since': JSON.parse(storedRequest).headers.date,
+            'Accept': 'application/json'
                         })
                         .end(function (response) {
                             if (response.statusCode === 304) {
@@ -1092,7 +1132,8 @@ function getAwards(teamNumber, year) {
             //console.log("No stored awards data for " + year + ":" + teamNumber);
             unirest.get('https://frc-api.firstinspires.org/v2.0/' + year + '/awards/' + teamNumber)
                 .headers({
-                    'Authorization': token.token
+                    'Authorization': token.token,
+            'Accept': 'application/json'
                 })
                 .end(function (response) {
                     if (year < currentYear) {
@@ -1112,7 +1153,8 @@ function getAwards(teamNumber, year) {
                 unirest.get('https://frc-api.firstinspires.org/v2.0/' + year + '/awards/' + teamNumber)
                     .headers({
                         'Authorization': token.token,
-                        'If-Modified-Since': JSON.parse(storedRequest).headers.date
+                        'If-Modified-Since': JSON.parse(storedRequest).headers.date,
+            'Accept': 'application/json'
                     })
                     .end(function (response) {
                         if (response.statusCode === 304) {
