@@ -98,6 +98,16 @@ function injectUser(username, password) {
     });
 }
 
+function safeParseJson(responseBody) {
+    var _res = responseBody;
+    try {
+        _res = JSON.parse(_res);
+    } catch (err) {
+        _res = JSON.parse(_res.substr(1));
+    }
+    return _res;
+}
+
 app.use('/api', router);
 
 router.route('/:year/events').get(function (req, res) {
@@ -108,13 +118,7 @@ router.route('/:year/events').get(function (req, res) {
             'Accept': 'application/json'
         })
         .end(function (response) {
-            var _res = response.body;
-            try {
-                _res = JSON.parse(response.body);
-            } catch (err) {
-                _res = JSON.parse(response.body.substr(1));
-            }
-            res.json(_res);
+            res.json(safeParseJson(response.body));
         });
 
     //db.get("eventslist." + req.params.year, function (err, storedRequest) {
