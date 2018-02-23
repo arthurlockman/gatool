@@ -104,13 +104,17 @@ router.route('/:year/events').get(function (req, res) {
     'use strict';
     unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/events')
         .headers({
-            'Authorization': token.token
+            'Authorization': token.token,
+            'Accept': 'application/json'
         })
         .end(function (response) {
-            res.writeHead(200, {
-                'Content-type': 'application/json'
-            });
-            res.end(JSON.stringify(response.body), 'utf-8');
+            var _res = response.body;
+            try {
+                _res = JSON.parse(response.body);
+            } catch (err) {
+                _res = JSON.parse(response.body.substr(1));
+            }
+            res.json(_res);
         });
 
     //db.get("eventslist." + req.params.year, function (err, storedRequest) {
