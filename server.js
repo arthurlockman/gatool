@@ -98,19 +98,27 @@ function injectUser(username, password) {
     });
 }
 
+function safeParseJson(responseBody) {
+    var _res = responseBody;
+    try {
+        _res = JSON.parse(_res);
+    } catch (err) {
+        _res = JSON.parse(_res.substr(1));
+    }
+    return _res;
+}
+
 app.use('/api', router);
 
 router.route('/:year/events').get(function (req, res) {
     'use strict';
     unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/events')
         .headers({
-            'Authorization': token.token
+            'Authorization': token.token,
+            'Accept': 'application/json'
         })
         .end(function (response) {
-            res.writeHead(200, {
-                'Content-type': 'application/json'
-            });
-            res.end(JSON.stringify(response.body), 'utf-8');
+            res.json(safeParseJson(response.body));
         });
 
     //db.get("eventslist." + req.params.year, function (err, storedRequest) {
