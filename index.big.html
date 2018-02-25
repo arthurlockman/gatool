@@ -66,6 +66,26 @@
                     <option id="yearPicker2017">2017</option>
                     <option id="yearPicker2016">2016</option>
                 </select>
+                <select class="selectpicker" id="eventFilters" multiple title="Filter your event list..." data-selected-text-format="count > 2">
+                    <option id="filtersclear" value="clear">Remove Filters</option>
+                    <option id="filtersfuture" value="future">Future Events</option>
+                    <option id="filterspast" value="past">Past Events</option>
+                    <option id="filterschamps" value="champs">FIRST Champs</option>
+                    <option id="filtersregionals" value="regional">Regionals</option>
+                    <optgroup label="Districts">
+                    <option id="filterschs" value="CHS">FIRST Chesapeake</option>
+                    <option id="filtersin" value="IN">IndianaFIRST</option>
+                    <option id="filtersisr" value="ISR">FIRST Israel</option>
+                    <option id="filtersmar" value="MAR">Mid-Atlantic Robotics</option>
+                    <option id="filtersfim" value="FIM">FIRST in Michigan</option>
+                    <option id="filtersne" value="NE">New England</option>
+                    <option id="filtersnc" value="NC">North Carolina</option>
+                    <option id="filtersont" value="ONT">Ontario</option>
+                    <option id="filterspnw" value="PNW">Pacific Northwest</option>
+                    <option id="filterspch" value="PCH">Peachtree</option>
+                    </optgroup>
+                    <option id="filteroffseason" value="offseason">• Offseason •</option>
+                </select>
             </p>
             <p>
                 <select class="selectpicker" data-live-search="true" id="eventSelector" data-width="fit">

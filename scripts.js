@@ -51,6 +51,9 @@ if (!localStorage.showEventNames) {
 if (!localStorage.offseason) {
     localStorage.offseason = "false";
 }
+if (!localStorage.eventFilters) {
+    localStorage.eventFilters = [];
+}
 
 // reset some of those variables, which will be adjusted later.
 localStorage.clock = "ready";
@@ -159,6 +162,9 @@ window.onload = function () {
 
     //Set awardDepth value
     $("#awardDepthPicker").selectpicker('val', localStorage.awardDepth);
+
+    //Set Event Filter values
+    $("#eventFilters").selectpicker('val', localStorage.eventFilters)
 
 
     $("#loadingFeedback").html("Enabling controls...");
@@ -322,6 +328,27 @@ window.onload = function () {
     } else {
         localStorage.showEventNames = "false";
     }
+
+    //Handle Event Filter change
+    document.getElementById('eventFilters').onchange = function () {
+        localStorage.eventFilters = JSON.stringify($("#eventFilters").selectpicker('val'));
+        var filterClasses = "";
+        $(".eventsfilter").hide();
+        var filters = $("#eventFilters").selectpicker('val');
+        if (filters[0] === "clear" || filters.length === 0) {
+            $("#eventFilters").selectpicker('deselectAll');
+            $(".eventsfilter").show();
+        } else {
+            console.log(filters);
+            filterClasses = ".filters"+filters[0];
+            if (filters.length > 1) {
+            for (var i=1;i<filters.length;i++){
+                filterClasses += ".filters"+filters[i];              
+            }}
+            $(filterClasses).show();
+        }
+
+    };
 
     $("#loadingFeedback").html("Setting up offseason mode...");
     //Setup the Offseason schedule upload and reset buttons. See their respective fuctions for details.
@@ -562,6 +589,7 @@ function loadEventsList() {
     localStorage.currentYear = e.options[e.selectedIndex].value;
     $("#eventUpdateContainer").html("Loading event list...");
     var req = new XMLHttpRequest();
+    //req.responseType = 'json';
     var endpoint = "/events";
     if (localStorage.offseason === "true") {
         endpoint = "/offseasonevents";
@@ -594,15 +622,29 @@ function loadEventsList() {
             var optionClass = "";
             var optionPrefix = "";
             var optionPostfix = "";
+            var optionFilter = "";
+            var timeNow = moment();
+            var eventTime = moment(option.value.dateEnd);
             if (option.value.type === "OffSeasonWithAzureSync") {
                 optionClass = "bg-info";
                 optionPrefix = "•• ";
                 optionPostfix = " ••";
             }
+            if (option.value.type.startsWith("Regional")) {
+                optionFilter += " eventsfilter filtersregional";
+            } else if (option.value.type.startsWith("Champion")) {
+                optionFilter += " eventsfilter filterschamps";
+            } else if (option.value.type.startsWith("OffSeason")) {
+                optionFilter += " eventsfilter filtersoffseason";
+            } else if (option.value.type.startsWith("District")) {
+                optionFilter += " eventsfilter filters" + option.value.districtCode;
+            }
+            if (timeNow.diff(eventTime) <0) {optionFilter += " filtersfuture";} else {optionFilter += " filterspast";}
+
             sel.append($('<option></option>')
                 .attr({
                     'value': JSON.stringify(option.value),
-                    'class': optionClass,
+                    'class': optionClass + optionFilter,
                     'id': 'eventSelector' + option.value.code
                 }).text(optionPrefix + option.text + optionPostfix));
         });
