@@ -52,7 +52,7 @@ if (!localStorage.offseason) {
     localStorage.offseason = "false";
 }
 if (!localStorage.eventFilters) {
-    localStorage.eventFilters = ["future"];
+    localStorage.eventFilters = JSON.stringify(["future"]);
 }
 if (!localStorage.currentEventList) {
     localStorage.currentEventList = [];
@@ -140,8 +140,8 @@ window.onload = function () {
 
     //change the Select Picker behavior to support Mobile browsers with native controls
     //if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
-//        $('.selectpicker').selectpicker('mobile');
-//    }
+    //        $('.selectpicker').selectpicker('mobile');
+    //    }
 
     $("#loadingFeedback").html("Restoring settings...");
     //Set the controls to the previous selected values
@@ -168,7 +168,7 @@ window.onload = function () {
     $("#awardDepthPicker").selectpicker('val', localStorage.awardDepth);
 
     //Set Event Filter values
-    $("#eventFilters").selectpicker('val', localStorage.eventFilters);
+    $("#eventFilters").selectpicker('val', JSON.parse(localStorage.eventFilters));
 
 
     $("#loadingFeedback").html("Enabling controls...");
@@ -336,21 +336,7 @@ window.onload = function () {
     //Handle Event Filter change
     document.getElementById('eventFilters').onchange = function () {
         localStorage.eventFilters = JSON.stringify($("#eventFilters").selectpicker('val'));
-        var filterClasses = "";
-        $(".eventsfilter").hide();
-        var filters = $("#eventFilters").selectpicker('val');
-        if (filters[0] === "clear" || filters.length === 0) {
-            $("#eventFilters").selectpicker('deselectAll');
-            $(".eventsfilter").show();
-        } else {
-            //console.log(filters);
-            filterClasses = ".filters"+filters[0];
-            if (filters.length > 1) {
-            for (var i=1;i<filters.length;i++){
-                filterClasses += ".filters"+filters[i];              
-            }}
-            $(filterClasses).show();
-        }
+        filterEvents();
 
     };
 
@@ -600,80 +586,105 @@ function loadEventsList() {
     }
     req.open('GET', apiURL + localStorage.currentYear + endpoint);
     req.addEventListener('load', function () {
-         localStorage.currentEventList = JSON.stringify(JSON.parse(req.responseText).Events);
+        localStorage.currentEventList = JSON.stringify(JSON.parse(req.responseText).Events);
         currentEventList = JSON.parse(req.responseText).Events;
         createEventMenu();
-        
+        filterEvents();
+
     });
     req.send();
 }
 
+function filterEvents() {
+    "use strict";
+    var filterClasses = "";
+    $(".eventsfilter").hide();
+    var filters = $("#eventFilters").selectpicker('val');
+    if (filters[0] === "clear" || filters.length === 0) {
+        $("#eventFilters").selectpicker('deselectAll');
+        $(".eventsfilter").show();
+    } else {
+        //console.log(filters);
+        filterClasses = ".filters" + filters[0];
+        if (filters.length > 1) {
+            for (var i = 1; i < filters.length; i++) {
+                filterClasses += ".filters" + filters[i];
+            }
+        }
+        $(filterClasses).show();
+    }
+}
+
 function createEventMenu() {
     "use strict";
-        var tmp = currentEventList;
-        var options = [];
-        var events = {};
-        for (var i = 0; i < tmp.length; i++) {
-            var _option = {
-                text: tmp[i].name,
-                value: tmp[i]
-            };
-            options.push(_option);
-            events[tmp[i].code] = tmp[i].name;
+    var tmp = currentEventList;
+    var options = [];
+    var events = {};
+    for (var i = 0; i < tmp.length; i++) {
+        var _option = {
+            text: tmp[i].name,
+            value: tmp[i]
+        };
+        options.push(_option);
+        events[tmp[i].code] = tmp[i].name;
+    }
+    options.sort(function (a, b) {
+        if (a.text < b.text) {
+            return -1;
         }
-        options.sort(function (a, b) {
-            if (a.text < b.text) {
-                return -1;
-            }
-            if (a.text > b.text) {
-                return 1;
-            }
-            return 0;
-        });
-        var sel = $('#eventSelector');
-        sel.empty();
-        $.each(options, function (index, option) {
-            var optionClass = "";
-            var optionPrefix = "";
-            var optionPostfix = "";
-            var optionFilter = "";
-            var timeNow = moment();
-            var eventTime = moment(option.value.dateEnd);
-            if (option.value.type === "OffSeasonWithAzureSync") {
-                optionClass = "bg-info";
-                optionPrefix = "•• ";
-                optionPostfix = " ••";
-            }
-            if (option.value.type.startsWith("Regional")) {
-                optionFilter += " eventsfilter filtersregional";
-            } else if (option.value.type.startsWith("Champion")) {
-                optionFilter += " eventsfilter filterschamps";
-            } else if (option.value.type.startsWith("OffSeason")) {
-                optionFilter += " eventsfilter filtersoffseason";
-            } else if (option.value.type.startsWith("District")) {
-                optionFilter += " eventsfilter filters" + option.value.districtCode;
-            }
-            if (timeNow.diff(eventTime) <0) {optionFilter += " filtersfuture";} else {optionFilter += " filterspast";}
-
-            sel.append($('<option></option>')
-                .attr({
-                    'value': JSON.stringify(option.value),
-                    'class': optionClass + optionFilter,
-                    'id': 'eventSelector' + option.value.code
-                }).text(optionPrefix + option.text + optionPostfix));
-        });
-        if (!localStorage.eventSelector) {
-            sel.selectpicker('refresh');
+        if (a.text > b.text) {
+            return 1;
+        }
+        return 0;
+    });
+    var sel = $('#eventSelector');
+    sel.empty();
+    $.each(options, function (index, option) {
+        var optionClass = "";
+        var optionPrefix = "";
+        var optionPostfix = "";
+        var optionFilter = "";
+        var timeNow = moment();
+        var eventTime = moment(option.value.dateEnd);
+        if (option.value.type === "OffSeasonWithAzureSync") {
+            optionClass = "bg-info";
+            optionPrefix = "•• ";
+            optionPostfix = " ••";
+        }
+        if (option.value.type.startsWith("Regional")) {
+            optionFilter += " eventsfilter filtersregional";
+        } else if (option.value.type.startsWith("Champion")) {
+            optionFilter += " eventsfilter filterschamps";
+        } else if (option.value.type.startsWith("OffSeason")) {
+            optionFilter += " eventsfilter filtersoffseason";
+        } else if (option.value.type.startsWith("District")) {
+            optionFilter += " eventsfilter filters" + option.value.districtCode;
+        }
+        if (timeNow.diff(eventTime) < 0) {
+            optionFilter += " filtersfuture";
         } else {
-            if (localStorage.eventSelector) {
-                document.getElementById("eventSelector" + localStorage.eventSelector).selected = true;
-            }
-            sel.selectpicker('refresh');
+            optionFilter += " filterspast";
         }
 
-        localStorage.events = JSON.stringify(events);
-        handleEventSelection();
-        $("#eventUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+        sel.append($('<option></option>')
+            .attr({
+                'value': JSON.stringify(option.value),
+                'class': optionClass + optionFilter,
+                'id': 'eventSelector' + option.value.code
+            }).text(optionPrefix + option.text + optionPostfix));
+    });
+    if (!localStorage.eventSelector) {
+        sel.selectpicker('refresh');
+    } else {
+        if (localStorage.eventSelector) {
+            document.getElementById("eventSelector" + localStorage.eventSelector).selected = true;
+        }
+        sel.selectpicker('refresh');
+    }
+
+    localStorage.events = JSON.stringify(events);
+    handleEventSelection();
+    $("#eventUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
 }
 
 function getTeamUpdates(teamNumber) {
