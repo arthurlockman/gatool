@@ -52,7 +52,10 @@ if (!localStorage.offseason) {
     localStorage.offseason = "false";
 }
 if (!localStorage.eventFilters) {
-    localStorage.eventFilters = [];
+    localStorage.eventFilters = ["future"];
+}
+if (!localStorage.currentEventList) {
+    localStorage.currentEventList = [];
 }
 
 // reset some of those variables, which will be adjusted later.
@@ -101,6 +104,7 @@ var teamLoadProgressBar = 0;
 var lastSchedulePage = false;
 var haveRanks = false;
 var highScores = {};
+var currentEventList = [];
 for (var i = 1; i < 9; i++) {
     allianceChoices['Alliance' + i + 'Captain'] = "";
 }
@@ -135,9 +139,9 @@ window.onload = function () {
     $('#scheduleProgressBar').hide();
 
     //change the Select Picker behavior to support Mobile browsers with native controls
-    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
-        $('.selectpicker').selectpicker('mobile');
-    }
+    //if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
+//        $('.selectpicker').selectpicker('mobile');
+//    }
 
     $("#loadingFeedback").html("Restoring settings...");
     //Set the controls to the previous selected values
@@ -164,7 +168,7 @@ window.onload = function () {
     $("#awardDepthPicker").selectpicker('val', localStorage.awardDepth);
 
     //Set Event Filter values
-    $("#eventFilters").selectpicker('val', localStorage.eventFilters)
+    $("#eventFilters").selectpicker('val', localStorage.eventFilters);
 
 
     $("#loadingFeedback").html("Enabling controls...");
@@ -339,7 +343,7 @@ window.onload = function () {
             $("#eventFilters").selectpicker('deselectAll');
             $(".eventsfilter").show();
         } else {
-            console.log(filters);
+            //console.log(filters);
             filterClasses = ".filters"+filters[0];
             if (filters.length > 1) {
             for (var i=1;i<filters.length;i++){
@@ -596,7 +600,17 @@ function loadEventsList() {
     }
     req.open('GET', apiURL + localStorage.currentYear + endpoint);
     req.addEventListener('load', function () {
-        var tmp = JSON.parse(req.responseText).Events;
+         localStorage.currentEventList = JSON.stringify(JSON.parse(req.responseText).Events);
+        currentEventList = JSON.parse(req.responseText).Events;
+        createEventMenu();
+        
+    });
+    req.send();
+}
+
+function createEventMenu() {
+    "use strict";
+        var tmp = currentEventList;
         var options = [];
         var events = {};
         for (var i = 0; i < tmp.length; i++) {
@@ -660,8 +674,6 @@ function loadEventsList() {
         localStorage.events = JSON.stringify(events);
         handleEventSelection();
         $("#eventUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
-    });
-    req.send();
 }
 
 function getTeamUpdates(teamNumber) {
