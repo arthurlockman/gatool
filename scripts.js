@@ -1120,7 +1120,7 @@ function getTeamList(year, pageNumber) {
                 team.qualAverage = "";
                 team.dq = "";
                 team.matchesPlayed = "";
-                team.lastVisit = "No recent visit";
+                //team.lastVisit = "No recent visit";
 
                 localStorage['teamData' + eventTeamList[j].teamNumber] = JSON.stringify(team);
                 highScores['"' + eventTeamList[j].teamNumber + '.score"'] = 0;
@@ -3186,6 +3186,9 @@ function timer() {
             $(this).html(moment($(this).attr("lastVisit")).fromNow());
         }
     });
+    
+    //display the amount of localStorage in use
+    $("#localStorageUsage").html(localStorageSpace() + " in use");
 }
 
 function parsePlayoffMatchName(matchName) {
@@ -3651,3 +3654,23 @@ function clearFileInput(id) {
 
     oldInput.parentNode.replaceChild(newInput, oldInput);
 }
+
+function localStorageSpace () {
+    "use strict";
+        var allStrings = '';
+    var localStorageSize = {};
+        for(var key in window.localStorage){
+            if(window.localStorage.hasOwnProperty(key)){
+                allStrings += window.localStorage[key];
+            }
+        }
+    if (allStrings) {} {
+        localStorageSize.size = ((allStrings.length*16)/(8*1024));
+        localStorageSize.marker = " KB";
+        if (localStorageSize.size > 1024) {
+            localStorageSize.marker = " MB";
+            localStorageSize.size = localStorageSize.size/1024;
+        }
+    }
+        return allStrings ? (3 +  Math.round(localStorageSize.size)) + localStorageSize.marker : 'Empty (0 KB)';
+    }

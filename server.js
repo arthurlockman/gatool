@@ -20,10 +20,11 @@ var cache = apicache.middleware;
 var token = require("./token.json");
 var tbatoken = require("./tbatoken.json");
 var currentYear = 2018;
+var schedule, highscore = {};
 
 
-//var list = require("./newusers.json");
-//var list = [{username:'sid@trashdid.com', password:'SiddarthLovesFIRST!'}];
+//var list = require("./newusers");
+//var list = [{username:'sweet_itami48@hotmail.com', password:'GabrielaLovesFIRST!'}];
 var list = [];
 
 var bcrypt = require('bcrypt');
@@ -50,6 +51,9 @@ var teamUpdate = level("./teamUpdate/", options);
 var teamAwards = level("./teamAwards/", options);
 var offseasonEvents = level("./offseasonEvents/", options);
 var teamData = level("./teamdata/", options);
+var seasonHighScore = level("./seasonHighScore/", {
+    valueEncoding: 'json'
+});
 
 var bodyParser = require('body-parser');
 app.use(cors()); //enable cors for mobile and desktop apps
@@ -121,6 +125,77 @@ router.route('/:year/events').get(function (req, res) {
             'Accept': 'application/json'
         })
         .end(function (response) {
+            res.json(safeParseJson(response.body));
+        });
+
+    //db.get("eventslist." + req.params.year, function (err, storedRequest) {
+    //        if (err) {
+    //            //console.log("No stored events data for " + req.params.year);
+    //            unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/events')
+    //                .headers({
+    //                    'Authorization': token.token
+    //                })
+    //                .end(function (response) {
+    //                    db.put("eventslist." + req.params.year, JSON.stringify(response));
+    //                    res.writeHead(200, {
+    //                        'Content-type': 'application/json'
+    //                    });
+    //                    res.end(JSON.stringify(response.body), 'utf-8');
+    //                });
+    //        } else {
+    //            if (req.params.year < currentYear) {
+    //                //console.log("Sending stored events data for " + req.params.year + ":" + req.params.eventCode);
+    //                res.writeHead(200, {
+    //                    'Content-type': 'application/json'
+    //                });
+    //                res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
+    //            } else {
+    //                //console.log("Reading events data for " + req.params.year + " from FIRST");
+    //                unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/events')
+    //                    .headers({
+    //                        'Authorization': token.token,
+    //                        'If-Modified-Since': JSON.parse(storedRequest).headers["date"]
+    //                    })
+    //                    .end(function (response) {
+    //                        if (response.statusCode === 304) {
+    //                            //console.log("Stored events are current. Sending stored events for " + req.params.year);
+    //                            res.writeHead(200, {
+    //                                'Content-type': 'application/json'
+    //                            });
+    //                            res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
+    //                        } else {
+    //                            //console.log("Stored events are stale. Saving result and sending new events for " + req.params.year);
+    //                            db.put("eventslist." + req.params.year, JSON.stringify(response));
+    //                            res.writeHead(200, {
+    //                                'Content-type': 'application/json'
+    //                            });
+    //                            res.end(JSON.stringify(response.body), 'utf-8');
+    //                        }
+    //                    });
+    //            }
+    //        }
+    //    });
+});
+
+router.route('/:year/highscore').get(function (req, res) {
+    'use strict';
+    unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/events')
+        .headers({
+            'Authorization': token.token,
+            'Accept': 'application/json'
+        })
+        .end(function (response) {
+            var events = safeParseJson(response.body).Events;
+            for (var i = 0; i < events.length; i++) {
+
+                if (Date(events[i].dateEnd).getTime() < Date().getTime()) {
+                    //get the quals results then the playoff results and find the high match
+                    unirest.get();
+                }
+            }
+
+
+
             res.json(safeParseJson(response.body));
         });
 
@@ -473,6 +548,41 @@ router.route('/:year/schedule/:eventCode/:tlevel').get(cache('15 seconds'), func
         })
         .end(function (response) {
             res.json(safeParseJson(response.body));
+            schedule = safeParseJson(response.body).Schedule;
+            seasonHighScore.get(req.params.eventCode + "." + req.params.year + "." + req.params.tlevel, function (err, storedRequest) {
+                highscore = {};
+                var storedScore = {};
+                if (err) {
+                    storedScore.score = 0;
+                } else {
+                    storedScore = JSON.parse(storedRequest);
+                }
+
+                for (var i = 0; i < schedule.length; i++) {
+                    var match = schedule[i];
+                    if (match.scoreRedFinal > storedScore.score) {
+                        storedScore.score = match.scoreRedFinal;
+                        storedScore.alliance = "Red";
+                        storedScore.event = req.params.eventCode;
+                        storedScore.year = req.params.year;
+                        storedScore.tlevel = req.params.tlevel;
+                        storedScore.details = match;
+                        seasonHighScore.put(req.params.eventCode + "." + req.params.year + "." + req.params.tlevel, JSON.stringify(storedScore));
+                    } else if (match.scoreBlueFinal > storedScore.score) {
+                        storedScore.score = match.scoreBlueFinal;
+                        storedScore.alliance = "Blue";
+                        storedScore.event = req.params.eventCode;
+                        storedScore.year = req.params.year;
+                        storedScore.tlevel = req.params.tlevel;
+                        storedScore.details = match;
+                        seasonHighScore.put(req.params.eventCode + "." + req.params.year + "." + req.params.tlevel, JSON.stringify(storedScore));
+                    }
+
+                }
+                
+            });
+
+
         });
 
     //db.get("schedule." + req.params.eventCode + "." + req.params.year + "." + req.params.tlevel, function (err, storedRequest) {
