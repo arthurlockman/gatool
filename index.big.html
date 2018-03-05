@@ -33,6 +33,7 @@
 <script src="js/xlsx.full.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 
+<script src="//use.edgefonts.net/bebas-neue.js"></script>
 <script src="js/bootstrap-select.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="js/w3.js" type="text/javascript" charset="utf-8"></script>
 <script src="js/scripts.min.js" type="text/javascript" charset="utf-8"></script>
@@ -54,6 +55,7 @@
         <!--<li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'offSeason')" id="offSeasonTabPicker"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> <span class="mobileHide">Off Season Event</span></a></li>--> 
         <!--<li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'teamDataEntry')" id="teamInfoUpdatePicker">Update Team Data</a></li>--> 
         <!--<li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'scoreDetails')" id="scoreDetailsPicker">Score details</a></li>-->
+        <li><a href="javascript:void(0)" class="tablinks" onclick="openTab(event, 'davidPrice')" id="davidPriceTabPicker"><span class="glyphicon glyphicon-gift" aria-hidden="true"></span> <span class="mobileHide">Emcee #s</span></a></li>
     </ul>
 </div>
 <div class="spacer"></div>
@@ -477,7 +479,7 @@
     </div>
     <div id="allianceselection" class="tabcontent container-fluid">
         <div id="allianceInfo" class="allianceAnnounce">
-            <p><span id="eventNameAllianceSelection"></span>Before the selection begins and to help introduce the Alliance Captains with the MC, tap the Alliance Captains to see their team name, school/organization, and home town.<br>
+            <p><span id="eventNameAllianceSelection"></span><span id="allianceselectionlastupdated"></span>Before the selection begins and to help introduce the Alliance Captains with the MC, tap the Alliance Captains to see their team name, school/organization, and home town.<br>
                 <strong>IMPORTANT: Tap <em>Alliance Captain Announce</em> to continue announcing the Captains.</strong></p>
             <p>When it's time for Alliance Selection, simply tap a team when their number is called. If they accept, tap <strong>Gratefully Accept</strong>. If they decline, tap <strong>Respectfully Decline</strong>.</p>
             <p id="allianceUndoButton" class="btn-warning">Undo Alliance Selection Choice<span id="undoAlliance"></span></p>
@@ -677,6 +679,11 @@
             <li>Boss</li>
             <li>Polygons</li>
         </ul>
+    </div>
+    <div id="davidPrice" class="container-fluid tabcontent">
+        
+        <div id="davidPriceNumber" class="container-fluid davidPrice">S2M2</div>
+        
     </div>
     <div id="scoreDetails" class="tabcontent container-fluid">
         <div class="container container-fluid">

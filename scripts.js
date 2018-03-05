@@ -105,6 +105,7 @@ var lastSchedulePage = false;
 var haveRanks = false;
 var highScores = {};
 var currentEventList = [];
+var lastRanksUpdate = "";
 for (var i = 1; i < 9; i++) {
     allianceChoices['Alliance' + i + 'Captain'] = "";
 }
@@ -519,7 +520,7 @@ function handleEventSelection() {
     localStorage.matchHighScore = 0;
     localStorage.highScoreDetails = "{}";
     $("#eventName").html("<b>" + JSON.parse(document.getElementById("eventSelector").value).name + "</b>");
-    $("#eventNameAllianceSelection").html("<b>" + localStorage.eventName + "</b><br>");
+    $("#eventNameAllianceSelection").html("<b>" + localStorage.eventName + " </b>");
     $("#eventNameAwards").html("<b>" + localStorage.eventName + "</b><br>");
 }
 
@@ -568,7 +569,7 @@ function handleOffseasonEventSelection() {
     localStorage.matchHighScore = 0;
     localStorage.highScoreDetails = "{}";
     $("#eventName").html("<b>" + JSON.parse(document.getElementById("eventSelector").value).name + "</b>");
-    $("#eventNameAllianceSelection").html("<b>" + localStorage.eventName + "</b><br>");
+    $("#eventNameAllianceSelection").html("<b>" + localStorage.eventName + "<br>");
     $("#eventNameAwards").html("<b>" + localStorage.eventName + "</b><br>");
 }
 
@@ -838,6 +839,11 @@ function getRegularSeasonSchedule() {
             localStorage.qualsList = JSON.stringify(data);
             $("#announceBanner, #playByPlayBanner").hide();
             $("#announceDisplay, #playByPlayDisplay").show();
+            
+            //patch for missing scores
+            $("#allianceSelectionPlaceholder").hide();
+            $("#allianceSelectionTable").show();
+            
             if (lastMatchPlayed >= data.Schedule.length - 1) {
                 $("#allianceSelectionPlaceholder").hide();
                 $("#allianceSelectionTable").show();
@@ -882,6 +888,11 @@ function getRegularSeasonSchedule() {
             $("#matchPicker").selectpicker('refresh');
             localStorage.inPlayoffs = "true";
             prepareAllianceSelection();
+            
+            //patch for missing scores
+            $("#allianceSelectionPlaceholder").hide();
+            $("#allianceSelectionTable").show();
+            
             if (lastMatchPlayed >= data.Schedule.length - 1) {
                 $("#allianceSelectionPlaceholder").hide();
                 $("#allianceSelectionTable").show();
@@ -1328,6 +1339,8 @@ function scaleRows() {
 
 function announceDisplay() {
     "use strict";
+    $("#davidPrice").removeClass("redScore");
+    $("#davidPrice").removeClass("blueScore");
     var qualsList = JSON.parse(localStorage.qualsList);
     var currentMatch = localStorage.currentMatch - 1;
     var teamCount = 6;
@@ -1366,15 +1379,25 @@ function announceDisplay() {
         $("#topMatchNameAnnounce").html(localStorage.eventName + "<br>" + parsePlayoffMatchName(currentMatchData.description));
         $("#matchName").html(parsePlayoffMatchName(currentMatchData.description));
         $("#topMatchNamePlayByPlay").html(parsePlayoffMatchName(currentMatchData.description));
+        $("#davidPriceNumber").html(davidPriceFormat(parsePlayoffMatchName(currentMatchData.description)));
 
     } else {
         $("#matchNameAnnounce").html("<b>" + currentMatchData.description + " of " + qualsList.Schedule.length + "</b>");
         $("#topMatchNameAnnounce").html("<b>" + localStorage.eventName + "<br>" + currentMatchData.description + " of " + qualsList.Schedule.length + "</b>");
         $("#matchName").html("<b>" + currentMatchData.description + " of " + qualsList.Schedule.length + "</b>");
         $("#topMatchNamePlayByPlay").html("<b>" + currentMatchData.description + " of " + qualsList.Schedule.length + "</b>");
+        $("#davidPriceNumber").html(davidPriceFormat(currentMatchData.description));
     }
     $("#eventHighScorePlayByPlay").html("<b>Current High Score: " + localStorage.matchHighScore + "<br>from " + localStorage.highScoreDetails + "</b>");
-
+    
+    function davidPriceFormat(MatchData) {
+        var str = MatchData.split(" ",4);
+        MatchData = "";
+        for (var i = 0;i<str.length;i++) {
+            MatchData += str[i].replace("Qualification","").replace("Quarterfinal","Q").replace("Semifinal","S").replace("Final","F").replace("Match","M").replace("Tiebreaker","T");
+        }
+        return MatchData.trim();
+    }
     function checkTeam(element) {
         return element !== currentMatchData.teams[ii].teamNumber;
     }
@@ -1556,6 +1579,7 @@ function getTeamRanks() {
     $("#rankUpdateContainer").html("Loading ranking data...");
     $('#ranksProgressBar').show();
     $('#teamRanksPicker').addClass('alert-danger');
+    var team = {};
     var req = new XMLHttpRequest();
     req.open('GET', apiURL + localStorage.currentYear + '/Rankings/' + localStorage.currentEvent);
     req.addEventListener('load', function () {
@@ -1568,7 +1592,7 @@ function getTeamRanks() {
             var teamList = JSON.parse(localStorage.teamList);
             for (var j = 0; j < teamList.length; j++) {
                 allianceListUnsorted[j] = teamList[j].teamNumber;
-                var team = JSON.parse(localStorage['teamData' + teamList[j].teamNumber]);
+                team = JSON.parse(localStorage['teamData' + teamList[j].teamNumber]);
 
                 team.rank = "";
                 team.sortOrder1 = "";
@@ -1595,14 +1619,12 @@ function getTeamRanks() {
             } else {
                 $("#rankingDisplay").html('<b>Ranking</b>');
             }
-            $('#ranksContainer').html('<p class = "eventName">' + localStorage.eventName + '</p><p>This table lists the teams in rank order for this competition. This table updates during the competition, and freezes once Playoff Matches begin.</p><table id="ranksTable" class="table table-condensed table-responsive table-bordered table-striped"></table>');
+            $('#ranksContainer').html('<p class = "eventName">' + localStorage.eventName + ' (<b><span id="rankstablelastupdated"></span></b>)</p><p>This table lists the teams in rank order for this competition. This table updates during the competition, and freezes once Playoff Matches begin. </p><table id="ranksTable" class="table table-condensed table-responsive table-bordered table-striped"></table>');
             var ranksList = '<thead  id="ranksTableHead" class="thead-default"><tr><td class="col1"><b>Team #</b></td><td class="col1"><b>Rank</b></td><td class="col2"><b>Team Name</b></td><td class = "col1"><b>RP Avg.</b></td><td class="col1"><b>Wins</b></td><td  class="col1"><b>Losses</b></td><td class="col1"><b>Ties</b></td><td class="col1"><b>Qual Avg</b></td><td class="col1"><b>DQ</b></td><td class="col1"><b>Matches Played</b></td></tr></thead><tbody>';
 
             for (var i = 0; i < data.Rankings.length; i++) {
-                //                var missingTeam = (localStorage['teamData' + data.Rankings[i].teamNumber] || false);
-                //                if (missingTeam) {
 
-                var team = JSON.parse(localStorage['teamData' + data.Rankings[i].teamNumber]);
+                team = JSON.parse(localStorage['teamData' + data.Rankings[i].teamNumber]);
 
                 team.rank = data.Rankings[i].rank;
                 allianceTeamList[i] = data.Rankings[i].teamNumber;
@@ -1630,6 +1652,7 @@ function getTeamRanks() {
             $('#ranksTable').html(ranksList + "</tbody>");
             $('#teamRanksPicker').removeClass('alert-danger');
             $('#teamRanksPicker').addClass('alert-success');
+            lastRanksUpdate = req.getResponseHeader("Last-Modified");
 
             $("#allianceUndoButton").hide();
             allianceChoices.Alliance1Captain = allianceTeamList[0];
@@ -3189,6 +3212,11 @@ function timer() {
     
     //display the amount of localStorage in use
     $("#localStorageUsage").html(localStorageSpace() + " in use");
+    
+    //display the last time we had rankings
+    $("#allianceselectionlastupdated").html(" (Ranks last updated "+moment(lastRanksUpdate).fromNow()+")<br>");
+    $("#rankstablelastupdated").html("Ranks last updated "+moment(lastRanksUpdate).fromNow());
+    
 }
 
 function parsePlayoffMatchName(matchName) {
@@ -3197,10 +3225,14 @@ function parsePlayoffMatchName(matchName) {
     if ((matchArray[0] === "Quarterfinal") && (matchArray[1] <= 4)) {
         return "Quarterfinal " + matchArray[1] + " Match 1";
     }
+    $("#davidPrice").removeClass("redScore");
+    $("#davidPrice").removeClass("blueScore");
     if ((matchArray[0] === "Quarterfinal") && (matchArray[1] > 4)) {
         if (playoffResults["Quarterfinal " + (matchArray[1] - 4)] === "Red") {
+            $("#davidPrice").addClass("redScore");
             return "Quarterfinal " + (matchArray[1] - 4) + " Match 2 <br><span class='redScoreWin'>Advantage " + playoffResults["Quarterfinal " + (matchArray[1] - 4)] + "</span>";
         } else if (playoffResults["Quarterfinal " + (matchArray[1] - 4)] === "Blue") {
+            $("#davidPrice").addClass("blueScore");
             return "Quarterfinal " + (matchArray[1] - 4) + " Match 2 <br><span class='blueScoreWin'>Advantage " + playoffResults["Quarterfinal " + (matchArray[1] - 4)] + "</span>";
         } else if (playoffResults["Quarterfinal " + (matchArray[1] - 4)] === "No results yet") {
             return "Quarterfinal " + (matchArray[1] - 4) + " Match 2 <br>First match not reported yet";
@@ -3215,8 +3247,10 @@ function parsePlayoffMatchName(matchName) {
 
     if ((matchArray[0] === "Semifinal") && (matchArray[1] > 2)) {
         if (playoffResults["Semifinal " + (matchArray[1] - 2)] === "Red") {
+            $("#davidPrice").addClass("redScore");
             return "Semifinal " + (matchArray[1] - 2) + " Match 2<br><span class='redScoreWin'>Advantage " + playoffResults["Semifinal " + (matchArray[1] - 2)] + "</span>";
         } else if (playoffResults["Semifinal " + (matchArray[1] - 2)] === "Blue") {
+            $("#davidPrice").addClass("blueScore");
             return "Semifinal " + (matchArray[1] - 2) + " Match 2<br><span class='blueScoreWin'>Advantage " + playoffResults["Semifinal " + (matchArray[1] - 2)] + "</span>";
         } else if (playoffResults["Semifinal " + (matchArray[1] - 2)] === "No results yet") {
             return "Semifinal " + (matchArray[1] - 2) + " Match 2<br>First match not reported yet";
@@ -3232,8 +3266,10 @@ function parsePlayoffMatchName(matchName) {
     if (matchArray[0] === "Final") {
         if (matchArray[1] === "2") {
             if (playoffResults["Final 1"] === "Red") {
+                $("#davidPrice").addClass("redScore");
                 return matchArray[0] + " " + (matchArray[1] || "") + "<br><span class='redScoreWin'>Advantage Red</span>";
             } else if (playoffResults["Final 1"] === "Blue") {
+                $("#davidPrice").addClass("blueScore");
                 return matchArray[0] + " " + (matchArray[1] || "") + "<br><span class='blueScoreWin'>Advantage Blue</span>";
             } else if (playoffResults["Final 1"] === "No results yet") {
                 return matchArray[0] + " " + (matchArray[1] || "") + "<br>First match not reported yet";

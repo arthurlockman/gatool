@@ -20,7 +20,8 @@ var cache = apicache.middleware;
 var token = require("./token.json");
 var tbatoken = require("./tbatoken.json");
 var currentYear = 2018;
-var schedule, highscore = {};
+var schedule = {};
+var highscore = {};
 
 
 //var list = require("./newusers");
@@ -376,6 +377,7 @@ router.route('/:year/scores/:eventCode/:tlevel/:start/:end').get(function (req, 
             'Accept': 'application/json'
         })
         .end(function (response) {
+            console.log(response);
             res.json(safeParseJson(response.body));
         });
 });
@@ -579,7 +581,7 @@ router.route('/:year/schedule/:eventCode/:tlevel').get(cache('15 seconds'), func
                     }
 
                 }
-                
+
             });
 
 
@@ -910,7 +912,12 @@ router.route('/:year/rankings/:eventCode/').get(cache('15 seconds'), function (r
             'Accept': 'application/json'
         })
         .end(function (response) {
-            res.json(safeParseJson(response.body));
+            //res.json(safeParseJson(response.body));
+            res.writeHead(200, {
+                'Content-type': 'application/json',
+                'Last-Modified': response.headers['last-modified']
+            });
+            res.end(JSON.stringify(safeParseJson(response.body)), 'utf-8');
         });
 
     //  db.get("rankings." + req.params.eventCode + "." + req.params.year, function (err, storedRequest) {
