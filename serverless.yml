@@ -15,10 +15,18 @@ provider:
     TBA_API_KEY: ${ssm:tba-api-key~true}
 
 functions: # TODO: outline all functions
+  AuthorizerLambda:
+    handler: handler.Authorizer
+    description: Validate that requests are authorized
+    timeout: 10
   GetEvents:
     handler: handler.GetEvents
     description: Get Events for a specific year
-    timeout: 10f
+    timeout: 10
+    authorizer:
+      name: AuthorizerLambda
+      identitySource: method.request.header.Authorization
+      type: token
     events:
       - http:
         path: /api/{year}/events
