@@ -1,0 +1,89 @@
+# This file is the main config file for the service.
+#
+# For full config options, check the docs:
+#    docs.serverless.com
+
+service: GAToolBackend
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  region: us-east-1
+  role: arn:aws:iam::747351050637:role/lambda_exec_VPC # TODO: fix this role
+  environment: # Environment variables available to the whole service
+    FRC_API_KEY: ${ssm:frc-api-key~true}
+    TBA_API_KEY: ${ssm:tba-api-key~true}
+
+functions: # TODO: outline all functions
+  GetEvents:
+    handler: handler.GetEvents
+    description: Get Events for a specific year
+    timeout: 10f
+    events:
+      - http:
+        path: /api/{year}/events
+        method: get
+        request:
+          parameters:
+            paths:
+              year: true
+        cors: true
+
+resources: # TODO: outline and document all db resources
+  Resources:
+    usersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: GatoolUsers
+        AttributeDefinitions:
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: email
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    offseasonEventsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: OffseasonEvents
+        AttributeDefinitions:
+          - AttributeName: key
+            AttributeType: S
+        KeySchema:
+          - AttributeName: key
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 2
+          WriteCapacityUnits: 2
+    teamAwardsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: TeamAwards
+        AttributeDefinitions:
+          - AttributeName: key
+            AttributeType: S
+        KeySchema:
+          - AttributeName: key
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 2
+          WriteCapacityUnits: 2
+    teamDataTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: TeamData
+        AttributeDefinitions:
+          - AttributeName: key
+            AttributeType: S
+        KeySchema:
+          - AttributeName: key
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 2
+          WriteCapacityUnits: 2
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline

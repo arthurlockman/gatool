@@ -5,3 +5,6 @@ token.json
 database/*.*
 server.crt
 server.key
+.build/*
+.serverless/*
+dist/*
