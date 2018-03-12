@@ -13,7 +13,31 @@ var http = require('http'),
     unirest = require('unirest'),
     apicache = require('apicache'),
     Promise = require('promise'),
-    cors = require('cors');
+    cors = require('cors'),
+    winston = require('winston'),
+    base64ToImage = require('base64-to-image');
+
+var logger = winston.createLogger({
+    level: 'info',
+    format: winston.format.json(),
+    transports: [
+        //
+        // - Write to all logs with level `info` and below to `combined.log` 
+        // - Write all logs error (and below) to `error.log`.
+        //
+        new winston.transports.File({
+            filename: 'error.log',
+            level: 'error'
+        }),
+        new winston.transports.File({
+            filename: 'info.log',
+            level: 'info'
+        }),
+        new winston.transports.File({
+            filename: 'combined.log'
+        })
+    ]
+});
 
 var cache = apicache.middleware;
 
@@ -55,6 +79,9 @@ var teamData = level("./teamdata/", options);
 var seasonHighScore = level("./seasonHighScore/", {
     valueEncoding: 'json'
 });
+var events = level("./events/", {
+    valueEncoding: 'json'
+});
 
 var bodyParser = require('body-parser');
 app.use(cors()); //enable cors for mobile and desktop apps
@@ -74,6 +101,12 @@ if (secureHTTP.secure) {
         var port = server.address().port;
     });
 }
+
+getSeasonHighScores(2018);
+//var highScorePolling = setInterval(function () {
+//    "use strict";
+//    getHighScores(currentYear);
+//}, 20000);
 
 function sendFile(res, filename, contentType) {
     'use strict';
@@ -111,6 +144,10 @@ function safeParseJson(responseBody) {
             _res = JSON.parse(_res);
         }
     } catch (err) {
+        logger.error("safeParseJason error:");
+        logger.error(err.message);
+        logger.info("safeParseJason error:");
+        logger.info(_res);
         _res = JSON.parse(_res.substr(1));
     }
     return _res;
@@ -122,55 +159,44 @@ router.route('/:year/events').get(function (req, res) {
     'use strict';
     unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/events')
         .headers({
-            'Authorization': token.token,
-            'Accept': 'application/json'
+            'Authorization': token.token
         })
         .end(function (response) {
             res.json(safeParseJson(response.body));
+            events.put("eventslist." + req.params.year, JSON.stringify(response));
         });
 
-    //db.get("eventslist." + req.params.year, function (err, storedRequest) {
+    //events.get("eventslist." + req.params.year, function (err, storedRequest) {
     //        if (err) {
-    //            //console.log("No stored events data for " + req.params.year);
+    //            logger.info("No stored events data for " + req.params.year);
     //            unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/events')
     //                .headers({
     //                    'Authorization': token.token
     //                })
     //                .end(function (response) {
-    //                    db.put("eventslist." + req.params.year, JSON.stringify(response));
-    //                    res.writeHead(200, {
-    //                        'Content-type': 'application/json'
-    //                    });
-    //                    res.end(JSON.stringify(response.body), 'utf-8');
+    //                    events.put("eventslist." + req.params.year, JSON.stringify(response));
+    //                    res.json(safeParseJson(response.body));
     //                });
     //        } else {
     //            if (req.params.year < currentYear) {
-    //                //console.log("Sending stored events data for " + req.params.year + ":" + req.params.eventCode);
-    //                res.writeHead(200, {
-    //                    'Content-type': 'application/json'
-    //                });
-    //                res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
+    //                logger.info("Sending stored events data for " + req.params.year + ":" + req.params.eventCode);
+    //                res.json(safeParseJson(JSON.parse(storedRequest).body));
     //            } else {
-    //                //console.log("Reading events data for " + req.params.year + " from FIRST");
+    //                logger.info("Reading events data for " + req.params.year + " from FIRST");
     //                unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/events')
     //                    .headers({
     //                        'Authorization': token.token,
-    //                        'If-Modified-Since': JSON.parse(storedRequest).headers["date"]
+    //                        'If-Modified-Since': JSON.parse(storedRequest).headers['date']
     //                    })
     //                    .end(function (response) {
+    //                        logger.info(response);
     //                        if (response.statusCode === 304) {
-    //                            //console.log("Stored events are current. Sending stored events for " + req.params.year);
-    //                            res.writeHead(200, {
-    //                                'Content-type': 'application/json'
-    //                            });
-    //                            res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
+    //                            logger.info("Stored events are current. Sending stored events for " + req.params.year);
+    //                            res.json(safeParseJson(JSON.parse(storedRequest).body));
     //                        } else {
-    //                            //console.log("Stored events are stale. Saving result and sending new events for " + req.params.year);
-    //                            db.put("eventslist." + req.params.year, JSON.stringify(response));
-    //                            res.writeHead(200, {
-    //                                'Content-type': 'application/json'
-    //                            });
-    //                            res.end(JSON.stringify(response.body), 'utf-8');
+    //                            logger.info("Stored events are stale. Saving result and sending new events for " + req.params.year);
+    //                            events.put("eventslist." + req.params.year, JSON.stringify(response));
+    //                            res.json(safeParseJson(response.body));
     //                        }
     //                    });
     //            }
@@ -180,73 +206,83 @@ router.route('/:year/events').get(function (req, res) {
 
 router.route('/:year/highscore').get(function (req, res) {
     'use strict';
-    unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/events')
-        .headers({
-            'Authorization': token.token,
-            'Accept': 'application/json'
-        })
-        .end(function (response) {
-            var events = safeParseJson(response.body).Events;
-            for (var i = 0; i < events.length; i++) {
+    var scoreList = {};
+    scoreList.scores = [];
+    scoreList.highQuals = {};
+    scoreList.highQuals.score = 0;
+    scoreList.highPlayoff = {};
+    scoreList.highPlayoff.score = 0;
+    scoreList.highQualsPenaltyFree = {
+        'score': 0
+    };
+    //scoreList.highQualsPenaltyFree.score = 0;
+    scoreList.highPlayoffPenaltyFree = {
+        'score': 0
+    };
+    //scoreList.highPlayoffPenaltyFree.score = 0;
+    scoreList.highQualsPenaltyFreeOffsetting = {
+        'score': 0
+    };
+    scoreList.highPlayoffPenaltyFreeOffsetting = {
+        'score': 0
+    };
+    seasonHighScore.createReadStream()
+        .on('data', function (data) {
+            //logger.info([data.key, JSON.parse(data.value)]);
+            if (JSON.parse(data.value).year === req.params.year && JSON.parse(data.value).year !== "") {
+                var score = JSON.parse(data.value);
 
-                if (Date(events[i].dateEnd).getTime() < Date().getTime()) {
-                    //get the quals results then the playoff results and find the high match
-                    unirest.get();
+                if (score.details.tournamentLevel === "Playoff") {
+                    if (score.score > scoreList.highPlayoff.score) {
+                        scoreList.highPlayoff = score;
+                    }
                 }
+                if (score.details.tournamentLevel === "Qualification") {
+                    if (score.score > scoreList.highQuals.score) {
+                        scoreList.highQuals = score;
+                    }
+                }
+                //check for penalty free matches
+                if (score.penaltyFree === true) {
+                    if (score.details.tournamentLevel === "Playoff") {
+                        if (score.score > scoreList.highPlayoffPenaltyFree.score) {
+                            scoreList.highPlayoffPenaltyFree = score;
+                        }
+                    }
+                    if (score.details.tournamentLevel === "Qualification") {
+                        if (score.score > scoreList.highQualsPenaltyFree.score) {
+                            scoreList.highQualsPenaltyFree = score;
+                        }
+                    }
+                }
+                //check for offsetting penalties
+                if (score.details.scoreRedFoul === score.details.scoreBlueFoul && score.details.scoreRedFoul > 0) {
+                    if (score.details.tournamentLevel === "Playoff") {
+                        if (score.score > scoreList.highPlayoffPenaltyFreeOffsetting.score) {
+                            scoreList.highPlayoffPenaltyFreeOffsetting = score;
+                        }
+                    }
+                    if (score.details.tournamentLevel === "Qualification") {
+                        if (score.score > scoreList.highQualsPenaltyFreeOffsetting.score) {
+                            scoreList.highQualsPenaltyFreeOffsetting = score;
+                        }
+                    }
+                }
+
+                scoreList.scores.push([data.key, score]);
+
             }
-
-
-
-            res.json(safeParseJson(response.body));
+        })
+        .on('error', function (err) {
+            logger.error('Stream error in highScores', err.message);
+        })
+        .on('close', function () {
+            //logger.info('Stream closed');
+        })
+        .on('end', function () {
+            res.json(safeParseJson(scoreList));
         });
 
-    //db.get("eventslist." + req.params.year, function (err, storedRequest) {
-    //        if (err) {
-    //            //console.log("No stored events data for " + req.params.year);
-    //            unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/events')
-    //                .headers({
-    //                    'Authorization': token.token
-    //                })
-    //                .end(function (response) {
-    //                    db.put("eventslist." + req.params.year, JSON.stringify(response));
-    //                    res.writeHead(200, {
-    //                        'Content-type': 'application/json'
-    //                    });
-    //                    res.end(JSON.stringify(response.body), 'utf-8');
-    //                });
-    //        } else {
-    //            if (req.params.year < currentYear) {
-    //                //console.log("Sending stored events data for " + req.params.year + ":" + req.params.eventCode);
-    //                res.writeHead(200, {
-    //                    'Content-type': 'application/json'
-    //                });
-    //                res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
-    //            } else {
-    //                //console.log("Reading events data for " + req.params.year + " from FIRST");
-    //                unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/events')
-    //                    .headers({
-    //                        'Authorization': token.token,
-    //                        'If-Modified-Since': JSON.parse(storedRequest).headers["date"]
-    //                    })
-    //                    .end(function (response) {
-    //                        if (response.statusCode === 304) {
-    //                            //console.log("Stored events are current. Sending stored events for " + req.params.year);
-    //                            res.writeHead(200, {
-    //                                'Content-type': 'application/json'
-    //                            });
-    //                            res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
-    //                        } else {
-    //                            //console.log("Stored events are stale. Saving result and sending new events for " + req.params.year);
-    //                            db.put("eventslist." + req.params.year, JSON.stringify(response));
-    //                            res.writeHead(200, {
-    //                                'Content-type': 'application/json'
-    //                            });
-    //                            res.end(JSON.stringify(response.body), 'utf-8');
-    //                        }
-    //                    });
-    //            }
-    //        }
-    //    });
 });
 
 router.route('/:year/offseasoneventsv2').get(function (req, res) {
@@ -398,6 +434,19 @@ router.route('/:year/avatars/:eventCode/').get(cache('1 day'), function (req, re
             if (response.body !== "Invalid Season Requested : No applicable data for specified season") {
                 var avatarsResponse = safeParseJson(response.body);
                 if (avatarsResponse.pageCurrent === avatarsResponse.pageTotal) {
+                    for (var j = 0; j < avatarsResponse.teams.length; j++) {
+                        if (avatarsResponse.teams[j].encodedAvatar !== null) {
+                            var path = './avatars/';
+                            var optionalObj = {
+                                'fileName': 'avatar.' + avatarsResponse.teams[j].teamNumber + ".png",
+                                'type': 'png'
+                            };
+
+                            base64ToImage("data:image/png;base64," + avatarsResponse.teams[j].encodedAvatar, path, optionalObj);
+                            avatarsResponse.teams[j].encodedAvatar = 'avatars/' + 'avatar.' + avatarsResponse.teams[j].teamNumber + ".png";
+
+                        }
+                    }
                     res.json(avatarsResponse);
                 } else {
                     avatars = avatarsResponse;
@@ -424,6 +473,20 @@ router.route('/:year/avatars/:eventCode/').get(cache('1 day'), function (req, re
                             avatarsList = avatarsList.concat(values[i].teams);
                         }
                         avatars.teams = avatarsList;
+                        for (i = 0; i < avatars.teams.length; i++) {
+                            if (avatars.teams[i].encodedAvatar !== null) {
+                                var path = './avatars/';
+                                var optionalObj = {
+                                    'fileName': 'avatar.' + avatars.teams[i].teamNumber + ".png",
+                                    'type': 'png'
+                                };
+
+                                base64ToImage("data:image/png;base64," + avatars.teams[i].encodedAvatar, path, optionalObj);
+                                avatars.teams[i].encodedAvatar = 'avatars/' + 'avatar.' + avatars.teams[i].teamNumber + ".png";
+
+                            }
+                        }
+
                         res.json(avatars);
 
                     });
@@ -552,7 +615,6 @@ router.route('/:year/schedule/:eventCode/:tlevel').get(cache('15 seconds'), func
             res.json(safeParseJson(response.body));
             schedule = safeParseJson(response.body).Schedule;
             seasonHighScore.get(req.params.eventCode + "." + req.params.year + "." + req.params.tlevel, function (err, storedRequest) {
-                highscore = {};
                 var storedScore = {};
                 if (err) {
                     storedScore.score = 0;
@@ -568,6 +630,12 @@ router.route('/:year/schedule/:eventCode/:tlevel').get(cache('15 seconds'), func
                         storedScore.event = req.params.eventCode;
                         storedScore.year = req.params.year;
                         storedScore.tlevel = req.params.tlevel;
+                        storedScore.penalties = Number(match.scoreRedFoul) + Number(match.scoreBlueFoul);
+                        if (storedScore.penalties) {
+                            storedScore.penaltyFree = false;
+                        } else {
+                            storedScore.penaltyFree = true;
+                        }
                         storedScore.details = match;
                         seasonHighScore.put(req.params.eventCode + "." + req.params.year + "." + req.params.tlevel, JSON.stringify(storedScore));
                     } else if (match.scoreBlueFinal > storedScore.score) {
@@ -576,6 +644,12 @@ router.route('/:year/schedule/:eventCode/:tlevel').get(cache('15 seconds'), func
                         storedScore.event = req.params.eventCode;
                         storedScore.year = req.params.year;
                         storedScore.tlevel = req.params.tlevel;
+                        storedScore.penalties = Number(match.scoreRedFoul) + Number(match.scoreBlueFoul);
+                        if (storedScore.penalties) {
+                            storedScore.penaltyFree = false;
+                        } else {
+                            storedScore.penaltyFree = true;
+                        }
                         storedScore.details = match;
                         seasonHighScore.put(req.params.eventCode + "." + req.params.year + "." + req.params.tlevel, JSON.stringify(storedScore));
                     }
@@ -584,59 +658,390 @@ router.route('/:year/schedule/:eventCode/:tlevel').get(cache('15 seconds'), func
 
             });
 
+            seasonHighScore.get(req.params.eventCode + "." + req.params.year + "." + req.params.tlevel + ".penaltyFree", function (err, storedRequest) {
+                var storedScore = {};
+                if (err) {
+                    storedScore.score = 0;
+                } else {
+                    storedScore = JSON.parse(storedRequest);
+                }
 
+                for (var i = 0; i < schedule.length; i++) {
+                    var match = schedule[i];
+                    //Track penalty free matches
+                    if (Number(match.scoreRedFoul) + Number(match.scoreBlueFoul) === 0) {
+                        if (match.scoreRedFinal > storedScore.score) {
+                            storedScore.score = match.scoreRedFinal;
+                            storedScore.alliance = "Red";
+                            storedScore.event = req.params.eventCode;
+                            storedScore.year = req.params.year;
+                            storedScore.tlevel = req.params.tlevel;
+                            storedScore.penalties = Number(match.scoreRedFoul) + Number(match.scoreBlueFoul);
+                            if (storedScore.penalties) {
+                                storedScore.penaltyFree = false;
+                            } else {
+                                storedScore.penaltyFree = true;
+                            }
+                            storedScore.details = match;
+                            seasonHighScore.put(req.params.eventCode + "." + req.params.year + "." + req.params.tlevel + ".penaltyFree", JSON.stringify(storedScore));
+                        } else if (match.scoreBlueFinal > storedScore.score) {
+                            storedScore.score = match.scoreBlueFinal;
+                            storedScore.alliance = "Blue";
+                            storedScore.event = req.params.eventCode;
+                            storedScore.year = req.params.year;
+                            storedScore.tlevel = req.params.tlevel;
+                            storedScore.penalties = Number(match.scoreRedFoul) + Number(match.scoreBlueFoul);
+                            if (storedScore.penalties) {
+                                storedScore.penaltyFree = false;
+                            } else {
+                                storedScore.penaltyFree = true;
+                            }
+                            storedScore.details = match;
+                            seasonHighScore.put(req.params.eventCode + "." + req.params.year + "." + req.params.tlevel + ".penaltyFree", JSON.stringify(storedScore));
+                        }
+                    }
+                }
+            });
         });
 
-    //db.get("schedule." + req.params.eventCode + "." + req.params.year + "." + req.params.tlevel, function (err, storedRequest) {
-    //        if (err) {
-    //            //console.log("No stored schedule data for " + req.params.year + ":" + req.params.eventCode + ":" + req.params.tlevel);
-    //            unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/schedule/' + req.params.eventCode + '/' + req.params.tlevel + '/hybrid')
-    //                .headers({
-    //                    'Authorization': token.token
-    //                })
-    //                .end(function (response) {
-    //                    db.put("schedule." + req.params.eventCode + "." + req.params.year + "." + req.params.tlevel, JSON.stringify(response));
-    //                    res.writeHead(200, {
-    //                        'Content-type': 'application/json'
-    //                    });
-    //                    res.end(JSON.stringify(response.body), 'utf-8');
-    //                });
-    //        } else {
-    //            if (req.params.year < currentYear) {
-    //                //console.log("Sending stored schedule data for " + req.params.year + ":" + req.params.eventCode + ":" + req.params.tlevel);
-    //                res.writeHead(200, {
-    //                    'Content-type': 'application/json'
-    //                });
-    //                res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
-    //            } else {
-    //                //console.log("Reading schedule data for " + req.params.year + ":" + req.params.eventCode + ":" + req.params.tlevel + " from FIRST");
-    //                //console.log("stored date: "+JSON.stringify(JSON.parse(storedRequest).headers.date));
-    //                unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/schedule/' + req.params.eventCode + '/' + req.params.tlevel + '/hybrid')
-    //                    .headers({
-    //                        'Authorization': token.token,
-    //                        'If-Modified-Since': JSON.parse(storedRequest).headers.date
-    //                    })
-    //                    .end(function (response) {
-    //                        if (response.statusCode === 304) {
-    //                            //console.log("Stored schedule are current. Sending stored schedule for " + req.params.year + ":" + req.params.eventCode + ":" + req.params.tlevel);
-    //                            res.writeHead(200, {
-    //                                'Content-type': 'application/json'
-    //                            });
-    //                            res.end(JSON.stringify(JSON.parse(storedRequest).body), 'utf-8');
-    //                        } else {
-    //                            //console.log("Stored schedule are stale. Saving result and sending new schedule for " + req.params.year + ":" + req.params.eventCode + ":" + req.params.tlevel);
-    //                            db.put("schedule." + req.params.eventCode + "." + req.params.year + "." + req.params.tlevel, JSON.stringify(response));
-    //                            res.writeHead(200, {
-    //                                'Content-type': 'application/json'
-    //                            });
-    //                            res.end(JSON.stringify(response.body), 'utf-8');
-    //                        }
-    //                    });
-    //            }
-    //        }
-    //    });
 });
 
+function getSeasonHighScores(year) {
+    "use strict";
+
+    getEventsList(year).then(function (eventsList) {
+        for (var i = 0; i < eventsList.length; i++) {
+            getEventScoresV2(eventsList[i].code, eventsList[i].type, year, "qual");
+            getEventScoresV2(eventsList[i].code, eventsList[i].type, year, "playoff");
+            logger.info("getSeasonHighScores loop: " + i + " of " + eventsList.length + " " + eventsList[i].code + " " + eventsList[i].type + " " + year);
+        }
+    });
+}
+
+function getEventsList(year) {
+    "use strict";
+    return new Promise(function (resolve, reject) {
+        unirest.get('https://frc-api.firstinspires.org/v2.0/' + year + '/events')
+            .headers({
+                'Authorization': token.token
+            })
+            .end(function (response) {
+                    if (response.statusCode === 200) {
+                        logger.info("getEventsList(" + year + ") has events list:");
+                        resolve(response.body.Events);
+                    } else {
+                        logger.error("getEventsList(" + year + ") Got an error. StatusCode " + response.statusCode);
+                        reject(Error(response));
+                    }
+
+                }
+
+            );
+    });
+}
+
+function getEventScoresV2(eventCode, type, year, tlevel) {
+    "use strict";
+    logger.info({
+        "InfoMessage": "Received for score parsing",
+        "get call":'https://frc-api.firstinspires.org/v2.0/' + year + '/schedule/' + eventCode + '/' + tlevel + '/hybrid',
+        "eventCode": eventCode,
+        "year": year,
+        "tlevel": tlevel
+    });
+    //return new Promise(function (resolve, reject) {
+    unirest.get('https://frc-api.firstinspires.org/v2.0/' + year + '/schedule/' + eventCode + '/' + tlevel + '/hybrid')
+        .headers({
+            'Authorization': token.token,
+            'Accept': 'application/json'
+        })
+        .end(function (response) {
+            logger.info({
+                "InfoMessage": "Got results from the get call",
+                "eventCode": eventCode,
+                "year": year,
+                "tlevel": tlevel,
+                "response":response
+            });
+            schedule = safeParseJson(response.body).Schedule;
+            logger.info({
+                "InfoMessage": "Starting score parsing",
+                "eventCode": eventCode,
+                "year": year,
+                "tlevel": tlevel,
+                "Schedule length": schedule.length
+            });
+            if (schedule.length > 0) {
+                seasonHighScore.get(eventCode + "." + year + "." + tlevel, function (err, storedRequest) {
+                    logger.info({
+                        "InfoMessage": "Got a value from the stored high scores, all scores",
+                        "eventCode": eventCode,
+                        "year": year,
+                        "tlevel": tlevel,
+                        "storedRequest": storedRequest
+                    });
+                    var storedScore = {};
+                    if (err) {
+                        storedScore.score = 0;
+                    } else {
+                        storedScore = JSON.parse(storedRequest);
+                    }
+
+                    for (var i = 0; i < schedule.length; i++) {
+                        var match = schedule[i];
+                        if (match.scoreRedFinal > storedScore.score) {
+                            storedScore.score = match.scoreRedFinal;
+                            storedScore.alliance = "Red";
+                            storedScore.event = eventCode;
+                            storedScore.year = year;
+                            storedScore.tlevel = tlevel;
+                            storedScore.type = type;
+                            storedScore.penalties = Number(match.scoreRedFoul) + Number(match.scoreBlueFoul);
+                            if (storedScore.penalties) {
+                                storedScore.penaltyFree = false;
+                            } else {
+                                storedScore.penaltyFree = true;
+                            }
+                            storedScore.details = match;
+                            seasonHighScore.put(eventCode + "." + year + "." + tlevel, JSON.stringify(storedScore));
+                        } else if (match.scoreBlueFinal > storedScore.score) {
+                            storedScore.score = match.scoreBlueFinal;
+                            storedScore.alliance = "Blue";
+                            storedScore.event = eventCode;
+                            storedScore.year = year;
+                            storedScore.tlevel = tlevel;
+                            storedScore.type = type;
+                            storedScore.penalties = Number(match.scoreRedFoul) + Number(match.scoreBlueFoul);
+                            if (storedScore.penalties) {
+                                storedScore.penaltyFree = false;
+                            } else {
+                                storedScore.penaltyFree = true;
+                            }
+                            storedScore.details = match;
+                            seasonHighScore.put(eventCode + "." + year + "." + tlevel, JSON.stringify(storedScore));
+                        }
+
+                    }
+
+                });
+
+                seasonHighScore.get(eventCode + "." + year + "." + tlevel + ".penaltyFree", function (err, storedRequest) {
+                    logger.info({
+                        "InfoMessage": "Got a value from the stored high scores, Penalty Free",
+                        "eventCode": eventCode,
+                        "year": year,
+                        "tlevel": tlevel,
+                        "storedRequest": storedRequest
+                    });
+                    var storedScore = {};
+                    if (err) {
+                        storedScore.score = 0;
+                    } else {
+                        storedScore = JSON.parse(storedRequest);
+                    }
+
+                    for (var i = 0; i < schedule.length; i++) {
+                        var match = schedule[i];
+                        //Track penalty free matches
+                        if (Number(match.scoreRedFoul) + Number(match.scoreBlueFoul) === 0) {
+                            if (match.scoreRedFinal > storedScore.score) {
+                                storedScore.score = match.scoreRedFinal;
+                                storedScore.alliance = "Red";
+                                storedScore.event = eventCode;
+                                storedScore.year = year;
+                                storedScore.tlevel = tlevel;
+                                storedScore.type = type;
+                                storedScore.penalties = Number(match.scoreRedFoul) + Number(match.scoreBlueFoul);
+                                if (storedScore.penalties) {
+                                    storedScore.penaltyFree = false;
+                                } else {
+                                    storedScore.penaltyFree = true;
+                                }
+                                storedScore.details = match;
+                                seasonHighScore.put(eventCode + "." + year + "." + tlevel + ".penaltyFree", JSON.stringify(storedScore));
+                            } else if (match.scoreBlueFinal > storedScore.score) {
+                                storedScore.score = match.scoreBlueFinal;
+                                storedScore.alliance = "Blue";
+                                storedScore.event = eventCode;
+                                storedScore.year = year;
+                                storedScore.tlevel = tlevel;
+                                storedScore.type = type;
+                                storedScore.penalties = Number(match.scoreRedFoul) + Number(match.scoreBlueFoul);
+                                if (storedScore.penalties) {
+                                    storedScore.penaltyFree = false;
+                                } else {
+                                    storedScore.penaltyFree = true;
+                                }
+                                storedScore.details = match;
+                                seasonHighScore.put(eventCode + "." + year + "." + tlevel + ".penaltyFree", JSON.stringify(storedScore));
+                            }
+                        }
+                    }
+                });
+                logger.info("about to resolve(done)");
+                //resolve("done");
+                return "done";
+            } else {
+                logger.info("about to resolve(no schedule)");
+                //resolve("No schedule");
+                return "No schedule";
+            }
+        });
+
+    //    });
+}
+
+
+
+
+function getEventScores(eventCode, type, year, tlevel) {
+    "use strict";
+    return new Promise(function (resolve, reject) {
+        unirest.get('https://frc-api.firstinspires.org/v2.0/' + year + '/schedule/' + eventCode + '/' + tlevel + '/hybrid')
+            .headers({
+                'Authorization': token.token,
+                'Accept': 'application/json'
+            })
+            .end(function (response) {
+                if (response.statusCode === 200) {
+                    logger.info("getEventScores(" + eventCode + "," + year + "," + tlevel + ") has a schedule");
+                    logger.info(response);
+                    var finalResponse = {};
+                    finalResponse.tlevel = tlevel;
+                    finalResponse.event = eventCode;
+                    finalResponse.year = year;
+                    finalResponse.type = type;
+                    try {
+                        finalResponse.schedule = safeParseJson(response.body.Schedule);
+                    } catch (err) {
+                        logger.error("Error from getEventScores promise loop: " + err.message);
+                        finalResponse.schedule = response.Schedule;
+                    }
+                    logger.info({
+                        "getEventScores": "finished getEventScores promise: " + year + " " + eventCode + " " + tlevel + " and sending it to parseHighScore"
+                    }, {
+                        "finalResponse": finalResponse
+                    });
+
+                    resolve(finalResponse);
+                } else {
+                    logger.error("getEventScores(" + eventCode + "," + year + "," + tlevel + ") Got an error. " + response.statusCode);
+                    logger.error(response);
+                    reject(Error(response));
+                }
+            });
+
+    });
+}
+
+function parseHighScores(eventScores) {
+    "use strict";
+    logger.info("starting parsing high scores");
+    logger.info(eventScores);
+    var schedule = eventScores.schedule;
+    var year = eventScores.year;
+    var eventCode = eventScores.event;
+    var tlevel = eventScores.tlevel;
+    var type = eventScores.type;
+    if (schedule.length > 0) {
+        logger.info("Schedule exists for " + eventCode + "." + year + "." + tlevel + ". checking values against scores");
+        seasonHighScore.get(eventCode + "." + year + "." + tlevel, function (err, storedRequest) {
+            var storedScore = {};
+            if (err) {
+                storedScore.score = 0;
+            } else {
+                storedScore = JSON.parse(storedRequest);
+            }
+
+            for (var i = 0; i < schedule.length; i++) {
+                var match = schedule[i];
+                logger.info(eventCode + "." + year + "." + tlevel + " match " + i + "match.scoreRedFinal: " + match.scoreRedFinal + " storedScore.score: " + storedScore.score);
+                if (match.scoreRedFinal > storedScore.score) {
+                    storedScore.score = match.scoreRedFinal;
+                    storedScore.alliance = "Red";
+                    storedScore.event = eventCode;
+                    storedScore.year = year;
+                    storedScore.tlevel = tlevel;
+                    storedScore.type = type;
+                    storedScore.penalties = Number(match.scoreRedFoul) + Number(match.scoreBlueFoul);
+                    if (storedScore.penalties) {
+                        storedScore.penaltyFree = false;
+                    } else {
+                        storedScore.penaltyFree = true;
+                    }
+                    storedScore.details = match;
+                    seasonHighScore.put(eventCode + "." + year + "." + tlevel, JSON.stringify(storedScore));
+                } else if (match.scoreBlueFinal > storedScore.score) {
+                    storedScore.score = match.scoreBlueFinal;
+                    storedScore.alliance = "Blue";
+                    storedScore.event = eventCode;
+                    storedScore.year = year;
+                    storedScore.tlevel = tlevel;
+                    storedScore.type = type;
+                    storedScore.penalties = Number(match.scoreRedFoul) + Number(match.scoreBlueFoul);
+                    if (storedScore.penalties) {
+                        storedScore.penaltyFree = false;
+                    } else {
+                        storedScore.penaltyFree = true;
+                    }
+                    storedScore.details = match;
+                    seasonHighScore.put(eventCode + "." + year + "." + tlevel, JSON.stringify(storedScore));
+                }
+
+            }
+
+        });
+        seasonHighScore.get(eventCode + "." + year + "." + tlevel + ".penaltyFree", function (err, storedRequest) {
+            var storedScore = {};
+            if (err) {
+                storedScore.score = 0;
+            } else {
+                storedScore = JSON.parse(storedRequest);
+            }
+
+            for (var i = 0; i < schedule.length; i++) {
+                var match = schedule[i];
+                logger.info(eventCode + "." + year + "." + tlevel + " PenaltyFree match " + i + "match.scoreRedFinal: " + match.scoreRedFinal + " storedScore.score: " + storedScore.score);
+                //Track penalty free matches
+                if (Number(match.scoreRedFoul) + Number(match.scoreBlueFoul) === 0) {
+                    if (match.scoreRedFinal > storedScore.score) {
+                        storedScore.score = match.scoreRedFinal;
+                        storedScore.alliance = "Red";
+                        storedScore.event = eventCode;
+                        storedScore.year = year;
+                        storedScore.tlevel = tlevel;
+                        storedScore.type = type;
+                        storedScore.penalties = Number(match.scoreRedFoul) + Number(match.scoreBlueFoul);
+                        if (storedScore.penalties) {
+                            storedScore.penaltyFree = false;
+                        } else {
+                            storedScore.penaltyFree = true;
+                        }
+                        storedScore.details = match;
+                        seasonHighScore.put(eventCode + "." + year + "." + tlevel + ".penaltyFree", JSON.stringify(storedScore));
+                    } else if (match.scoreBlueFinal > storedScore.score) {
+                        storedScore.score = match.scoreBlueFinal;
+                        storedScore.alliance = "Blue";
+                        storedScore.event = eventCode;
+                        storedScore.year = year;
+                        storedScore.tlevel = tlevel;
+                        storedScore.type = type;
+                        storedScore.penalties = Number(match.scoreRedFoul) + Number(match.scoreBlueFoul);
+                        if (storedScore.penalties) {
+                            storedScore.penaltyFree = false;
+                        } else {
+                            storedScore.penaltyFree = true;
+                        }
+                        storedScore.details = match;
+                        seasonHighScore.put(eventCode + "." + year + "." + tlevel + ".penaltyFree", JSON.stringify(storedScore));
+
+                    }
+                }
+            }
+
+        });
+    }
+}
 
 router.route('/:year/teamdata/:team/').get(cache('12 hours'), function (req, res) {
     'use strict';
@@ -669,7 +1074,7 @@ router.route('/:year/teamdata/:team/').get(cache('12 hours'), function (req, res
             unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/teams/?teamNumber=' + req.params.team)
                 .headers({
                     'Authorization': token.token,
-                    'If-Modified-Since': JSON.parse(storedRequest).headers["date"],
+                    'If-Modified-Since': JSON.parse(storedRequest).headers['date'],
                     'Accept': 'application/json'
                 })
                 .end(function (response) {
@@ -713,7 +1118,7 @@ router.route('/:year/newteamdata/:team/').get(cache('12 hours'), function (req, 
             unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/teams/?teamNumber=' + req.params.team)
                 .headers({
                     'Authorization': token.token,
-                    'If-Modified-Since': JSON.parse(storedRequest).headers["date"],
+                    'If-Modified-Since': JSON.parse(storedRequest).headers['date'],
                     'Accept': 'application/json'
                 })
                 .end(function (response) {
@@ -1008,7 +1413,7 @@ router.route('/:year/awards/:teamNumber/').get(cache('1 hours'), function (req, 
                 unirest.get('https://frc-api.firstinspires.org/v2.0/' + req.params.year + '/awards/' + req.params.teamNumber)
                     .headers({
                         'Authorization': token.token,
-                        'If-Modified-Since': JSON.parse(storedRequest).headers.date,
+                        'If-Modified-Since': JSON.parse(storedRequest).headers['date'],
                         'Accept': 'application/json'
                     })
                     .end(function (response) {
@@ -1068,7 +1473,7 @@ router.route('/:year/awardsv2/:teamNumber/').get(cache('1 hours'), function (req
                     unirest.get('https://frc-api.firstinspires.org/v2.0/' + year + '/awards/' + teamNumber)
                         .headers({
                             'Authorization': token.token,
-                            'If-Modified-Since': JSON.parse(storedRequest).headers.date,
+                            'If-Modified-Since': JSON.parse(storedRequest).headers['date'],
                             'Accept': 'application/json'
                         })
                         .end(function (response) {
@@ -1116,7 +1521,7 @@ router.route('/:year/awardsv2/:teamNumber/').get(cache('1 hours'), function (req
                     unirest.get('https://frc-api.firstinspires.org/v2.0/' + year1 + '/awards/' + teamNumber)
                         .headers({
                             'Authorization': token.token,
-                            'If-Modified-Since': JSON.parse(storedRequest).headers.date,
+                            'If-Modified-Since': JSON.parse(storedRequest).headers['date'],
                             'Accept': 'application/json'
                         })
                         .end(function (response) {
@@ -1164,7 +1569,7 @@ router.route('/:year/awardsv2/:teamNumber/').get(cache('1 hours'), function (req
                     unirest.get('https://frc-api.firstinspires.org/v2.0/' + year2 + '/awards/' + teamNumber)
                         .headers({
                             'Authorization': token.token,
-                            'If-Modified-Since': JSON.parse(storedRequest).headers.date,
+                            'If-Modified-Since': JSON.parse(storedRequest).headers['date'],
                             'Accept': 'application/json'
                         })
                         .end(function (response) {
@@ -1239,7 +1644,7 @@ function getAwards(teamNumber, year) {
                 unirest.get('https://frc-api.firstinspires.org/v2.0/' + year + '/awards/' + teamNumber)
                     .headers({
                         'Authorization': token.token,
-                        'If-Modified-Since': JSON.parse(storedRequest).headers.date,
+                        'If-Modified-Since': JSON.parse(storedRequest).headers['date'],
                         'Accept': 'application/json'
                     })
                     .end(function (response) {
@@ -1364,4 +1769,9 @@ app.get('/js/:filename', cache('24 hours'), function (req, res) {
 app.get('/fonts/:filename', cache('24 hours'), function (req, res) {
     'use strict';
     sendFile(res, './fonts/' + req.params.filename);
+});
+
+app.get('/avatars/:filename', cache('96 hours'), function (req, res) {
+    'use strict';
+    sendFile(res, './avatars/' + req.params.filename);
 });
