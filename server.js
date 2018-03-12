@@ -49,7 +49,7 @@ var highscore = {};
 
 
 //var list = require("./newusers");
-//var list = [{username:'sweet_itami48@hotmail.com', password:'GabrielaLovesFIRST!'}];
+//var list = [{username:'dirtvoice@hotmail.com', password:'ScottLovesFIRST!'}];
 var list = [];
 
 var bcrypt = require('bcrypt');
@@ -102,7 +102,7 @@ if (secureHTTP.secure) {
     });
 }
 
-getSeasonHighScores(2018);
+//getSeasonHighScores(2018);
 //var highScorePolling = setInterval(function () {
 //    "use strict";
 //    getHighScores(currentYear);
@@ -443,7 +443,7 @@ router.route('/:year/avatars/:eventCode/').get(cache('1 day'), function (req, re
                             };
 
                             base64ToImage("data:image/png;base64," + avatarsResponse.teams[j].encodedAvatar, path, optionalObj);
-                            avatarsResponse.teams[j].encodedAvatar = 'avatars/' + 'avatar.' + avatarsResponse.teams[j].teamNumber + ".png";
+                            avatarsResponse.teams[j].encodedAvatar = 'avatars/avatar.' + avatarsResponse.teams[j].teamNumber + ".png";
 
                         }
                     }
@@ -482,7 +482,7 @@ router.route('/:year/avatars/:eventCode/').get(cache('1 day'), function (req, re
                                 };
 
                                 base64ToImage("data:image/png;base64," + avatars.teams[i].encodedAvatar, path, optionalObj);
-                                avatars.teams[i].encodedAvatar = 'avatars/' + 'avatar.' + avatars.teams[i].teamNumber + ".png";
+                                avatars.teams[i].encodedAvatar = 'avatars/avatar.' + avatars.teams[i].teamNumber + ".png";
 
                             }
                         }
@@ -711,8 +711,8 @@ function getSeasonHighScores(year) {
 
     getEventsList(year).then(function (eventsList) {
         for (var i = 0; i < eventsList.length; i++) {
-            getEventScoresV2(eventsList[i].code, eventsList[i].type, year, "qual");
-            getEventScoresV2(eventsList[i].code, eventsList[i].type, year, "playoff");
+            getEventScoresV3(eventsList[i].code, eventsList[i].type, year, "qual");
+            getEventScoresV3(eventsList[i].code, eventsList[i].type, year, "playoff");
             logger.info("getSeasonHighScores loop: " + i + " of " + eventsList.length + " " + eventsList[i].code + " " + eventsList[i].type + " " + year);
         }
     });
@@ -740,11 +740,164 @@ function getEventsList(year) {
     });
 }
 
+function getEventScoresV3(eventCode, type, year, tlevel) {
+    "use strict";
+    logger.info({
+        "InfoMessage": "Received for score parsing",
+        "get call": 'https://frc-api.firstinspires.org/v2.0/' + year + '/schedule/' + eventCode + '/' + tlevel + '/hybrid',
+        "eventCode": eventCode,
+        "year": year,
+        "tlevel": tlevel
+    });
+    var req = new XMLHttpRequest();
+    req.open('GET', 'https://frc-api.firstinspires.org/v2.0/' + year + '/schedule/' + eventCode + '/' + tlevel + '/hybrid');
+    req.setRequestHeader('Authorization', token.token);
+    req.setRequestHeader('Accept', 'application/json');
+    req.addEventListener('load', function () {
+        logger.info({
+            "InfoMessage": "Got results from the hybrid schedule call",
+            "eventCode": eventCode,
+            "year": year,
+            "tlevel": tlevel,
+            "response": JSON.parse(req.responseText)
+        });
+        schedule = JSON.parse(req.responseText).Schedule;
+        logger.info({
+            "InfoMessage": "Starting score parsing",
+            "eventCode": eventCode,
+            "year": year,
+            "tlevel": tlevel,
+            "Schedule length": schedule.length
+        });
+        if (schedule.length > 0) {
+            seasonHighScore.get(eventCode + "." + year + "." + tlevel, function (err, storedRequest) {
+                logger.info({
+                    "InfoMessage": "Got a value from the stored high scores, all scores",
+                    "eventCode": eventCode,
+                    "year": year,
+                    "tlevel": tlevel,
+                    "storedRequest": storedRequest
+                });
+                var storedScore = {};
+                if (err) {
+                    storedScore.score = 0;
+                } else {
+                    storedScore = JSON.parse(storedRequest);
+                }
+
+                for (var i = 0; i < schedule.length; i++) {
+                    var match = schedule[i];
+                    if (match.scoreRedFinal > storedScore.score) {
+                        storedScore.score = match.scoreRedFinal;
+                        storedScore.alliance = "Red";
+                        storedScore.event = eventCode;
+                        storedScore.year = year;
+                        storedScore.tlevel = tlevel;
+                        storedScore.type = type;
+                        storedScore.penalties = Number(match.scoreRedFoul) + Number(match.scoreBlueFoul);
+                        if (storedScore.penalties) {
+                            storedScore.penaltyFree = false;
+                        } else {
+                            storedScore.penaltyFree = true;
+                        }
+                        storedScore.details = match;
+                        seasonHighScore.put(eventCode + "." + year + "." + tlevel, JSON.stringify(storedScore));
+                    } else if (match.scoreBlueFinal > storedScore.score) {
+                        storedScore.score = match.scoreBlueFinal;
+                        storedScore.alliance = "Blue";
+                        storedScore.event = eventCode;
+                        storedScore.year = year;
+                        storedScore.tlevel = tlevel;
+                        storedScore.type = type;
+                        storedScore.penalties = Number(match.scoreRedFoul) + Number(match.scoreBlueFoul);
+                        if (storedScore.penalties) {
+                            storedScore.penaltyFree = false;
+                        } else {
+                            storedScore.penaltyFree = true;
+                        }
+                        storedScore.details = match;
+                        seasonHighScore.put(eventCode + "." + year + "." + tlevel, JSON.stringify(storedScore));
+                    }
+
+                }
+
+            });
+
+            seasonHighScore.get(eventCode + "." + year + "." + tlevel + ".penaltyFree", function (err, storedRequest) {
+                logger.info({
+                    "InfoMessage": "Got a value from the stored high scores, Penalty Free",
+                    "eventCode": eventCode,
+                    "year": year,
+                    "tlevel": tlevel,
+                    "storedRequest": storedRequest
+                });
+                var storedScore = {};
+                if (err) {
+                    storedScore.score = 0;
+                } else {
+                    storedScore = JSON.parse(storedRequest);
+                }
+
+                for (var i = 0; i < schedule.length; i++) {
+                    var match = schedule[i];
+                    //Track penalty free matches
+                    if (Number(match.scoreRedFoul) + Number(match.scoreBlueFoul) === 0) {
+                        if (match.scoreRedFinal > storedScore.score) {
+                            storedScore.score = match.scoreRedFinal;
+                            storedScore.alliance = "Red";
+                            storedScore.event = eventCode;
+                            storedScore.year = year;
+                            storedScore.tlevel = tlevel;
+                            storedScore.type = type;
+                            storedScore.penalties = Number(match.scoreRedFoul) + Number(match.scoreBlueFoul);
+                            if (storedScore.penalties) {
+                                storedScore.penaltyFree = false;
+                            } else {
+                                storedScore.penaltyFree = true;
+                            }
+                            storedScore.details = match;
+                            seasonHighScore.put(eventCode + "." + year + "." + tlevel + ".penaltyFree", JSON.stringify(storedScore));
+                        } else if (match.scoreBlueFinal > storedScore.score) {
+                            storedScore.score = match.scoreBlueFinal;
+                            storedScore.alliance = "Blue";
+                            storedScore.event = eventCode;
+                            storedScore.year = year;
+                            storedScore.tlevel = tlevel;
+                            storedScore.type = type;
+                            storedScore.penalties = Number(match.scoreRedFoul) + Number(match.scoreBlueFoul);
+                            if (storedScore.penalties) {
+                                storedScore.penaltyFree = false;
+                            } else {
+                                storedScore.penaltyFree = true;
+                            }
+                            storedScore.details = match;
+                            seasonHighScore.put(eventCode + "." + year + "." + tlevel + ".penaltyFree", JSON.stringify(storedScore));
+                        }
+                    }
+                }
+            });
+            logger.info("about to resolve(done)");
+            //resolve("done");
+            return "done";
+        } else {
+            logger.info("about to resolve(no schedule)");
+            //resolve("No schedule");
+            return "No schedule";
+        }
+
+
+    });
+    req.send();
+
+}
+
+
+
 function getEventScoresV2(eventCode, type, year, tlevel) {
     "use strict";
     logger.info({
         "InfoMessage": "Received for score parsing",
-        "get call":'https://frc-api.firstinspires.org/v2.0/' + year + '/schedule/' + eventCode + '/' + tlevel + '/hybrid',
+        "get call": 'https://frc-api.firstinspires.org/v2.0/' + year + '/schedule/' + eventCode + '/' + tlevel + '/hybrid',
         "eventCode": eventCode,
         "year": year,
         "tlevel": tlevel
@@ -757,11 +910,11 @@ function getEventScoresV2(eventCode, type, year, tlevel) {
         })
         .end(function (response) {
             logger.info({
-                "InfoMessage": "Got results from the get call",
+                "InfoMessage": "Got results from the hybrid schedule call",
                 "eventCode": eventCode,
                 "year": year,
                 "tlevel": tlevel,
-                "response":response
+                "response": response
             });
             schedule = safeParseJson(response.body).Schedule;
             logger.info({
@@ -949,6 +1102,57 @@ function parseHighScores(eventScores) {
             var storedScore = {};
             if (err) {
                 storedScore.score = 0;
+                storedScore.alliance = "";
+                storedScore.event = eventCode;
+                storedScore.year = year;
+                storedScore.tlevel = tlevel;
+                storedScore.penalties = 0;
+                storedScore.penaltyFree = false;
+                storedScore.details = {
+                    "description": "None",
+                    "tournamentLevel": "None",
+                    "matchNumber": 0,
+                    "startTime": "2018-01-01T00:00:00",
+                    "actualStartTime": "",
+                    "postResultTime": "",
+                    "scoreRedFinal": 0,
+                    "scoreRedFoul": 0,
+                    "scoreRedAuto": 0,
+                    "scoreBlueFinal": 0,
+                    "scoreBlueFoul": 0,
+                    "scoreBlueAuto": 0,
+                    "teams": [{
+                        "teamNumber": 0,
+                        "station": "Red1",
+                        "surrogate": false,
+                        "dq": false
+                    }, {
+                        "teamNumber": 0,
+                        "station": "Red2",
+                        "surrogate": false,
+                        "dq": false
+                    }, {
+                        "teamNumber": 0,
+                        "station": "Red3",
+                        "surrogate": false,
+                        "dq": false
+                    }, {
+                        "teamNumber": 0,
+                        "station": "Blue1",
+                        "surrogate": false,
+                        "dq": false
+                    }, {
+                        "teamNumber": 0,
+                        "station": "Blue2",
+                        "surrogate": false,
+                        "dq": false
+                    }, {
+                        "teamNumber": 0,
+                        "station": "Blue3",
+                        "surrogate": false,
+                        "dq": false
+                    }]
+                };
             } else {
                 storedScore = JSON.parse(storedRequest);
             }
@@ -995,9 +1199,61 @@ function parseHighScores(eventScores) {
             var storedScore = {};
             if (err) {
                 storedScore.score = 0;
+                storedScore.alliance = "";
+                storedScore.event = eventCode;
+                storedScore.year = year;
+                storedScore.tlevel = tlevel;
+                storedScore.penalties = 0;
+                storedScore.penaltyFree = false;
+                storedScore.details = {
+                    "description": "None",
+                    "tournamentLevel": "None",
+                    "matchNumber": 0,
+                    "startTime": "2018-01-01T00:00:00",
+                    "actualStartTime": "",
+                    "postResultTime": "",
+                    "scoreRedFinal": 0,
+                    "scoreRedFoul": 0,
+                    "scoreRedAuto": 0,
+                    "scoreBlueFinal": 0,
+                    "scoreBlueFoul": 0,
+                    "scoreBlueAuto": 0,
+                    "teams": [{
+                        "teamNumber": 0,
+                        "station": "Red1",
+                        "surrogate": false,
+                        "dq": false
+                    }, {
+                        "teamNumber": 0,
+                        "station": "Red2",
+                        "surrogate": false,
+                        "dq": false
+                    }, {
+                        "teamNumber": 0,
+                        "station": "Red3",
+                        "surrogate": false,
+                        "dq": false
+                    }, {
+                        "teamNumber": 0,
+                        "station": "Blue1",
+                        "surrogate": false,
+                        "dq": false
+                    }, {
+                        "teamNumber": 0,
+                        "station": "Blue2",
+                        "surrogate": false,
+                        "dq": false
+                    }, {
+                        "teamNumber": 0,
+                        "station": "Blue3",
+                        "surrogate": false,
+                        "dq": false
+                    }]
+                };
             } else {
                 storedScore = JSON.parse(storedRequest);
             }
+
 
             for (var i = 0; i < schedule.length; i++) {
                 var match = schedule[i];
