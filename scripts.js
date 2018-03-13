@@ -119,14 +119,18 @@ var matchTimer = setInterval(function () {
     timer();
 }, 1000);
 
+//this heartbeat checks the world high scores every 5 minutes.
+var highScoresTimer = setInterval(function () {
+    "use strict";
+    getSeasonHighScores(2018);
+}, 300000);
+
 //Championship events receive special treatment. We define the Championshio events here, including Michigan.
 var champSubdivisions = ["ARCHIMEDES", "CARSON", "CARVER", "CURIE", "DALY", "DARWIN", "GALILEO", "HOPPER", "NEWTON", "ROEBLING", "TESLA", "TURING"];
 var champDivisions = ["ARDA", "CANE", "CATE", "CUDA", "GARO", "HOTU"];
 var champs = ["CMP", "CMPTX", "CMPMO"];
 var miDivisions = ["MICMP1", "MICMP2", "MICMP3", "MICMP4"];
 var miChamps = ["MICMP"];
-
-
 
 //The apiURL determines the endpoint for API calls. On the web, it's the site itself. In the mobile app, we need to declare the complete API URL.
 var apiURL = "/api/";
@@ -336,7 +340,6 @@ window.onload = function () {
 
     //Handle Event Filter change
     document.getElementById('eventFilters').onchange = function () {
-        localStorage.eventFilters = JSON.stringify($("#eventFilters").selectpicker('val'));
         filterEvents();
 
     };
@@ -352,7 +355,7 @@ window.onload = function () {
     //setup the Offseason Tab
     $('#offseasonTeamListToJSON').click(function () {
         //Example: var parseOutput = CSVParser.parse(this.inputText, this.headersProvided, this.delimiter, this.downcaseHeaders, this.upcaseHeaders);
-        console.log("starting conversion");
+        //console.log("starting conversion");
         var inbound = $("#offSeasonTeamListInput").val();
         var outbound = CSVParser.parse(inbound, true, "auto", false, false);
         if (outbound.errors) {
@@ -378,10 +381,38 @@ window.onload = function () {
     $("#loadingFeedback").html("gatool ready to play!");
     $("#loadingFeedback").fadeOut();
 
-
 };
 
 window.addEventListener("resize", scaleRows);
+
+function getSeasonHighScores(year) {
+    "use strict";
+    var promises = [];
+    for (var i = 0; i < currentEventList.length; i++) {
+        promises.push(new Promise(function (resolve, reject) {
+            getEventScores(currentEventList[i].code, currentEventList[i].type, year, "qual");
+        }));
+        promises.push(new Promise(function (resolve, reject) {
+            getEventScores(currentEventList[i].code, currentEventList[i].type, year, "playoff");
+        }));
+    }
+    Promise.all(promises);
+}
+
+function getEventScores(eventCode, type, year, tlevel) {
+    "use strict";
+    return new Promise(function (resolve, reject) {
+
+        var req = new XMLHttpRequest();
+        req.open('GET', apiURL + year + '/schedule/' + eventCode + "/" + tlevel + "?returnschedule=false");
+        req.addEventListener('load', function () {
+            resolve(JSON.parse(req.responseText));
+        });
+        req.send();
+    });
+}
+
+
 
 function displayAwards() {
     "use strict";
@@ -599,6 +630,8 @@ function loadEventsList() {
 function filterEvents() {
     "use strict";
     var filterClasses = "";
+    var previousFilters = JSON.parse(localStorage.eventFilters);
+    
     if (!$("#offseason").bootstrapSwitch('state')) {
         $(".eventsfilter").hide();
         var filters = $("#eventFilters").selectpicker('val');
@@ -606,15 +639,25 @@ function filterEvents() {
             $("#eventFilters").selectpicker('deselectAll');
             $(".eventsfilter").show();
         } else {
-            //console.log(filters);
-            filterClasses = ".filters" + filters[0];
-            if (filters.length > 1) {
-                for (var i = 1; i < filters.length; i++) {
-                    filterClasses += ".filters" + filters[i];
-                }
+            if (filters.indexOf("past") >= 0) {
+                if (previousFilters.indexOf("future") >= 0){
+                    filters.splice(filters.indexOf("future"), 1); }  
             }
-            $(filterClasses).show();
+
+            if (filters.indexOf("future") >= 0) {
+                if (previousFilters.indexOf("past") >= 0){
+                    filters.splice(filters.indexOf("past"), 1);}
+            }
         }
+        filterClasses = ".filters" + filters[0];
+        if (filters.length > 1) {
+            for (var i = 1; i < filters.length; i++) {
+                filterClasses += ".filters" + filters[i];
+            }
+        }
+        $("#eventFilters").selectpicker('val', filters);
+        $(filterClasses).show();
+        localStorage.eventFilters = JSON.stringify($("#eventFilters").selectpicker('val'));
     }
 }
 
@@ -813,7 +856,7 @@ function getRegularSeasonSchedule() {
     lastMatchPlayed = 0;
     // Set up the API request for getting the Qualification and Playoff Schedules. When the Quals are loaded, an attempt is made to get the Playoffs.
     var req = new XMLHttpRequest();
-    req.open('GET', apiURL + localStorage.currentYear + '/schedule/' + localStorage.currentEvent + '/qual');
+    req.open('GET', apiURL + localStorage.currentYear + '/schedule/' + localStorage.currentEvent + '/qual?returnschedule=true');
     req.addEventListener('load', function () {
         var data = JSON.parse(req.responseText);
         //Ensure that there is a Quals schedule
@@ -867,7 +910,7 @@ function getRegularSeasonSchedule() {
         req1.send();
     });
     var req1 = new XMLHttpRequest();
-    req1.open('GET', apiURL + localStorage.currentYear + '/schedule/' + localStorage.currentEvent + '/playoff');
+    req1.open('GET', apiURL + localStorage.currentYear + '/schedule/' + localStorage.currentEvent + '/playoff?returnschedule=true');
     req1.addEventListener('load', function () {
         $("#playoffScheduleAlert").show();
         var data = JSON.parse(req1.responseText);
@@ -924,7 +967,7 @@ function getRegularSeasonSchedule() {
 
     // Special case to support Championship Playoffs (Einstein and Michigan)
     var reqChamps = new XMLHttpRequest();
-    reqChamps.open('GET', apiURL + localStorage.currentYear + '/schedule/' + localStorage.currentEvent + '/playoff');
+    reqChamps.open('GET', apiURL + localStorage.currentYear + '/schedule/' + localStorage.currentEvent + '/playoff?returnschedule=true');
     reqChamps.addEventListener('load', function () {
         var data = JSON.parse(reqChamps.responseText);
         //Ensure that there is a schedule

@@ -139,16 +139,22 @@ function injectUser(username, password) {
 function safeParseJson(responseBody) {
     "use strict";
     var _res = responseBody;
+    logger.info({
+        "payload": _res,
+        "payload type": typeof responseBody
+    });
     try {
         if (typeof responseBody !== "object") {
             _res = JSON.parse(_res);
         }
     } catch (err) {
-        logger.error("safeParseJason error:");
-        logger.error(err.message);
-        logger.info("safeParseJason error:");
-        logger.info(_res);
-        _res = JSON.parse(_res.substr(1));
+        logger.error({
+            "safeParseJason error": err,
+            "payload": _res
+        });
+        if (typeof _res !== "undefined") {
+            _res = JSON.parse(_res.substr(1));
+        }
     }
     return _res;
 }
@@ -612,64 +618,21 @@ router.route('/:year/schedule/:eventCode/:tlevel').get(cache('15 seconds'), func
             'Accept': 'application/json'
         })
         .end(function (response) {
-            res.json(safeParseJson(response.body));
-            schedule = safeParseJson(response.body).Schedule;
-            seasonHighScore.get(req.params.eventCode + "." + req.params.year + "." + req.params.tlevel, function (err, storedRequest) {
-                var storedScore = {};
-                if (err) {
-                    storedScore.score = 0;
-                } else {
-                    storedScore = JSON.parse(storedRequest);
-                }
-
-                for (var i = 0; i < schedule.length; i++) {
-                    var match = schedule[i];
-                    if (match.scoreRedFinal > storedScore.score) {
-                        storedScore.score = match.scoreRedFinal;
-                        storedScore.alliance = "Red";
-                        storedScore.event = req.params.eventCode;
-                        storedScore.year = req.params.year;
-                        storedScore.tlevel = req.params.tlevel;
-                        storedScore.penalties = Number(match.scoreRedFoul) + Number(match.scoreBlueFoul);
-                        if (storedScore.penalties) {
-                            storedScore.penaltyFree = false;
-                        } else {
-                            storedScore.penaltyFree = true;
-                        }
-                        storedScore.details = match;
-                        seasonHighScore.put(req.params.eventCode + "." + req.params.year + "." + req.params.tlevel, JSON.stringify(storedScore));
-                    } else if (match.scoreBlueFinal > storedScore.score) {
-                        storedScore.score = match.scoreBlueFinal;
-                        storedScore.alliance = "Blue";
-                        storedScore.event = req.params.eventCode;
-                        storedScore.year = req.params.year;
-                        storedScore.tlevel = req.params.tlevel;
-                        storedScore.penalties = Number(match.scoreRedFoul) + Number(match.scoreBlueFoul);
-                        if (storedScore.penalties) {
-                            storedScore.penaltyFree = false;
-                        } else {
-                            storedScore.penaltyFree = true;
-                        }
-                        storedScore.details = match;
-                        seasonHighScore.put(req.params.eventCode + "." + req.params.year + "." + req.params.tlevel, JSON.stringify(storedScore));
+            if (req.query.returnschedule === "true") {
+                res.json(safeParseJson(response.body));
+            }
+            try {
+                schedule = safeParseJson(response.body).Schedule;
+                seasonHighScore.get(req.params.eventCode + "." + req.params.year + "." + req.params.tlevel, function (err, storedRequest) {
+                    var storedScore = {};
+                    if (err) {
+                        storedScore.score = 0;
+                    } else {
+                        storedScore = JSON.parse(storedRequest);
                     }
 
-                }
-
-            });
-
-            seasonHighScore.get(req.params.eventCode + "." + req.params.year + "." + req.params.tlevel + ".penaltyFree", function (err, storedRequest) {
-                var storedScore = {};
-                if (err) {
-                    storedScore.score = 0;
-                } else {
-                    storedScore = JSON.parse(storedRequest);
-                }
-
-                for (var i = 0; i < schedule.length; i++) {
-                    var match = schedule[i];
-                    //Track penalty free matches
-                    if (Number(match.scoreRedFoul) + Number(match.scoreBlueFoul) === 0) {
+                    for (var i = 0; i < schedule.length; i++) {
+                        var match = schedule[i];
                         if (match.scoreRedFinal > storedScore.score) {
                             storedScore.score = match.scoreRedFinal;
                             storedScore.alliance = "Red";
@@ -683,7 +646,7 @@ router.route('/:year/schedule/:eventCode/:tlevel').get(cache('15 seconds'), func
                                 storedScore.penaltyFree = true;
                             }
                             storedScore.details = match;
-                            seasonHighScore.put(req.params.eventCode + "." + req.params.year + "." + req.params.tlevel + ".penaltyFree", JSON.stringify(storedScore));
+                            seasonHighScore.put(req.params.eventCode + "." + req.params.year + "." + req.params.tlevel, JSON.stringify(storedScore));
                         } else if (match.scoreBlueFinal > storedScore.score) {
                             storedScore.score = match.scoreBlueFinal;
                             storedScore.alliance = "Blue";
@@ -697,11 +660,68 @@ router.route('/:year/schedule/:eventCode/:tlevel').get(cache('15 seconds'), func
                                 storedScore.penaltyFree = true;
                             }
                             storedScore.details = match;
-                            seasonHighScore.put(req.params.eventCode + "." + req.params.year + "." + req.params.tlevel + ".penaltyFree", JSON.stringify(storedScore));
+                            seasonHighScore.put(req.params.eventCode + "." + req.params.year + "." + req.params.tlevel, JSON.stringify(storedScore));
+                        }
+
+                    }
+
+                });
+
+                seasonHighScore.get(req.params.eventCode + "." + req.params.year + "." + req.params.tlevel + ".penaltyFree", function (err, storedRequest) {
+                    var storedScore = {};
+                    if (err) {
+                        storedScore.score = 0;
+                    } else {
+                        storedScore = JSON.parse(storedRequest);
+                    }
+
+                    for (var i = 0; i < schedule.length; i++) {
+                        var match = schedule[i];
+                        //Track penalty free matches
+                        if (Number(match.scoreRedFoul) + Number(match.scoreBlueFoul) === 0) {
+                            if (match.scoreRedFinal > storedScore.score) {
+                                storedScore.score = match.scoreRedFinal;
+                                storedScore.alliance = "Red";
+                                storedScore.event = req.params.eventCode;
+                                storedScore.year = req.params.year;
+                                storedScore.tlevel = req.params.tlevel;
+                                storedScore.penalties = Number(match.scoreRedFoul) + Number(match.scoreBlueFoul);
+                                if (storedScore.penalties) {
+                                    storedScore.penaltyFree = false;
+                                } else {
+                                    storedScore.penaltyFree = true;
+                                }
+                                storedScore.details = match;
+                                seasonHighScore.put(req.params.eventCode + "." + req.params.year + "." + req.params.tlevel + ".penaltyFree", JSON.stringify(storedScore));
+                            } else if (match.scoreBlueFinal > storedScore.score) {
+                                storedScore.score = match.scoreBlueFinal;
+                                storedScore.alliance = "Blue";
+                                storedScore.event = req.params.eventCode;
+                                storedScore.year = req.params.year;
+                                storedScore.tlevel = req.params.tlevel;
+                                storedScore.penalties = Number(match.scoreRedFoul) + Number(match.scoreBlueFoul);
+                                if (storedScore.penalties) {
+                                    storedScore.penaltyFree = false;
+                                } else {
+                                    storedScore.penaltyFree = true;
+                                }
+                                storedScore.details = match;
+                                seasonHighScore.put(req.params.eventCode + "." + req.params.year + "." + req.params.tlevel + ".penaltyFree", JSON.stringify(storedScore));
+                            }
                         }
                     }
+                });
+                if (req.query.returnschedule === "false") {
+                    res.json({
+                        "response": req.params.eventCode + "." + req.params.year + "." + req.params.tlevel
+                    });
                 }
-            });
+            } catch (err) {
+                logger.error({
+                    'Schedule error payload': response.body,
+                    "error code": err.message
+                });
+            }
         });
 
 });
