@@ -120,10 +120,10 @@ var matchTimer = setInterval(function () {
 }, 1000);
 
 //this heartbeat checks the world high scores every 5 minutes.
-var highScoresTimer = setInterval(function () {
-    "use strict";
-    getSeasonHighScores(2018);
-}, 300000);
+//var highScoresTimer = setInterval(function () {
+//    "use strict";
+//    getSeasonHighScores(2018);
+//}, 300000);
 
 //Championship events receive special treatment. We define the Championshio events here, including Michigan.
 var champSubdivisions = ["ARCHIMEDES", "CARSON", "CARVER", "CURIE", "DALY", "DARWIN", "GALILEO", "HOPPER", "NEWTON", "ROEBLING", "TESLA", "TURING"];
