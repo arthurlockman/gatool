@@ -16,12 +16,11 @@ const GetTeamAwards: Handler = (event: any, context: Context, callback: Callback
 };
 
 const GetEventScores: Handler = (event: any, context: Context, callback: Callback) => {
-    // TODO: finish implementing this stub
     const range = (!event.pathParameters.end) ?
         '?matchNumber=' + event.pathParameters.start :
         '?start=' + event.pathParameters.start + '&end=' + event.pathParameters.end;
-    console.log(range);
-    callback();
+    return GetDataFromFirst(event.pathParameters.year + '/scores/' +
+        event.pathParameters.eventCode + '/' + event.pathParameters.tournamentLevel + range, callback);
 };
 
 const GetHighScores: Handler = (event: any, context: Context, callback: Callback) => {
