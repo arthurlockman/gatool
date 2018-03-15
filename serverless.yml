@@ -43,6 +43,10 @@ functions: # TODO: outline all functions
                 eventCode: true
                 page: true
 
+# TODO: leverage API Gateway caching for requests
+# TODO: add custom domain name mapping: https://stackoverflow.com/a/39595088
+# TODO: outline resources and tables needed for the service
+
 plugins:
   - serverless-plugin-typescript
   - serverless-offline
