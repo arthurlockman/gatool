@@ -42,6 +42,33 @@ functions: # TODO: outline all functions
                 year: true
                 eventCode: true
                 page: true
+  GetTeamAwards:
+    handler: handler.GetTeamAwards
+    description: Get awards for a specific team in a specific year
+    events:
+      - http:
+          path: api/{year}/awards/{teamNumber}
+          method: get
+          request:
+            parameters:
+              paths:
+                year: true
+                teamNumber: true
+  GetEventScores:
+    handler: handler.GetEventScores
+    description: Get scores for a specific event with a year, competition level, start, and end
+    events:
+      - http:
+          path: api/{year}/scores/{eventCode}/{tournamentLevel}/{start}/{end?}
+          method: get
+          request:
+            parameters:
+              paths:
+                year: true
+                eventCode: true
+                tournamentLevel: true
+                start: true
+                end: false
 
 # TODO: leverage API Gateway caching for requests
 # TODO: add custom domain name mapping: https://stackoverflow.com/a/39595088

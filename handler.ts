@@ -6,11 +6,33 @@ const GetEvents: Handler = (event: any, context: Context, callback: Callback) =>
 };
 
 const GetEventTeams: Handler = (event: any, context: Context, callback: Callback) => {
+    // TODO: remove pagination from this API
     return GetDataFromFirst(event.pathParameters.year + '/teams?eventcode='
         + event.pathParameters.eventCode + '&page=' + event.pathParameters.page, callback);
 };
 
-export { GetEvents, GetEventTeams }
+const GetTeamAwards: Handler = (event: any, context: Context, callback: Callback) => {
+    return GetDataFromFirst(event.pathParameters.year + '/awards/' + event.pathParameters.teamNumber, callback);
+};
+
+const GetEventScores: Handler = (event: any, context: Context, callback: Callback) => {
+    // TODO: finish implementing this stub
+    const range = (!event.pathParameters.end) ?
+        '?matchNumber=' + event.pathParameters.start :
+        '?start=' + event.pathParameters.start + '&end=' + event.pathParameters.end;
+    console.log(range);
+    callback();
+};
+
+const GetHighScores: Handler = (event: any, context: Context, callback: Callback) => {
+    // TODO: implement this stub
+};
+
+const GetOffseasonEvents: Handler = (event: any, context: Context, callback: Callback) => {
+    // TODO: implement this stub
+};
+
+export { GetEvents, GetEventTeams, GetTeamAwards, GetEventScores }
 
 /**
  * Get and return data from the FIRST API
