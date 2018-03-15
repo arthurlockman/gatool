@@ -45,11 +45,12 @@ function GetDataFromFirst(path: string, callback: any) {
 function ReturnJsonWithCode(statusCode: number, body: any, callback: any) {
     return callback(null, {
         statusCode: statusCode,
-        body: body,
+        body: JSON.stringify(body),
         headers: {
             'Content-Type': 'application/json',
             'charset': 'utf-8'
-        }
+        },
+        isBase64Encoded: false
     });
 }
 

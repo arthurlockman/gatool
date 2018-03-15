@@ -8,3 +8,4 @@ server.key
 .build/*
 .serverless/*
 dist/*
+package-lock.json

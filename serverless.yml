@@ -11,6 +11,7 @@ provider:
   region: us-east-1
   role: arn:aws:iam::336977810532:role/service-role/GAToolRole
   profile: aws-arthurlockman
+  stage: production
   environment: # Environment variables available to the whole service
     FRC_API_KEY: ${ssm:frc-api-key~true}
     TBA_API_HEADER: ${ssm:tba-api-header~true}
