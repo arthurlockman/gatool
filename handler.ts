@@ -2,25 +2,32 @@ import { Handler, Context, Callback } from 'aws-lambda';
 const rp = require('request-promise');
 
 const GetEvents: Handler = (event: any, context: Context, callback: Callback) => {
-    return GetDataFromFirst(event.pathParameters.year + '/events', callback);
+    return GetDataFromFIRSTAndReturn(event.pathParameters.year + '/events', callback);
 };
 
 const GetEventTeams: Handler = (event: any, context: Context, callback: Callback) => {
     // TODO: remove pagination from this API
-    return GetDataFromFirst(event.pathParameters.year + '/teams?eventcode='
+    return GetDataFromFIRSTAndReturn(event.pathParameters.year + '/teams?eventcode='
         + event.pathParameters.eventCode + '&page=' + event.pathParameters.page, callback);
 };
 
 const GetTeamAwards: Handler = (event: any, context: Context, callback: Callback) => {
-    return GetDataFromFirst(event.pathParameters.year + '/awards/' + event.pathParameters.teamNumber, callback);
+    return GetDataFromFIRSTAndReturn(event.pathParameters.year + '/awards/' + event.pathParameters.teamNumber, callback);
 };
 
 const GetEventScores: Handler = (event: any, context: Context, callback: Callback) => {
-    const range = (!event.pathParameters.end) ?
-        '?matchNumber=' + event.pathParameters.start :
-        '?start=' + event.pathParameters.start + '&end=' + event.pathParameters.end;
-    return GetDataFromFirst(event.pathParameters.year + '/scores/' +
+    const range = (event.pathParameters.matchNumber) ?
+        '?matchNumber=' + event.pathParameters.matchNumber :
+        (event.pathParameters.start === event.pathParameters.end) ?
+            '?matchNumber=' + event.pathParameters.start :
+            '?start=' + event.pathParameters.start + '&end=' + event.pathParameters.end;
+    return GetDataFromFIRSTAndReturn(event.pathParameters.year + '/scores/' +
         event.pathParameters.eventCode + '/' + event.pathParameters.tournamentLevel + range, callback);
+};
+
+const GetEventSchedule: Handler = (event: any, context: Context, callback: Callback) => {
+    return GetDataFromFIRSTAndReturn(event.pathParameters.year + '/schedule/' +
+        event.pathParameters.eventCode + '/' + event.pathParameters.tournamentLevel + '/hybrid', callback);
 };
 
 const GetHighScores: Handler = (event: any, context: Context, callback: Callback) => {
@@ -31,14 +38,43 @@ const GetOffseasonEvents: Handler = (event: any, context: Context, callback: Cal
     // TODO: implement this stub
 };
 
-export { GetEvents, GetEventTeams, GetTeamAwards, GetEventScores }
+const UpdateHighScores: Handler = (event: any, context: Context, callback: Callback) => {
+    return GetDataFromFIRST(process.env.FRC_CURRENT_SEASON + '/events').then((eventList) => {
+        const promises = [];
+        const currentDate = new Date();
+        currentDate.setDate(currentDate.getDate() + 1);
+        for (const _event of eventList.Events) {
+            const eventDate = new Date(_event.dateStart);
+            if (eventDate < currentDate) {
+                promises.push(GetDataFromFIRST(process.env.FRC_CURRENT_SEASON + '/schedule/' + _event.code + '/qual/hybrid'));
+                promises.push(GetDataFromFIRST(process.env.FRC_CURRENT_SEASON + '/schedule/' + _event.code + '/playoff/hybrid'));
+            }
+        }
+        Promise.all(promises).then((data) => {
+            // TODO: calculate high scores and store to table
+            callback();
+        });
+    });
+};
+
+export { GetEvents, GetEventTeams, GetTeamAwards, GetEventScores, GetEventSchedule, UpdateHighScores }
 
 /**
  * Get and return data from the FIRST API
  * @param path The path on the FIRST API to call
  * @param callback The lambda callback to return the data
  */
-function GetDataFromFirst(path: string, callback: any) {
+function GetDataFromFIRSTAndReturn(path: string, callback: any) {
+    return GetDataFromFIRST(path).then((body) => {
+        ReturnJsonWithCode(200, body, callback);
+    });
+}
+
+/**
+ * Get data from FIRST and return a promise
+ * @param path The path to GET data from
+ */
+function GetDataFromFIRST(path: string): Promise<any> {
     try {
         const options = {
             method: 'GET',
@@ -49,11 +85,10 @@ function GetDataFromFirst(path: string, callback: any) {
                 'Accept': 'application/json'
             }
         };
-        return rp(options).then((body) => {
-            ReturnJsonWithCode(200, body, callback);
-        });
+        return rp(options);
     } catch (err) {
         console.error(err);
+        return Promise.reject(err);
     }
 }
 
@@ -74,10 +109,3 @@ function ReturnJsonWithCode(statusCode: number, body: any, callback: any) {
         isBase64Encoded: false
     });
 }
-
-/**
- * Catch all unhandled exceptions
- */
-process.on('unhandledRejection', (reason, p) => {
-    console.error('Unhandled rejection at: Promise', p, 'reason:', reason);
-});

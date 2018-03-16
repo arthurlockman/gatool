@@ -16,6 +16,7 @@ provider:
     FRC_API_KEY: ${ssm:frc-api-key~true}
     TBA_API_HEADER: ${ssm:tba-api-header~true}
     TBA_API_KEY: ${ssm:tba-api-token~true}
+    FRC_CURRENT_SEASON: 2018
 
 functions: # TODO: outline all functions
   GetEvents:
@@ -54,12 +55,26 @@ functions: # TODO: outline all functions
               paths:
                 year: true
                 teamNumber: true
-  GetEventScores:
+  GetEventScoresWithMatchNumber:
     handler: handler.GetEventScores
-    description: Get scores for a specific event with a year, competition level, start, and end
+    description: Get scores for a specific event with a year, competition level, and a match number
     events:
       - http:
-          path: api/{year}/scores/{eventCode}/{tournamentLevel}/{start}/{end?}
+          path: api/{year}/scores/{eventCode}/{tournamentLevel}/{matchNumber}
+          method: get
+          request:
+            parameters:
+              paths:
+                year: true
+                eventCode: true
+                tournamentLevel: true
+                matchNumber: true
+  GetEventScoresWithStartEnd:
+    handler: handler.GetEventScores
+    description: Get scores for a specific event with a year, competition level, and a start/end
+    events:
+      - http:
+          path: api/{year}/scores/{eventCode}/{tournamentLevel}/{start}/{end}
           method: get
           request:
             parameters:
@@ -68,7 +83,27 @@ functions: # TODO: outline all functions
                 eventCode: true
                 tournamentLevel: true
                 start: true
-                end: false
+                end: true
+  GetEventSchedule:
+    handler: handler.GetEventSchedule
+    description: Get the event schedule for a specific event, year, and competition level
+    events:
+      - http:
+          path: api/{year}/schedule/{eventCode}/{tournamentLevel}
+          method: get
+          request:
+            parameters:
+              year: true
+              eventCode: true
+              tournamentLevel: true
+  UpdateHighScores:
+    handler: handler.UpdateHighScores
+    description: Update the event high scores at a regular interval
+    timeout: 60
+    events:
+      - schedule:
+          rate: rate(5 minutes)
+          enabled: false
 
 # TODO: leverage API Gateway caching for requests
 # TODO: add custom domain name mapping: https://stackoverflow.com/a/39595088

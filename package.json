@@ -5,7 +5,9 @@
     "description": "GATool",
     "main": "dist/handler.js",
     "scripts": {
-        "build": "tsc"
+        "build": "tsc",
+        "offline": "serverless offline start",
+        "deploy": "serverless deploy"
     },
     "author": "James Lockman, Arthur Lockman",
     "license": "MIT",
