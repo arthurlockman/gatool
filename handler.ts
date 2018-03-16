@@ -16,11 +16,9 @@ const GetTeamAwards: Handler = (event: any, context: Context, callback: Callback
 };
 
 const GetEventScores: Handler = (event: any, context: Context, callback: Callback) => {
-    const range = (event.pathParameters.matchNumber) ?
-        '?matchNumber=' + event.pathParameters.matchNumber :
-        (event.pathParameters.start === event.pathParameters.end) ?
-            '?matchNumber=' + event.pathParameters.start :
-            '?start=' + event.pathParameters.start + '&end=' + event.pathParameters.end;
+    const range = (event.pathParameters.start === event.pathParameters.end) ?
+        '?matchNumber=' + event.pathParameters.start :
+        '?start=' + event.pathParameters.start + '&end=' + event.pathParameters.end;
     return GetDataFromFIRSTAndReturn(event.pathParameters.year + '/scores/' +
         event.pathParameters.eventCode + '/' + event.pathParameters.tournamentLevel + range, callback);
 };

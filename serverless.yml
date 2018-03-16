@@ -55,23 +55,9 @@ functions: # TODO: outline all functions
               paths:
                 year: true
                 teamNumber: true
-  GetEventScoresWithMatchNumber:
+  GetEventScores:
     handler: handler.GetEventScores
-    description: Get scores for a specific event with a year, competition level, and a match number
-    events:
-      - http:
-          path: api/{year}/scores/{eventCode}/{tournamentLevel}/{matchNumber}
-          method: get
-          request:
-            parameters:
-              paths:
-                year: true
-                eventCode: true
-                tournamentLevel: true
-                matchNumber: true
-  GetEventScoresWithStartEnd:
-    handler: handler.GetEventScores
-    description: Get scores for a specific event with a year, competition level, and a start/end
+    description: Get scores for a specific event with a year, competition level, and a start/end (match number)
     events:
       - http:
           path: api/{year}/scores/{eventCode}/{tournamentLevel}/{start}/{end}
