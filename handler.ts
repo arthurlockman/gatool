@@ -1,5 +1,7 @@
 import { Handler, Context, Callback } from 'aws-lambda';
 const rp = require('request-promise');
+const AWS = require('aws-sdk');
+const DynamoDB = new AWS.DynamoDB.DocumentClient({ region: 'us-east-1' });
 
 const GetEvents: Handler = (event: any, context: Context, callback: Callback) => {
     return GetDataFromFIRSTAndReturn(event.pathParameters.year + '/events', callback);
@@ -39,6 +41,7 @@ const GetOffseasonEvents: Handler = (event: any, context: Context, callback: Cal
 const UpdateHighScores: Handler = (event: any, context: Context, callback: Callback) => {
     return GetDataFromFIRST(process.env.FRC_CURRENT_SEASON + '/events').then((eventList) => {
         const promises = [];
+        const order = [];
         const currentDate = new Date();
         currentDate.setDate(currentDate.getDate() + 1);
         for (const _event of eventList.Events) {
@@ -46,10 +49,31 @@ const UpdateHighScores: Handler = (event: any, context: Context, callback: Callb
             if (eventDate < currentDate) {
                 promises.push(GetDataFromFIRST(process.env.FRC_CURRENT_SEASON + '/schedule/' + _event.code + '/qual/hybrid'));
                 promises.push(GetDataFromFIRST(process.env.FRC_CURRENT_SEASON + '/schedule/' + _event.code + '/playoff/hybrid'));
+                order.push({
+                    eventCode: _event.code,
+                    type: 'qual'
+                });
+                order.push({
+                    eventCode: _event.code,
+                    type: 'playoff'
+                });
             }
         }
         Promise.all(promises).then((data) => {
             // TODO: calculate high scores and store to table
+            // Qual (no fouls), Playoff (no fouls)
+            // Qual (offsetting fouls), Playoff (offsetting fouls)
+            // Qual, Playoff
+            let qualNoFoul, playoffNoFoul, qualOffset, playoffOffset, qual, playoff;
+            for (const match of data) {
+                const eventCode = order[data.indexOf(match)].eventCode;
+                const type = order[data.indexOf(match)].type;
+                if (match.Schedule[0] && match.Schedule[0].actualStartTime) {
+                    // Process score since it's a real score, store to table
+                } else {
+                    console.log('Event', eventCode, type, 'has no schedule data, likely occurs in the future');
+                }
+            }
             callback();
         });
     });
@@ -105,5 +129,38 @@ function ReturnJsonWithCode(statusCode: number, body: any, callback: any) {
             'charset': 'utf-8'
         },
         isBase64Encoded: false
+    });
+}
+
+/**
+ * Store a high score in the database
+ * @param score The match score
+ * @param matchNumber The match number
+ * @param eventCode The event code
+ * @param eventName The event name
+ * @param year The year for the score
+ * @param type The type (qual, playoff) for the score
+ * @param fouls The foul type (none, offsetting, included)
+ */
+function StoreHighScore(score: string, matchNumber: string, eventCode: string,
+    eventName: string, year: string, type: string, fouls: string): Promise<any> {
+    const params = {
+        TableName: 'HighScoresTable',
+        Item: {
+            yearType: year + type + fouls,
+            year: year,
+            type: type,
+            fouls: fouls,
+            eventCode: eventCode,
+            eventName: eventName,
+            matchNumber: matchNumber
+        }
+    };
+    return DynamoDB.put(params, (err, data) => {
+        if (err) {
+            return Promise.reject(err);
+        } else {
+            return Promise.resolve();
+        }
     });
 }
