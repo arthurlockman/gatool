@@ -17,6 +17,8 @@ provider:
     TBA_API_HEADER: ${ssm:tba-api-header~true}
     TBA_API_KEY: ${ssm:tba-api-token~true}
     FRC_CURRENT_SEASON: 2018
+    HIGH_SCORES_TABLE_NAME: HighScoresTable
+    USERS_TABLE_NAME: UsersTable
 
 functions: # TODO: outline all functions
   GetEvents:
@@ -101,12 +103,25 @@ resources:
     HighScoresTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: HighScoresTable
+        TableName: ${env:HIGH_SCORES_TABLE_NAME}
         AttributeDefinitions:
           - AttributeName: yearType
             AttributeType: S
         KeySchema:
           - AttributeName: yearType
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${env:USERS_TABLE_NAME}
+        AttributeDefinitions:
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: email
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1

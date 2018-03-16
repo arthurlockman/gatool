@@ -145,7 +145,7 @@ function ReturnJsonWithCode(statusCode: number, body: any, callback: any) {
 function StoreHighScore(score: string, matchNumber: string, eventCode: string,
     eventName: string, year: string, type: string, fouls: string): Promise<any> {
     const params = {
-        TableName: 'HighScoresTable',
+        TableName: process.env.HIGH_SCORES_TABLE_NAME,
         Item: {
             yearType: year + type + fouls,
             year: year,
