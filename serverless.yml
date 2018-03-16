@@ -103,7 +103,7 @@ resources:
     HighScoresTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${env:HIGH_SCORES_TABLE_NAME}
+        TableName: HighScoresTable
         AttributeDefinitions:
           - AttributeName: yearType
             AttributeType: S
@@ -116,7 +116,7 @@ resources:
     UsersTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${env:USERS_TABLE_NAME}
+        TableName: UsersTable
         AttributeDefinitions:
           - AttributeName: email
             AttributeType: S
