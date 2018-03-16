@@ -4,58 +4,58 @@
 
 //Create the localStorage variables if they don't exist
 if (!localStorage.currentMatch) {
-    localStorage.currentMatch = 1;
+	localStorage.currentMatch = 1;
 }
 if (!localStorage.inPlayoffs) {
-    localStorage.inPlayoffs = "false";
+	localStorage.inPlayoffs = "false";
 }
 if (!localStorage.Alliances) {
-    localStorage.Alliances = "{}";
+	localStorage.Alliances = "{}";
 }
 if (!localStorage.events) {
-    localStorage.events = "{}";
+	localStorage.events = "{}";
 }
 if (!localStorage.playoffList) {
-    localStorage.playoffList = '{"Schedule":[]}';
+	localStorage.playoffList = '{"Schedule":[]}';
 }
 if (!localStorage.qualsList) {
-    localStorage.qualsList = '{"Schedule":[]}';
+	localStorage.qualsList = '{"Schedule":[]}';
 }
 if (!localStorage.teamList) {
-    localStorage.teamList = "{}";
+	localStorage.teamList = "{}";
 }
 if (!localStorage.eventName) {
-    localStorage.eventName = "";
+	localStorage.eventName = "";
 }
 if (!localStorage.awardSeparator) {
-    localStorage.awardSeparator = " || ";
+	localStorage.awardSeparator = " || ";
 }
 if (!localStorage.awardDepth) {
-    localStorage.awardDepth = 3;
+	localStorage.awardDepth = 3;
 }
 if (!localStorage.showNotes) {
-    localStorage.showNotes = "true";
+	localStorage.showNotes = "true";
 }
 if (!localStorage.showSponsors) {
-    localStorage.showSponsors = "true";
+	localStorage.showSponsors = "true";
 }
 if (!localStorage.showMottoes) {
-    localStorage.showMottoes = "true";
+	localStorage.showMottoes = "true";
 }
 if (!localStorage.showAwards) {
-    localStorage.showAwards = "true";
+	localStorage.showAwards = "true";
 }
 if (!localStorage.showEventNames) {
-    localStorage.showEventNames = "true";
+	localStorage.showEventNames = "true";
 }
 if (!localStorage.offseason) {
-    localStorage.offseason = "false";
+	localStorage.offseason = "false";
 }
 if (!localStorage.eventFilters) {
-    localStorage.eventFilters = JSON.stringify(["future"]);
+	localStorage.eventFilters = JSON.stringify(["future"]);
 }
 if (!localStorage.currentEventList) {
-    localStorage.currentEventList = [];
+	localStorage.currentEventList = [];
 }
 
 // reset some of those variables, which will be adjusted later.
@@ -106,17 +106,19 @@ var haveRanks = false;
 var highScores = {};
 var currentEventList = [];
 var lastRanksUpdate = "";
+var haveSchedule = false;
+
 for (var i = 1; i < 9; i++) {
-    allianceChoices['Alliance' + i + 'Captain'] = "";
+	allianceChoices['Alliance' + i + 'Captain'] = "";
 }
 for (var i = 0; i < allianceSelectionOrder.length; i++) {
-    allianceChoices[allianceSelectionOrder[i]] = "";
+	allianceChoices[allianceSelectionOrder[i]] = "";
 }
 
 //This heartbeat performs a number of functions related to clocks. See the timer() function for details.
 var matchTimer = setInterval(function () {
-    "use strict";
-    timer();
+	"use strict";
+	timer();
 }, 1000);
 
 //this heartbeat checks the world high scores every 5 minutes.
@@ -128,7 +130,7 @@ var matchTimer = setInterval(function () {
 //Championship events receive special treatment. We define the Championshio events here, including Michigan.
 var champSubdivisions = ["ARCHIMEDES", "CARSON", "CARVER", "CURIE", "DALY", "DARWIN", "GALILEO", "HOPPER", "NEWTON", "ROEBLING", "TESLA", "TURING"];
 var champDivisions = ["ARDA", "CANE", "CATE", "CUDA", "GARO", "HOTU"];
-var champs = ["CMP", "CMPTX", "CMPMO"];
+var champs = ["CMP", "CMPTX", "CMPMO", "CMPMI"];
 var miDivisions = ["MICMP1", "MICMP2", "MICMP3", "MICMP4"];
 var miChamps = ["MICMP"];
 
@@ -138,3656 +140,3655 @@ var apiURL = "/api/";
 
 //Now that we have the variables all set up and all of the necessary JS and CSS are loaded, we can run the app.
 window.onload = function () {
-    "use strict";
+	"use strict";
 
-    //hide the schedule progress bar. We'll show it if we need it.
-    $('#scheduleProgressBar').hide();
+	//hide the schedule progress bar. We'll show it if we need it.
+	$('#scheduleProgressBar').hide();
 
-    //change the Select Picker behavior to support Mobile browsers with native controls
-    //if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
-    //        $('.selectpicker').selectpicker('mobile');
-    //    }
+	//change the Select Picker behavior to support Mobile browsers with native controls
+	//if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
+	//        $('.selectpicker').selectpicker('mobile');
+	//    }
 
-    $("#loadingFeedback").html("Restoring settings...");
-    //Set the controls to the previous selected values
-    //Set currentYear value
-    if (localStorage.currentYear) {
-        document.getElementById("yearPicker" + localStorage.currentYear).selected = true;
-        $("#yearPicker").selectpicker('refresh');
-    }
+	$("#loadingFeedback").html("Restoring settings...");
+	//Set the controls to the previous selected values
+	//Set currentYear value
+	if (localStorage.currentYear) {
+		document.getElementById("yearPicker" + localStorage.currentYear).selected = true;
+		$("#yearPicker").selectpicker('refresh');
+	}
 
-    //Set awardSeparator value
-    if (localStorage.awardSeparator === " || ") {
-        document.getElementById("awardSeparator1").selected = true;
-    } else if (localStorage.awardSeparator === " // ") {
-        document.getElementById("awardSeparator2").selected = true;
-    } else if (localStorage.awardSeparator === "<br>") {
-        document.getElementById("awardSeparator3").selected = true;
-    } else {
-        localStorage.awardSeparator = "<br>";
-        document.getElementById("awardSeparator3").selected = true;
-    }
-    $("#awardSeparatorPicker").selectpicker('refresh');
+	//Set awardSeparator value
+	if (localStorage.awardSeparator === " || ") {
+		document.getElementById("awardSeparator1").selected = true;
+	} else if (localStorage.awardSeparator === " // ") {
+		document.getElementById("awardSeparator2").selected = true;
+	} else if (localStorage.awardSeparator === "<br>") {
+		document.getElementById("awardSeparator3").selected = true;
+	} else {
+		localStorage.awardSeparator = "<br>";
+		document.getElementById("awardSeparator3").selected = true;
+	}
+	$("#awardSeparatorPicker").selectpicker('refresh');
 
-    //Set awardDepth value
-    $("#awardDepthPicker").selectpicker('val', localStorage.awardDepth);
+	//Set awardDepth value
+	$("#awardDepthPicker").selectpicker('val', localStorage.awardDepth);
 
-    //Set Event Filter values
-    $("#eventFilters").selectpicker('val', JSON.parse(localStorage.eventFilters));
-
-
-    $("#loadingFeedback").html("Enabling controls...");
-
-    //Configure the yearPicker function
-    document.getElementById('yearPicker').onchange = function () {
-        localStorage.currentYear = $("#yearPicker").val();
-        localStorage.removeItem("eventSelector");
-        loadEventsList();
-        initEnvironment();
-    };
-
-    //configure the Event Selector function
-    document.getElementById('eventSelector').onchange = function () {
-        handleEventSelection();
-    };
-
-    //Setup the switches on the Setup Screen
-    $("[name='showSponsors']").bootstrapSwitch('state', (localStorage.showSponsors === "true"));
-    $("[name='showAwards']").bootstrapSwitch('state', (localStorage.showAwards === "true"));
-    $("[name='showNotes']").bootstrapSwitch('state', (localStorage.showNotes === "true"));
-    $("[name='showMottoes']").bootstrapSwitch('state', (localStorage.showMottoes === "true"));
-    $("[name='showEventNames']").bootstrapSwitch('state', (localStorage.showEventNames === "true"));
-    $("[name='offseason']").bootstrapSwitch('state', (localStorage.offseason === "true"));
-
-    //Ensure that the switch values are honored.
-    // Handle Sponsors toggle during loading.
-    if ($("#showSponsors").bootstrapSwitch('state')) {
-        $(".sponsors").show();
-    } else {
-        $(".sponsors").hide();
-    }
-
-    // Handle Awards toggle during loading.
-    if ($("#showAwards").bootstrapSwitch('state')) {
-        $(".awards").show();
-    } else {
-        $(".awards").hide();
-    }
-
-    // Handle Notes toggle during loading.
-    if ($("#showNotes").bootstrapSwitch('state')) {
-        $(".notes").show();
-    } else {
-        $(".notes").hide();
-    }
-
-    // Handle Mottoes toggle during loading.
-    if ($("#showMottoes").bootstrapSwitch('state')) {
-        $(".mottoes").show();
-    } else {
-        $(".mottoes").hide();
-    }
-
-    // Handle Event Names toggle during loading.
-    if ($("#showEventNames").bootstrapSwitch('state')) {
-        localStorage.showEventNames = "true";
-    } else {
-        localStorage.showEventNames = "false";
-    }
-
-    // Handle Offseason toggle in loading. Hide and show offseason annotations in the Setup/Schedule display.
-    if ($("#offseason").bootstrapSwitch('state')) {
-        $(".offseason").show();
-        $(".regularseason").hide();
-    } else {
-        $(".offseason").hide();
-        $(".regularseason").show();
-    }
+	//Set Event Filter values
+	$("#eventFilters").selectpicker('val', JSON.parse(localStorage.eventFilters));
 
 
-    // Handle Sponsors toggle. Hide and show sponsors in the announce/PBP display.
-    document.getElementById("showSponsors").onchange = function () {
-        localStorage.showSponsors = $("#showSponsors").bootstrapSwitch('state');
-        if ($("#showSponsors").bootstrapSwitch('state')) {
-            $(".sponsors").show();
-        } else {
-            $(".sponsors").hide();
-        }
-    };
+	$("#loadingFeedback").html("Enabling controls...");
 
-    // Handle Awards toggle. Hide and show awards in the announce/PBP display.
-    document.getElementById("showAwards").onchange = function () {
-        localStorage.showAwards = $("#showAwards").bootstrapSwitch('state');
-        if ($("#showAwards").bootstrapSwitch('state')) {
-            $(".awards").show();
-        } else {
-            $(".awards").hide();
-        }
-    };
+	//Configure the yearPicker function
+	document.getElementById('yearPicker').onchange = function () {
+		localStorage.currentYear = $("#yearPicker").val();
+		localStorage.removeItem("eventSelector");
+		loadEventsList();
+		initEnvironment();
+	};
+
+	//configure the Event Selector function
+	document.getElementById('eventSelector').onchange = function () {
+		handleEventSelection();
+	};
+
+	//Setup the switches on the Setup Screen
+	$("[name='showSponsors']").bootstrapSwitch('state', (localStorage.showSponsors === "true"));
+	$("[name='showAwards']").bootstrapSwitch('state', (localStorage.showAwards === "true"));
+	$("[name='showNotes']").bootstrapSwitch('state', (localStorage.showNotes === "true"));
+	$("[name='showMottoes']").bootstrapSwitch('state', (localStorage.showMottoes === "true"));
+	$("[name='showEventNames']").bootstrapSwitch('state', (localStorage.showEventNames === "true"));
+	$("[name='offseason']").bootstrapSwitch('state', (localStorage.offseason === "true"));
+
+	//Ensure that the switch values are honored.
+	// Handle Sponsors toggle during loading.
+	if ($("#showSponsors").bootstrapSwitch('state')) {
+		$(".sponsors").show();
+	} else {
+		$(".sponsors").hide();
+	}
+
+	// Handle Awards toggle during loading.
+	if ($("#showAwards").bootstrapSwitch('state')) {
+		$(".awards").show();
+	} else {
+		$(".awards").hide();
+	}
+
+	// Handle Notes toggle during loading.
+	if ($("#showNotes").bootstrapSwitch('state')) {
+		$(".notes").show();
+	} else {
+		$(".notes").hide();
+	}
+
+	// Handle Mottoes toggle during loading.
+	if ($("#showMottoes").bootstrapSwitch('state')) {
+		$(".mottoes").show();
+	} else {
+		$(".mottoes").hide();
+	}
+
+	// Handle Event Names toggle during loading.
+	if ($("#showEventNames").bootstrapSwitch('state')) {
+		localStorage.showEventNames = "true";
+	} else {
+		localStorage.showEventNames = "false";
+	}
+
+	// Handle Offseason toggle in loading. Hide and show offseason annotations in the Setup/Schedule display.
+	if ($("#offseason").bootstrapSwitch('state')) {
+		$(".offseason").show();
+		$(".regularseason").hide();
+	} else {
+		$(".offseason").hide();
+		$(".regularseason").show();
+	}
 
 
-    // Handle Notes toggle. Hide and show Notes in the announce/PBP display.
-    document.getElementById("showNotes").onchange = function () {
-        localStorage.showNotes = $("#showNotes").bootstrapSwitch('state');
-        if ($("#showNotes").bootstrapSwitch('state')) {
-            $(".notes").show();
-        } else {
-            $(".notes").hide();
-        }
-    };
+	// Handle Sponsors toggle. Hide and show sponsors in the announce/PBP display.
+	document.getElementById("showSponsors").onchange = function () {
+		localStorage.showSponsors = $("#showSponsors").bootstrapSwitch('state');
+		if ($("#showSponsors").bootstrapSwitch('state')) {
+			$(".sponsors").show();
+		} else {
+			$(".sponsors").hide();
+		}
+	};
+
+	// Handle Awards toggle. Hide and show awards in the announce/PBP display.
+	document.getElementById("showAwards").onchange = function () {
+		localStorage.showAwards = $("#showAwards").bootstrapSwitch('state');
+		if ($("#showAwards").bootstrapSwitch('state')) {
+			$(".awards").show();
+		} else {
+			$(".awards").hide();
+		}
+	};
 
 
-    // Handle Mottoes toggle. Hide and show mottoes in the announce/PBP display.
-    document.getElementById("showMottoes").onchange = function () {
-        localStorage.showMottoes = $("#showMottoes").bootstrapSwitch('state');
-        if ($("#showMottoes").bootstrapSwitch('state')) {
-            $(".mottoes").show();
-        } else {
-            $(".mottoes").hide();
-        }
-    };
+	// Handle Notes toggle. Hide and show Notes in the announce/PBP display.
+	document.getElementById("showNotes").onchange = function () {
+		localStorage.showNotes = $("#showNotes").bootstrapSwitch('state');
+		if ($("#showNotes").bootstrapSwitch('state')) {
+			$(".notes").show();
+		} else {
+			$(".notes").hide();
+		}
+	};
 
-    //Handle offseason toggle. Hide and show regular season items and offseason items, accordingly.
-    document.getElementById("offseason").onchange = function () {
-        localStorage.offseason = $("#offseason").bootstrapSwitch('state');
-        if ($("#offseason").bootstrapSwitch('state')) {
-            $(".offseason").show();
-            $(".regularseason").hide();
-        } else {
-            $(".offseason").hide();
-            $(".regularseason").show();
-        }
-        localStorage.removeItem("eventSelector");
-        loadEventsList();
-    };
 
-    //Handle a change in awards depth
-    document.getElementById('awardDepthPicker').onchange = function () {
-        localStorage.awardDepth = $("#awardDepthPicker").val();
-        displayAwards();
+	// Handle Mottoes toggle. Hide and show mottoes in the announce/PBP display.
+	document.getElementById("showMottoes").onchange = function () {
+		localStorage.showMottoes = $("#showMottoes").bootstrapSwitch('state');
+		if ($("#showMottoes").bootstrapSwitch('state')) {
+			$(".mottoes").show();
+		} else {
+			$(".mottoes").hide();
+		}
+	};
 
-    };
+	//Handle offseason toggle. Hide and show regular season items and offseason items, accordingly.
+	document.getElementById("offseason").onchange = function () {
+		localStorage.offseason = $("#offseason").bootstrapSwitch('state');
+		if ($("#offseason").bootstrapSwitch('state')) {
+			$(".offseason").show();
+			$(".regularseason").hide();
+		} else {
+			$(".offseason").hide();
+			$(".regularseason").show();
+		}
+		localStorage.removeItem("eventSelector");
+		loadEventsList();
+	};
 
-    //Handle a change in awards separator
-    document.getElementById('awardSeparatorPicker').onchange = function () {
+	//Handle a change in awards depth
+	document.getElementById('awardDepthPicker').onchange = function () {
+		localStorage.awardDepth = $("#awardDepthPicker").val();
+		displayAwards();
 
-        if ($("#awardSeparatorPicker").val() === "||") {
-            localStorage.awardSeparator = " || ";
-        } else if ($("#awardSeparatorPicker").val() === "//") {
-            localStorage.awardSeparator = " // ";
-        } else {
-            localStorage.awardSeparator = "<br>";
-        }
-        displayAwards();
-    };
+	};
 
-    //Handle a change in Event Name Display
-    document.getElementById('showEventNames').onchange = function () {
-        if ($("#showEventNames").bootstrapSwitch('state')) {
-            localStorage.showEventNames = "true";
-        } else {
-            localStorage.showEventNames = "false";
-        }
-        displayAwards();
-    };
+	//Handle a change in awards separator
+	document.getElementById('awardSeparatorPicker').onchange = function () {
 
-    // Handle showEventNames toggle in loading. 
-    if ($("#showEventNames").bootstrapSwitch('state')) {
-        localStorage.showEventNames = "true";
-    } else {
-        localStorage.showEventNames = "false";
-    }
+		if ($("#awardSeparatorPicker").val() === "||") {
+			localStorage.awardSeparator = " || ";
+		} else if ($("#awardSeparatorPicker").val() === "//") {
+			localStorage.awardSeparator = " // ";
+		} else {
+			localStorage.awardSeparator = "<br>";
+		}
+		displayAwards();
+	};
 
-    //Handle Event Filter change
-    document.getElementById('eventFilters').onchange = function () {
-        filterEvents();
+	//Handle a change in Event Name Display
+	document.getElementById('showEventNames').onchange = function () {
+		if ($("#showEventNames").bootstrapSwitch('state')) {
+			localStorage.showEventNames = "true";
+		} else {
+			localStorage.showEventNames = "false";
+		}
+		displayAwards();
+	};
 
-    };
+	// Handle showEventNames toggle in loading. 
+	if ($("#showEventNames").bootstrapSwitch('state')) {
+		localStorage.showEventNames = "true";
+	} else {
+		localStorage.showEventNames = "false";
+	}
 
-    $("#loadingFeedback").html("Setting up offseason mode...");
-    //Setup the Offseason schedule upload and reset buttons. See their respective fuctions for details.
-    document.getElementById("QualsFiles").addEventListener('change', handleQualsFiles, false);
-    document.getElementById("PlayoffFiles").addEventListener('change', handlePlayoffFiles, false);
+	//Handle Event Filter change
+	document.getElementById('eventFilters').onchange = function () {
+		filterEvents();
 
-    document.getElementById("QualsFilesReset").addEventListener('click', handleQualsFilesReset, false);
-    document.getElementById("PlayoffFilesReset").addEventListener('click', handlePlayoffFilesReset, false);
+	};
 
-    //setup the Offseason Tab
-    $('#offseasonTeamListToJSON').click(function () {
-        //Example: var parseOutput = CSVParser.parse(this.inputText, this.headersProvided, this.delimiter, this.downcaseHeaders, this.upcaseHeaders);
-        //console.log("starting conversion");
-        var inbound = $("#offSeasonTeamListInput").val();
-        var outbound = CSVParser.parse(inbound, true, "auto", false, false);
-        if (outbound.errors) {
-            alert("Errors in the input:\n" + outbound.errors);
-        } else {
-            //Example: jsonResult = JSON.parse(toJSON(outbound.dataGrid,outbound.headerNames,outbound.headerTypes,""));
-            localStorage.teamList = toJSON(outbound.dataGrid, outbound.headerNames, outbound.headerTypes, "");
-            eventTeamList = JSON.parse(localStorage.teamList);
-            alert("Converted Result:\n" + localStorage.teamList);
-            updateTeamTable();
-        }
+	$("#loadingFeedback").html("Setting up offseason mode...");
+	//Setup the Offseason schedule upload and reset buttons. See their respective fuctions for details.
+	document.getElementById("QualsFiles").addEventListener('change', handleQualsFiles, false);
+	document.getElementById("PlayoffFiles").addEventListener('change', handlePlayoffFiles, false);
 
-    });
-    $('#cheatSheetImage').html('<img src="images/Power-Up-Cheatsheet-gatool.png" width="100%" alt="Steamworks Cheatsheet">');
-    $('#allianceSelectionTable').hide();
-    $('#allianceUndoButton').hide();
+	document.getElementById("QualsFilesReset").addEventListener('click', handleQualsFilesReset, false);
+	document.getElementById("PlayoffFilesReset").addEventListener('click', handlePlayoffFilesReset, false);
 
-    //Load the events list based on the restored values
-    loadEventsList();
+	//setup the Offseason Tab
+	$('#offseasonTeamListToJSON').click(function () {
+		//Example: var parseOutput = CSVParser.parse(this.inputText, this.headersProvided, this.delimiter, this.downcaseHeaders, this.upcaseHeaders);
+		//console.log("starting conversion");
+		var inbound = $("#offSeasonTeamListInput").val();
+		var outbound = CSVParser.parse(inbound, true, "auto", false, false);
+		if (outbound.errors) {
+			alert("Errors in the input:\n" + outbound.errors);
+		} else {
+			//Example: jsonResult = JSON.parse(toJSON(outbound.dataGrid,outbound.headerNames,outbound.headerTypes,""));
+			localStorage.teamList = toJSON(outbound.dataGrid, outbound.headerNames, outbound.headerTypes, "");
+			eventTeamList = JSON.parse(localStorage.teamList);
+			alert("Converted Result:\n" + localStorage.teamList);
+			updateTeamTable();
+		}
 
-    scaleRows();
-    document.getElementById('setupTabPicker').click();
-    $("#loadingFeedback").html("gatool ready to play!");
-    $("#loadingFeedback").fadeOut();
+	});
+	$('#cheatSheetImage').html('<img src="images/Power-Up-Cheatsheet-gatool.png" width="100%" alt="Steamworks Cheatsheet">');
+	$('#allianceSelectionTable').hide();
+	$('#allianceUndoButton').hide();
+
+	//Load the events list based on the restored values
+	loadEventsList();
+
+	scaleRows();
+	document.getElementById('setupTabPicker').click();
+	$("#loadingFeedback").html("gatool ready to play!");
+	$("#loadingFeedback").fadeOut();
 
 };
 
 window.addEventListener("resize", scaleRows);
 
 function getSeasonHighScores(year) {
-    "use strict";
-    var promises = [];
-    for (var i = 0; i < currentEventList.length; i++) {
-        promises.push(new Promise(function (resolve, reject) {
-            getEventScores(currentEventList[i].code, currentEventList[i].type, year, "qual");
-        }));
-        promises.push(new Promise(function (resolve, reject) {
-            getEventScores(currentEventList[i].code, currentEventList[i].type, year, "playoff");
-        }));
-    }
-    Promise.all(promises);
+	"use strict";
+	var promises = [];
+	if (year === 2018) {
+		for (var i = 0; i < currentEventList.length; i++) {
+			promises.push(new Promise(function (resolve, reject) {
+				getEventScores(currentEventList[i].code, currentEventList[i].type, year, "qual");
+			}));
+			promises.push(new Promise(function (resolve, reject) {
+				getEventScores(currentEventList[i].code, currentEventList[i].type, year, "playoff");
+			}));
+		}
+		Promise.all(promises);
+	}
 }
 
 function getEventScores(eventCode, type, year, tlevel) {
-    "use strict";
-    return new Promise(function (resolve, reject) {
+	"use strict";
+	return new Promise(function (resolve, reject) {
 
-        var req = new XMLHttpRequest();
-        req.open('GET', apiURL + year + '/schedule/' + eventCode + "/" + tlevel + "?returnschedule=false");
-        req.addEventListener('load', function () {
-            resolve(JSON.parse(req.responseText));
-        });
-        req.send();
-    });
+		var req = new XMLHttpRequest();
+		req.open('GET', apiURL + year + '/schedule/' + eventCode + "/" + tlevel + "?returnschedule=false");
+		req.addEventListener('load', function () {
+			resolve(JSON.parse(req.responseText));
+		});
+		req.send();
+	});
 }
 
 
 
 function displayAwards() {
-    "use strict";
-    //Handle awardSeparator value
-    $(".awardsSeparator1,.awardsSeparator2,.awardsSeparator3").hide();
-    if (localStorage.awardSeparator === " || ") {
-        $(".awardsSeparator1").show();
-    } else if (localStorage.awardSeparator === " // ") {
-        $(".awardsSeparator2").show();
-    } else if (localStorage.awardSeparator === "<br>") {
-        $(".awardsSeparator3").show();
-    } else {
-        $(".awardsSeparator3").show();
-    }
+	"use strict";
+	//Handle awardSeparator value
+	$(".awardsSeparator1,.awardsSeparator2,.awardsSeparator3").hide();
+	if (localStorage.awardSeparator === " || ") {
+		$(".awardsSeparator1").show();
+	} else if (localStorage.awardSeparator === " // ") {
+		$(".awardsSeparator2").show();
+	} else if (localStorage.awardSeparator === "<br>") {
+		$(".awardsSeparator3").show();
+	} else {
+		$(".awardsSeparator3").show();
+	}
 
-    //Handle awardDepth value
-    $(".awardsDepth1,.awardsDepth2,.awardsDepth3").show();
-    $(".lastAward1,.lastAward2,.lastAward3").hide();
-    if (localStorage.awardDepth === "1") {
-        $(".awardsDepth2,.awardsDepth3").hide();
-    } else if (localStorage.awardDepth === "2") {
-        $(".awardsDepth3").hide();
-        $(".lastAward1").show();
-    } else {
-        $(".lastAward1,.lastAward2").show();
-    }
+	//Handle awardDepth value
+	$(".awardsDepth1,.awardsDepth2,.awardsDepth3").show();
+	$(".lastAward1,.lastAward2,.lastAward3").hide();
+	if (localStorage.awardDepth === "1") {
+		$(".awardsDepth2,.awardsDepth3").hide();
+	} else if (localStorage.awardDepth === "2") {
+		$(".awardsDepth3").hide();
+		$(".lastAward1").show();
+	} else {
+		$(".lastAward1,.lastAward2").show();
+	}
 
-    //Handle Event Names switch
-    if (localStorage.showEventNames === "true") {
-        $(".awardsEventName").show();
-        $(".awardsEventCode").hide();
-    } else {
-        $(".awardsEventName").hide();
-        $(".awardsEventCode").show();
-    }
+	//Handle Event Names switch
+	if (localStorage.showEventNames === "true") {
+		$(".awardsEventName").show();
+		$(".awardsEventCode").hide();
+	} else {
+		$(".awardsEventName").hide();
+		$(".awardsEventCode").show();
+	}
 
 }
 
 function initEnvironment() {
-    "use strict";
-    localStorage.currentMatch = 1;
-    localStorage.inPlayoffs = "false";
-    localStorage.Alliances = "{}";
-    localStorage.events = "{}";
-    localStorage.playoffList = '{"Schedule":[]}';
-    localStorage.qualsList = '{"Schedule":[]}';
-    localStorage.teamList = "{}";
-    localStorage.clock = "ready";
-    localStorage.matchHighScore = 0;
-    localStorage.highScoreDetails = "{}";
-    localStorage.allianceNoChange = "false";
-    localStorage.showEventNames = "true";
+	"use strict";
+	localStorage.currentMatch = 1;
+	localStorage.inPlayoffs = "false";
+	localStorage.Alliances = "{}";
+	localStorage.events = "{}";
+	localStorage.playoffList = '{"Schedule":[]}';
+	localStorage.qualsList = '{"Schedule":[]}';
+	localStorage.teamList = "{}";
+	localStorage.clock = "ready";
+	localStorage.matchHighScore = 0;
+	localStorage.highScoreDetails = "{}";
+	localStorage.allianceNoChange = "false";
+	localStorage.showEventNames = "true";
 
-    playoffResults = {};
-    allianceTeamList = [];
-    allianceListUnsorted = [];
-    allianceSelectionLength = 15;
-    rankingsList = [];
-    currentAllianceChoice = 0;
-    teamLoadProgressBar = 0;
-    teamAwardCalls = 0;
-    teamUpdateCalls = 0;
-    teamCountTotal = 0;
-    lastSchedulePage = false;
-    haveRanks = false;
-    $('#ranksContainer').html("No Rankings available.");
-    $('#allianceSelectionTable').hide();
-    $('#allianceUndoButton').hide();
+	playoffResults = {};
+	allianceTeamList = [];
+	allianceListUnsorted = [];
+	allianceSelectionLength = 15;
+	rankingsList = [];
+	currentAllianceChoice = 0;
+	teamLoadProgressBar = 0;
+	teamAwardCalls = 0;
+	teamUpdateCalls = 0;
+	teamCountTotal = 0;
+	lastSchedulePage = false;
+	haveRanks = false;
+	haveSchedule = false;
+	$('#ranksContainer').html("No Rankings available.");
+	$('#allianceSelectionTable').hide();
+	$('#allianceUndoButton').hide();
 }
 
 function prepareAllianceSelection() {
-    "use strict";
-    allianceTeamList = [];
-    allianceListUnsorted = [];
-    rankingsList = [];
-    // allianceSelectionOrder = ["Alliance1Round1", "Alliance2Round1", "Alliance3Round1", "Alliance4Round1", "Alliance5Round1", "Alliance6Round1", "Alliance7Round1", "Alliance8Round1", "Alliance8Round2", "Alliance7Round2", "Alliance6Round2", "Alliance5Round2", "Alliance4Round2", "Alliance3Round2", "Alliance2Round2", "Alliance1Round2"];
-    currentAllianceChoice = 0;
+	"use strict";
+	allianceTeamList = [];
+	allianceListUnsorted = [];
+	rankingsList = [];
+	// allianceSelectionOrder = ["Alliance1Round1", "Alliance2Round1", "Alliance3Round1", "Alliance4Round1", "Alliance5Round1", "Alliance6Round1", "Alliance7Round1", "Alliance8Round1", "Alliance8Round2", "Alliance7Round2", "Alliance6Round2", "Alliance5Round2", "Alliance4Round2", "Alliance3Round2", "Alliance2Round2", "Alliance1Round2"];
+	currentAllianceChoice = 0;
 
-    $("#allianceSelectionTable").html('<table> <tr> <td><table class="availableTeams"> <tr> <td colspan="5"><strong>Teams for Alliance Selection</strong></td></tr><tr> <td id="allianceTeamList1" class="col1"><div class="allianceTeam">List of teams</div></td><td id="allianceTeamList2" class="col1"><div class="allianceTeam">List of teams</div></td><td id="allianceTeamList3" class="col1"><div class="allianceTeam">List of teams</div></td><td id="allianceTeamList4" class="col1"><div class="allianceTeam">List of teams</div></td><td id="allianceTeamList5" class="col1"><div class="allianceTeam allianceCaptain">List of teams</div></td></tr></table></td><td class="col1"><table id="backupTeamsTable" class="backupAlliancesTable"> <tr> <td><p><strong>Backup Alliances</strong></p></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam1">List of teams</div></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam2">List of teams</div></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam3">List of teams</div></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam4">List of teams</div></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam5">List of teams</div></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam6">List of teams</div></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam7">List of teams</div></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam8">List of teams</div></td></tr></table></td><td><table class="alliancesTeamsTable"> <tr class="col6"> <td id="Alliance1" class="col3 dropzone"><div class="alliancedrop" id="Alliance1Captain">Alliance 1 Captain</div><div class="alliancedrop nextAllianceChoice" id="Alliance1Round1" >Alliance 1 first choice</div><div class="alliancedrop" id="Alliance1Round2" >Alliance 1 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance1Round3" >Alliance 1 third choice</div></td><td id="Alliance8" class="col3"><div class="alliancedrop" id="Alliance8Captain" >Alliance 8 Captain</div><div class="alliancedrop" id="Alliance8Round1" >Alliance 8 first choice</div><div class="alliancedrop" id="Alliance8Round2" >Alliance 8 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance8Round3" >Alliance 8 third choice</div></td></tr><tr class="col6"> <td id="Alliance2" class="col3"><div class="alliancedrop" id="Alliance2Captain" >Alliance 2 Captain</div><div class="alliancedrop" id="Alliance2Round1" >Alliance 2 first choice</div><div class="alliancedrop" id="Alliance2Round2" >Alliance 2 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance2Round3" >Alliance 2 third choice</div></td><td id="Alliance7" class="col3"><div class="alliancedrop" id="Alliance7Captain" >Alliance 7 Captain</div><div class="alliancedrop" id="Alliance7Round1" >Alliance 7 first choice</div><div class="alliancedrop" id="Alliance7Round2" >Alliance 7 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance7Round3" >Alliance 7 third choice</div></td></tr><tr class="col6"> <td id="Alliance3" class="col3"><div class="alliancedrop" id="Alliance3Captain" >Alliance 3 Captain</div><div class="alliancedrop" id="Alliance3Round1" >Alliance 3 first choice</div><div class="alliancedrop" id="Alliance3Round2" >Alliance 3 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance3Round3" >Alliance 3 third choice</div></td><td id="Alliance6" class="col3"><div class="alliancedrop" id="Alliance6Captain" >Alliance 6 Captain</div><div class="alliancedrop" id="Alliance6Round1" >Alliance 6 first choice</div><div class="alliancedrop" id="Alliance6Round2" >Alliance 6 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance6Round3" >Alliance 6 third choice</div></td></tr><tr class="col6"> <td id="Alliance4" class="col3"><div class="alliancedrop" id="Alliance4Captain" >Alliance 4 Captain</div><div class="alliancedrop" id="Alliance4Round1" >Alliance 4 first choice</div><div class="alliancedrop" id="Alliance4Round2" >Alliance 4 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance4Round3" >Alliance 4 third choice</div></td><td id="Alliance5" class="col3"><div class="alliancedrop" id="Alliance5Captain" >Alliance 5 Captain</div><div class="alliancedrop" id="Alliance5Round1" >Alliance 5 first choice</div><div class="alliancedrop" id="Alliance5Round2" >Alliance 5 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance5Round3" >Alliance 5 third choice</div></td></tr></table></td></tr></table>');
+	$("#allianceSelectionTable").html('<table> <tr> <td><table class="availableTeams"> <tr> <td colspan="5"><strong>Teams for Alliance Selection</strong></td></tr><tr> <td id="allianceTeamList1" class="col1"><div class="allianceTeam">List of teams</div></td><td id="allianceTeamList2" class="col1"><div class="allianceTeam">List of teams</div></td><td id="allianceTeamList3" class="col1"><div class="allianceTeam">List of teams</div></td><td id="allianceTeamList4" class="col1"><div class="allianceTeam">List of teams</div></td><td id="allianceTeamList5" class="col1"><div class="allianceTeam allianceCaptain">List of teams</div></td></tr></table></td><td class="col1"><table id="backupTeamsTable" class="backupAlliancesTable"> <tr> <td><p><strong>Backup Alliances</strong></p></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam1">List of teams</div></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam2">List of teams</div></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam3">List of teams</div></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam4">List of teams</div></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam5">List of teams</div></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam6">List of teams</div></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam7">List of teams</div></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam8">List of teams</div></td></tr></table></td><td><table class="alliancesTeamsTable"> <tr class="col6"> <td id="Alliance1" class="col3 dropzone"><div class="alliancedrop" id="Alliance1Captain">Alliance 1 Captain</div><div class="alliancedrop nextAllianceChoice" id="Alliance1Round1" >Alliance 1 first choice</div><div class="alliancedrop" id="Alliance1Round2" >Alliance 1 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance1Round3" >Alliance 1 third choice</div></td><td id="Alliance8" class="col3"><div class="alliancedrop" id="Alliance8Captain" >Alliance 8 Captain</div><div class="alliancedrop" id="Alliance8Round1" >Alliance 8 first choice</div><div class="alliancedrop" id="Alliance8Round2" >Alliance 8 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance8Round3" >Alliance 8 third choice</div></td></tr><tr class="col6"> <td id="Alliance2" class="col3"><div class="alliancedrop" id="Alliance2Captain" >Alliance 2 Captain</div><div class="alliancedrop" id="Alliance2Round1" >Alliance 2 first choice</div><div class="alliancedrop" id="Alliance2Round2" >Alliance 2 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance2Round3" >Alliance 2 third choice</div></td><td id="Alliance7" class="col3"><div class="alliancedrop" id="Alliance7Captain" >Alliance 7 Captain</div><div class="alliancedrop" id="Alliance7Round1" >Alliance 7 first choice</div><div class="alliancedrop" id="Alliance7Round2" >Alliance 7 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance7Round3" >Alliance 7 third choice</div></td></tr><tr class="col6"> <td id="Alliance3" class="col3"><div class="alliancedrop" id="Alliance3Captain" >Alliance 3 Captain</div><div class="alliancedrop" id="Alliance3Round1" >Alliance 3 first choice</div><div class="alliancedrop" id="Alliance3Round2" >Alliance 3 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance3Round3" >Alliance 3 third choice</div></td><td id="Alliance6" class="col3"><div class="alliancedrop" id="Alliance6Captain" >Alliance 6 Captain</div><div class="alliancedrop" id="Alliance6Round1" >Alliance 6 first choice</div><div class="alliancedrop" id="Alliance6Round2" >Alliance 6 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance6Round3" >Alliance 6 third choice</div></td></tr><tr class="col6"> <td id="Alliance4" class="col3"><div class="alliancedrop" id="Alliance4Captain" >Alliance 4 Captain</div><div class="alliancedrop" id="Alliance4Round1" >Alliance 4 first choice</div><div class="alliancedrop" id="Alliance4Round2" >Alliance 4 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance4Round3" >Alliance 4 third choice</div></td><td id="Alliance5" class="col3"><div class="alliancedrop" id="Alliance5Captain" >Alliance 5 Captain</div><div class="alliancedrop" id="Alliance5Round1" >Alliance 5 first choice</div><div class="alliancedrop" id="Alliance5Round2" >Alliance 5 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance5Round3" >Alliance 5 third choice</div></td></tr></table></td></tr></table>');
 
 }
 
 function handleEventSelection() {
-    "use strict";
-    $('#scheduleProgressBar').show();
-    $('#scheduleContainer').html('No schedule available for this event.');
-    $('#scheduleTabPicker').addClass('alert-danger');
-    $('#ranksProgressBar').hide();
-    $('#ranksContainer').html("No Rankings available.");
-    $('#teamRanksPicker').addClass('alert-danger');
-    $('#allianceSelectionTable').hide();
-    $('#allianceUndoButton').hide();
-    $("#allianceSelectionTabPicker").addClass("alert-danger");
-    $("#teamloadprogress").show();
-    $("#QualsFiles").show();
-    $("#PlayoffFiles").show();
-    $("#QualsFilesReset").hide();
-    $("#PlayoffFilesReset").hide();
-    clearFileInput("QualsFiles");
-    clearFileInput("PlayoffFiles");
-    document.getElementById("QualsFiles").addEventListener('change', handleQualsFiles, false);
-    document.getElementById("PlayoffFiles").addEventListener('change', handlePlayoffFiles, false);
+	"use strict";
+	$('#scheduleProgressBar').show();
+	$('#scheduleContainer').html('No schedule available for this event.');
+	$('#scheduleTabPicker').addClass('alert-danger');
+	$('#ranksProgressBar').hide();
+	$('#ranksContainer').html("No Rankings available.");
+	$('#teamRanksPicker').addClass('alert-danger');
+	$('#allianceSelectionTable').hide();
+	$('#allianceUndoButton').hide();
+	$("#allianceSelectionTabPicker").addClass("alert-danger");
+	$("#teamloadprogress").show();
+	$("#QualsFiles").show();
+	$("#PlayoffFiles").show();
+	$("#QualsFilesReset").hide();
+	$("#PlayoffFilesReset").hide();
+	clearFileInput("QualsFiles");
+	clearFileInput("PlayoffFiles");
+	document.getElementById("QualsFiles").addEventListener('change', handleQualsFiles, false);
+	document.getElementById("PlayoffFiles").addEventListener('change', handlePlayoffFiles, false);
 
 
-    eventTeamList = [];
-    haveRanks = false;
-    eventQualsSchedule = [];
-    eventPlayoffSchedule = [];
-    localStorage.currentMatch = 1;
-    localStorage.playoffList = '{"Schedule":[]}';
-    localStorage.qualsList = '{"Schedule":[]}';
+	eventTeamList = [];
+	haveRanks = false;
+	eventQualsSchedule = [];
+	eventPlayoffSchedule = [];
+	localStorage.currentMatch = 1;
+	localStorage.playoffList = '{"Schedule":[]}';
+	localStorage.qualsList = '{"Schedule":[]}';
 
-    var e = document.getElementById('eventSelector');
-    var data = JSON.parse(e.value);
-    localStorage.eventSelector = data.code;
-    localStorage.currentEvent = data.code;
+	var e = document.getElementById('eventSelector');
+	var data = JSON.parse(e.value);
+	localStorage.eventSelector = data.code;
+	localStorage.currentEvent = data.code;
 
-    $('#eventCodeContainer').html(data.code);
-    $('#eventLocationContainer').html(data.venue + "" + " in " + data.city + ", " + data.stateprov + " " + data.country);
-    var startDate = moment(data.dateStart, 'YYYY-MM-DDTHH:mm:ss').format('dddd, MMMM Do');
-    var endDate = moment(data.dateEnd, 'YYYY-MM-DDTHH:mm:ss').format('dddd, MMMM Do, YYYY');
-    $("#eventDateContainer").html(startDate + " to " + endDate);
-    $('#announceBanner').show();
-    $('#announceDisplay').hide();
-    $('#playByPlayBanner').show();
-    $('#playByPlayDisplay').hide();
-    $("#eventName").html('<span class="loadingEvent"><b>Waiting for event schedule... Team Data available.</b></span>');
-    localStorage.eventName = data.name;
-    localStorage.teamList = "";
-    if (inChamps() || inSubdivision()) {
-        allianceSelectionLength = 23;
-    } else {
-        allianceSelectionLength = 15;
-    }
-    getTeamList(localStorage.currentYear, 1);
-    localStorage.matchHighScore = 0;
-    localStorage.highScoreDetails = "{}";
-    $("#eventName").html("<b>" + JSON.parse(document.getElementById("eventSelector").value).name + "</b>");
-    $("#eventNameAllianceSelection").html("<b>" + localStorage.eventName + " </b>");
-    $("#eventNameAwards").html("<b>" + localStorage.eventName + "</b><br>");
+	$('#eventCodeContainer').html(data.code);
+	$('#eventLocationContainer').html(data.venue + "" + " in " + data.city + ", " + data.stateprov + " " + data.country);
+	var startDate = moment(data.dateStart, 'YYYY-MM-DDTHH:mm:ss').format('dddd, MMMM Do');
+	var endDate = moment(data.dateEnd, 'YYYY-MM-DDTHH:mm:ss').format('dddd, MMMM Do, YYYY');
+	$("#eventDateContainer").html(startDate + " to " + endDate);
+	$('#announceBanner').show();
+	$('#announceDisplay').hide();
+	$('#playByPlayBanner').show();
+	$('#playByPlayDisplay').hide();
+	$("#eventName").html('<span class="loadingEvent"><b>Waiting for event schedule... Team Data available.</b></span>');
+	localStorage.eventName = data.name;
+	localStorage.teamList = "";
+	if (inChamps() || inSubdivision()) {
+		allianceSelectionLength = 23;
+	} else {
+		allianceSelectionLength = 15;
+	}
+	getTeamList(localStorage.currentYear, 1);
+	localStorage.matchHighScore = 0;
+	localStorage.highScoreDetails = "{}";
+	$("#eventName").html("<b>" + JSON.parse(document.getElementById("eventSelector").value).name + "</b>");
+	$("#eventNameAllianceSelection").html("<b>" + localStorage.eventName + " </b>");
+	$("#eventNameAwards").html("<b>" + localStorage.eventName + "</b><br>");
 }
 
 function handleOffseasonEventSelection() {
-    "use strict";
-    $('#scheduleProgressBar').show();
-    $('#scheduleContainer').html('No schedule available for this event.');
-    $('#scheduleTabPicker').addClass('alert-danger');
-    $('#ranksProgressBar').hide();
-    $('#ranksContainer').html("No Rankings available.");
-    $('#teamRanksPicker').addClass('alert-danger');
-    $('#allianceSelectionTable').hide();
-    $('#allianceUndoButton').hide();
-    $("#allianceSelectionTabPicker").addClass("alert-danger");
-    $("#teamloadprogress").show();
+	"use strict";
+	$('#scheduleProgressBar').show();
+	$('#scheduleContainer').html('No schedule available for this event.');
+	$('#scheduleTabPicker').addClass('alert-danger');
+	$('#ranksProgressBar').hide();
+	$('#ranksContainer').html("No Rankings available.");
+	$('#teamRanksPicker').addClass('alert-danger');
+	$('#allianceSelectionTable').hide();
+	$('#allianceUndoButton').hide();
+	$("#allianceSelectionTabPicker").addClass("alert-danger");
+	$("#teamloadprogress").show();
 
-    eventTeamList = [];
-    eventQualsSchedule = [];
-    eventPlayoffSchedule = [];
-    localStorage.currentMatch = 1;
-    localStorage.playoffList = '{"Schedule":[]}';
-    localStorage.qualsList = '{"Schedule":[]}';
+	eventTeamList = [];
+	eventQualsSchedule = [];
+	eventPlayoffSchedule = [];
+	localStorage.currentMatch = 1;
+	localStorage.playoffList = '{"Schedule":[]}';
+	localStorage.qualsList = '{"Schedule":[]}';
 
-    var data = JSON.parse(localStorage.offseasonEventData);
-    localStorage.eventSelector = "offseason";
-    localStorage.currentEvent = "offseason";
+	var data = JSON.parse(localStorage.offseasonEventData);
+	localStorage.eventSelector = "offseason";
+	localStorage.currentEvent = "offseason";
 
-    $('#eventCodeContainer').html(data.code);
-    $('#eventLocationContainer').html(data.venue + "" + " in " + data.city + ", " + data.stateprov + " " + data.country);
-    var startDate = moment(data.dateStart, 'YYYY-MM-DDTHH:mm:ss').format('dddd, MMMM Do');
-    var endDate = moment(data.dateEnd, 'YYYY-MM-DDTHH:mm:ss').format('dddd, MMMM Do, YYYY');
-    $("#eventDateContainer").html(startDate + " to " + endDate);
-    $('#announceBanner').show();
-    $('#announceDisplay').hide();
-    $('#playByPlayBanner').show();
-    $('#playByPlayDisplay').hide();
-    $("#eventName").html('<span class="loadingEvent"><b>Waiting for event schedule... Team Data available.</b></span>');
-    localStorage.eventName = data.name;
-    localStorage.teamList = "";
-    if (inChamps() || inSubdivision()) {
-        allianceSelectionLength = 23;
-    } else {
-        allianceSelectionLength = 15;
-    }
-    getTeamList(localStorage.currentYear, 1);
-    localStorage.matchHighScore = 0;
-    localStorage.highScoreDetails = "{}";
-    $("#eventName").html("<b>" + JSON.parse(document.getElementById("eventSelector").value).name + "</b>");
-    $("#eventNameAllianceSelection").html("<b>" + localStorage.eventName + "<br>");
-    $("#eventNameAwards").html("<b>" + localStorage.eventName + "</b><br>");
+	$('#eventCodeContainer').html(data.code);
+	$('#eventLocationContainer').html(data.venue + "" + " in " + data.city + ", " + data.stateprov + " " + data.country);
+	var startDate = moment(data.dateStart, 'YYYY-MM-DDTHH:mm:ss').format('dddd, MMMM Do');
+	var endDate = moment(data.dateEnd, 'YYYY-MM-DDTHH:mm:ss').format('dddd, MMMM Do, YYYY');
+	$("#eventDateContainer").html(startDate + " to " + endDate);
+	$('#announceBanner').show();
+	$('#announceDisplay').hide();
+	$('#playByPlayBanner').show();
+	$('#playByPlayDisplay').hide();
+	$("#eventName").html('<span class="loadingEvent"><b>Waiting for event schedule... Team Data available.</b></span>');
+	localStorage.eventName = data.name;
+	localStorage.teamList = "";
+	if (inChamps() || inSubdivision()) {
+		allianceSelectionLength = 23;
+	} else {
+		allianceSelectionLength = 15;
+	}
+	getTeamList(localStorage.currentYear, 1);
+	localStorage.matchHighScore = 0;
+	localStorage.highScoreDetails = "{}";
+	$("#eventName").html("<b>" + JSON.parse(document.getElementById("eventSelector").value).name + "</b>");
+	$("#eventNameAllianceSelection").html("<b>" + localStorage.eventName + "<br>");
+	$("#eventNameAwards").html("<b>" + localStorage.eventName + "</b><br>");
 }
 
 
 function loadEventsList() {
-    "use strict";
-    var e = document.getElementById('yearPicker');
-    localStorage.currentYear = e.options[e.selectedIndex].value;
-    $("#eventUpdateContainer").html("Loading event list...");
-    var req = new XMLHttpRequest();
-    //req.responseType = 'json';
-    var endpoint = "/events";
-    if (localStorage.offseason === "true") {
-        endpoint = "/offseasoneventsv2";
-    }
-    req.open('GET', apiURL + localStorage.currentYear + endpoint);
-    req.addEventListener('load', function () {
-        localStorage.currentEventList = JSON.stringify(JSON.parse(req.responseText).Events);
-        currentEventList = JSON.parse(req.responseText).Events;
-        createEventMenu();
-        filterEvents();
+	"use strict";
+	var e = document.getElementById('yearPicker');
+	localStorage.currentYear = e.options[e.selectedIndex].value;
+	$("#eventUpdateContainer").html("Loading event list...");
+	var req = new XMLHttpRequest();
+	//req.responseType = 'json';
+	var endpoint = "/events";
+	if (localStorage.offseason === "true") {
+		endpoint = "/offseasoneventsv2";
+	}
+	req.open('GET', apiURL + localStorage.currentYear + endpoint);
+	req.addEventListener('load', function () {
+		localStorage.currentEventList = JSON.stringify(JSON.parse(req.responseText).Events);
+		currentEventList = JSON.parse(req.responseText).Events;
+		createEventMenu();
+		filterEvents();
 
-    });
-    req.send();
+	});
+	req.send();
 }
 
 function filterEvents() {
-    "use strict";
-    var filterClasses = "";
-    var previousFilters = JSON.parse(localStorage.eventFilters);
-    
-    if (!$("#offseason").bootstrapSwitch('state')) {
-        $(".eventsfilter").hide();
-        var filters = $("#eventFilters").selectpicker('val');
-        if (filters[0] === "clear" || filters.length === 0) {
-            $("#eventFilters").selectpicker('deselectAll');
-            $(".eventsfilter").show();
-        } else {
-            if (filters.indexOf("past") >= 0) {
-                if (previousFilters.indexOf("future") >= 0){
-                    filters.splice(filters.indexOf("future"), 1); }  
-            }
+	"use strict";
+	var filterClasses = "";
+	var previousFilters = JSON.parse(localStorage.eventFilters);
 
-            if (filters.indexOf("future") >= 0) {
-                if (previousFilters.indexOf("past") >= 0){
-                    filters.splice(filters.indexOf("past"), 1);}
-            }
-        }
-        filterClasses = ".filters" + filters[0];
-        if (filters.length > 1) {
-            for (var i = 1; i < filters.length; i++) {
-                filterClasses += ".filters" + filters[i];
-            }
-        }
-        $("#eventFilters").selectpicker('val', filters);
-        $(filterClasses).show();
-        localStorage.eventFilters = JSON.stringify($("#eventFilters").selectpicker('val'));
-    }
+	if (!$("#offseason").bootstrapSwitch('state')) {
+		$(".eventsfilter").hide();
+		var filters = $("#eventFilters").selectpicker('val');
+		if (filters.indexOf("clear") >= 0 || filters.length === 0) {
+			$("#eventFilters").selectpicker('deselectAll');
+			$(".eventsfilter").show();
+		} else {
+			if (filters.indexOf("past") >= 0) {
+				if (previousFilters.indexOf("future") >= 0) {
+					filters.splice(filters.indexOf("future"), 1);
+				}
+			}
+
+			if (filters.indexOf("future") >= 0) {
+				if (previousFilters.indexOf("past") >= 0) {
+					filters.splice(filters.indexOf("past"), 1);
+				}
+			}
+
+			filterClasses = ".filters" + filters[0];
+			if (filters.length > 1) {
+				for (var i = 1; i < filters.length; i++) {
+					filterClasses += ".filters" + filters[i];
+				}
+			}
+			$("#eventFilters").selectpicker('val', filters);
+			$(filterClasses).show();
+		}
+		localStorage.eventFilters = JSON.stringify($("#eventFilters").selectpicker('val'));
+	}
 }
 
 function createEventMenu() {
-    "use strict";
-    var tmp = currentEventList;
-    var options = [];
-    var events = {};
-    for (var i = 0; i < tmp.length; i++) {
-        var _option = {
-            text: tmp[i].name,
-            value: tmp[i]
-        };
-        options.push(_option);
-        events[tmp[i].code] = tmp[i].name;
-    }
-    options.sort(function (a, b) {
-        if (a.text < b.text) {
-            return -1;
-        }
-        if (a.text > b.text) {
-            return 1;
-        }
-        return 0;
-    });
-    var sel = $('#eventSelector');
-    sel.empty();
-    $.each(options, function (index, option) {
-        var optionClass = "";
-        var optionPrefix = "";
-        var optionPostfix = "";
-        var optionFilter = "";
-        var timeNow = moment();
-        var eventTime = moment(option.value.dateEnd);
-        if (option.value.type === "OffSeasonWithAzureSync") {
-            optionClass = "bg-info";
-            optionPrefix = "•• ";
-            optionPostfix = " ••";
-        }
-        if (option.value.type.startsWith("Regional")) {
-            optionFilter += " eventsfilter filtersregional";
-        } else if (option.value.type.startsWith("Champion")) {
-            optionFilter += " eventsfilter filterschamps";
-        } else if (option.value.type.startsWith("OffSeason")) {
-            optionFilter += " eventsfilter filtersoffseason";
-        } else if (option.value.type.startsWith("District")) {
-            optionFilter += " eventsfilter filters" + option.value.districtCode;
-        }
-        if (timeNow.diff(eventTime) < 0) {
-            optionFilter += " filtersfuture";
-        } else {
-            optionFilter += " filterspast";
-        }
+	"use strict";
+	var tmp = currentEventList;
+	var options = [];
+	var events = {};
+	for (var i = 0; i < tmp.length; i++) {
+		var _option = {
+			text: tmp[i].name,
+			value: tmp[i]
+		};
+		options.push(_option);
+		events[tmp[i].code] = tmp[i].name;
+	}
+	options.sort(function (a, b) {
+		if (a.text < b.text) {
+			return -1;
+		}
+		if (a.text > b.text) {
+			return 1;
+		}
+		return 0;
+	});
+	var sel = $('#eventSelector');
+	sel.empty();
+	$.each(options, function (index, option) {
+		var optionClass = "";
+		var optionPrefix = "";
+		var optionPostfix = "";
+		var optionFilter = "";
+		var timeNow = moment();
+		var eventTime = moment(option.value.dateEnd);
+		if (option.value.type === "OffSeasonWithAzureSync") {
+			optionClass = "bg-info";
+			optionPrefix = "•• ";
+			optionPostfix = " ••";
+		}
+		if (option.value.type.startsWith("Regional")) {
+			optionFilter += " eventsfilter filtersregional";
+		} else if (option.value.type.startsWith("Champion")) {
+			optionFilter += " eventsfilter filterschamps";
+		} else if (option.value.type.startsWith("OffSeason")) {
+			optionFilter += " eventsfilter filtersoffseason";
+		} else if (option.value.type.startsWith("District")) {
+			optionFilter += " eventsfilter filters" + option.value.districtCode;
+		}
+		if (timeNow.diff(eventTime) < 0) {
+			optionFilter += " filtersfuture";
+		} else {
+			optionFilter += " filterspast";
+		}
 
-        sel.append($('<option></option>')
-            .attr({
-                'value': JSON.stringify(option.value),
-                'class': optionClass + optionFilter,
-                'id': 'eventSelector' + option.value.code
-            }).text(optionPrefix + option.text + optionPostfix));
-    });
-    if (!localStorage.eventSelector) {
-        sel.selectpicker('refresh');
-    } else {
-        if (localStorage.eventSelector) {
-            document.getElementById("eventSelector" + localStorage.eventSelector).selected = true;
-        }
-        sel.selectpicker('refresh');
-    }
+		sel.append($('<option></option>')
+			.attr({
+				'value': JSON.stringify(option.value),
+				'class': optionClass + optionFilter,
+				'id': 'eventSelector' + option.value.code
+			}).text(optionPrefix + option.text + optionPostfix));
+	});
+	if (!localStorage.eventSelector) {
+		sel.selectpicker('refresh');
+	} else {
+		if (localStorage.eventSelector) {
+			document.getElementById("eventSelector" + localStorage.eventSelector).selected = true;
+		}
+		sel.selectpicker('refresh');
+	}
 
-    localStorage.events = JSON.stringify(events);
-    handleEventSelection();
-    $("#eventUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+	localStorage.events = JSON.stringify(events);
+	handleEventSelection();
+	$("#eventUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
 }
 
 function getTeamUpdates(teamNumber) {
-    "use strict";
-    $('#teamDataTabPicker').addClass('alert-danger');
-    var req = new XMLHttpRequest();
-    req.open('GET', apiURL + 'getTeamUpdate/' + teamNumber);
-    req.addEventListener('load', function () {
-        var teamUpdates = JSON.parse(Base64.decode(req.responseText));
-        var teamData = JSON.parse(localStorage["teamData" + teamNumber]);
-        teamData.nameShortLocal = teamUpdates.nameShortLocal;
-        teamData.cityStateLocal = teamUpdates.cityStateLocal;
-        teamData.topSponsorsLocal = teamUpdates.topSponsorsLocal;
-        teamData.sponsorsLocal = teamUpdates.sponsorsLocal;
-        teamData.organizationLocal = teamUpdates.organizationLocal;
-        teamData.robotNameLocal = teamUpdates.robotNameLocal;
-        teamData.awardsLocal = teamUpdates.awardsLocal;
-        teamData.teamMottoLocal = teamUpdates.teamMottoLocal;
-        teamData.teamNotesLocal = teamUpdates.teamNotesLocal;
-        localStorage["teamData" + teamNumber] = JSON.stringify(teamData);
-        teamUpdateCalls--;
-        if ((teamAwardCalls === 0) && (teamUpdateCalls === 0) && (lastSchedulePage)) {
-            $('#teamDataTabPicker').removeClass('alert-danger');
-            $('#teamDataTabPicker').addClass('alert-success');
-            $('#teamloadprogress').hide();
-            $('#teamProgressBar').hide();
-            teamLoadProgressBar = 0;
-            $('#teamloadprogressbar').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
-            $('#teamProgressBarLoading').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
+	"use strict";
+	$('#teamDataTabPicker').addClass('alert-danger');
+	var req = new XMLHttpRequest();
+	req.open('GET', apiURL + 'getTeamUpdate/' + teamNumber);
+	req.addEventListener('load', function () {
+		var teamUpdates = JSON.parse(Base64.decode(req.responseText));
+		var teamData = JSON.parse(localStorage["teamData" + teamNumber]);
+		teamData.nameShortLocal = teamUpdates.nameShortLocal;
+		teamData.cityStateLocal = teamUpdates.cityStateLocal;
+		teamData.topSponsorsLocal = teamUpdates.topSponsorsLocal;
+		teamData.sponsorsLocal = teamUpdates.sponsorsLocal;
+		teamData.organizationLocal = teamUpdates.organizationLocal;
+		teamData.robotNameLocal = teamUpdates.robotNameLocal;
+		teamData.awardsLocal = teamUpdates.awardsLocal;
+		teamData.teamMottoLocal = teamUpdates.teamMottoLocal;
+		teamData.teamNotesLocal = teamUpdates.teamNotesLocal;
+		localStorage["teamData" + teamNumber] = JSON.stringify(teamData);
+		teamUpdateCalls--;
+		if ((teamAwardCalls === 0) && (teamUpdateCalls === 0) && (lastSchedulePage)) {
+			$('#teamDataTabPicker').removeClass('alert-danger');
+			$('#teamDataTabPicker').addClass('alert-success');
+			$('#teamloadprogress').hide();
+			$('#teamProgressBar').hide();
+			teamLoadProgressBar = 0;
+			$('#teamloadprogressbar').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
+			$('#teamProgressBarLoading').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
 
-        }
-    });
-    req.send();
+		}
+	});
+	req.send();
 }
 
 function sendTeamUpdates(teamNumber) {
-    "use strict";
-    $('#teamDataTabPicker').addClass('alert-danger');
-    var req = new XMLHttpRequest();
-    var teamUpdates = {};
-    var teamData = JSON.parse(localStorage["teamData" + teamNumber]);
-    teamUpdates.nameShortLocal = teamData.nameShortLocal;
-    teamUpdates.cityStateLocal = teamData.cityStateLocal;
-    teamUpdates.topSponsorsLocal = teamData.topSponsorsLocal;
-    teamUpdates.sponsorsLocal = teamData.sponsorsLocal;
-    teamUpdates.organizationLocal = teamData.organizationLocal;
-    teamUpdates.robotNameLocal = teamData.robotNameLocal;
-    teamUpdates.awardsLocal = teamData.awardsLocal;
-    teamUpdates.teamMottoLocal = teamData.teamMottoLocal;
-    teamUpdates.teamNotesLocal = teamData.teamNotesLocal;
-    teamUpdates.source = getCookie("loggedin");
-    req.open('GET', apiURL + 'putTeamUpdate/' + teamNumber + '/' + Base64.encode(JSON.stringify(teamUpdates)));
-    req.addEventListener('load', function () {
-        teamUpdateCalls--;
-        if ((teamAwardCalls === 0) && (teamUpdateCalls === 0) && (lastSchedulePage)) {
-            $('#teamDataTabPicker').removeClass('alert-danger');
-            $('#teamDataTabPicker').addClass('alert-success');
-            $('#teamloadprogress').hide();
-            $('#teamProgressBar').hide();
-            teamLoadProgressBar = 0;
-            $('#teamloadprogressbar').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
-            $('#teamProgressBarLoading').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
+	"use strict";
+	$('#teamDataTabPicker').addClass('alert-danger');
+	var req = new XMLHttpRequest();
+	var teamUpdates = {};
+	var teamData = JSON.parse(localStorage["teamData" + teamNumber]);
+	teamUpdates.nameShortLocal = teamData.nameShortLocal;
+	teamUpdates.cityStateLocal = teamData.cityStateLocal;
+	teamUpdates.topSponsorsLocal = teamData.topSponsorsLocal;
+	teamUpdates.sponsorsLocal = teamData.sponsorsLocal;
+	teamUpdates.organizationLocal = teamData.organizationLocal;
+	teamUpdates.robotNameLocal = teamData.robotNameLocal;
+	teamUpdates.awardsLocal = teamData.awardsLocal;
+	teamUpdates.teamMottoLocal = teamData.teamMottoLocal;
+	teamUpdates.teamNotesLocal = teamData.teamNotesLocal;
+	teamUpdates.source = getCookie("loggedin");
+	req.open('GET', apiURL + 'putTeamUpdate/' + teamNumber + '/' + Base64.encode(JSON.stringify(teamUpdates)));
+	req.addEventListener('load', function () {
+		teamUpdateCalls--;
+		if ((teamAwardCalls === 0) && (teamUpdateCalls === 0) && (lastSchedulePage)) {
+			$('#teamDataTabPicker').removeClass('alert-danger');
+			$('#teamDataTabPicker').addClass('alert-success');
+			$('#teamloadprogress').hide();
+			$('#teamProgressBar').hide();
+			teamLoadProgressBar = 0;
+			$('#teamloadprogressbar').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
+			$('#teamProgressBarLoading').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
 
-        }
-    });
-    req.send();
+		}
+	});
+	req.send();
 }
 
 function getCookie(cname) {
-    "use strict";
-    var name = cname + "=";
-    var decodedCookie = decodeURIComponent(document.cookie);
-    var ca = decodedCookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0) === ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) === 0) {
-            return c.substring(name.length, c.length);
-        }
-    }
-    return "";
+	"use strict";
+	var name = cname + "=";
+	var decodedCookie = decodeURIComponent(document.cookie);
+	var ca = decodedCookie.split(';');
+	for (var i = 0; i < ca.length; i++) {
+		var c = ca[i];
+		while (c.charAt(0) === ' ') {
+			c = c.substring(1);
+		}
+		if (c.indexOf(name) === 0) {
+			return c.substring(name.length, c.length);
+		}
+	}
+	return "";
 }
 
 function openTab(evt, tabID) {
-    "use strict";
+	"use strict";
 
-    // Get all elements with class="tabcontent" and hide them
-    $(".tabcontent").hide();
+	// Get all elements with class="tabcontent" and hide them
+	$(".tabcontent").hide();
 
-    // Get all elements with class="tablinks" and remove the class "active"
-    $(".tablinks").removeClass('active');
+	// Get all elements with class="tablinks" and remove the class "active"
+	$(".tablinks").removeClass('active');
 
-    // Show the current tab, and add an "active" class to the link that opened the tab
-    $("#" + tabID).show();
-    //document.getElementById(tabID).style.display = "block";
-    //$("#" + evt.currentTarget).addClass("active");
-    evt.currentTarget.className += " active";
+	// Show the current tab, and add an "active" class to the link that opened the tab
+	$("#" + tabID).show();
+	//document.getElementById(tabID).style.display = "block";
+	//$("#" + evt.currentTarget).addClass("active");
+	evt.currentTarget.className += " active";
 
-    //resize the window
-    scaleRows();
+	//resize the window
+	scaleRows();
 }
 
 function getHybridSchedule() {
-    "use strict";
-    if (localStorage.offseason === "true") {
-        getOffseasonSchedule();
-    } else {
-        getRegularSeasonSchedule();
-    }
+	"use strict";
+	if (localStorage.offseason === "true") {
+		getOffseasonSchedule();
+	} else {
+		getRegularSeasonSchedule();
+	}
 
 }
 
 function getRegularSeasonSchedule() {
-    "use strict";
-    // inform the user that something is going to happen
-    $("#scheduleUpdateContainer").html("Loading schedule data...");
-    $('#scheduleTabPicker').addClass('alert-danger');
-    var matchSchedule = "";
-    var matchPicker = "";
-    var qualScheduleLength = 0;
-    lastMatchPlayed = 0;
-    // Set up the API request for getting the Qualification and Playoff Schedules. When the Quals are loaded, an attempt is made to get the Playoffs.
-    var req = new XMLHttpRequest();
-    req.open('GET', apiURL + localStorage.currentYear + '/schedule/' + localStorage.currentEvent + '/qual?returnschedule=true');
-    req.addEventListener('load', function () {
-        var data = JSON.parse(req.responseText);
-        //Ensure that there is a Quals schedule
-        if (data.Schedule.length === 0) {
-            $('#scheduleContainer').html('<b>No qualification matches have been scheduled for this event.</b>');
-            localStorage.qualsList = '{"Schedule":[]}';
-            localStorage.playoffList = '{"Schedule":[]}';
-        } else {
-            //we have a schedule. Create the table and display the schedule.
-            $("#scheduleContainer").html('<p class = "eventName">' + localStorage.eventName + '</p><table id="scheduleTable" class="table table-bordered table-responsive table-striped"></table>');
-            matchSchedule += '<thead class="thead-default"><tr><td class="col2"><b>Time</b></td><td  class="col2"><b>Description</b></td><td class="col1"><b>Match Number</b></td><td class="col1"><b>Score</b></td><td class="col1"><b>Station 1</b></td><td class="col1"><b>Station 2</b></td><td class="col1"><b>Station 3</b></td></tr></thead><tbody>';
-            qualScheduleLength = data.Schedule.length;
-            for (var i = 0; i < data.Schedule.length; i++) {
-                var element = data.Schedule[i];
-                matchSchedule += generateMatchTableRow(element);
-                matchPicker += '<option id="matchPicker' + parseInt(i + 1) + '" matchNumber="' + parseInt(i + 1) + '">' + element.description + '</option>';
-                if ((element.scoreRedFinal !== null) && (element.scoreBlueFinal !== null)) {
-                    lastMatchPlayed = element.matchNumber;
-                }
-            }
-            if (lastMatchPlayed >= qualScheduleLength - 1) {
-                $('#allianceSelectionTabPicker').removeClass('alert-danger');
-                $('#allianceSelectionTabPicker').addClass('alert-success');
+	"use strict";
+	// inform the user that something is going to happen
+	$("#scheduleUpdateContainer").html("Loading schedule data...");
+	$('#scheduleTabPicker').addClass('alert-danger');
+	var matchSchedule = "";
+	var matchPicker = "";
+	var qualScheduleLength = 0;
+	lastMatchPlayed = 0;
+	// Set up the API request for getting the Qualification and Playoff Schedules. When the Quals are loaded, an attempt is made to get the Playoffs.
+	var req = new XMLHttpRequest();
+	req.open('GET', apiURL + localStorage.currentYear + '/schedule/' + localStorage.currentEvent + '/qual?returnschedule=true');
+	req.addEventListener('load', function () {
+		var data = JSON.parse(req.responseText);
+		//Ensure that there is a Quals schedule
+		if (data.Schedule.length === 0) {
+			$('#scheduleContainer').html('<b>No qualification matches have been scheduled for this event.</b>');
+			localStorage.qualsList = '{"Schedule":[]}';
+			localStorage.playoffList = '{"Schedule":[]}';
+		} else {
+			//we have a schedule. Create the table and display the schedule.
+			$("#scheduleContainer").html('<p class = "eventName">' + localStorage.eventName + '</p><table id="scheduleTable" class="table table-bordered table-responsive table-striped"></table>');
+			matchSchedule += '<thead class="thead-default"><tr><td class="col2"><b>Time</b></td><td  class="col2"><b>Description</b></td><td class="col1"><b>Match Number</b></td><td class="col1"><b>Score</b></td><td class="col1"><b>Station 1</b></td><td class="col1"><b>Station 2</b></td><td class="col1"><b>Station 3</b></td></tr></thead><tbody>';
+			qualScheduleLength = data.Schedule.length;
+			for (var i = 0; i < data.Schedule.length; i++) {
+				var element = data.Schedule[i];
+				matchSchedule += generateMatchTableRow(element);
+				matchPicker += '<option id="matchPicker' + parseInt(i + 1) + '" matchNumber="' + parseInt(i + 1) + '">' + element.description + '</option>';
+				if ((element.scoreRedFinal !== null) && (element.scoreBlueFinal !== null)) {
+					lastMatchPlayed = element.matchNumber;
+				}
+			}
+			if (lastMatchPlayed >= qualScheduleLength - 1) {
+				$('#allianceSelectionTabPicker').removeClass('alert-danger');
+				$('#allianceSelectionTabPicker').addClass('alert-success');
 
 
-            }
-            localStorage.qualsList = JSON.stringify(data);
-            $("#announceBanner, #playByPlayBanner").hide();
-            $("#announceDisplay, #playByPlayDisplay").show();
+			}
+			localStorage.qualsList = JSON.stringify(data);
+			$("#announceBanner, #playByPlayBanner").hide();
+			$("#announceDisplay, #playByPlayDisplay").show();
+			haveSchedule = true;
 
-            //patch for missing scores
-            //$("#allianceSelectionPlaceholder").hide();
-            //$("#allianceSelectionTable").show();
+			//patch for missing scores
+			//$("#allianceSelectionPlaceholder").hide();
+			//$("#allianceSelectionTable").show();
 
-            if (lastMatchPlayed >= data.Schedule.length - 1) {
-                $("#allianceSelectionPlaceholder").hide();
-                $("#allianceSelectionTable").show();
-                $(".thirdAllianceSelection").hide();
-                $("#backupTeamsTable").show();
-                if (inChamps() || inSubdivision()) {
-                    $(".thirdAllianceSelection").show();
-                    $("#backupTeamsTable").hide();
-                }
-            }
-            $('#scheduleTabPicker').removeClass('alert-danger');
-            $('#scheduleTabPicker').addClass('alert-success');
-        }
+			if (lastMatchPlayed >= data.Schedule.length - 1) {
+				$("#allianceSelectionPlaceholder").hide();
+				$("#allianceSelectionTable").show();
+				$(".thirdAllianceSelection").hide();
+				$("#backupTeamsTable").show();
+				if (inChamps() || inSubdivision()) {
+					$(".thirdAllianceSelection").show();
+					$("#backupTeamsTable").hide();
+				}
+			}
+			$('#scheduleTabPicker').removeClass('alert-danger');
+			$('#scheduleTabPicker').addClass('alert-success');
+		}
 
-        // now fetch the playoff schedule
-        $("#scheduleUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a") + "... and looking for Playoff schedule...");
-        req1.send();
-    });
-    var req1 = new XMLHttpRequest();
-    req1.open('GET', apiURL + localStorage.currentYear + '/schedule/' + localStorage.currentEvent + '/playoff?returnschedule=true');
-    req1.addEventListener('load', function () {
-        $("#playoffScheduleAlert").show();
-        var data = JSON.parse(req1.responseText);
-        if (data.Schedule.length === 0) {
-            document.getElementById('scheduleContainer').innerHTML += '<p><b>No playoff matches have been scheduled for this event.</b></p>';
-            localStorage.playoffList = "";
-            $("#matchPicker").html(matchPicker);
-            if (document.getElementById("matchPicker" + localStorage.currentMatch)) {
-                document.getElementById("matchPicker" + localStorage.currentMatch).selected = true;
-            }
-            $("#matchPicker").selectpicker('refresh');
+		// now fetch the playoff schedule
+		$("#scheduleUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a") + "... and looking for Playoff schedule...");
+		req1.send();
+	});
+	var req1 = new XMLHttpRequest();
+	req1.open('GET', apiURL + localStorage.currentYear + '/schedule/' + localStorage.currentEvent + '/playoff?returnschedule=true');
+	req1.addEventListener('load', function () {
+		$("#playoffScheduleAlert").show();
+		var data = JSON.parse(req1.responseText);
+		if (data.Schedule.length === 0) {
+			document.getElementById('scheduleContainer').innerHTML += '<p><b>No playoff matches have been scheduled for this event.</b></p>';
+			localStorage.playoffList = "";
+			$("#matchPicker").html(matchPicker);
+			if (document.getElementById("matchPicker" + localStorage.currentMatch)) {
+				document.getElementById("matchPicker" + localStorage.currentMatch).selected = true;
+			}
+			$("#matchPicker").selectpicker('refresh');
 
-        } else {
-            for (var i = 0; i < data.Schedule.length; i++) {
-                var element = data.Schedule[i];
-                matchSchedule += generateMatchTableRow(element);
-                matchPicker += '<option id="matchPicker' + parseInt(i + qualScheduleLength + 1) + '"  matchNumber="' + parseInt(i + qualScheduleLength + 1) + '">' + element.description + '</option>';
-            }
-            //$("#playoffScheduleAlert").hide();
-            $("#matchPicker").html(matchPicker);
-            document.getElementById("matchPicker" + localStorage.currentMatch).selected = true;
-            $("#matchPicker").selectpicker('refresh');
-            localStorage.inPlayoffs = "true";
-            prepareAllianceSelection();
+		} else {
+			for (var i = 0; i < data.Schedule.length; i++) {
+				var element = data.Schedule[i];
+				matchSchedule += generateMatchTableRow(element);
+				matchPicker += '<option id="matchPicker' + parseInt(i + qualScheduleLength + 1) + '"  matchNumber="' + parseInt(i + qualScheduleLength + 1) + '">' + element.description + '</option>';
+			}
+			//$("#playoffScheduleAlert").hide();
+			$("#matchPicker").html(matchPicker);
+			document.getElementById("matchPicker" + localStorage.currentMatch).selected = true;
+			$("#matchPicker").selectpicker('refresh');
+			localStorage.inPlayoffs = "true";
+			prepareAllianceSelection();
 
-            //patch for missing scores
-            $("#allianceSelectionPlaceholder").hide();
-            $("#allianceSelectionTable").show();
+			//patch for missing scores
+			$("#allianceSelectionPlaceholder").hide();
+			$("#allianceSelectionTable").show();
 
-            if (lastMatchPlayed >= data.Schedule.length - 1) {
-                $("#allianceSelectionPlaceholder").hide();
-                $("#allianceSelectionTable").show();
-                $(".thirdAllianceSelection").hide();
-                $("#backupTeamsTable").show();
-                if (inChamps() || inSubdivision()) {
-                    $(".thirdAllianceSelection").show();
-                    $("#backupTeamsTable").hide();
-                }
-            }
-            //refresh the Game Announce and Play by Play displays and prepare to get the Playoff Schedule.
-            getAllianceList();
-        }
-        if (matchSchedule) {
-            document.getElementById('scheduleTable').innerHTML += matchSchedule;
-        }
-        $('#scheduleProgressBar').hide();
-        localStorage.playoffList = JSON.stringify(data);
-        $("#scheduleUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
-        if (matchSchedule) {
-            announceDisplay();
-        }
+			if (lastMatchPlayed >= data.Schedule.length - 1) {
+				$("#allianceSelectionPlaceholder").hide();
+				$("#allianceSelectionTable").show();
+				$(".thirdAllianceSelection").hide();
+				$("#backupTeamsTable").show();
+				if (inChamps() || inSubdivision()) {
+					$(".thirdAllianceSelection").show();
+					$("#backupTeamsTable").hide();
+				}
+			}
+			//refresh the Game Announce and Play by Play displays and prepare to get the Playoff Schedule.
+			getAllianceList();
+		}
+		if (matchSchedule) {
+			document.getElementById('scheduleTable').innerHTML += matchSchedule;
+		}
+		$('#scheduleProgressBar').hide();
+		localStorage.playoffList = JSON.stringify(data);
+		$("#scheduleUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+		if (matchSchedule) {
+			announceDisplay();
+		}
 
-    });
+	});
 
-    // Special case to support Championship Playoffs (Einstein and Michigan)
-    var reqChamps = new XMLHttpRequest();
-    reqChamps.open('GET', apiURL + localStorage.currentYear + '/schedule/' + localStorage.currentEvent + '/playoff?returnschedule=true');
-    reqChamps.addEventListener('load', function () {
-        var data = JSON.parse(reqChamps.responseText);
-        //Ensure that there is a schedule
-        if (data.Schedule.length === 0) {
-            $('#scheduleContainer').html('<b>No matches have been scheduled for this event.</b>');
-            localStorage.qualsList = '{"Schedule":[]}';
-            localStorage.playoffList = '{"Schedule":[]}';
-        } else {
-            //we have a schedule. Create the table and display the schedule.
-            $("#scheduleContainer").html('<p class = "eventName">' + localStorage.eventName + '</p><table id="scheduleTable" class="table table-bordered table-responsive table-striped"></table>');
-            matchSchedule += '<thead class="thead-default"><tr><td class="col2"><b>Time</b></td><td  class="col2"><b>Description</b></td><td class="col1"><b>Match Number</b></td><td class="col1"><b>Score</b></td><td class="col1"><b>Station 1</b></td><td class="col1"><b>Station 2</b></td><td class="col1"><b>Station 3</b></td></tr></thead><tbody>';
-            qualScheduleLength = data.Schedule.length;
-            for (var i = 0; i < data.Schedule.length; i++) {
-                var element = data.Schedule[i];
-                matchSchedule += generateMatchTableRow(element);
-                matchPicker += '<option id="matchPicker' + parseInt(i + 1) + '" matchNumber="' + parseInt(i + 1) + '">' + element.description + '</option>';
-                if ((element.scoreRedFinal !== null) && (element.scoreBlueFinal !== null)) {
-                    lastMatchPlayed = element.matchNumber;
-                }
-            }
-            localStorage.qualsList = JSON.stringify(data);
-            $("#announceBanner, #playByPlayBanner").hide();
-            $("#announceDisplay, #playByPlayDisplay").show();
+	// Special case to support Championship Playoffs (Einstein and Michigan)
+	var reqChamps = new XMLHttpRequest();
+	reqChamps.open('GET', apiURL + localStorage.currentYear + '/schedule/' + localStorage.currentEvent + '/playoff?returnschedule=true');
+	reqChamps.addEventListener('load', function () {
+		var data = JSON.parse(reqChamps.responseText);
+		//Ensure that there is a schedule
+		if (data.Schedule.length === 0) {
+			$('#scheduleContainer').html('<b>No matches have been scheduled for this event.</b>');
+			localStorage.qualsList = '{"Schedule":[]}';
+			localStorage.playoffList = '{"Schedule":[]}';
+		} else {
+			//we have a schedule. Create the table and display the schedule.
+			$("#scheduleContainer").html('<p class = "eventName">' + localStorage.eventName + '</p><table id="scheduleTable" class="table table-bordered table-responsive table-striped"></table>');
+			matchSchedule += '<thead class="thead-default"><tr><td class="col2"><b>Time</b></td><td  class="col2"><b>Description</b></td><td class="col1"><b>Match Number</b></td><td class="col1"><b>Score</b></td><td class="col1"><b>Station 1</b></td><td class="col1"><b>Station 2</b></td><td class="col1"><b>Station 3</b></td></tr></thead><tbody>';
+			qualScheduleLength = data.Schedule.length;
+			for (var i = 0; i < data.Schedule.length; i++) {
+				var element = data.Schedule[i];
+				matchSchedule += generateMatchTableRow(element);
+				matchPicker += '<option id="matchPicker' + parseInt(i + 1) + '" matchNumber="' + parseInt(i + 1) + '">' + element.description + '</option>';
+				if ((element.scoreRedFinal !== null) && (element.scoreBlueFinal !== null)) {
+					lastMatchPlayed = element.matchNumber;
+				}
+			}
+			localStorage.qualsList = JSON.stringify(data);
+			$("#announceBanner, #playByPlayBanner").hide();
+			$("#announceDisplay, #playByPlayDisplay").show();
 
-            $("#matchPicker").html(matchPicker);
-            document.getElementById("matchPicker" + localStorage.currentMatch).selected = true;
-            $("#matchPicker").selectpicker('refresh');
-            localStorage.inPlayoffs = "true";
+			$("#matchPicker").html(matchPicker);
+			document.getElementById("matchPicker" + localStorage.currentMatch).selected = true;
+			$("#matchPicker").selectpicker('refresh');
+			localStorage.inPlayoffs = "true";
 
-            //refresh the Game Announce and Play by Play displays and prepare to get the Playoff Schedule.
+			//refresh the Game Announce and Play by Play displays and prepare to get the Playoff Schedule.
 
-            $("#scheduleUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
-            $('#scheduleTabPicker').removeClass('alert-danger');
-            $('#scheduleTabPicker').addClass('alert-success');
-            // now finish off the playoff display
-            if (matchSchedule) {
-                document.getElementById('scheduleTable').innerHTML += matchSchedule;
-            }
-            $('#scheduleProgressBar').hide();
-            localStorage.playoffList = '{"Schedule":[]}';
-            $("#scheduleUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
-            displayAwardsTeams(allianceListUnsorted.slice(0));
-            getAllianceList();
+			$("#scheduleUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+			$('#scheduleTabPicker').removeClass('alert-danger');
+			$('#scheduleTabPicker').addClass('alert-success');
+			// now finish off the playoff display
+			if (matchSchedule) {
+				document.getElementById('scheduleTable').innerHTML += matchSchedule;
+			}
+			$('#scheduleProgressBar').hide();
+			localStorage.playoffList = '{"Schedule":[]}';
+			$("#scheduleUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+			displayAwardsTeams(allianceListUnsorted.slice(0));
+			getAllianceList();
 
-        }
+		}
 
-    });
+	});
 
 
-    //fetch the Qualification schedule first...
-    if (inChamps() || (inMiChamps() && (localStorage.currentYear >= 2017))) {
-        reqChamps.send();
-    } else {
-        req.send();
-    }
+	//fetch the Qualification schedule first...
+	if (inChamps() || (inMiChamps() && (localStorage.currentYear >= 2017))) {
+		reqChamps.send();
+	} else {
+		req.send();
+	}
 }
 
 function getOffseasonSchedule() {
-    "use strict";
-    // inform the user that something is going to happen
-    $("#scheduleUpdateContainer").html("Loading schedule data...");
-    $('#scheduleTabPicker').addClass('alert-danger');
-    var matchSchedule = "";
-    var matchPicker = "";
-    var qualScheduleLength = 0;
-    var i = 0;
-    var element;
-    var data;
-    lastMatchPlayed = 0;
-    // Set up the API request for getting the Qualification and Playoff Schedules. When the Quals are loaded, an attempt is made to get the Playoffs.
-    data = JSON.parse(localStorage.qualsList);
-    //Ensure that there is a schedule
-    if (data.Schedule.length === 0) {
-        $('#scheduleContainer').html('<b>No qualification matches have been scheduled for this event.</b>');
-    } else {
-        //we have a schedule. Create the table and display the schedule.
-        $("#scheduleContainer").html('<p class = "eventName">' + localStorage.eventName + '</p><table id="scheduleTable" class="table table-bordered table-responsive table-striped"></table>');
-        matchSchedule += '<thead class="thead-default"><tr><td class="col2"><b>Time</b></td><td  class="col2"><b>Description</b></td><td class="col1"><b>Match Number</b></td><td class="col1"><b>Score</b></td><td class="col1"><b>Station 1</b></td><td class="col1"><b>Station 2</b></td><td class="col1"><b>Station 3</b></td></tr></thead><tbody>';
-        qualScheduleLength = data.Schedule.length;
-        for (i = 0; i < data.Schedule.length; i++) {
-            element = data.Schedule[i];
-            matchSchedule += generateMatchTableRow(element);
-            matchPicker += '<option id="matchPicker' + parseInt(i + 1) + '" matchNumber="' + parseInt(i + 1) + '">' + element.description + '</option>';
-        }
+	"use strict";
+	// inform the user that something is going to happen
+	$("#scheduleUpdateContainer").html("Loading schedule data...");
+	$('#scheduleTabPicker').addClass('alert-danger');
+	var matchSchedule = "";
+	var matchPicker = "";
+	var qualScheduleLength = 0;
+	var i = 0;
+	var element;
+	var data;
+	lastMatchPlayed = 0;
+	// Set up the API request for getting the Qualification and Playoff Schedules. When the Quals are loaded, an attempt is made to get the Playoffs.
+	data = JSON.parse(localStorage.qualsList);
+	//Ensure that there is a schedule
+	if (data.Schedule.length === 0) {
+		$('#scheduleContainer').html('<b>No qualification matches have been scheduled for this event.</b>');
+	} else {
+		//we have a schedule. Create the table and display the schedule.
+		$("#scheduleContainer").html('<p class = "eventName">' + localStorage.eventName + '</p><table id="scheduleTable" class="table table-bordered table-responsive table-striped"></table>');
+		matchSchedule += '<thead class="thead-default"><tr><td class="col2"><b>Time</b></td><td  class="col2"><b>Description</b></td><td class="col1"><b>Match Number</b></td><td class="col1"><b>Score</b></td><td class="col1"><b>Station 1</b></td><td class="col1"><b>Station 2</b></td><td class="col1"><b>Station 3</b></td></tr></thead><tbody>';
+		qualScheduleLength = data.Schedule.length;
+		for (i = 0; i < data.Schedule.length; i++) {
+			element = data.Schedule[i];
+			matchSchedule += generateMatchTableRow(element);
+			matchPicker += '<option id="matchPicker' + parseInt(i + 1) + '" matchNumber="' + parseInt(i + 1) + '">' + element.description + '</option>';
+		}
 
-        $("#announceBanner, #playByPlayBanner").hide();
-        $("#announceDisplay, #playByPlayDisplay").show();
-        $('#scheduleTabPicker').removeClass('alert-danger');
-        $('#scheduleTabPicker').addClass('alert-success');
-    }
+		$("#announceBanner, #playByPlayBanner").hide();
+		$("#announceDisplay, #playByPlayDisplay").show();
+		$('#scheduleTabPicker').removeClass('alert-danger');
+		$('#scheduleTabPicker').addClass('alert-success');
+	}
 
-    // now fetch the playoff schedule
-    $("#scheduleUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a") + "... and looking for Playoff schedule...");
+	// now fetch the playoff schedule
+	$("#scheduleUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a") + "... and looking for Playoff schedule...");
 
 
-    $("#playoffScheduleAlert").show();
-    data = JSON.parse(localStorage.playoffList);
-    if (data.Schedule.length === 0) {
-        document.getElementById('scheduleContainer').innerHTML += '<p><b>No playoff matches have been scheduled for this event.</b></p>';
-        $("#matchPicker").html(matchPicker);
-        if (document.getElementById("matchPicker" + localStorage.currentMatch)) {
-            document.getElementById("matchPicker" + localStorage.currentMatch).selected = true;
-        }
-        $("#matchPicker").selectpicker('refresh');
+	$("#playoffScheduleAlert").show();
+	data = JSON.parse(localStorage.playoffList);
+	if (data.Schedule.length === 0) {
+		document.getElementById('scheduleContainer').innerHTML += '<p><b>No playoff matches have been scheduled for this event.</b></p>';
+		$("#matchPicker").html(matchPicker);
+		if (document.getElementById("matchPicker" + localStorage.currentMatch)) {
+			document.getElementById("matchPicker" + localStorage.currentMatch).selected = true;
+		}
+		$("#matchPicker").selectpicker('refresh');
 
-    } else {
-        for (i = 0; i < data.Schedule.length; i++) {
-            element = data.Schedule[i];
-            matchSchedule += generateMatchTableRow(element);
-            matchPicker += '<option id="matchPicker' + parseInt(i + qualScheduleLength + 1) + '"  matchNumber="' + parseInt(i + qualScheduleLength + 1) + '">' + element.description + '</option>';
-        }
-        //$("#playoffScheduleAlert").hide();
-        $("#matchPicker").html(matchPicker);
-        document.getElementById("matchPicker" + localStorage.currentMatch).selected = true;
-        $("#matchPicker").selectpicker('refresh');
-        localStorage.inPlayoffs = "true";
+	} else {
+		for (i = 0; i < data.Schedule.length; i++) {
+			element = data.Schedule[i];
+			matchSchedule += generateMatchTableRow(element);
+			matchPicker += '<option id="matchPicker' + parseInt(i + qualScheduleLength + 1) + '"  matchNumber="' + parseInt(i + qualScheduleLength + 1) + '">' + element.description + '</option>';
+		}
+		//$("#playoffScheduleAlert").hide();
+		$("#matchPicker").html(matchPicker);
+		document.getElementById("matchPicker" + localStorage.currentMatch).selected = true;
+		$("#matchPicker").selectpicker('refresh');
+		localStorage.inPlayoffs = "true";
 
-    }
-    if (matchSchedule) {
-        document.getElementById('scheduleTable').innerHTML += matchSchedule;
-    }
-    $('#scheduleProgressBar').hide();
-    $("#scheduleUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
-    announceDisplay();
+	}
+	if (matchSchedule) {
+		document.getElementById('scheduleTable').innerHTML += matchSchedule;
+	}
+	$('#scheduleProgressBar').hide();
+	$("#scheduleUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+	announceDisplay();
 }
 
 
 
 function handleMatchSelection(element) {
-    "use strict";
-    var matchNumberSelected = $(element).children(":selected").attr("matchNumber");
-    localStorage.currentMatch = matchNumberSelected;
-    document.getElementById("matchPicker" + localStorage.currentMatch).selected = true;
-    $("#matchPicker").selectpicker('refresh');
-    updateMatchResults();
+	"use strict";
+	var matchNumberSelected = $(element).children(":selected").attr("matchNumber");
+	localStorage.currentMatch = matchNumberSelected;
+	document.getElementById("matchPicker" + localStorage.currentMatch).selected = true;
+	$("#matchPicker").selectpicker('refresh');
+	updateMatchResults();
 }
 
 function updateTeamTable() {
-    "use strict";
-    var teamData = eventTeamList.slice(0);
-    $("#teamsTableBody").empty();
-    for (var i = 0; i < teamData.length; i++) {
-        var element = teamData[i];
-        $('#teamsTableBody').append(updateTeamTableRow(element));
-    }
-    announceDisplay();
+	"use strict";
+	var teamData = eventTeamList.slice(0);
+	$("#teamsTableBody").empty();
+	for (var i = 0; i < teamData.length; i++) {
+		var element = teamData[i];
+		$('#teamsTableBody').append(updateTeamTableRow(element));
+	}
+	if (haveSchedule) {
+		announceDisplay();
+	}
 
 }
 
 function getTeamList(year, pageNumber) {
-    "use strict";
-    $("#teamDataTabPicker").addClass("alert-danger");
-    $("#teamUpdateContainer").html("Loading team data...");
+	"use strict";
+	$("#teamDataTabPicker").addClass("alert-danger");
+	$("#teamUpdateContainer").html("Loading team data...");
 
-    var req = new XMLHttpRequest();
-    var endpoint = "/teams/";
-    if (localStorage.offseason === "true") {
-        endpoint = "/offseasonteams/";
-    }
-    req.open('GET', apiURL + year + endpoint + localStorage.currentEvent + '/' + pageNumber);
-    req.addEventListener('load', function () {
-        var data = "";
-        $('#teamloadprogress').show();
-        $('#teamProgressBar').show();
-        if (pageNumber === 1) {
-            $("#teamsTableBody").empty();
-        }
-        if (req.responseText.includes('"teams":')) {
-            data = JSON.parse(req.responseText);
-        } else {
-            data = JSON.parse('{"teams":[],"teamCountTotal":0,"teamCountPage":0,"pageCurrent":0,"pageTotal":0}');
-        }
-        if (data.teams.length === 0 && pageNumber === 1) {
-            $('#teamsTableEventName').html('Event team list unavailable.');
-            $("#eventTeamCount").html(data.teamCountTotal);
-            teamCountTotal = data.teamCountTotal;
-            localStorage.teamList = "";
-        } else {
-            if (pageNumber === 1) {
-                $("#eventTeamCount").html(data.teamCountTotal);
-                //teamCountTotal = data.teamCountTotal * $('#awardDepthPicker').val();
-                teamCountTotal = data.teamCountTotal;
-                $('#teamsTableEventName').html(localStorage.eventName);
-            }
+	var req = new XMLHttpRequest();
+	var endpoint = "/teams/";
+	if (localStorage.offseason === "true") {
+		endpoint = "/offseasonteams/";
+	}
+	req.open('GET', apiURL + year + endpoint + localStorage.currentEvent + '/' + pageNumber);
+	req.addEventListener('load', function () {
+		var data = "";
+		$('#teamloadprogress').show();
+		$('#teamProgressBar').show();
+		if (pageNumber === 1) {
+			$("#teamsTableBody").empty();
+		}
+		if (req.responseText.includes('"teams":')) {
+			data = JSON.parse(req.responseText);
+		} else {
+			data = JSON.parse('{"teams":[],"teamCountTotal":0,"teamCountPage":0,"pageCurrent":0,"pageTotal":0}');
+		}
+		if (data.teams.length === 0 && pageNumber === 1) {
+			$('#teamsTableEventName').html('Event team list unavailable.');
+			$("#eventTeamCount").html(data.teamCountTotal);
+			teamCountTotal = data.teamCountTotal;
+			localStorage.teamList = "";
+		} else {
+			if (pageNumber === 1) {
+				$("#eventTeamCount").html(data.teamCountTotal);
+				//teamCountTotal = data.teamCountTotal * $('#awardDepthPicker').val();
+				teamCountTotal = data.teamCountTotal;
+				$('#teamsTableEventName').html(localStorage.eventName);
+			}
 
-            for (var i = 0; i < data.teams.length; i++) {
-                var element = data.teams[i];
-                $('#teamsTableBody').append(generateTeamTableRow(element));
-                eventTeamList.push(data.teams[i]);
-            }
+			for (var i = 0; i < data.teams.length; i++) {
+				var element = data.teams[i];
+				$('#teamsTableBody').append(generateTeamTableRow(element));
+				eventTeamList.push(data.teams[i]);
+			}
 
-            //clear out old rank data for the teams we've loaded
-            for (var j = 0; j < eventTeamList.length; j++) {
-                var team = JSON.parse(localStorage['teamData' + eventTeamList[j].teamNumber]);
+			//clear out old rank data for the teams we've loaded
+			for (var j = 0; j < eventTeamList.length; j++) {
+				var team = JSON.parse(localStorage['teamData' + eventTeamList[j].teamNumber]);
 
-                team.rank = "";
-                team.alliance = "";
-                team.allianceName = "";
-                team.allianceChoice = "";
-                team.sortOrder1 = "";
-                team.sortOrder2 = "";
-                team.sortOrder3 = "";
-                team.sortOrder4 = "";
-                team.sortOrder5 = "";
-                team.sortOrder6 = "";
-                team.wins = "";
-                team.losses = "";
-                team.ties = "";
-                team.qualAverage = "";
-                team.dq = "";
-                team.matchesPlayed = "";
-                //team.lastVisit = "No recent visit";
+				team.rank = "";
+				team.alliance = "";
+				team.allianceName = "";
+				team.allianceChoice = "";
+				team.sortOrder1 = "";
+				team.sortOrder2 = "";
+				team.sortOrder3 = "";
+				team.sortOrder4 = "";
+				team.sortOrder5 = "";
+				team.sortOrder6 = "";
+				team.wins = "";
+				team.losses = "";
+				team.ties = "";
+				team.qualAverage = "";
+				team.dq = "";
+				team.matchesPlayed = "";
+				//team.lastVisit = "No recent visit";
 
-                localStorage['teamData' + eventTeamList[j].teamNumber] = JSON.stringify(team);
-                highScores['"' + eventTeamList[j].teamNumber + '.score"'] = 0;
-                highScores['"' + eventTeamList[j].teamNumber + '.description"'] = "";
-            }
+				localStorage['teamData' + eventTeamList[j].teamNumber] = JSON.stringify(team);
+				highScores['"' + eventTeamList[j].teamNumber + '.score"'] = 0;
+				highScores['"' + eventTeamList[j].teamNumber + '.description"'] = "";
+			}
 
-            if (data.pageCurrent < data.pageTotal) {
-                lastSchedulePage = false;
-                getTeamList(year, parseInt(pageNumber) + 1);
-            } else {
-                localStorage.teamList = JSON.stringify(eventTeamList);
-                getTeamAwardsAsync(eventTeamList, year);
-                if (localStorage.currentYear === "2018") {
-                    getAvatars();
-                }
-                getHybridSchedule();
-                displayAwardsTeams();
-                lastSchedulePage = true;
-            }
-        }
+			if (data.pageCurrent < data.pageTotal) {
+				lastSchedulePage = false;
+				getTeamList(year, parseInt(pageNumber) + 1);
+			} else {
+				localStorage.teamList = JSON.stringify(eventTeamList);
+				getTeamAwardsAsync(eventTeamList, year);
+				if (localStorage.currentYear === "2018") {
+					getAvatars();
+				}
+				getHybridSchedule();
+				displayAwardsTeams();
+				lastSchedulePage = true;
+			}
+		}
 
-        $("#teamUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
-    });
-    req.send();
+		$("#teamUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+	});
+	req.send();
 
 }
 
 function getAvatars() {
-    "use strict";
-    var req = new XMLHttpRequest();
-    req.open('GET', apiURL + localStorage.currentYear + '/avatars/' + localStorage.currentEvent);
-    req.addEventListener('load', function () {
-        var data = JSON.parse(req.responseText);
-        var teamData = {};
-        for (var i = 0; i < data.teams.length; i++) {
-            if (typeof localStorage["teamData" + data.teams[i].teamNumber] !== "undefined") {
-                teamData = JSON.parse(localStorage["teamData" + data.teams[i].teamNumber]);
-                if (data.teams[i].encodedAvatar !== null) {
-                    teamData.avatar = data.teams[i].encodedAvatar;
-                    $("#avatar" + data.teams[i].teamNumber).html('<img src="' + data.teams[i].encodedAvatar + '">&nbsp;');
-                } else {
-                    teamData.avatar = "null";
-                    $("#avatar" + data.teams[i].teamNumber).html("");
-                }
-                localStorage["teamData" + data.teams[i].teamNumber] = JSON.stringify(teamData);
-            }
+	"use strict";
+	var req = new XMLHttpRequest();
+	req.open('GET', apiURL + localStorage.currentYear + '/avatars/' + localStorage.currentEvent);
+	req.addEventListener('load', function () {
+		var data = JSON.parse(req.responseText);
+		var teamData = {};
+		for (var i = 0; i < data.teams.length; i++) {
+			if (typeof localStorage["teamData" + data.teams[i].teamNumber] !== "undefined") {
+				teamData = JSON.parse(localStorage["teamData" + data.teams[i].teamNumber]);
+				if (data.teams[i].encodedAvatar !== null) {
+					teamData.avatar = data.teams[i].encodedAvatar;
+					$("#avatar" + data.teams[i].teamNumber).html('<img src="' + data.teams[i].encodedAvatar + '">&nbsp;');
+				} else {
+					teamData.avatar = "null";
+					$("#avatar" + data.teams[i].teamNumber).html("");
+				}
+				localStorage["teamData" + data.teams[i].teamNumber] = JSON.stringify(teamData);
+			}
 
-        }
+		}
 
-    });
-    req.send();
+	});
+	req.send();
 }
 
 function getHighScores() {
-    "use strict";
-    var req = new XMLHttpRequest();
-    var eventNames = JSON.parse(localStorage.events);
-    req.open('GET', apiURL + localStorage.currentYear + '/highscore/');
-    req.addEventListener('load', function () {
-        var data = JSON.parse(req.responseText);
-        if (data.highQualsPenaltyFree.score) {
-            $("#highQualsNoFouls").html("Qual (no fouls) " + data.highQualsPenaltyFree.score + " Match " + data.highQualsPenaltyFree.details.matchNumber + "<br>" + eventNames[data.highQualsPenaltyFree.event]);
-        }
-        if (data.highQualsPenaltyFreeOffsetting.score) {
-            $("#highQualsOffsettingFouls").html("Qual (offsetting fouls) " + data.highQualsPenaltyFreeOffsetting.score + " Match " + data.highQualsPenaltyFreeOffsetting.details.matchNumber + "<br>" + eventNames[data.highQualsPenaltyFreeOffsetting.event]);
-        }
-        if (data.highQuals.score) {
-            $("#highQuals").html("Qual " + data.highQuals.score + " Match " + data.highQuals.details.matchNumber + "<br>" + eventNames[data.highQuals.event]);
-        }
-        if (data.highPlayoffPenaltyFree.score) {
-            $("#highPlayoffNoFouls").html("Playoff (no fouls) " + data.highPlayoffPenaltyFree.score + " Match " + data.highPlayoffPenaltyFree.details.matchNumber + "<br>" + eventNames[data.highPlayoffPenaltyFree.event]);
-        }
-        if (data.highPlayoffPenaltyFreeOffsetting.score) {
-            $("#highPlayoffOffsettingFouls").html("Playoff (offsetting fouls) " + data.highPlayoffPenaltyFreeOffsetting.score + " Match " + data.highPlayoffPenaltyFreeOffsetting.details.matchNumber + "<br>" + eventNames[data.highPlayoffPenaltyFreeOffsetting.event]);
-        }
-        if (data.highPlayoff.score) {
-            $("#highPlayoff").html("Playoff " + data.highPlayoff.score + " Match " + data.highPlayoff.details.matchNumber + "<br>" + eventNames[data.highPlayoff.event]);
-        }
+	"use strict";
+	var req = new XMLHttpRequest();
+	var eventNames = JSON.parse(localStorage.events);
+	req.open('GET', apiURL + localStorage.currentYear + '/highscore/');
+	req.addEventListener('load', function () {
+		var data = JSON.parse(req.responseText);
+		$("#highscoreyear").html(" " + localStorage.currentYear);
+		if (data.highQualsPenaltyFree.score) {
+			$("#highQualsNoFouls").html("Qual (no fouls) " + data.highQualsPenaltyFree.score + " Match " + data.highQualsPenaltyFree.details.matchNumber + "<br>" + eventNames[data.highQualsPenaltyFree.event]);
+		}
+		if (data.highQualsPenaltyFreeOffsetting.score) {
+			$("#highQualsOffsettingFouls").html("Qual (offsetting fouls) " + data.highQualsPenaltyFreeOffsetting.score + " Match " + data.highQualsPenaltyFreeOffsetting.details.matchNumber + "<br>" + eventNames[data.highQualsPenaltyFreeOffsetting.event]);
+		}
+		if (data.highQuals.score) {
+			$("#highQuals").html("Qual " + data.highQuals.score + " Match " + data.highQuals.details.matchNumber + "<br>" + eventNames[data.highQuals.event]);
+		}
+		if (data.highPlayoffPenaltyFree.score) {
+			$("#highPlayoffNoFouls").html("Playoff (no fouls) " + data.highPlayoffPenaltyFree.score + " Match " + data.highPlayoffPenaltyFree.details.matchNumber + "<br>" + eventNames[data.highPlayoffPenaltyFree.event]);
+		}
+		if (data.highPlayoffPenaltyFreeOffsetting.score) {
+			$("#highPlayoffOffsettingFouls").html("Playoff (offsetting fouls) " + data.highPlayoffPenaltyFreeOffsetting.score + " Match " + data.highPlayoffPenaltyFreeOffsetting.details.matchNumber + "<br>" + eventNames[data.highPlayoffPenaltyFreeOffsetting.event]);
+		}
+		if (data.highPlayoff.score) {
+			$("#highPlayoff").html("Playoff " + data.highPlayoff.score + " Match " + data.highPlayoff.details.matchNumber + "<br>" + eventNames[data.highPlayoff.event]);
+		}
 
-    });
-    req.send();
+	});
+	req.send();
 
 
 }
 
 
 function getTeamAwardsAsync(teamList, currentYear) {
-    "use strict";
-    var teamAwardRequests = [];
-    teamList.forEach((item, index) => {
-        teamAwardRequests.push(new Promise((resolve, reject) => {
-            //console.log(item.teamNumber);
-            getTeamAwards(item.teamNumber, currentYear);
-            resolve();
-        }));
-    });
-    Promise.all(teamAwardRequests).then((value) => {
-        //console.log('finished');
-    });
+	"use strict";
+	var teamAwardRequests = [];
+	teamList.forEach((item, index) => {
+		teamAwardRequests.push(new Promise((resolve, reject) => {
+			//console.log(item.teamNumber);
+			getTeamAwards(item.teamNumber, currentYear);
+			resolve();
+		}));
+	});
+	Promise.all(teamAwardRequests).then((value) => {
+		//console.log('finished');
+	});
 }
 
 
 function getAllianceList() {
-    "use strict";
-    $("#allianceUpdateContainer").html("Loading Alliance data...");
-    var req2 = new XMLHttpRequest();
-    req2.open('GET', apiURL + localStorage.currentYear + '/alliances/' + localStorage.currentEvent);
-    req2.addEventListener('load', function () {
-        var data = JSON.parse(req2.responseText);
-        if (data.Alliances.length === 0) {
-            $('#allianceUpdateContainer').html('<b>No Playoff Alliance data available for this event.</b>');
-            localStorage.Alliances = {};
-        } else {
-            localStorage.Alliances = JSON.stringify(data);
-            for (var i = 0; i < data.Alliances.length; i++) {
-                var element = data.Alliances[i];
-                var team = {};
-                if (element.captain !== null) {
-                    team = JSON.parse(localStorage["teamData" + element.captain]);
-                    team.alliance = element.number;
-                    team.allianceName = element.name;
-                    team.allianceChoice = "Captain";
-                    localStorage["teamData" + element.captain] = JSON.stringify(team);
-                }
-                if (element.round1 !== null) {
-                    team = JSON.parse(localStorage["teamData" + element.round1]);
-                    team.alliance = element.number;
-                    team.allianceName = element.name;
-                    team.allianceChoice = "Round 1 Selection";
-                    localStorage["teamData" + element.round1] = JSON.stringify(team);
-                }
-                if (element.round2 !== null) {
-                    team = JSON.parse(localStorage["teamData" + element.round2]);
-                    team.alliance = element.number;
-                    team.allianceName = element.name;
-                    team.allianceChoice = "Round 2 Selection";
-                    localStorage["teamData" + element.round2] = JSON.stringify(team);
-                }
-                if (element.round3 !== null) {
-                    team = JSON.parse(localStorage["teamData" + element.round3]);
-                    team.alliance = element.number;
-                    team.allianceName = element.name;
-                    team.allianceChoice = "Round 3 Selection";
-                    localStorage["teamData" + element.round3] = JSON.stringify(team);
-                }
-                if (element.backup !== null) {
-                    team = JSON.parse(localStorage["teamData" + element.backup]);
-                    team.alliance = element.number;
-                    team.allianceName = element.name;
-                    team.allianceChoice = "Backup Robot replacing " + element.backupReplaced;
-                    localStorage["teamData" + element.backup] = JSON.stringify(team);
-                }
-            }
-        }
-        if ($("#announceDisplay").css("display") !== "none") {
-            announceDisplay();
-        }
-        $("#allianceUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
-    });
-    if (localStorage.inPlayoffs === "true") {
-        req2.send();
-    } else {
-        if ($("#announceDisplay").css("display") !== "none") {
-            announceDisplay();
-        }
-    }
+	"use strict";
+	$("#allianceUpdateContainer").html("Loading Alliance data...");
+	var req2 = new XMLHttpRequest();
+	req2.open('GET', apiURL + localStorage.currentYear + '/alliances/' + localStorage.currentEvent);
+	req2.addEventListener('load', function () {
+		var data = JSON.parse(req2.responseText);
+		if (data.Alliances.length === 0) {
+			$('#allianceUpdateContainer').html('<b>No Playoff Alliance data available for this event.</b>');
+			localStorage.Alliances = {};
+		} else {
+			localStorage.Alliances = JSON.stringify(data);
+			for (var i = 0; i < data.Alliances.length; i++) {
+				var element = data.Alliances[i];
+				var team = {};
+				if (element.captain !== null) {
+					team = JSON.parse(localStorage["teamData" + element.captain]);
+					team.alliance = element.number;
+					team.allianceName = element.name;
+					team.allianceChoice = "Captain";
+					localStorage["teamData" + element.captain] = JSON.stringify(team);
+				}
+				if (element.round1 !== null) {
+					team = JSON.parse(localStorage["teamData" + element.round1]);
+					team.alliance = element.number;
+					team.allianceName = element.name;
+					team.allianceChoice = "Round 1 Selection";
+					localStorage["teamData" + element.round1] = JSON.stringify(team);
+				}
+				if (element.round2 !== null) {
+					team = JSON.parse(localStorage["teamData" + element.round2]);
+					team.alliance = element.number;
+					team.allianceName = element.name;
+					team.allianceChoice = "Round 2 Selection";
+					localStorage["teamData" + element.round2] = JSON.stringify(team);
+				}
+				if (element.round3 !== null) {
+					team = JSON.parse(localStorage["teamData" + element.round3]);
+					team.alliance = element.number;
+					team.allianceName = element.name;
+					team.allianceChoice = "Round 3 Selection";
+					localStorage["teamData" + element.round3] = JSON.stringify(team);
+				}
+				if (element.backup !== null) {
+					team = JSON.parse(localStorage["teamData" + element.backup]);
+					team.alliance = element.number;
+					team.allianceName = element.name;
+					team.allianceChoice = "Backup Robot replacing " + element.backupReplaced;
+					localStorage["teamData" + element.backup] = JSON.stringify(team);
+				}
+			}
+		}
+		if (haveSchedule) {
+			announceDisplay();
+		}
+		$("#allianceUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+	});
+	if (localStorage.inPlayoffs === "true") {
+		req2.send();
+	} else {
+		if (haveSchedule) {
+			announceDisplay();
+		}
+	}
 }
 
 function updateMatchResults() {
-    "use strict";
-    getHybridSchedule();
-    document.getElementById("matchPicker" + localStorage.currentMatch).selected = true;
-    $("#matchPicker").selectpicker('refresh');
+	"use strict";
+	getHybridSchedule();
+	document.getElementById("matchPicker" + localStorage.currentMatch).selected = true;
+	$("#matchPicker").selectpicker('refresh');
 }
 
 function getNextMatch() {
-    "use strict";
-    var qualsList = JSON.parse(localStorage.qualsList);
-    var playoffList = JSON.parse(localStorage.playoffList);
-    replacementAlliance = {};
-    if (!qualsList) {
-        $("#matchNumber").html("No matches scheduled.");
-    } else {
-        localStorage.currentMatch++;
-        if (localStorage.currentMatch > qualsList.Schedule.length + playoffList.Schedule.length) {
-            localStorage.currentMatch = qualsList.Schedule.length + playoffList.Schedule.length;
-        }
-        announceDisplay();
-        updateMatchResults();
-    }
+	"use strict";
+	var qualsList = JSON.parse(localStorage.qualsList);
+	var playoffList = JSON.parse(localStorage.playoffList);
+	replacementAlliance = {};
+	if (!qualsList) {
+		$("#matchNumber").html("No matches scheduled.");
+	} else {
+		localStorage.currentMatch++;
+		if (localStorage.currentMatch > qualsList.Schedule.length + playoffList.Schedule.length) {
+			localStorage.currentMatch = qualsList.Schedule.length + playoffList.Schedule.length;
+		}
+		announceDisplay();
+		updateMatchResults();
+	}
 }
 
 function getPreviousMatch() {
-    "use strict";
-    replacementAlliance = {};
-    localStorage.currentMatch--;
-    if (localStorage.currentMatch < 1) {
-        localStorage.currentMatch = 1;
-    }
-    announceDisplay();
-    updateMatchResults();
+	"use strict";
+	replacementAlliance = {};
+	localStorage.currentMatch--;
+	if (localStorage.currentMatch < 1) {
+		localStorage.currentMatch = 1;
+	}
+	announceDisplay();
+	updateMatchResults();
 }
 
 function scaleRows() {
-    "use strict";
-    var height = window.innerHeight;
-    var width = window.innerWidth - 30;
-    var col1width = width / 12;
-    var col2width = width / 6;
-    var col3width = width / 4;
-    var col4width = width / 3;
-    var col5width = width / 12 * 5;
-    var col6width = width / 2;
-    var col9width = width / 4 * 3;
-    var col10width = width / 6 * 5;
-    var verticalDivisions = 3;
-    if (inChamps() || (inSubdivision() && (localStorage.currentMatch > JSON.parse(localStorage.qualsList).Schedule.length))) {
-        verticalDivisions = 4;
-    }
-    var announceHeight = Math.round((height - $("#navbar").outerHeight() - $("#appTab").outerHeight() - $("#gameButtonsAnnounce").outerHeight() - $("#footer").outerHeight() - $("#announceTableHeader").outerHeight()) / (verticalDivisions * 2) - 10);
-    var playByPlayHeight = Math.round((height - $("#navbar").outerHeight() - $("#appTab").outerHeight() - $("#gameButtonsPlayByPlay").outerHeight() - $("#footer").outerHeight() - $("#announceTableHeader").outerHeight()) / verticalDivisions - 25);
-    $(".redAlliancePlayByPlay,.blueAlliancePlayByPlay").css("height", playByPlayHeight + "px");
-    $(".redAlliance,.blueAlliance").css("height", announceHeight + "px");
-    $(".col1").css("width", col1width + "px");
-    $(".col2").css("width", col2width + "px");
-    $(".col3").css("width", col3width + "px");
-    $(".col4").css("width", col4width + "px");
-    $(".col5").css("width", col5width + "px");
-    $(".col6").css("width", col6width + "px");
-    $(".col9").css("width", col9width + "px");
-    $(".col10").css("width", col10width + "px");
-    $(".spacer").css("height", ($("#navbar").outerHeight() - 35) + "px");
+	"use strict";
+	var height = window.innerHeight;
+	var width = window.innerWidth - 30;
+	var col1width = width / 12;
+	var col2width = width / 6;
+	var col3width = width / 4;
+	var col4width = width / 3;
+	var col5width = width / 12 * 5;
+	var col6width = width / 2;
+	var col9width = width / 4 * 3;
+	var col10width = width / 6 * 5;
+	var verticalDivisions = 3;
+	if (inChamps() || (inSubdivision() && (localStorage.currentMatch > JSON.parse(localStorage.qualsList).Schedule.length))) {
+		verticalDivisions = 4;
+	}
+	var announceHeight = Math.round((height - $("#navbar").outerHeight() - $("#appTab").outerHeight() - $("#gameButtonsAnnounce").outerHeight() - $("#footer").outerHeight() - $("#announceTableHeader").outerHeight()) / (verticalDivisions * 2) - 10);
+	var playByPlayHeight = Math.round((height - $("#navbar").outerHeight() - $("#appTab").outerHeight() - $("#gameButtonsPlayByPlay").outerHeight() - $("#footer").outerHeight() - $("#announceTableHeader").outerHeight()) / verticalDivisions - 25);
+	$(".redAlliancePlayByPlay,.blueAlliancePlayByPlay").css("height", playByPlayHeight + "px");
+	$(".redAlliance,.blueAlliance").css("height", announceHeight + "px");
+	$(".col1").css("width", col1width + "px");
+	$(".col2").css("width", col2width + "px");
+	$(".col3").css("width", col3width + "px");
+	$(".col4").css("width", col4width + "px");
+	$(".col5").css("width", col5width + "px");
+	$(".col6").css("width", col6width + "px");
+	$(".col9").css("width", col9width + "px");
+	$(".col10").css("width", col10width + "px");
+	$(".spacer").css("height", ($("#navbar").outerHeight() - 35) + "px");
 }
 
 function announceDisplay() {
-    "use strict";
-    $("#davidPrice").removeClass("redScore");
-    $("#davidPrice").removeClass("blueScore");
-    var qualsList = JSON.parse(localStorage.qualsList);
-    var currentMatch = localStorage.currentMatch - 1;
-    var teamCount = 6;
-    if (localStorage.currentMatch > qualsList.Schedule.length) {
-        currentMatch = localStorage.currentMatch - qualsList.Schedule.length - 1;
-        qualsList = JSON.parse(localStorage.playoffList);
-    }
-    currentMatchData = qualsList.Schedule[currentMatch];
+	"use strict";
+	$("#davidPrice").removeClass("redScore");
+	$("#davidPrice").removeClass("blueScore");
+	var qualsList = JSON.parse(localStorage.qualsList);
+	var currentMatch = localStorage.currentMatch - 1;
+	var teamCount = 6;
+	if (localStorage.currentMatch > qualsList.Schedule.length) {
+		currentMatch = localStorage.currentMatch - qualsList.Schedule.length - 1;
+		qualsList = JSON.parse(localStorage.playoffList);
+	}
+	currentMatchData = qualsList.Schedule[currentMatch];
 
-    var stationList = ["red1", "red2", "red3", "blue1", "blue2", "blue3", "red4", "blue4"];
-    var redTeams = [];
-    var blueTeams = [];
-    var alliances = JSON.parse(localStorage.Alliances).Alliances;
-    var redAlliance = {};
-    var blueAlliance = {};
-    getTeamRanks();
-    $(".champsDisplay").hide();
-    if (inChamps() || (inSubdivision() && (localStorage.currentMatch > qualsList.Schedule.length))) {
-        teamCount = 8;
-        $(".champsDisplay").show();
-        var red1 = currentMatchData.teams[0].teamNumber;
-        var blue1 = currentMatchData.teams[3].teamNumber;
-        redAlliance = $.grep(alliances, function (element, index) {
-            return (element.captain === red1 || element.round1 === red1 || element.round2 === red1 || element.round3 === red1 || element.backup === red1);
-        });
-        redTeams = [redAlliance[0].captain, redAlliance[0].round1, redAlliance[0].round2, redAlliance[0].round3, redAlliance[0].backup];
+	var stationList = ["red1", "red2", "red3", "blue1", "blue2", "blue3", "red4", "blue4"];
+	var redTeams = [];
+	var blueTeams = [];
+	var alliances = JSON.parse(localStorage.Alliances).Alliances;
+	var redAlliance = {};
+	var blueAlliance = {};
+	getTeamRanks();
+	$(".champsDisplay").hide();
+	if (inChamps() || (inSubdivision() && (localStorage.currentMatch > qualsList.Schedule.length))) {
+		teamCount = 8;
+		$(".champsDisplay").show();
+		var red1 = currentMatchData.teams[0].teamNumber;
+		var blue1 = currentMatchData.teams[3].teamNumber;
+		redAlliance = $.grep(alliances, function (element, index) {
+			return (element.captain === red1 || element.round1 === red1 || element.round2 === red1 || element.round3 === red1 || element.backup === red1);
+		});
+		redTeams = [redAlliance[0].captain, redAlliance[0].round1, redAlliance[0].round2, redAlliance[0].round3, redAlliance[0].backup];
 
-        blueAlliance = $.grep(alliances, function (element, index) {
-            return (element.captain === blue1 || element.round1 === blue1 || element.round2 === blue1 || element.round3 === blue1 || element.backup === blue1);
-        });
-        blueTeams = [blueAlliance[0].captain, blueAlliance[0].round1, blueAlliance[0].round2, blueAlliance[0].round3, blueAlliance[0].backup];
-    }
+		blueAlliance = $.grep(alliances, function (element, index) {
+			return (element.captain === blue1 || element.round1 === blue1 || element.round2 === blue1 || element.round3 === blue1 || element.backup === blue1);
+		});
+		blueTeams = [blueAlliance[0].captain, blueAlliance[0].round1, blueAlliance[0].round2, blueAlliance[0].round3, blueAlliance[0].backup];
+	}
 
-    if ((currentMatchData.description.split(" ")[0] !== "Qualification") && (currentMatchData.description.split(" ")[0] !== "Einstein") && (Number(localStorage.currentYear) >= 2017)) {
-        $("#matchNameAnnounce").html(parsePlayoffMatchName(currentMatchData.description));
-        $("#topMatchNameAnnounce").html(localStorage.eventName + "<br>" + parsePlayoffMatchName(currentMatchData.description));
-        $("#matchName").html(parsePlayoffMatchName(currentMatchData.description));
-        $("#topMatchNamePlayByPlay").html(parsePlayoffMatchName(currentMatchData.description));
-        $("#davidPriceNumber").html(davidPriceFormat(parsePlayoffMatchName(currentMatchData.description)));
+	if ((currentMatchData.description.split(" ")[0] !== "Qualification") && (currentMatchData.description.split(" ")[0] !== "Einstein") && (Number(localStorage.currentYear) >= 2017)) {
+		$("#matchNameAnnounce").html(parsePlayoffMatchName(currentMatchData.description));
+		$("#topMatchNameAnnounce").html(localStorage.eventName + "<br>" + parsePlayoffMatchName(currentMatchData.description));
+		$("#matchName").html(parsePlayoffMatchName(currentMatchData.description));
+		$("#topMatchNamePlayByPlay").html(parsePlayoffMatchName(currentMatchData.description));
+		$("#davidPriceNumber").html(davidPriceFormat(parsePlayoffMatchName(currentMatchData.description)));
 
-    } else {
-        $("#matchNameAnnounce").html("<b>" + currentMatchData.description + " of " + qualsList.Schedule.length + "</b>");
-        $("#topMatchNameAnnounce").html("<b>" + localStorage.eventName + "<br>" + currentMatchData.description + " of " + qualsList.Schedule.length + "</b>");
-        $("#matchName").html("<b>" + currentMatchData.description + " of " + qualsList.Schedule.length + "</b>");
-        $("#topMatchNamePlayByPlay").html("<b>" + currentMatchData.description + " of " + qualsList.Schedule.length + "</b>");
-        $("#davidPriceNumber").html(davidPriceFormat(currentMatchData.description));
-    }
-    $("#eventHighScorePlayByPlay").html("<b>Current High Score: " + localStorage.matchHighScore + "<br>from " + localStorage.highScoreDetails + "</b>");
-    getHighScores();
+	} else {
+		$("#matchNameAnnounce").html("<b>" + currentMatchData.description + " of " + qualsList.Schedule.length + "</b>");
+		$("#topMatchNameAnnounce").html("<b>" + localStorage.eventName + "<br>" + currentMatchData.description + " of " + qualsList.Schedule.length + "</b>");
+		$("#matchName").html("<b>" + currentMatchData.description + " of " + qualsList.Schedule.length + "</b>");
+		$("#topMatchNamePlayByPlay").html("<b>" + currentMatchData.description + " of " + qualsList.Schedule.length + "</b>");
+		$("#davidPriceNumber").html(davidPriceFormat(currentMatchData.description));
+	}
+	$("#eventHighScorePlayByPlay").html("<b>Current High Score: " + localStorage.matchHighScore + "<br>from " + localStorage.highScoreDetails + "</b>");
+	getHighScores();
 
-    function davidPriceFormat(MatchData) {
-        var str = MatchData.split(" ", 4);
-        MatchData = "";
-        for (var i = 0; i < str.length; i++) {
-            MatchData += str[i].replace("Qualification", "").replace("Quarterfinal", "Q").replace("Semifinal", "S").replace("Final", "F").replace("Match", "M").replace("Tiebreaker", "T");
-        }
-        return MatchData.trim();
-    }
+	function davidPriceFormat(MatchData) {
+		var str = MatchData.split(" ", 4);
+		MatchData = "";
+		for (var i = 0; i < str.length; i++) {
+			MatchData += str[i].replace("Qualification", "").replace("Quarterfinal", "Q").replace("Semifinal", "S").replace("Final", "F").replace("Match", "M").replace("Tiebreaker", "T");
+		}
+		return MatchData.trim();
+	}
 
-    function checkTeam(element) {
-        return element !== currentMatchData.teams[ii].teamNumber;
-    }
+	function checkTeam(element) {
+		return element !== currentMatchData.teams[ii].teamNumber;
+	}
 
-    for (var ii = 0; ii < teamCount; ii++) {
-        //        var missingTeam = (localStorage['teamData' + currentMatchData.teams[ii].teamNumber] || false);
-        //        if (missingTeam) {
+	for (var ii = 0; ii < teamCount; ii++) {
+		//        var missingTeam = (localStorage['teamData' + currentMatchData.teams[ii].teamNumber] || false);
+		//        if (missingTeam) {
 
-        if (ii < 3) {
-            redTeams = redTeams.filter(checkTeam);
-        }
-        if (ii < 6 && ii > 2) {
-            blueTeams = blueTeams.filter(checkTeam);
-        }
-        if (ii === 6) {
-            currentMatchData.teams[ii] = {
-                "teamNumber": redTeams[0]
-            };
-        }
-        if (ii === 7) {
-            currentMatchData.teams[ii] = {
-                "teamNumber": blueTeams[0]
-            };
-        }
-        var teamData = JSON.parse(localStorage['teamData' + currentMatchData.teams[ii].teamNumber]);
-        $('#' + stationList[ii] + 'TeamNumber').html("<b>" + currentMatchData.teams[ii].teamNumber + "</b>");
-        $('#' + stationList[ii] + 'PlaybyPlayteamNumber').html(currentMatchData.teams[ii].teamNumber);
-        inHallOfFame(currentMatchData.teams[ii].teamNumber, stationList[ii]);
-        if ((localStorage.currentMatch > qualsList.Schedule.length) || inChamps() || (inMiChamps() && (localStorage.currentYear >= 2017))) {
-            document.getElementById(stationList[ii] + 'TeamNumber').setAttribute("onclick", "replaceTeam('" + stationList[ii] + "','" + currentMatchData.teams[ii].teamNumber + "')");
-            document.getElementById(stationList[ii] + 'PlaybyPlayteamNumber').setAttribute("onclick", "replaceTeam('" + stationList[ii] + "','" + currentMatchData.teams[ii].teamNumber + "')");
-        } else {
-            document.getElementById(stationList[ii] + 'TeamNumber').setAttribute("onclick", "");
-            document.getElementById(stationList[ii] + 'PlaybyPlayteamNumber').setAttribute("onclick", "");
-        }
+		if (ii < 3) {
+			redTeams = redTeams.filter(checkTeam);
+		}
+		if (ii < 6 && ii > 2) {
+			blueTeams = blueTeams.filter(checkTeam);
+		}
+		if (ii === 6) {
+			currentMatchData.teams[ii] = {
+				"teamNumber": redTeams[0]
+			};
+		}
+		if (ii === 7) {
+			currentMatchData.teams[ii] = {
+				"teamNumber": blueTeams[0]
+			};
+		}
+		var teamData = JSON.parse(localStorage['teamData' + currentMatchData.teams[ii].teamNumber]);
+		$('#' + stationList[ii] + 'TeamNumber').html("<b>" + currentMatchData.teams[ii].teamNumber + "</b>");
+		$('#' + stationList[ii] + 'PlaybyPlayteamNumber').html(currentMatchData.teams[ii].teamNumber);
+		inHallOfFame(currentMatchData.teams[ii].teamNumber, stationList[ii]);
+		if ((localStorage.currentMatch > qualsList.Schedule.length) || inChamps() || (inMiChamps() && (localStorage.currentYear >= 2017))) {
+			document.getElementById(stationList[ii] + 'TeamNumber').setAttribute("onclick", "replaceTeam('" + stationList[ii] + "','" + currentMatchData.teams[ii].teamNumber + "')");
+			document.getElementById(stationList[ii] + 'PlaybyPlayteamNumber').setAttribute("onclick", "replaceTeam('" + stationList[ii] + "','" + currentMatchData.teams[ii].teamNumber + "')");
+		} else {
+			document.getElementById(stationList[ii] + 'TeamNumber').setAttribute("onclick", "");
+			document.getElementById(stationList[ii] + 'PlaybyPlayteamNumber').setAttribute("onclick", "");
+		}
 
-        if (replacementAlliance[stationList[ii]]) {
-            teamData = JSON.parse(localStorage['teamData' + replacementAlliance[stationList[ii]]]);
-            $('#' + stationList[ii] + 'TeamNumber').html("<b>" + replacementAlliance[stationList[ii]] + "</b>");
-            $('#' + stationList[ii] + 'PlaybyPlayteamNumber').html(replacementAlliance[stationList[ii]]);
-        }
-        $('#' + stationList[ii] + 'RookieYear').html(rookieYearDisplay(teamData.rookieYear));
+		if (replacementAlliance[stationList[ii]]) {
+			teamData = JSON.parse(localStorage['teamData' + replacementAlliance[stationList[ii]]]);
+			$('#' + stationList[ii] + 'TeamNumber').html("<b>" + replacementAlliance[stationList[ii]] + "</b>");
+			$('#' + stationList[ii] + 'PlaybyPlayteamNumber').html(replacementAlliance[stationList[ii]]);
+		}
+		$('#' + stationList[ii] + 'RookieYear').html(rookieYearDisplay(teamData.rookieYear));
 
-        if ((localStorage.currentMatch > JSON.parse(localStorage.qualsList).Schedule.length) || inChamps() || (inMiChamps() && (localStorage.currentYear >= 2017))) {
-            $('#' + stationList[ii] + 'Alliance').html(teamData.allianceName + "<br>" + teamData.allianceChoice);
-            $('#' + stationList[ii] + 'PlayByPlayAlliance').html("<p><b>" + teamData.allianceName + "<br>" + teamData.allianceChoice + "<b></p>");
-        } else {
-            $('#' + stationList[ii] + 'Alliance').html("");
-            $('#' + stationList[ii] + 'PlayByPlayAlliance').html("");
-        }
-        if (teamData.nameShortLocal === "") {
-            $("#" + stationList[ii] + "TeamName").html(teamData.nameShort);
-        } else {
-            $("#" + stationList[ii] + "TeamName").html(teamData.nameShortLocal);
-        }
-        if (teamData.cityStateLocal === "") {
-            $("#" + stationList[ii] + "CityState").html(teamData.cityState);
-        } else {
-            $("#" + stationList[ii] + "CityState").html(teamData.cityStateLocal);
-        }
-        if (teamData.robotNameLocal === "") {
-            $("#" + stationList[ii] + "RobotName").html(teamData.robotName);
-        } else {
-            $("#" + stationList[ii] + "RobotName").html(teamData.robotNameLocal);
-        }
-        if (teamData.organizationLocal === "") {
-            $("#" + stationList[ii] + "Organization").html(teamData.organization);
-        } else {
-            $("#" + stationList[ii] + "Organization").html(teamData.organizationLocal);
-        }
-        if (teamData.topSponsorsLocal === "") {
-            $("#" + stationList[ii] + "Sponsors").html(teamData.topSponsors);
-        } else {
-            $("#" + stationList[ii] + "Sponsors").html(teamData.topSponsorsLocal);
-        }
-        if (teamData.awardsLocal === "") {
-            $("#" + stationList[ii] + "Awards").html(teamData.awards);
-        } else {
-            $("#" + stationList[ii] + "Awards").html(teamData.awardsLocal);
-        }
+		if ((localStorage.currentMatch > JSON.parse(localStorage.qualsList).Schedule.length) || inChamps() || (inMiChamps() && (localStorage.currentYear >= 2017))) {
+			$('#' + stationList[ii] + 'Alliance').html(teamData.allianceName + "<br>" + teamData.allianceChoice);
+			$('#' + stationList[ii] + 'PlayByPlayAlliance').html("<p><b>" + teamData.allianceName + "<br>" + teamData.allianceChoice + "<b></p>");
+		} else {
+			$('#' + stationList[ii] + 'Alliance').html("");
+			$('#' + stationList[ii] + 'PlayByPlayAlliance').html("");
+		}
+		if (teamData.nameShortLocal === "") {
+			$("#" + stationList[ii] + "TeamName").html(teamData.nameShort);
+		} else {
+			$("#" + stationList[ii] + "TeamName").html(teamData.nameShortLocal);
+		}
+		if (teamData.cityStateLocal === "") {
+			$("#" + stationList[ii] + "CityState").html(teamData.cityState);
+		} else {
+			$("#" + stationList[ii] + "CityState").html(teamData.cityStateLocal);
+		}
+		if (teamData.robotNameLocal === "") {
+			$("#" + stationList[ii] + "RobotName").html(teamData.robotName);
+		} else {
+			$("#" + stationList[ii] + "RobotName").html(teamData.robotNameLocal);
+		}
+		if (teamData.organizationLocal === "") {
+			$("#" + stationList[ii] + "Organization").html(teamData.organization);
+		} else {
+			$("#" + stationList[ii] + "Organization").html(teamData.organizationLocal);
+		}
+		if (teamData.topSponsorsLocal === "") {
+			$("#" + stationList[ii] + "Sponsors").html(teamData.topSponsors);
+		} else {
+			$("#" + stationList[ii] + "Sponsors").html(teamData.topSponsorsLocal);
+		}
+		if (teamData.awardsLocal === "") {
+			$("#" + stationList[ii] + "Awards").html(teamData.awards);
+		} else {
+			$("#" + stationList[ii] + "Awards").html(teamData.awardsLocal);
+		}
 
-        $("#" + stationList[ii] + "Rank").html(teamData.rank);
-        // Swap the stats for the Alliance name if we're in Champs or in Michigan Champs
-        if (inChamps() || (inMiChamps() && (localStorage.currentYear >= 2017)) || (inSubdivision() && (localStorage.currentMatch > qualsList.Schedule.length))) {
-            $('#' + stationList[ii] + 'PlayByPlayAlliance').html("");
-            $("#" + stationList[ii] + "WinLossTie").html("<p class='playByPlayChampsAlliance'>" + teamData.allianceName + "<br>" + teamData.allianceChoice + "</p>");
-            rankHighlight(stationList[ii] + "Rank", teamData.rank);
-        } else {
-            $("#" + stationList[ii] + "WinLossTie").html("<table class='wltTable'><tr><td id='" + stationList[ii] + "PlayByPlayRank' class='wltCol'>Rank " + teamData.rank + "<br>AV RP " + teamData.sortOrder1 + "</td><td class='wltCol'>Qual Avg<br>" + teamData.qualAverage + "</td><td class='wltCol'>W-L-T<br>" + teamData.wins + "-" + teamData.losses + "-" + teamData.ties + "</td></tr><tr><td colspan='3'>Team high score: " + highScores['"' + currentMatchData.teams[ii].teamNumber + '.score"'] + "<br>in " + highScores['"' + currentMatchData.teams[ii].teamNumber + '.description"'] + "</td></tr></table>");
-            rankHighlight(stationList[ii] + "PlayByPlayRank", teamData.rank);
-            rankHighlight(stationList[ii] + "Rank", teamData.rank);
-        }
+		$("#" + stationList[ii] + "Rank").html(teamData.rank);
+		// Swap the stats for the Alliance name if we're in Champs or in Michigan Champs
+		if (inChamps() || (inMiChamps() && (localStorage.currentYear >= 2017)) || (inSubdivision() && (localStorage.currentMatch > qualsList.Schedule.length))) {
+			$('#' + stationList[ii] + 'PlayByPlayAlliance').html("");
+			$("#" + stationList[ii] + "WinLossTie").html("<p class='playByPlayChampsAlliance'>" + teamData.allianceName + "<br>" + teamData.allianceChoice + "</p>");
+			rankHighlight(stationList[ii] + "Rank", teamData.rank);
+		} else {
+			$("#" + stationList[ii] + "WinLossTie").html("<table class='wltTable'><tr><td id='" + stationList[ii] + "PlayByPlayRank' class='wltCol'>Rank " + teamData.rank + "<br>AV RP " + teamData.sortOrder1 + "</td><td class='wltCol'>Qual Avg<br>" + teamData.qualAverage + "</td><td class='wltCol'>W-L-T<br>" + teamData.wins + "-" + teamData.losses + "-" + teamData.ties + "</td></tr><tr><td colspan='3'>Team high score: " + highScores['"' + currentMatchData.teams[ii].teamNumber + '.score"'] + "<br>in " + highScores['"' + currentMatchData.teams[ii].teamNumber + '.description"'] + "</td></tr></table>");
+			rankHighlight(stationList[ii] + "PlayByPlayRank", teamData.rank);
+			rankHighlight(stationList[ii] + "Rank", teamData.rank);
+		}
 
 
-        if (teamData.nameShortLocal === "") {
-            $('#' + stationList[ii] + 'PlaybyPlayTeamName').html(teamData.nameShort);
-        } else {
-            $('#' + stationList[ii] + 'PlaybyPlayTeamName').html(teamData.nameShortLocal);
-        }
-        if (teamData.robotNameLocal === "") {
-            $('#' + stationList[ii] + 'PlaybyPlayRobotName').html(teamData.robotName);
-        } else {
-            $('#' + stationList[ii] + 'PlaybyPlayRobotName').html(teamData.robotNameLocal);
-        }
-        if (teamData.cityStateLocal === "") {
-            $("#" + stationList[ii] + "PlayByPlayCity").html(teamData.cityState);
-        } else {
-            $("#" + stationList[ii] + "PlayByPlayCity").html(teamData.cityStateLocal);
-        }
-        if (teamData.organizationLocal === "") {
-            $("#" + stationList[ii] + "PlayByPlayOrganization").html(teamData.organization);
-        } else {
-            $("#" + stationList[ii] + "PlayByPlayOrganization").html(teamData.organizationLocal);
-        }
-        if (teamData.teamMottoLocal === "") {
-            $("#" + stationList[ii] + "PlayByPlayMotto").html("");
-        } else {
-            $("#" + stationList[ii] + "PlayByPlayMotto").html('Motto: "' + teamData.teamMottoLocal + '"');
-        }
-        if (teamData.teamNotesLocal === "") {
-            $("#" + stationList[ii] + "Notes").html("");
-            $("#" + stationList[ii] + "PlaybyPlayNotes").html("");
-        } else {
-            $("#" + stationList[ii] + "Notes").html('Notes: "' + teamData.teamNotesLocal + '"');
-            $("#" + stationList[ii] + "PlaybyPlayNotes").html('Notes: "' + teamData.teamNotesLocal + '"');
-        }
+		if (teamData.nameShortLocal === "") {
+			$('#' + stationList[ii] + 'PlaybyPlayTeamName').html(teamData.nameShort);
+		} else {
+			$('#' + stationList[ii] + 'PlaybyPlayTeamName').html(teamData.nameShortLocal);
+		}
+		if (teamData.robotNameLocal === "") {
+			$('#' + stationList[ii] + 'PlaybyPlayRobotName').html(teamData.robotName);
+		} else {
+			$('#' + stationList[ii] + 'PlaybyPlayRobotName').html(teamData.robotNameLocal);
+		}
+		if (teamData.cityStateLocal === "") {
+			$("#" + stationList[ii] + "PlayByPlayCity").html(teamData.cityState);
+		} else {
+			$("#" + stationList[ii] + "PlayByPlayCity").html(teamData.cityStateLocal);
+		}
+		if (teamData.organizationLocal === "") {
+			$("#" + stationList[ii] + "PlayByPlayOrganization").html(teamData.organization);
+		} else {
+			$("#" + stationList[ii] + "PlayByPlayOrganization").html(teamData.organizationLocal);
+		}
+		if (teamData.teamMottoLocal === "") {
+			$("#" + stationList[ii] + "PlayByPlayMotto").html("");
+		} else {
+			$("#" + stationList[ii] + "PlayByPlayMotto").html('Motto: "' + teamData.teamMottoLocal + '"');
+		}
+		if (teamData.teamNotesLocal === "") {
+			$("#" + stationList[ii] + "Notes").html("");
+			$("#" + stationList[ii] + "PlaybyPlayNotes").html("");
+		} else {
+			$("#" + stationList[ii] + "Notes").html('Notes: "' + teamData.teamNotesLocal + '"');
+			$("#" + stationList[ii] + "PlaybyPlayNotes").html('Notes: "' + teamData.teamNotesLocal + '"');
+		}
 
-    }
-    displayAwards();
+	}
+	displayAwards();
 }
 
 function replaceTeam(station, originalTeam) {
-    "use strict";
-    var replacementTeam = originalTeam;
-    var message = "You are about to replace Alliance team <b>" + originalTeam + "</b> for another team.<br>";
-    message += "This is a one-time replacement, since the substitution will be recorded at FIRST when the match ends and the score is committed.";
-    message += '<div id = "substituteTeamInput" class="form-group"><label for="substituteTeamUpdate">Substitute Team Entry</label><input type="text" class="form-control" id="substituteTeamUpdate" placeholder="Enter a Team Number"></div>';
-    BootstrapDialog.show({
-        type: 'type-success',
-        title: '<b>Alliance Team ' + originalTeam + ' Substitution</b>',
-        message: message,
-        buttons: [{
-            label: 'Make it so!',
-            icon: 'glyphicon glyphicon-tower',
-            hotkey: 13, // Enter.
-            cssClass: "btn btn-success",
-            action: function (dialogRef) {
-                dialogRef.close();
-                if ($("#substituteTeamUpdate").val()) {
-                    replacementTeam = $("#substituteTeamUpdate").val();
-                    if (allianceListUnsorted.indexOf(parseInt(replacementTeam)) >= 0) {
-                        replacementAlliance[station] = replacementTeam;
-                    } else {
-                        BootstrapDialog.show({
-                            type: 'type-warning',
-                            title: '<b>Alliance Team ' + originalTeam + ' Substitution</b>',
-                            message: "<b>" + replacementTeam + "<b> not found in the event.",
-                            buttons: [{
-                                label: 'Rats!',
-                                icon: 'glyphicon glyphicon-tower',
-                                hotkey: 13, // Enter.
-                                cssClass: "btn btn-warning",
-                                action: function (dialogRef) {
-                                    dialogRef.close();
-                                }
-                            }]
-                        });
-                    }
+	"use strict";
+	var replacementTeam = originalTeam;
+	var message = "You are about to replace Alliance team <b>" + originalTeam + "</b> for another team.<br>";
+	message += "This is a one-time replacement, since the substitution will be recorded at FIRST when the match ends and the score is committed.";
+	message += '<div id = "substituteTeamInput" class="form-group"><label for="substituteTeamUpdate">Substitute Team Entry</label><input type="text" class="form-control" id="substituteTeamUpdate" placeholder="Enter a Team Number"></div>';
+	BootstrapDialog.show({
+		type: 'type-success',
+		title: '<b>Alliance Team ' + originalTeam + ' Substitution</b>',
+		message: message,
+		buttons: [{
+			label: 'Make it so!',
+			icon: 'glyphicon glyphicon-tower',
+			hotkey: 13, // Enter.
+			cssClass: "btn btn-success",
+			action: function (dialogRef) {
+				dialogRef.close();
+				if ($("#substituteTeamUpdate").val()) {
+					replacementTeam = $("#substituteTeamUpdate").val();
+					if (allianceListUnsorted.indexOf(parseInt(replacementTeam)) >= 0) {
+						replacementAlliance[station] = replacementTeam;
+					} else {
+						BootstrapDialog.show({
+							type: 'type-warning',
+							title: '<b>Alliance Team ' + originalTeam + ' Substitution</b>',
+							message: "<b>" + replacementTeam + "<b> not found in the event.",
+							buttons: [{
+								label: 'Rats!',
+								icon: 'glyphicon glyphicon-tower',
+								hotkey: 13, // Enter.
+								cssClass: "btn btn-warning",
+								action: function (dialogRef) {
+									dialogRef.close();
+								}
+							}]
+						});
+					}
 
-                }
-                announceDisplay();
-            }
-        }]
-    });
+				}
+				announceDisplay();
+			}
+		}]
+	});
 }
 
 function getTeamRanks() {
-    "use strict";
-    $("#rankUpdateContainer").html("Loading ranking data...");
-    $('#ranksProgressBar').show();
-    $('#teamRanksPicker').addClass('alert-danger');
-    var team = {};
-    var req = new XMLHttpRequest();
-    req.open('GET', apiURL + localStorage.currentYear + '/Rankings/' + localStorage.currentEvent);
-    req.addEventListener('load', function () {
-        var data = JSON.parse(req.responseText);
-        if (data.Rankings.length === 0) {
-            $("#rankingDisplay").html('<b>No Rankings available.</b>');
-            $("#allianceSelectionPlaceholder").show();
-            $("#allianceSelectionTable").hide();
-            allianceListUnsorted = [];
-            var teamList = JSON.parse(localStorage.teamList);
-            for (var j = 0; j < teamList.length; j++) {
-                allianceListUnsorted[j] = teamList[j].teamNumber;
-                team = JSON.parse(localStorage['teamData' + teamList[j].teamNumber]);
+	"use strict";
+	$("#rankUpdateContainer").html("Loading ranking data...");
+	$('#ranksProgressBar').show();
+	$('#teamRanksPicker').addClass('alert-danger');
+	var team = {};
+	var req = new XMLHttpRequest();
+	req.open('GET', apiURL + localStorage.currentYear + '/Rankings/' + localStorage.currentEvent);
+	req.addEventListener('load', function () {
+		var data = JSON.parse(req.responseText);
+		if (data.Rankings.length === 0) {
+			$("#rankingDisplay").html('<b>No Rankings available.</b>');
+			$("#allianceSelectionPlaceholder").show();
+			$("#allianceSelectionTable").hide();
+			allianceListUnsorted = [];
+			var teamList = JSON.parse(localStorage.teamList);
+			for (var j = 0; j < teamList.length; j++) {
+				allianceListUnsorted[j] = teamList[j].teamNumber;
+				team = JSON.parse(localStorage['teamData' + teamList[j].teamNumber]);
 
-                team.rank = "";
-                team.sortOrder1 = "";
-                team.sortOrder2 = "";
-                team.sortOrder3 = "";
-                team.sortOrder4 = "";
-                team.sortOrder5 = "";
-                team.sortOrder6 = "";
-                team.wins = "";
-                team.losses = "";
-                team.ties = "";
-                team.qualAverage = "";
-                team.dq = "";
-                team.matchesPlayed = "";
-                $("#teamTableRank" + teamList[j].teamNumber).html("");
-                $("#teamTableRank" + teamList[j].teamNumber).attr("class", teamTableRankHighlight(100));
-                localStorage['teamData' + teamList[j].teamNumber] = JSON.stringify(team);
-            }
-        } else {
-            haveRanks = true;
-            localStorage.Rankings = JSON.stringify(data.Rankings);
-            if (localStorage.currentMatch > JSON.parse(localStorage.qualsList).Schedule.length) {
-                $("#rankingDisplay").html("<b>Qual Seed<b>");
-            } else {
-                $("#rankingDisplay").html('<b>Ranking</b>');
-            }
-            $('#ranksContainer').html('<p class = "eventName">' + localStorage.eventName + ' (<b><span id="rankstablelastupdated"></span></b>)</p><p>This table lists the teams in rank order for this competition. This table updates during the competition, and freezes once Playoff Matches begin. </p><table id="ranksTable" class="table table-condensed table-responsive table-bordered table-striped"></table>');
-            var ranksList = '<thead  id="ranksTableHead" class="thead-default"><tr><td class="col1"><b>Team #</b></td><td class="col1"><b>Rank</b></td><td class="col2"><b>Team Name</b></td><td class = "col1"><b>RP Avg.</b></td><td class="col1"><b>Wins</b></td><td  class="col1"><b>Losses</b></td><td class="col1"><b>Ties</b></td><td class="col1"><b>Qual Avg</b></td><td class="col1"><b>DQ</b></td><td class="col1"><b>Matches Played</b></td></tr></thead><tbody>';
+				team.rank = "";
+				team.sortOrder1 = "";
+				team.sortOrder2 = "";
+				team.sortOrder3 = "";
+				team.sortOrder4 = "";
+				team.sortOrder5 = "";
+				team.sortOrder6 = "";
+				team.wins = "";
+				team.losses = "";
+				team.ties = "";
+				team.qualAverage = "";
+				team.dq = "";
+				team.matchesPlayed = "";
+				$("#teamTableRank" + teamList[j].teamNumber).html("");
+				$("#teamTableRank" + teamList[j].teamNumber).attr("class", teamTableRankHighlight(100));
+				localStorage['teamData' + teamList[j].teamNumber] = JSON.stringify(team);
+			}
+		} else {
+			haveRanks = true;
+			localStorage.Rankings = JSON.stringify(data.Rankings);
+			if (localStorage.currentMatch > JSON.parse(localStorage.qualsList).Schedule.length) {
+				$("#rankingDisplay").html("<b>Qual Seed<b>");
+			} else {
+				$("#rankingDisplay").html('<b>Ranking</b>');
+			}
+			$('#ranksContainer').html('<p class = "eventName">' + localStorage.eventName + ' (<b><span id="rankstablelastupdated"></span></b>)</p><p>This table lists the teams in rank order for this competition. This table updates during the competition, and freezes once Playoff Matches begin. </p><table id="ranksTable" class="table table-condensed table-responsive table-bordered table-striped"></table>');
+			var ranksList = '<thead  id="ranksTableHead" class="thead-default"><tr><td class="col1"><b>Team #</b></td><td class="col1"><b>Rank</b></td><td class="col2"><b>Team Name</b></td><td class = "col1"><b>RP Avg.</b></td><td class="col1"><b>Wins</b></td><td  class="col1"><b>Losses</b></td><td class="col1"><b>Ties</b></td><td class="col1"><b>Qual Avg</b></td><td class="col1"><b>DQ</b></td><td class="col1"><b>Matches Played</b></td></tr></thead><tbody>';
 
-            for (var i = 0; i < data.Rankings.length; i++) {
+			for (var i = 0; i < data.Rankings.length; i++) {
 
-                team = JSON.parse(localStorage['teamData' + data.Rankings[i].teamNumber]);
+				team = JSON.parse(localStorage['teamData' + data.Rankings[i].teamNumber]);
 
-                team.rank = data.Rankings[i].rank;
-                allianceTeamList[i] = data.Rankings[i].teamNumber;
-                allianceListUnsorted[i] = data.Rankings[i].teamNumber;
-                rankingsList = data.Rankings[i].teamNumber;
-                team.sortOrder1 = data.Rankings[i].sortOrder1;
-                team.sortOrder2 = data.Rankings[i].sortOrder2;
-                team.sortOrder3 = data.Rankings[i].sortOrder3;
-                team.sortOrder4 = data.Rankings[i].sortOrder4;
-                team.sortOrder5 = data.Rankings[i].sortOrder5;
-                team.sortOrder6 = data.Rankings[i].sortOrder6;
-                team.wins = data.Rankings[i].wins;
-                team.losses = data.Rankings[i].losses;
-                team.ties = data.Rankings[i].ties;
-                team.qualAverage = data.Rankings[i].qualAverage;
-                team.dq = data.Rankings[i].dq;
-                team.matchesPlayed = data.Rankings[i].matchesPlayed;
-                $("#teamTableRank" + data.Rankings[i].teamNumber).html(data.Rankings[i].rank);
-                $("#teamTableRank" + data.Rankings[i].teamNumber).attr("class", teamTableRankHighlight(data.Rankings[i].rank));
-                ranksList += updateRanksTableRow(team, data.Rankings[i].teamNumber);
-                localStorage['teamData' + data.Rankings[i].teamNumber] = JSON.stringify(team);
+				team.rank = data.Rankings[i].rank;
+				allianceTeamList[i] = data.Rankings[i].teamNumber;
+				allianceListUnsorted[i] = data.Rankings[i].teamNumber;
+				rankingsList = data.Rankings[i].teamNumber;
+				team.sortOrder1 = data.Rankings[i].sortOrder1;
+				team.sortOrder2 = data.Rankings[i].sortOrder2;
+				team.sortOrder3 = data.Rankings[i].sortOrder3;
+				team.sortOrder4 = data.Rankings[i].sortOrder4;
+				team.sortOrder5 = data.Rankings[i].sortOrder5;
+				team.sortOrder6 = data.Rankings[i].sortOrder6;
+				team.wins = data.Rankings[i].wins;
+				team.losses = data.Rankings[i].losses;
+				team.ties = data.Rankings[i].ties;
+				team.qualAverage = data.Rankings[i].qualAverage;
+				team.dq = data.Rankings[i].dq;
+				team.matchesPlayed = data.Rankings[i].matchesPlayed;
+				$("#teamTableRank" + data.Rankings[i].teamNumber).html(data.Rankings[i].rank);
+				$("#teamTableRank" + data.Rankings[i].teamNumber).attr("class", teamTableRankHighlight(data.Rankings[i].rank));
+				ranksList += updateRanksTableRow(team, data.Rankings[i].teamNumber);
+				localStorage['teamData' + data.Rankings[i].teamNumber] = JSON.stringify(team);
 
-            }
-            $("#ranksProgressBar").hide();
-            $('#ranksTable').html(ranksList + "</tbody>");
-            $('#teamRanksPicker').removeClass('alert-danger');
-            $('#teamRanksPicker').addClass('alert-success');
-            lastRanksUpdate = req.getResponseHeader("Last-Modified");
+			}
+			$("#ranksProgressBar").hide();
+			$('#ranksTable').html(ranksList + "</tbody>");
+			$('#teamRanksPicker').removeClass('alert-danger');
+			$('#teamRanksPicker').addClass('alert-success');
+			lastRanksUpdate = req.getResponseHeader("Last-Modified");
 
-            $("#allianceUndoButton").hide();
-            allianceChoices.Alliance1Captain = allianceTeamList[0];
-            $("#Alliance1Captain").html("Alliance 1 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance1Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='chosenAllianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
-            allianceChoices.Alliance2Captain = allianceTeamList[0];
-            $("#Alliance2Captain").html("Alliance 2 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance2Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='allianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
-            allianceChoices.Alliance3Captain = allianceTeamList[0];
-            $("#Alliance3Captain").html("Alliance 3 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance3Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='allianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
-            allianceChoices.Alliance4Captain = allianceTeamList[0];
-            $("#Alliance4Captain").html("Alliance 4 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance4Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='allianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
-            allianceChoices.Alliance5Captain = allianceTeamList[0];
-            $("#Alliance5Captain").html("Alliance 5 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance5Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='allianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
-            allianceChoices.Alliance6Captain = allianceTeamList[0];
-            $("#Alliance6Captain").html("Alliance 6 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance6Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='allianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
-            allianceChoices.Alliance7Captain = allianceTeamList[0];
-            $("#Alliance7Captain").html("Alliance 7 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance7Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='allianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
-            allianceChoices.Alliance8Captain = allianceTeamList[0];
-            $("#Alliance8Captain").html("Alliance 8 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance8Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='allianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
+			$("#allianceUndoButton").hide();
+			allianceChoices.Alliance1Captain = allianceTeamList[0];
+			$("#Alliance1Captain").html("Alliance 1 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance1Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='chosenAllianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
+			allianceChoices.Alliance2Captain = allianceTeamList[0];
+			$("#Alliance2Captain").html("Alliance 2 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance2Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='allianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
+			allianceChoices.Alliance3Captain = allianceTeamList[0];
+			$("#Alliance3Captain").html("Alliance 3 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance3Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='allianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
+			allianceChoices.Alliance4Captain = allianceTeamList[0];
+			$("#Alliance4Captain").html("Alliance 4 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance4Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='allianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
+			allianceChoices.Alliance5Captain = allianceTeamList[0];
+			$("#Alliance5Captain").html("Alliance 5 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance5Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='allianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
+			allianceChoices.Alliance6Captain = allianceTeamList[0];
+			$("#Alliance6Captain").html("Alliance 6 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance6Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='allianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
+			allianceChoices.Alliance7Captain = allianceTeamList[0];
+			$("#Alliance7Captain").html("Alliance 7 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance7Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='allianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
+			allianceChoices.Alliance8Captain = allianceTeamList[0];
+			$("#Alliance8Captain").html("Alliance 8 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance8Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='allianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
 
-            $("#backupAllianceTeam1").html("<div id='backupAllianceTeamContainer1' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[0] + " onclick='allianceAlert(this)'>" + allianceTeamList[0] + "</div>");
-            $("#backupAllianceTeam2").html("<div id='backupAllianceTeamContainer2' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[1] + " onclick='allianceAlert(this)'>" + allianceTeamList[1] + "</div>");
-            $("#backupAllianceTeam3").html("<div id='backupAllianceTeamContainer3' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[2] + " onclick='allianceAlert(this)'>" + allianceTeamList[2] + "</div>");
-            $("#backupAllianceTeam4").html("<div id='backupAllianceTeamContainer4' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[3] + " onclick='allianceAlert(this)'>" + allianceTeamList[3] + "</div>");
-            $("#backupAllianceTeam5").html("<div id='backupAllianceTeamContainer5' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[4] + " onclick='allianceAlert(this)'>" + allianceTeamList[4] + "</div>");
-            $("#backupAllianceTeam6").html("<div id='backupAllianceTeamContainer6' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[5] + " onclick='allianceAlert(this)'>" + allianceTeamList[5] + "</div>");
-            $("#backupAllianceTeam7").html("<div id='backupAllianceTeamContainer7' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[6] + " onclick='allianceAlert(this)'>" + allianceTeamList[6] + "</div>");
-            $("#backupAllianceTeam8").html("<div id='backupAllianceTeamContainer8' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[7] + " onclick='allianceAlert(this)'>" + allianceTeamList[7] + "</div>");
+			$("#backupAllianceTeam1").html("<div id='backupAllianceTeamContainer1' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[0] + " onclick='allianceAlert(this)'>" + allianceTeamList[0] + "</div>");
+			$("#backupAllianceTeam2").html("<div id='backupAllianceTeamContainer2' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[1] + " onclick='allianceAlert(this)'>" + allianceTeamList[1] + "</div>");
+			$("#backupAllianceTeam3").html("<div id='backupAllianceTeamContainer3' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[2] + " onclick='allianceAlert(this)'>" + allianceTeamList[2] + "</div>");
+			$("#backupAllianceTeam4").html("<div id='backupAllianceTeamContainer4' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[3] + " onclick='allianceAlert(this)'>" + allianceTeamList[3] + "</div>");
+			$("#backupAllianceTeam5").html("<div id='backupAllianceTeamContainer5' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[4] + " onclick='allianceAlert(this)'>" + allianceTeamList[4] + "</div>");
+			$("#backupAllianceTeam6").html("<div id='backupAllianceTeamContainer6' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[5] + " onclick='allianceAlert(this)'>" + allianceTeamList[5] + "</div>");
+			$("#backupAllianceTeam7").html("<div id='backupAllianceTeamContainer7' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[6] + " onclick='allianceAlert(this)'>" + allianceTeamList[6] + "</div>");
+			$("#backupAllianceTeam8").html("<div id='backupAllianceTeamContainer8' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[7] + " onclick='allianceAlert(this)'>" + allianceTeamList[7] + "</div>");
 
-            allianceTeamList = sortAllianceTeams(allianceTeamList);
-            displayAwardsTeams(allianceListUnsorted.slice(0));
+			allianceTeamList = sortAllianceTeams(allianceTeamList);
+			displayAwardsTeams(allianceListUnsorted.slice(0));
 
-            $("#rankUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
-        }
-    });
-    if (localStorage.offseason !== "true") {
-        req.send();
-    }
+			$("#rankUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+		}
+	});
+	if (localStorage.offseason !== "true") {
+		req.send();
+	}
 }
 
 function displayAwardsTeams(teamList) {
-    "use strict";
-    var column = 1;
-    //var sortedTeams = teamList;
-    var sortedTeams = [];
-    teamList = JSON.parse(localStorage.teamList);
-    for (var j = 0; j < teamList.length; j++) {
-        sortedTeams[j] = teamList[j].teamNumber;
-    }
-    $("#awardsTeamList1").html("");
-    $("#awardsTeamList2").html("");
-    $("#awardsTeamList3").html("");
-    $("#awardsTeamList4").html("");
-    $("#awardsTeamList5").html("");
-    $("#awardsTeamList6").html("");
+	"use strict";
+	var column = 1;
+	//var sortedTeams = teamList;
+	var sortedTeams = [];
+	teamList = JSON.parse(localStorage.teamList);
+	for (var j = 0; j < teamList.length; j++) {
+		sortedTeams[j] = teamList[j].teamNumber;
+	}
+	$("#awardsTeamList1").html("");
+	$("#awardsTeamList2").html("");
+	$("#awardsTeamList3").html("");
+	$("#awardsTeamList4").html("");
+	$("#awardsTeamList5").html("");
+	$("#awardsTeamList6").html("");
 
-    sortedTeams.sort(function (a, b) {
-        return a - b;
-    });
+	sortedTeams.sort(function (a, b) {
+		return a - b;
+	});
 
-    for (var i = 0; i < sortedTeams.length; i++) {
-        if (i < sortedTeams.length / 6) {
-            column = "1";
-        } else if (i > sortedTeams.length / 6 && i <= sortedTeams.length * 2 / 6) {
-            column = "2";
-        } else if (i > sortedTeams.length * 2 / 6 && i <= sortedTeams.length * 3 / 6) {
-            column = "3";
-        } else if (i > sortedTeams.length * 3 / 6 && i <= sortedTeams.length * 4 / 6) {
-            column = "4";
-        } else if (i > sortedTeams.length * 4 / 6 && i <= sortedTeams.length * 5 / 6) {
-            column = "5";
-        } else {
-            column = "6";
-        }
-        $("#awardsTeamList" + column).append("<div class ='awardAllianceTeam' onclick='awardsAlert(this)' teamnumber='" + sortedTeams[i] + "' id='awardsAllianceTeam" + sortedTeams[i] + "'>" + sortedTeams[i] + "</div></br>");
-    }
+	for (var i = 0; i < sortedTeams.length; i++) {
+		if (i < sortedTeams.length / 6) {
+			column = "1";
+		} else if (i > sortedTeams.length / 6 && i <= sortedTeams.length * 2 / 6) {
+			column = "2";
+		} else if (i > sortedTeams.length * 2 / 6 && i <= sortedTeams.length * 3 / 6) {
+			column = "3";
+		} else if (i > sortedTeams.length * 3 / 6 && i <= sortedTeams.length * 4 / 6) {
+			column = "4";
+		} else if (i > sortedTeams.length * 4 / 6 && i <= sortedTeams.length * 5 / 6) {
+			column = "5";
+		} else {
+			column = "6";
+		}
+		$("#awardsTeamList" + column).append("<div class ='awardAllianceTeam' onclick='awardsAlert(this)' teamnumber='" + sortedTeams[i] + "' id='awardsAllianceTeam" + sortedTeams[i] + "'>" + sortedTeams[i] + "</div></br>");
+	}
 }
 
 
 function displayAllianceCaptains(startingPosition) {
-    "use strict";
-    for (var i = 1; i <= 8; i++) {
-        if (i <= startingPosition + 1) {
-            $("#Alliance" + i + "Captain").html("Alliance " + i + " Captain<div class ='allianceTeam allianceCaptain' captain='Alliance" + i + "Captain' teamnumber='" + allianceChoices["Alliance" + i + "Captain"] + "' id='allianceTeam" + allianceChoices["Alliance" + i + "Captain"] + "' onclick='chosenAllianceAlert(this)'>" + allianceChoices["Alliance" + i + "Captain"] + "</div>");
-        } else {
-            $("#Alliance" + i + "Captain").html("Alliance " + i + " Captain<div class ='allianceTeam allianceCaptain' captain='Alliance" + i + "Captain' teamnumber='" + allianceChoices["Alliance" + i + "Captain"] + "' id='allianceTeam" + allianceChoices["Alliance" + i + "Captain"] + "' onclick='allianceAlert(this)'>" + allianceChoices["Alliance" + i + "Captain"] + "</div>");
-        }
-    }
-    $("#backupAllianceTeam1").html("<div id='backupAllianceTeamContainer1' class ='allianceTeam' captain='alliance' teamnumber=" + allianceListUnsorted[8] + " onclick='allianceAlert(this)'>" + allianceListUnsorted[8] + "</div>");
-    $("#backupAllianceTeam2").html("<div id='backupAllianceTeamContainer2' class ='allianceTeam' captain='alliance' teamnumber=" + allianceListUnsorted[9] + " onclick='allianceAlert(this)'>" + allianceListUnsorted[9] + "</div>");
-    $("#backupAllianceTeam3").html("<div id='backupAllianceTeamContainer3' class ='allianceTeam' captain='alliance' teamnumber=" + allianceListUnsorted[10] + " onclick='allianceAlert(this)'>" + allianceListUnsorted[10] + "</div>");
-    $("#backupAllianceTeam4").html("<div id='backupAllianceTeamContainer4' class ='allianceTeam' captain='alliance' teamnumber=" + allianceListUnsorted[11] + " onclick='allianceAlert(this)'>" + allianceListUnsorted[11] + "</div>");
-    $("#backupAllianceTeam5").html("<div id='backupAllianceTeamContainer5' class ='allianceTeam' captain='alliance' teamnumber=" + allianceListUnsorted[12] + " onclick='allianceAlert(this)'>" + allianceListUnsorted[12] + "</div>");
-    $("#backupAllianceTeam6").html("<div id='backupAllianceTeamContainer6' class ='allianceTeam' captain='alliance' teamnumber=" + allianceListUnsorted[13] + " onclick='allianceAlert(this)'>" + allianceListUnsorted[13] + "</div>");
-    $("#backupAllianceTeam7").html("<div id='backupAllianceTeamContainer7' class ='allianceTeam' captain='alliance' teamnumber=" + allianceListUnsorted[14] + " onclick='allianceAlert(this)'>" + allianceListUnsorted[14] + "</div>");
-    $("#backupAllianceTeam8").html("<div id='backupAllianceTeamContainer8' class ='allianceTeam' captain='alliance' teamnumber=" + allianceListUnsorted[15] + " onclick='allianceAlert(this)'>" + allianceListUnsorted[15] + "</div>");
+	"use strict";
+	for (var i = 1; i <= 8; i++) {
+		if (i <= startingPosition + 1) {
+			$("#Alliance" + i + "Captain").html("Alliance " + i + " Captain<div class ='allianceTeam allianceCaptain' captain='Alliance" + i + "Captain' teamnumber='" + allianceChoices["Alliance" + i + "Captain"] + "' id='allianceTeam" + allianceChoices["Alliance" + i + "Captain"] + "' onclick='chosenAllianceAlert(this)'>" + allianceChoices["Alliance" + i + "Captain"] + "</div>");
+		} else {
+			$("#Alliance" + i + "Captain").html("Alliance " + i + " Captain<div class ='allianceTeam allianceCaptain' captain='Alliance" + i + "Captain' teamnumber='" + allianceChoices["Alliance" + i + "Captain"] + "' id='allianceTeam" + allianceChoices["Alliance" + i + "Captain"] + "' onclick='allianceAlert(this)'>" + allianceChoices["Alliance" + i + "Captain"] + "</div>");
+		}
+	}
+	$("#backupAllianceTeam1").html("<div id='backupAllianceTeamContainer1' class ='allianceTeam' captain='alliance' teamnumber=" + allianceListUnsorted[8] + " onclick='allianceAlert(this)'>" + allianceListUnsorted[8] + "</div>");
+	$("#backupAllianceTeam2").html("<div id='backupAllianceTeamContainer2' class ='allianceTeam' captain='alliance' teamnumber=" + allianceListUnsorted[9] + " onclick='allianceAlert(this)'>" + allianceListUnsorted[9] + "</div>");
+	$("#backupAllianceTeam3").html("<div id='backupAllianceTeamContainer3' class ='allianceTeam' captain='alliance' teamnumber=" + allianceListUnsorted[10] + " onclick='allianceAlert(this)'>" + allianceListUnsorted[10] + "</div>");
+	$("#backupAllianceTeam4").html("<div id='backupAllianceTeamContainer4' class ='allianceTeam' captain='alliance' teamnumber=" + allianceListUnsorted[11] + " onclick='allianceAlert(this)'>" + allianceListUnsorted[11] + "</div>");
+	$("#backupAllianceTeam5").html("<div id='backupAllianceTeamContainer5' class ='allianceTeam' captain='alliance' teamnumber=" + allianceListUnsorted[12] + " onclick='allianceAlert(this)'>" + allianceListUnsorted[12] + "</div>");
+	$("#backupAllianceTeam6").html("<div id='backupAllianceTeamContainer6' class ='allianceTeam' captain='alliance' teamnumber=" + allianceListUnsorted[13] + " onclick='allianceAlert(this)'>" + allianceListUnsorted[13] + "</div>");
+	$("#backupAllianceTeam7").html("<div id='backupAllianceTeamContainer7' class ='allianceTeam' captain='alliance' teamnumber=" + allianceListUnsorted[14] + " onclick='allianceAlert(this)'>" + allianceListUnsorted[14] + "</div>");
+	$("#backupAllianceTeam8").html("<div id='backupAllianceTeamContainer8' class ='allianceTeam' captain='alliance' teamnumber=" + allianceListUnsorted[15] + " onclick='allianceAlert(this)'>" + allianceListUnsorted[15] + "</div>");
 }
 
 function sortAllianceTeams(teamList) {
-    "use strict";
-    var column = 1;
-    $("#allianceTeamList1").html("");
-    $("#allianceTeamList2").html("");
-    $("#allianceTeamList3").html("");
-    $("#allianceTeamList4").html("");
-    $("#allianceTeamList5").html("");
+	"use strict";
+	var column = 1;
+	$("#allianceTeamList1").html("");
+	$("#allianceTeamList2").html("");
+	$("#allianceTeamList3").html("");
+	$("#allianceTeamList4").html("");
+	$("#allianceTeamList5").html("");
 
-    teamList.sort(function (a, b) {
-        return a - b;
-    });
+	teamList.sort(function (a, b) {
+		return a - b;
+	});
 
-    for (var i = 0; i < teamList.length; i++) {
-        if (i < teamList.length / 5) {
-            column = "1";
-        } else if (i > teamList.length / 5 && i <= teamList.length * 2 / 5) {
-            column = "2";
-        } else if (i > teamList.length * 2 / 5 && i <= teamList.length * 3 / 5) {
-            column = "3";
-        } else if (i > teamList.length * 3 / 5 && i <= teamList.length * 4 / 5) {
-            column = "4";
-        } else {
-            column = "5";
-        }
-        $("#allianceTeamList" + column).append("<div class ='allianceTeam' onclick='allianceAlert(this)' captain='alliance' teamnumber='" + teamList[i] + "' id='allianceTeam" + teamList[i] + "'>" + teamList[i] + "</div></br>");
-    }
-    return teamList;
+	for (var i = 0; i < teamList.length; i++) {
+		if (i < teamList.length / 5) {
+			column = "1";
+		} else if (i > teamList.length / 5 && i <= teamList.length * 2 / 5) {
+			column = "2";
+		} else if (i > teamList.length * 2 / 5 && i <= teamList.length * 3 / 5) {
+			column = "3";
+		} else if (i > teamList.length * 3 / 5 && i <= teamList.length * 4 / 5) {
+			column = "4";
+		} else {
+			column = "5";
+		}
+		$("#allianceTeamList" + column).append("<div class ='allianceTeam' onclick='allianceAlert(this)' captain='alliance' teamnumber='" + teamList[i] + "' id='allianceTeam" + teamList[i] + "'>" + teamList[i] + "</div></br>");
+	}
+	return teamList;
 }
 
 function allianceAlert(teamContainer) {
-    "use strict";
-    var teamNumber = teamContainer.getAttribute("teamnumber");
-    var currentTeamInfo = JSON.parse(localStorage["teamData" + teamNumber]);
-    var selectedTeamInfo = "<span class = 'allianceAnnounceDialog'>Team " + teamNumber + " ";
+	"use strict";
+	var teamNumber = teamContainer.getAttribute("teamnumber");
+	var currentTeamInfo = JSON.parse(localStorage["teamData" + teamNumber]);
+	var selectedTeamInfo = "<span class = 'allianceAnnounceDialog'>Team " + teamNumber + " ";
 
-    if (currentTeamInfo.nameShortLocal === "") {
-        selectedTeamInfo += currentTeamInfo.nameShort;
-    } else {
-        selectedTeamInfo += currentTeamInfo.nameShortLocal;
-    }
-    selectedTeamInfo += "<br> is from ";
-    if (currentTeamInfo.organizationLocal === "") {
-        selectedTeamInfo += currentTeamInfo.organization;
-    } else {
-        selectedTeamInfo += currentTeamInfo.organizationLocal;
-    }
-    selectedTeamInfo += "<br>in ";
-    if (currentTeamInfo.cityStateLocal === "") {
-        selectedTeamInfo += currentTeamInfo.cityState;
-    } else {
-        selectedTeamInfo += currentTeamInfo.cityStateLocal;
-    }
-    selectedTeamInfo += "</span>";
+	if (currentTeamInfo.nameShortLocal === "") {
+		selectedTeamInfo += currentTeamInfo.nameShort;
+	} else {
+		selectedTeamInfo += currentTeamInfo.nameShortLocal;
+	}
+	selectedTeamInfo += "<br> is from ";
+	if (currentTeamInfo.organizationLocal === "") {
+		selectedTeamInfo += currentTeamInfo.organization;
+	} else {
+		selectedTeamInfo += currentTeamInfo.organizationLocal;
+	}
+	selectedTeamInfo += "<br>in ";
+	if (currentTeamInfo.cityStateLocal === "") {
+		selectedTeamInfo += currentTeamInfo.cityState;
+	} else {
+		selectedTeamInfo += currentTeamInfo.cityStateLocal;
+	}
+	selectedTeamInfo += "</span>";
 
-    BootstrapDialog.show({
-        type: 'type-success',
-        title: '<b>Alliance Choice</b>',
-        message: selectedTeamInfo,
-        buttons: [{
-            icon: 'glyphicon glyphicon-tower',
-            cssClass: "btn btn-primary",
-            label: 'Alliance Captain Announce',
-            hotkey: 65, // "A".
-            action: function (dialogRef) {
-                dialogRef.close();
-            }
-        }, {
-            icon: 'glyphicon glyphicon-thumbs-down',
-            cssClass: "btn btn-danger",
-            label: 'Respectfully Decline',
-            hotkey: 68, // "D".
-            action: function (dialogRef) {
-                dialogRef.close();
-            }
-        }, {
-            icon: 'glyphicon glyphicon-thumbs-up',
-            cssClass: "btn btn-success",
-            hotkey: 13, // Enter.
-            label: 'Gratefully Accept',
-            action: function (dialogRef) {
-                dialogRef.close();
-                BootstrapDialog.show({
-                    type: 'type-success',
-                    title: '<b>Are you sure they want to accept?</b>',
-                    message: "<span class = 'allianceAnnounceDialog'>Are you certain that Team " + teamNumber + " accepts the offer?</span>",
-                    buttons: [{
-                        icon: 'glyphicon glyphicon-thumbs-down',
-                        label: 'No, they did not accept.',
-                        hotkey: 78, // "N".
-                        cssClass: "btn btn-danger",
-                        action: function (dialogRef) {
-                            dialogRef.close();
-                        }
-                    }, {
-                        icon: 'glyphicon glyphicon-thumbs-up',
-                        cssClass: "btn btn-success",
-                        label: 'Gratefully Accept',
-                        hotkey: 13, // Enter.
-                        action: function (dialogRef) {
-                            dialogRef.close();
-                            //setup the undo
-                            allianceChoicesUndo.push(JSON.stringify(allianceChoices));
-                            allianceListUnsortedUndo.push(JSON.stringify(allianceListUnsorted));
-                            allianceTeamListUndo.push(JSON.stringify(allianceTeamList));
-                            allianceSelectionTableUndo.push($("#allianceSelectionTable").html());
-                            //teamNumberUndo.push(teamNumber);
-                            $("#allianceUndoButton").attr("onclick", "undoAllianceSelection()");
-                            $("#allianceUndoButton").show();
-                            //$("#undoAlliance").html("<b>"+teamNumber+"</b>");
-                            //execute the selection
-                            allianceChoices[allianceSelectionOrder[currentAllianceChoice]] = teamNumber;
-                            var index = allianceListUnsorted.indexOf(parseInt(teamNumber));
-                            if (index > -1) {
-                                allianceListUnsorted.splice(index, 1);
-                            }
+	BootstrapDialog.show({
+		type: 'type-success',
+		title: '<b>Alliance Choice</b>',
+		message: selectedTeamInfo,
+		buttons: [{
+			icon: 'glyphicon glyphicon-tower',
+			cssClass: "btn btn-primary",
+			label: 'Alliance Captain Announce',
+			hotkey: 65, // "A".
+			action: function (dialogRef) {
+				dialogRef.close();
+			}
+		}, {
+			icon: 'glyphicon glyphicon-thumbs-down',
+			cssClass: "btn btn-danger",
+			label: 'Respectfully Decline',
+			hotkey: 68, // "D".
+			action: function (dialogRef) {
+				dialogRef.close();
+			}
+		}, {
+			icon: 'glyphicon glyphicon-thumbs-up',
+			cssClass: "btn btn-success",
+			hotkey: 13, // Enter.
+			label: 'Gratefully Accept',
+			action: function (dialogRef) {
+				dialogRef.close();
+				BootstrapDialog.show({
+					type: 'type-success',
+					title: '<b>Are you sure they want to accept?</b>',
+					message: "<span class = 'allianceAnnounceDialog'>Are you certain that Team " + teamNumber + " accepts the offer?</span>",
+					buttons: [{
+						icon: 'glyphicon glyphicon-thumbs-down',
+						label: 'No, they did not accept.',
+						hotkey: 78, // "N".
+						cssClass: "btn btn-danger",
+						action: function (dialogRef) {
+							dialogRef.close();
+						}
+					}, {
+						icon: 'glyphicon glyphicon-thumbs-up',
+						cssClass: "btn btn-success",
+						label: 'Gratefully Accept',
+						hotkey: 13, // Enter.
+						action: function (dialogRef) {
+							dialogRef.close();
+							//setup the undo
+							allianceChoicesUndo.push(JSON.stringify(allianceChoices));
+							allianceListUnsortedUndo.push(JSON.stringify(allianceListUnsorted));
+							allianceTeamListUndo.push(JSON.stringify(allianceTeamList));
+							allianceSelectionTableUndo.push($("#allianceSelectionTable").html());
+							//teamNumberUndo.push(teamNumber);
+							$("#allianceUndoButton").attr("onclick", "undoAllianceSelection()");
+							$("#allianceUndoButton").show();
+							//$("#undoAlliance").html("<b>"+teamNumber+"</b>");
+							//execute the selection
+							allianceChoices[allianceSelectionOrder[currentAllianceChoice]] = teamNumber;
+							var index = allianceListUnsorted.indexOf(parseInt(teamNumber));
+							if (index > -1) {
+								allianceListUnsorted.splice(index, 1);
+							}
 
-                            index = allianceTeamList.indexOf(parseInt(teamNumber));
-                            if (index > -1) {
-                                allianceTeamList.splice(index, 1);
-                            }
+							index = allianceTeamList.indexOf(parseInt(teamNumber));
+							if (index > -1) {
+								allianceTeamList.splice(index, 1);
+							}
 
-                            if (teamContainer.getAttribute("captain") !== "alliance") {
+							if (teamContainer.getAttribute("captain") !== "alliance") {
 
-                                var allianceBackfill = teamContainer.getAttribute("captain");
-                                teamContainer.setAttribute("captain", "alliance");
-                                var nextAlliance = parseInt(allianceBackfill.substr(8, 1));
-                                for (var j = nextAlliance; j < 8; j++) {
-                                    allianceChoices["Alliance" + j + "Captain"] = allianceChoices["Alliance" + (j + 1) + "Captain"];
-                                }
-                                allianceChoices.Alliance8Captain = allianceListUnsorted[7];
-                                index = allianceTeamList.indexOf(parseInt(allianceChoices.Alliance8Captain));
-                                if (index > -1) {
-                                    allianceTeamList.splice(index, 1);
-                                }
+								var allianceBackfill = teamContainer.getAttribute("captain");
+								teamContainer.setAttribute("captain", "alliance");
+								var nextAlliance = parseInt(allianceBackfill.substr(8, 1));
+								for (var j = nextAlliance; j < 8; j++) {
+									allianceChoices["Alliance" + j + "Captain"] = allianceChoices["Alliance" + (j + 1) + "Captain"];
+								}
+								allianceChoices.Alliance8Captain = allianceListUnsorted[7];
+								index = allianceTeamList.indexOf(parseInt(allianceChoices.Alliance8Captain));
+								if (index > -1) {
+									allianceTeamList.splice(index, 1);
+								}
 
-                            }
+							}
 
-                            teamContainer.removeAttribute("onclick");
-                            teamContainer.setAttribute("onclick", "chosenAllianceAlert(this)");
-                            teamContainer.id = "allianceTeam" + teamContainer.getAttribute("teamNumber");
-                            $("#" + teamContainer.getAttribute("id")).removeClass("allianceCaptain");
-                            $("#" + allianceSelectionOrder[currentAllianceChoice]).append(teamContainer);
-                            $("#" + allianceSelectionOrder[currentAllianceChoice].substr(0, 9)).removeClass("dropzone");
-                            $("#" + allianceSelectionOrder[currentAllianceChoice]).removeClass("nextAllianceChoice");
+							teamContainer.removeAttribute("onclick");
+							teamContainer.setAttribute("onclick", "chosenAllianceAlert(this)");
+							teamContainer.id = "allianceTeam" + teamContainer.getAttribute("teamNumber");
+							$("#" + teamContainer.getAttribute("id")).removeClass("allianceCaptain");
+							$("#" + allianceSelectionOrder[currentAllianceChoice]).append(teamContainer);
+							$("#" + allianceSelectionOrder[currentAllianceChoice].substr(0, 9)).removeClass("dropzone");
+							$("#" + allianceSelectionOrder[currentAllianceChoice]).removeClass("nextAllianceChoice");
 
 
-                            currentAllianceChoice++;
+							currentAllianceChoice++;
 
-                            if (currentAllianceChoice <= allianceSelectionLength) {
-                                $("#" + allianceSelectionOrder[currentAllianceChoice].slice(0, 9)).addClass("dropzone");
-                                $("#" + allianceSelectionOrder[currentAllianceChoice]).addClass("nextAllianceChoice");
-                            }
+							if (currentAllianceChoice <= allianceSelectionLength) {
+								$("#" + allianceSelectionOrder[currentAllianceChoice].slice(0, 9)).addClass("dropzone");
+								$("#" + allianceSelectionOrder[currentAllianceChoice]).addClass("nextAllianceChoice");
+							}
 
-                            teamContainer.textContent = teamNumber;
+							teamContainer.textContent = teamNumber;
 
-                            displayAllianceCaptains(currentAllianceChoice);
-                            sortAllianceTeams(allianceTeamList);
-                            if (currentAllianceChoice === parseInt((allianceSelectionLength + 1))) {
-                                localStorage.allianceNoChange = "true";
-                                for (var k = 0; k < eventTeamList.length; k++) {
-                                    //document.getElementById("allianceTeam" + eventTeamList[k].teamNumber).onclick = "";
-                                    document.getElementById("allianceTeam" + eventTeamList[k].teamNumber).setAttribute("onclick", "chosenAllianceAlert(this)");
-                                }
-                                for (k = 1; k <= 8; k++) {
-                                    //document.getElementById("backupAllianceTeamContainer" + k).onclick = "";
-                                    document.getElementById("backupAllianceTeamContainer" + k).setAttribute("onclick", "chosenAllianceAlert(this)");
-                                }
-                                //$(".awardAllianceTeam").removeAttr("onclick");
-                                //$(".awardAllianceTeam").attr("onclick","chosenAllianceAlert(this)");
-                            }
-                        }
-                    }]
-                });
-            }
-        }]
-    });
+							displayAllianceCaptains(currentAllianceChoice);
+							sortAllianceTeams(allianceTeamList);
+							if (currentAllianceChoice === parseInt((allianceSelectionLength + 1))) {
+								localStorage.allianceNoChange = "true";
+								for (var k = 0; k < eventTeamList.length; k++) {
+									//document.getElementById("allianceTeam" + eventTeamList[k].teamNumber).onclick = "";
+									document.getElementById("allianceTeam" + eventTeamList[k].teamNumber).setAttribute("onclick", "chosenAllianceAlert(this)");
+								}
+								for (k = 1; k <= 8; k++) {
+									//document.getElementById("backupAllianceTeamContainer" + k).onclick = "";
+									document.getElementById("backupAllianceTeamContainer" + k).setAttribute("onclick", "chosenAllianceAlert(this)");
+								}
+								//$(".awardAllianceTeam").removeAttr("onclick");
+								//$(".awardAllianceTeam").attr("onclick","chosenAllianceAlert(this)");
+							}
+						}
+					}]
+				});
+			}
+		}]
+	});
 
 }
 
 function undoAllianceSelection() {
-    "use strict";
-    //setup the undo
-    allianceChoices = JSON.parse(allianceChoicesUndo.pop());
-    allianceListUnsorted = JSON.parse(allianceListUnsortedUndo.pop());
-    allianceTeamList = JSON.parse(allianceTeamListUndo.pop());
-    $("#allianceSelectionTable").html(allianceSelectionTableUndo.pop());
-    //$("#undoAlliance").html("<b>"+teamNumberUndo.pop()+"</b>");
-    $("#allianceUndoButton").attr("onclick", "undoAllianceSelection()");
+	"use strict";
+	//setup the undo
+	allianceChoices = JSON.parse(allianceChoicesUndo.pop());
+	allianceListUnsorted = JSON.parse(allianceListUnsortedUndo.pop());
+	allianceTeamList = JSON.parse(allianceTeamListUndo.pop());
+	$("#allianceSelectionTable").html(allianceSelectionTableUndo.pop());
+	//$("#undoAlliance").html("<b>"+teamNumberUndo.pop()+"</b>");
+	$("#allianceUndoButton").attr("onclick", "undoAllianceSelection()");
 
-    //redraw the page
-    currentAllianceChoice = currentAllianceChoice - 1;
-    if (currentAllianceChoice === 0) {
-        $("#allianceUndoButton").attr("onclick", "");
-        $("#allianceUndoButton").hide();
-    }
+	//redraw the page
+	currentAllianceChoice = currentAllianceChoice - 1;
+	if (currentAllianceChoice === 0) {
+		$("#allianceUndoButton").attr("onclick", "");
+		$("#allianceUndoButton").hide();
+	}
 }
 
 function awardsAlert(teamContainer) {
-    "use strict";
-    var teamNumber = teamContainer.getAttribute("teamnumber");
-    var captain = teamContainer.getAttribute("captain");
-    var currentTeamInfo = JSON.parse(localStorage["teamData" + teamNumber]);
-    var selectedTeamInfo = "<span class = 'allianceAnnounceDialog'>Team " + teamNumber + " ";
-    var rookieTag = rookieYearDisplay(currentTeamInfo.rookieYear).trim();
-    rookieTag = rookieTag.substring(6, rookieTag.length - 1);
+	"use strict";
+	var teamNumber = teamContainer.getAttribute("teamnumber");
+	var captain = teamContainer.getAttribute("captain");
+	var currentTeamInfo = JSON.parse(localStorage["teamData" + teamNumber]);
+	var selectedTeamInfo = "<span class = 'allianceAnnounceDialog'>Team " + teamNumber + " ";
+	var rookieTag = rookieYearDisplay(currentTeamInfo.rookieYear).trim();
+	rookieTag = rookieTag.substring(6, rookieTag.length - 1);
 
-    if (currentTeamInfo.nameShortLocal === "") {
-        selectedTeamInfo += currentTeamInfo.nameShort;
-    } else {
-        selectedTeamInfo += currentTeamInfo.nameShortLocal;
-    }
-    selectedTeamInfo += "<br> is from ";
-    if (currentTeamInfo.organizationLocal === "") {
-        selectedTeamInfo += currentTeamInfo.organization;
-    } else {
-        selectedTeamInfo += currentTeamInfo.organizationLocal;
-    }
-    selectedTeamInfo += "<br>in ";
-    if (currentTeamInfo.cityStateLocal === "") {
-        selectedTeamInfo += currentTeamInfo.cityState + "<br>";
-    } else {
-        selectedTeamInfo += currentTeamInfo.cityStateLocal + "<br>";
-    }
-    selectedTeamInfo += "<br>Founded in " + currentTeamInfo.rookieYear + ", this is their " + rookieTag + " competing with FIRST.</span>";
+	if (currentTeamInfo.nameShortLocal === "") {
+		selectedTeamInfo += currentTeamInfo.nameShort;
+	} else {
+		selectedTeamInfo += currentTeamInfo.nameShortLocal;
+	}
+	selectedTeamInfo += "<br> is from ";
+	if (currentTeamInfo.organizationLocal === "") {
+		selectedTeamInfo += currentTeamInfo.organization;
+	} else {
+		selectedTeamInfo += currentTeamInfo.organizationLocal;
+	}
+	selectedTeamInfo += "<br>in ";
+	if (currentTeamInfo.cityStateLocal === "") {
+		selectedTeamInfo += currentTeamInfo.cityState + "<br>";
+	} else {
+		selectedTeamInfo += currentTeamInfo.cityStateLocal + "<br>";
+	}
+	selectedTeamInfo += "<br>Founded in " + currentTeamInfo.rookieYear + ", this is their " + rookieTag + " competing with FIRST.</span>";
 
-    BootstrapDialog.show({
-        type: 'type-success',
-        title: '<b>Awards Announcement</b>',
-        message: selectedTeamInfo,
-        buttons: [{
-            label: 'Congratulations!',
-            icon: 'glyphicon glyphicon-tower',
-            hotkey: 13, // Enter.
-            cssClass: "btn btn-success",
-            action: function (dialogRef) {
-                dialogRef.close();
-            }
-        }]
-    });
+	BootstrapDialog.show({
+		type: 'type-success',
+		title: '<b>Awards Announcement</b>',
+		message: selectedTeamInfo,
+		buttons: [{
+			label: 'Congratulations!',
+			icon: 'glyphicon glyphicon-tower',
+			hotkey: 13, // Enter.
+			cssClass: "btn btn-success",
+			action: function (dialogRef) {
+				dialogRef.close();
+			}
+		}]
+	});
 }
 
 function chosenAllianceAlert(teamContainer) {
-    "use strict";
-    var teamNumber = teamContainer.getAttribute("teamnumber");
-    var captain = teamContainer.getAttribute("captain");
-    var currentTeamInfo = JSON.parse(localStorage["teamData" + teamNumber]);
-    var selectedTeamInfo = "<span class = 'allianceAnnounceDialog'>Team " + teamNumber + " ";
-    var rookieTag = rookieYearDisplay(currentTeamInfo.rookieYear).trim();
-    rookieTag = rookieTag.substring(6, rookieTag.length - 1);
+	"use strict";
+	var teamNumber = teamContainer.getAttribute("teamnumber");
+	var captain = teamContainer.getAttribute("captain");
+	var currentTeamInfo = JSON.parse(localStorage["teamData" + teamNumber]);
+	var selectedTeamInfo = "<span class = 'allianceAnnounceDialog'>Team " + teamNumber + " ";
+	var rookieTag = rookieYearDisplay(currentTeamInfo.rookieYear).trim();
+	rookieTag = rookieTag.substring(6, rookieTag.length - 1);
 
-    if (currentTeamInfo.nameShortLocal === "") {
-        selectedTeamInfo += currentTeamInfo.nameShort;
-    } else {
-        selectedTeamInfo += currentTeamInfo.nameShortLocal;
-    }
-    selectedTeamInfo += "<br> is from ";
-    if (currentTeamInfo.organizationLocal === "") {
-        selectedTeamInfo += currentTeamInfo.organization;
-    } else {
-        selectedTeamInfo += currentTeamInfo.organizationLocal;
-    }
-    selectedTeamInfo += "<br>in ";
-    if (currentTeamInfo.cityStateLocal === "") {
-        selectedTeamInfo += currentTeamInfo.cityState + "<br>";
-    } else {
-        selectedTeamInfo += currentTeamInfo.cityStateLocal + "<br>";
-    }
-    selectedTeamInfo += "<br>Founded in " + currentTeamInfo.rookieYear + ", this is their " + rookieTag + " competing with FIRST.</span>";
+	if (currentTeamInfo.nameShortLocal === "") {
+		selectedTeamInfo += currentTeamInfo.nameShort;
+	} else {
+		selectedTeamInfo += currentTeamInfo.nameShortLocal;
+	}
+	selectedTeamInfo += "<br> is from ";
+	if (currentTeamInfo.organizationLocal === "") {
+		selectedTeamInfo += currentTeamInfo.organization;
+	} else {
+		selectedTeamInfo += currentTeamInfo.organizationLocal;
+	}
+	selectedTeamInfo += "<br>in ";
+	if (currentTeamInfo.cityStateLocal === "") {
+		selectedTeamInfo += currentTeamInfo.cityState + "<br>";
+	} else {
+		selectedTeamInfo += currentTeamInfo.cityStateLocal + "<br>";
+	}
+	selectedTeamInfo += "<br>Founded in " + currentTeamInfo.rookieYear + ", this is their " + rookieTag + " competing with FIRST.</span>";
 
-    BootstrapDialog.show({
-        type: 'type-success',
-        icon: 'glyphicon glyphicon-tower',
-        title: '<b>Alliance Team Information</b>',
-        message: selectedTeamInfo,
-        buttons: [{
-            label: 'Congratulations!',
-            hotkey: 13, // Enter.
-            cssClass: "btn btn-success",
-            action: function (dialogRef) {
-                dialogRef.close();
-            }
-        }]
-    });
+	BootstrapDialog.show({
+		type: 'type-success',
+		icon: 'glyphicon glyphicon-tower',
+		title: '<b>Alliance Team Information</b>',
+		message: selectedTeamInfo,
+		buttons: [{
+			label: 'Congratulations!',
+			hotkey: 13, // Enter.
+			cssClass: "btn btn-success",
+			action: function (dialogRef) {
+				dialogRef.close();
+			}
+		}]
+	});
 }
 
 function getTeamAwards(teamNumber, year) {
-    "use strict";
-    teamAwardCalls++;
-    $('#teamDataTabPicker').addClass('alert-danger');
-    var awards = "";
-    var eventNames = [];
-    eventNames[String(year)] = JSON.parse(localStorage.events);
-    eventNames["2017"] = JSON.parse(localStorage.events2017);
-    eventNames["2016"] = JSON.parse(localStorage.events2016);
-    eventNames["2015"] = JSON.parse(localStorage.events2015);
+	"use strict";
+	teamAwardCalls++;
+	$('#teamDataTabPicker').addClass('alert-danger');
+	var awards = "";
+	var eventNames = [];
+	eventNames[String(year)] = JSON.parse(localStorage.events);
+	eventNames["2017"] = JSON.parse(localStorage.events2017);
+	eventNames["2016"] = JSON.parse(localStorage.events2016);
+	eventNames["2015"] = JSON.parse(localStorage.events2015);
 
-    var teamData = JSON.parse(localStorage["teamData" + teamNumber]);
+	var teamData = JSON.parse(localStorage["teamData" + teamNumber]);
 
-    var awardHilight = {
-        "before": "<b>",
-        "after": "</b>"
-    };
-    var awardName = "";
+	var awardHilight = {
+		"before": "<b>",
+		"after": "</b>"
+	};
+	var awardName = "";
 
-    var req = new XMLHttpRequest();
-    req.open('GET', apiURL + year + '/awardsv2/' + teamNumber + "/");
-    req.addEventListener('load', function () {
-        teamLoadProgressBar++;
-        $('#teamloadprogressbar').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
-        $('#teamProgressBarLoading').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
+	var req = new XMLHttpRequest();
+	req.open('GET', apiURL + year + '/awardsv2/' + teamNumber + "/");
+	req.addEventListener('load', function () {
+		teamLoadProgressBar++;
+		$('#teamloadprogressbar').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
+		$('#teamProgressBarLoading').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
 
-        var data = JSON.parse(req.responseText);
-        //console.log(teamData.rookieYear+" "+year+"/awards/"+teamNumber+": "+req.responseText);
-        for (var j = 0; j <= 2; j++) {
-            if (data[j].Awards !== '{"Awards":[]}') {
-                for (var i = 0; i < data[j].Awards.length; i++) {
-                    awardName = data[j].Awards[i].name;
-                    awardHilight = awardsHilight(awardName);
-                    awards += '<span class="awardsDepth' + String(j + 1) + '">' + awardHilight.before + String(year - j) + ' <span class="awardsEventName">' + eventNames[String(year - j)][data[j].Awards[i].eventCode] + '</span><span class="awardsEventCode">' + data[j].Awards[i].eventCode + '</span>: ' + awardName + awardHilight.after;
-                    if (i === data[j].Awards.length - 1) {
-                        awards += '<span class="lastAward' + String(j + 1) + '"><span class="awardsSeparator1"> || </span><span class="awardsSeparator2"> // </span><span class="awardsSeparator3"><br></span></span></span>';
-                    } else {
-                        awards += '<span class="awardsSeparator1"> || </span><span class="awardsSeparator2"> // </span><span class="awardsSeparator3"><br></span></span>';
-                    }
+		var data = JSON.parse(req.responseText);
+		//console.log(teamData.rookieYear+" "+year+"/awards/"+teamNumber+": "+req.responseText);
+		for (var j = 0; j <= 2; j++) {
+			if (data[j].Awards !== '{"Awards":[]}') {
+				for (var i = 0; i < data[j].Awards.length; i++) {
+					awardName = data[j].Awards[i].name;
+					awardHilight = awardsHilight(awardName);
+					awards += '<span class="awardsDepth' + String(j + 1) + '">' + awardHilight.before + String(year - j) + ' <span class="awardsEventName">' + eventNames[String(year - j)][data[j].Awards[i].eventCode] + '</span><span class="awardsEventCode">' + data[j].Awards[i].eventCode + '</span>: ' + awardName + awardHilight.after;
+					if (i === data[j].Awards.length - 1) {
+						awards += '<span class="lastAward' + String(j + 1) + '"><span class="awardsSeparator1"> || </span><span class="awardsSeparator2"> // </span><span class="awardsSeparator3"><br></span></span></span>';
+					} else {
+						awards += '<span class="awardsSeparator1"> || </span><span class="awardsSeparator2"> // </span><span class="awardsSeparator3"><br></span></span>';
+					}
 
 
-                }
-            }
+				}
+			}
 
-        }
+		}
 
-        teamData.awards = awards;
-        localStorage["teamData" + teamNumber] = JSON.stringify(teamData);
-        teamAwardCalls--;
-        if ((teamAwardCalls === 0) && (teamUpdateCalls === 0) && (lastSchedulePage)) {
-            $('#teamDataTabPicker').removeClass('alert-danger');
-            $('#teamDataTabPicker').addClass('alert-success');
-            $('#teamloadprogress').hide();
-            $('#teamProgressBar').hide();
-            teamLoadProgressBar = 0;
-            $('#teamloadprogressbar').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
-            $('#teamProgressBarLoading').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
+		teamData.awards = awards;
+		localStorage["teamData" + teamNumber] = JSON.stringify(teamData);
+		teamAwardCalls--;
+		if ((teamAwardCalls === 0) && (teamUpdateCalls === 0) && (lastSchedulePage)) {
+			$('#teamDataTabPicker').removeClass('alert-danger');
+			$('#teamDataTabPicker').addClass('alert-success');
+			$('#teamloadprogress').hide();
+			$('#teamProgressBar').hide();
+			teamLoadProgressBar = 0;
+			$('#teamloadprogressbar').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
+			$('#teamProgressBarLoading').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
 
-        }
+		}
 
-    });
+	});
 
-    if (teamData.rookieYear <= year) {
-        req.send();
-    }
+	if (teamData.rookieYear <= year) {
+		req.send();
+	}
 }
 
 function getTeamData(teamList, year) {
-    "use strict";
-    var teamDataLoadPromises = [];
-    $('#teamDataTabPicker').addClass('alert-danger');
-    for (var team in teamList) {
-        teamDataLoadPromises.push(new Promise((resolve, reject) => {
-            var req = new XMLHttpRequest();
-            req.open('GET', apiURL + year + '/teamdata/' + team.teamNumber + "/");
-            req.addEventListener('load', function () {
-                if (req.responseText.substr(0, 5) !== '"Team') {
-                    var data = JSON.parse(req.responseText);
-                    if (data.teams.length > 0) {
-                        var teamData = data.teams[0];
-                        $("#teamsTableBody").append(generateTeamTableRow(teamData));
-                        eventTeamList.push(data.teams[0]);
-                        //localStorage.teamList = JSON.stringify(eventTeamList);
-                        resolve();
-                    }
-                }
-            });
-            req.send();
-        }));
-    }
-    Promise.all(teamDataLoadPromises).then((value) => {
-        $('#teamDataTabPicker').removeClass('alert-danger');
-        $('#teamDataTabPicker').addClass('alert-success');
-    });
+	"use strict";
+	var teamDataLoadPromises = [];
+	$('#teamDataTabPicker').addClass('alert-danger');
+	for (var team in teamList) {
+		teamDataLoadPromises.push(new Promise((resolve, reject) => {
+			var req = new XMLHttpRequest();
+			req.open('GET', apiURL + year + '/teamdata/' + team.teamNumber + "/");
+			req.addEventListener('load', function () {
+				if (req.responseText.substr(0, 5) !== '"Team') {
+					var data = JSON.parse(req.responseText);
+					if (data.teams.length > 0) {
+						var teamData = data.teams[0];
+						$("#teamsTableBody").append(generateTeamTableRow(teamData));
+						eventTeamList.push(data.teams[0]);
+						//localStorage.teamList = JSON.stringify(eventTeamList);
+						resolve();
+					}
+				}
+			});
+			req.send();
+		}));
+	}
+	Promise.all(teamDataLoadPromises).then((value) => {
+		$('#teamDataTabPicker').removeClass('alert-danger');
+		$('#teamDataTabPicker').addClass('alert-success');
+	});
 }
 
 function tournamentLevel(tournament) {
-    "use strict";
-    if (tournament === "Qualification") {
-        return "qual";
-    } else {
-        return "playoff";
-    }
+	"use strict";
+	if (tournament === "Qualification") {
+		return "qual";
+	} else {
+		return "playoff";
+	}
 }
 
 function scoreDetails(matchNumber, tournamentLevel) {
-    "use strict";
-    var req = new XMLHttpRequest();
-    req.open('GET', apiURL + localStorage.currentYear + '/scores/' + localStorage.currentEvent + "/" + tournamentLevel + "/" + matchNumber + "/" + matchNumber + "/");
-    req.addEventListener('load', function () {
-        if (req.responseText.substr(0, 5) !== '"Team') {
-            var data = JSON.parse(req.responseText).MatchScores[0];
-            var redAllianceScores, blueAllianceScores = [];
-            var scoreKeys = Object.keys(data.alliances[0]);
-            $("#scoreDetailsMatchNumber").html(data.matchNumber);
-            $("#scoreDetailsMatchLevel").html(data.matchLevel);
-            if (data.alliances[0].alliance === "Red") {
-                redAllianceScores = Object.values(data.alliances[0]);
-                blueAllianceScores = Object.values(data.alliances[1]);
-            } else {
-                redAllianceScores = Object.values(data.alliances[1]);
-                blueAllianceScores = Object.values(data.alliances[0]);
-            }
-            $("#scoreTableBody").empty();
-            for (var i = 0; i < scoreKeys.length; i++) {
-                $("#scoreTableBody").append("<tr><td>" + scoreKeys[i] + " : " + redAllianceScores[i] + "</td><td>" + scoreKeys[i] + " : " + blueAllianceScores[i] + "</td></tr");
-            }
+	"use strict";
+	var req = new XMLHttpRequest();
+	req.open('GET', apiURL + localStorage.currentYear + '/scores/' + localStorage.currentEvent + "/" + tournamentLevel + "/" + matchNumber + "/" + matchNumber + "/");
+	req.addEventListener('load', function () {
+		if (req.responseText.substr(0, 5) !== '"Team') {
+			var data = JSON.parse(req.responseText).MatchScores[0];
+			var redAllianceScores, blueAllianceScores = [];
+			var scoreKeys = Object.keys(data.alliances[0]);
+			$("#scoreDetailsMatchNumber").html(data.matchNumber);
+			$("#scoreDetailsMatchLevel").html(data.matchLevel);
+			if (data.alliances[0].alliance === "Red") {
+				redAllianceScores = Object.values(data.alliances[0]);
+				blueAllianceScores = Object.values(data.alliances[1]);
+			} else {
+				redAllianceScores = Object.values(data.alliances[1]);
+				blueAllianceScores = Object.values(data.alliances[0]);
+			}
+			$("#scoreTableBody").empty();
+			for (var i = 0; i < scoreKeys.length; i++) {
+				$("#scoreTableBody").append("<tr><td>" + scoreKeys[i] + " : " + redAllianceScores[i] + "</td><td>" + scoreKeys[i] + " : " + blueAllianceScores[i] + "</td></tr");
+			}
 
-            openTab(event, 'scoreDetails');
-        }
-    });
-    req.send();
+			openTab(event, 'scoreDetails');
+		}
+	});
+	req.send();
 }
 
 function generateMatchTableRow(matchData) {
-    "use strict";
-    var returnData = '<tr>';
-    var matchWinner = "";
-    if (matchData.actualStartTime) {
-        returnData += "<td>Actual:<br>" + moment(matchData.actualStartTime, 'YYYY-MM-DDTHH:mm:ss').format('ddd hh:mm A') + '</td>';
-    } else {
-        if (localStorage.offseason === "true") {
-            returnData += "<td>Scheduled:<br>" + matchData.startTime + '</td>';
-        } else {
-            returnData += "<td>Scheduled:<br>" + moment(matchData.startTime, 'YYYY-MM-DDTHH:mm:ss').format('ddd hh:mm:ss A') + '</td>';
-        }
+	"use strict";
+	var returnData = '<tr>';
+	var matchWinner = "";
+	if (matchData.actualStartTime) {
+		returnData += "<td>Actual:<br>" + moment(matchData.actualStartTime, 'YYYY-MM-DDTHH:mm:ss').format('ddd hh:mm A') + '</td>';
+	} else {
+		if (localStorage.offseason === "true") {
+			returnData += "<td>Scheduled:<br>" + matchData.startTime + '</td>';
+		} else {
+			returnData += "<td>Scheduled:<br>" + moment(matchData.startTime, 'YYYY-MM-DDTHH:mm:ss').format('ddd hh:mm:ss A') + '</td>';
+		}
 
-    }
-    returnData += "<td>" + matchData.description + '</td>';
-    returnData += "<td>" + matchData.matchNumber + '</td>';
-    if ((matchData.scoreRedFinal !== null) && (matchData.scoreRedFinal > matchData.scoreBlueFinal)) {
-        matchWinner = "Red";
-        returnData += '<td onclick="scoreDetails(' + matchData.matchNumber + ',' + "'" + tournamentLevel(matchData.tournamentLevel) + "'" + ')"><span class="redScoreWin">R:' + matchData.scoreRedFinal + '</span><br><span class="blueScore"> B:' + matchData.scoreBlueFinal + '</span></td>';
-    } else if ((matchData.scoreRedFinal !== null) && matchData.scoreRedFinal < matchData.scoreBlueFinal) {
-        matchWinner = "Blue";
-        returnData += '<td onclick="scoreDetails(' + matchData.matchNumber + ',' + "'" + tournamentLevel(matchData.tournamentLevel) + "'" + ')"><span class="redScore">R:' + matchData.scoreRedFinal + '</span><br><span class="blueScoreWin"> B:' + matchData.scoreBlueFinal + '</span></td>';
-    } else if (matchData.scoreRedFinal !== null) {
-        matchWinner = "Tie";
-        returnData += '<td onclick="scoreDetails(' + matchData.matchNumber + ',' + "'" + tournamentLevel(matchData.tournamentLevel) + "'" + ')"><span class="redScore">R:' + matchData.scoreRedFinal + '</span><br><span class="blueScore"> B:' + matchData.scoreBlueFinal + '</span></td>';
-    } else {
-        matchWinner = "No results yet";
-        returnData += '<td>No data.</td>';
-    }
-    returnData += '<td><span class = "redAllianceTeam">' + getTeamForStation(matchData.teams, 'Red1').teamNumber + '</span><br><span class = "blueAllianceTeam">' + getTeamForStation(matchData.teams, 'Blue1').teamNumber + '</span></td>';
-    returnData += '<td><span class = "redAllianceTeam">' + getTeamForStation(matchData.teams, 'Red2').teamNumber + '</span><br><span class = "blueAllianceTeam">' + getTeamForStation(matchData.teams, 'Blue2').teamNumber + '</span></td>';
-    returnData += '<td><span class = "redAllianceTeam">' + getTeamForStation(matchData.teams, 'Red3').teamNumber + '</span><br><span class = "blueAllianceTeam">' + getTeamForStation(matchData.teams, 'Blue3').teamNumber + '</span></td>';
+	}
+	returnData += "<td>" + matchData.description + '</td>';
+	returnData += "<td>" + matchData.matchNumber + '</td>';
+	if ((matchData.scoreRedFinal !== null) && (matchData.scoreRedFinal > matchData.scoreBlueFinal)) {
+		matchWinner = "Red";
+		returnData += '<td onclick="scoreDetails(' + matchData.matchNumber + ',' + "'" + tournamentLevel(matchData.tournamentLevel) + "'" + ')"><span class="redScoreWin">R:' + matchData.scoreRedFinal + '</span><br><span class="blueScore"> B:' + matchData.scoreBlueFinal + '</span></td>';
+	} else if ((matchData.scoreRedFinal !== null) && matchData.scoreRedFinal < matchData.scoreBlueFinal) {
+		matchWinner = "Blue";
+		returnData += '<td onclick="scoreDetails(' + matchData.matchNumber + ',' + "'" + tournamentLevel(matchData.tournamentLevel) + "'" + ')"><span class="redScore">R:' + matchData.scoreRedFinal + '</span><br><span class="blueScoreWin"> B:' + matchData.scoreBlueFinal + '</span></td>';
+	} else if (matchData.scoreRedFinal !== null) {
+		matchWinner = "Tie";
+		returnData += '<td onclick="scoreDetails(' + matchData.matchNumber + ',' + "'" + tournamentLevel(matchData.tournamentLevel) + "'" + ')"><span class="redScore">R:' + matchData.scoreRedFinal + '</span><br><span class="blueScore"> B:' + matchData.scoreBlueFinal + '</span></td>';
+	} else {
+		matchWinner = "No results yet";
+		returnData += '<td>No data.</td>';
+	}
+	returnData += '<td><span class = "redAllianceTeam">' + getTeamForStation(matchData.teams, 'Red1').teamNumber + '</span><br><span class = "blueAllianceTeam">' + getTeamForStation(matchData.teams, 'Blue1').teamNumber + '</span></td>';
+	returnData += '<td><span class = "redAllianceTeam">' + getTeamForStation(matchData.teams, 'Red2').teamNumber + '</span><br><span class = "blueAllianceTeam">' + getTeamForStation(matchData.teams, 'Blue2').teamNumber + '</span></td>';
+	returnData += '<td><span class = "redAllianceTeam">' + getTeamForStation(matchData.teams, 'Red3').teamNumber + '</span><br><span class = "blueAllianceTeam">' + getTeamForStation(matchData.teams, 'Blue3').teamNumber + '</span></td>';
 
-    //Track the high scoring match
-    if (matchData.scoreBlueFinal > localStorage.matchHighScore) {
-        localStorage.matchHighScore = matchData.scoreBlueFinal;
-        localStorage.highScoreDetails = matchData.description + "<br>(" + getTeamForStation(matchData.teams, 'Blue1').teamNumber + ", " + getTeamForStation(matchData.teams, 'Blue2').teamNumber + ", " + getTeamForStation(matchData.teams, 'Blue3').teamNumber + ")";
-    }
-    if (matchData.scoreRedFinal > localStorage.matchHighScore) {
-        localStorage.matchHighScore = matchData.scoreRedFinal;
-        localStorage.highScoreDetails = matchData.description + "<br>(" + getTeamForStation(matchData.teams, 'Red1').teamNumber + ", " + getTeamForStation(matchData.teams, 'Red2').teamNumber + ", " + getTeamForStation(matchData.teams, 'Red3').teamNumber + ")";
-    }
+	//Track the high scoring match
+	if (matchData.scoreBlueFinal > localStorage.matchHighScore) {
+		localStorage.matchHighScore = matchData.scoreBlueFinal;
+		localStorage.highScoreDetails = matchData.description + "<br>(" + getTeamForStation(matchData.teams, 'Blue1').teamNumber + ", " + getTeamForStation(matchData.teams, 'Blue2').teamNumber + ", " + getTeamForStation(matchData.teams, 'Blue3').teamNumber + ")";
+	}
+	if (matchData.scoreRedFinal > localStorage.matchHighScore) {
+		localStorage.matchHighScore = matchData.scoreRedFinal;
+		localStorage.highScoreDetails = matchData.description + "<br>(" + getTeamForStation(matchData.teams, 'Red1').teamNumber + ", " + getTeamForStation(matchData.teams, 'Red2').teamNumber + ", " + getTeamForStation(matchData.teams, 'Red3').teamNumber + ")";
+	}
 
-    //Track each team's high score
-    if (highScores['"' + getTeamForStation(matchData.teams, 'Blue1').teamNumber + '.score"'] < matchData.scoreBlueFinal) {
-        highScores['"' + getTeamForStation(matchData.teams, 'Blue1').teamNumber + '.score"'] = matchData.scoreBlueFinal;
-        highScores['"' + getTeamForStation(matchData.teams, 'Blue1').teamNumber + '.description"'] = matchData.description;
-    }
-    if (highScores['"' + getTeamForStation(matchData.teams, 'Blue2').teamNumber + '.score"'] < matchData.scoreBlueFinal) {
-        highScores['"' + getTeamForStation(matchData.teams, 'Blue2').teamNumber + '.score"'] = matchData.scoreBlueFinal;
-        highScores['"' + getTeamForStation(matchData.teams, 'Blue2').teamNumber + '.description"'] = matchData.description;
-    }
-    if (highScores['"' + getTeamForStation(matchData.teams, 'Blue3').teamNumber + '.score"'] < matchData.scoreBlueFinal) {
-        highScores['"' + getTeamForStation(matchData.teams, 'Blue3').teamNumber + '.score"'] = matchData.scoreBlueFinal;
-        highScores['"' + getTeamForStation(matchData.teams, 'Blue3').teamNumber + '.description"'] = matchData.description;
-    }
-    if (highScores['"' + getTeamForStation(matchData.teams, 'Red1').teamNumber + '.score"'] < matchData.scoreRedFinal) {
-        highScores['"' + getTeamForStation(matchData.teams, 'Red1').teamNumber + '.score"'] = matchData.scoreRedFinal;
-        highScores['"' + getTeamForStation(matchData.teams, 'Red1').teamNumber + '.description"'] = matchData.description;
-    }
-    if (highScores['"' + getTeamForStation(matchData.teams, 'Red2').teamNumber + '.score"'] < matchData.scoreRedFinal) {
-        highScores['"' + getTeamForStation(matchData.teams, 'Red2').teamNumber + '.score"'] = matchData.scoreRedFinal;
-        highScores['"' + getTeamForStation(matchData.teams, 'Red2').teamNumber + '.description"'] = matchData.description;
-    }
-    if (highScores['"' + getTeamForStation(matchData.teams, 'Red3').teamNumber + '.score"'] < matchData.scoreRedFinal) {
-        highScores['"' + getTeamForStation(matchData.teams, 'Red3').teamNumber + '.score"'] = matchData.scoreRedFinal;
-        highScores['"' + getTeamForStation(matchData.teams, 'Red3').teamNumber + '.description"'] = matchData.description;
-    }
+	//Track each team's high score
+	if (highScores['"' + getTeamForStation(matchData.teams, 'Blue1').teamNumber + '.score"'] < matchData.scoreBlueFinal) {
+		highScores['"' + getTeamForStation(matchData.teams, 'Blue1').teamNumber + '.score"'] = matchData.scoreBlueFinal;
+		highScores['"' + getTeamForStation(matchData.teams, 'Blue1').teamNumber + '.description"'] = matchData.description;
+	}
+	if (highScores['"' + getTeamForStation(matchData.teams, 'Blue2').teamNumber + '.score"'] < matchData.scoreBlueFinal) {
+		highScores['"' + getTeamForStation(matchData.teams, 'Blue2').teamNumber + '.score"'] = matchData.scoreBlueFinal;
+		highScores['"' + getTeamForStation(matchData.teams, 'Blue2').teamNumber + '.description"'] = matchData.description;
+	}
+	if (highScores['"' + getTeamForStation(matchData.teams, 'Blue3').teamNumber + '.score"'] < matchData.scoreBlueFinal) {
+		highScores['"' + getTeamForStation(matchData.teams, 'Blue3').teamNumber + '.score"'] = matchData.scoreBlueFinal;
+		highScores['"' + getTeamForStation(matchData.teams, 'Blue3').teamNumber + '.description"'] = matchData.description;
+	}
+	if (highScores['"' + getTeamForStation(matchData.teams, 'Red1').teamNumber + '.score"'] < matchData.scoreRedFinal) {
+		highScores['"' + getTeamForStation(matchData.teams, 'Red1').teamNumber + '.score"'] = matchData.scoreRedFinal;
+		highScores['"' + getTeamForStation(matchData.teams, 'Red1').teamNumber + '.description"'] = matchData.description;
+	}
+	if (highScores['"' + getTeamForStation(matchData.teams, 'Red2').teamNumber + '.score"'] < matchData.scoreRedFinal) {
+		highScores['"' + getTeamForStation(matchData.teams, 'Red2').teamNumber + '.score"'] = matchData.scoreRedFinal;
+		highScores['"' + getTeamForStation(matchData.teams, 'Red2').teamNumber + '.description"'] = matchData.description;
+	}
+	if (highScores['"' + getTeamForStation(matchData.teams, 'Red3').teamNumber + '.score"'] < matchData.scoreRedFinal) {
+		highScores['"' + getTeamForStation(matchData.teams, 'Red3').teamNumber + '.score"'] = matchData.scoreRedFinal;
+		highScores['"' + getTeamForStation(matchData.teams, 'Red3').teamNumber + '.description"'] = matchData.description;
+	}
 
-    playoffResults[matchData.description] = matchWinner;
-    return returnData + '</tr>';
+	playoffResults[matchData.description] = matchWinner;
+	return returnData + '</tr>';
 }
 
 function getTeamForStation(teamList, station) {
-    "use strict";
-    for (var j = 0; j < teamList.length; j++) {
-        if (teamList[j].station === station) {
-            return teamList[j];
-        }
-    }
-    var r = {};
-    r.teamNumber = "";
-    return r;
+	"use strict";
+	for (var j = 0; j < teamList.length; j++) {
+		if (teamList[j].station === station) {
+			return teamList[j];
+		}
+	}
+	var r = {};
+	r.teamNumber = "";
+	return r;
 }
 
 function updateRanksTableRow(teamData, teamNumber) {
-    "use strict";
-    var returnData = '<tr><td id="rankTableNumber' + teamNumber + '">' + teamNumber + '</td>';
-    returnData += '<td id="rankTableRank' + teamData.teamNumber + '">' + teamData.rank + '</td>';
-    if (teamData.nameShortLocal === "") {
-        returnData += '<td id="rankTableName' + teamData.teamNumber + '">' + teamData.nameShort + '</td>';
-    } else {
-        returnData += '<td id="rankTableName' + teamData.teamNumber + '">' + teamData.nameShortLocal + '</td>';
-    }
+	"use strict";
+	var returnData = '<tr><td id="rankTableNumber' + teamNumber + '">' + teamNumber + '</td>';
+	returnData += '<td id="rankTableRank' + teamData.teamNumber + '">' + teamData.rank + '</td>';
+	if (teamData.nameShortLocal === "") {
+		returnData += '<td id="rankTableName' + teamData.teamNumber + '">' + teamData.nameShort + '</td>';
+	} else {
+		returnData += '<td id="rankTableName' + teamData.teamNumber + '">' + teamData.nameShortLocal + '</td>';
+	}
 
-    returnData += '<td id="rankTableRP' + teamData.teamNumber + '">' + teamData.sortOrder1 + '</td>';
+	returnData += '<td id="rankTableRP' + teamData.teamNumber + '">' + teamData.sortOrder1 + '</td>';
 
-    returnData += '<td id="rankTableWins' + teamData.teamNumber + '">' + teamData.wins + '</td>';
+	returnData += '<td id="rankTableWins' + teamData.teamNumber + '">' + teamData.wins + '</td>';
 
-    returnData += '<td id="rankTableLosses' + teamData.teamNumber + '">' + teamData.losses + '</td>';
+	returnData += '<td id="rankTableLosses' + teamData.teamNumber + '">' + teamData.losses + '</td>';
 
-    returnData += '<td id="rankTableTies' + teamData.teamNumber + '">' + teamData.ties + '</td>';
+	returnData += '<td id="rankTableTies' + teamData.teamNumber + '">' + teamData.ties + '</td>';
 
-    returnData += '<td id="rankTableQualAverage' + teamData.teamNumber + '">' + teamData.qualAverage + '</td>';
+	returnData += '<td id="rankTableQualAverage' + teamData.teamNumber + '">' + teamData.qualAverage + '</td>';
 
-    returnData += '<td id="rankTableDq' + teamData.teamNumber + '">' + teamData.dq + '</td>';
+	returnData += '<td id="rankTableDq' + teamData.teamNumber + '">' + teamData.dq + '</td>';
 
-    returnData += '<td id="rankTableMatchesPlayed' + teamData.teamNumber + '">' + teamData.matchesPlayed + '</td>';
+	returnData += '<td id="rankTableMatchesPlayed' + teamData.teamNumber + '">' + teamData.matchesPlayed + '</td>';
 
-    return returnData + '</tr>';
+	return returnData + '</tr>';
 }
 
 function resetVisits() {
-    "use strict";
-    for (var j = 0; j < eventTeamList.length; j++) {
-        var team = JSON.parse(localStorage['teamData' + eventTeamList[j].teamNumber]);
-        team.lastVisit = "No recent visit";
-        localStorage['teamData' + eventTeamList[j].teamNumber] = JSON.stringify(team);
-        $("#lastVisit" + eventTeamList[j].teamNumber).attr("lastvisit", "No recent visit");
-        $("#lastVisit" + eventTeamList[j].teamNumber).html("No recent visit");
-    }
+	"use strict";
+	for (var j = 0; j < eventTeamList.length; j++) {
+		var team = JSON.parse(localStorage['teamData' + eventTeamList[j].teamNumber]);
+		team.lastVisit = "No recent visit";
+		localStorage['teamData' + eventTeamList[j].teamNumber] = JSON.stringify(team);
+		$("#lastVisit" + eventTeamList[j].teamNumber).attr("lastvisit", "No recent visit");
+		$("#lastVisit" + eventTeamList[j].teamNumber).html("No recent visit");
+	}
 
 }
 
 function updateTeamTableRow(teamData) {
-    "use strict";
-    var teamInfo = JSON.parse(localStorage['teamData' + teamData.teamNumber]);
-    var lastVisit = "";
-    var avatar = "";
-    if (teamInfo.lastVisit === "No recent visit") {
-        lastVisit = "No recent visit";
-    } else {
-        lastVisit = moment(teamInfo.lastVisit).fromNow();
-    }
-    var returnData = '<tr class="teamsTableRow"><td class = "btn-default" id="teamTableNumber' + teamData.teamNumber + '" onclick="updateTeamInfo(' + teamData.teamNumber + ')"><span class="teamDataNumber">' + teamData.teamNumber + '</span><br><span id="lastVisit' + teamData.teamNumber + '" teamNumber = "' + teamData.teamNumber + '"  lastvisit = "' + teamInfo.lastVisit + '">' + lastVisit + '</span></td>';
-    returnData += '<td id="teamTableRank' + teamData.teamNumber + '" class="rank0"></td>';
-    if ((teamInfo.avatar !== "null") && (localStorage.currentYear === "2018" && (typeof teamInfo !== "undefined"))) {
-        avatar = '<img src="' + teamInfo.avatar + '">&nbsp;';
-    }
-    if (teamInfo.nameShortLocal === "") {
-        returnData += '<td id="teamTableName' + teamData.teamNumber + '">' + '<span id="avatar' + teamData.teamNumber + '">' + avatar + '</span><span class="teamTableName">' + teamInfo.nameShort + '</span></td>';
-    } else {
-        returnData += '<td  class="bg-success" id="teamTableName' + teamData.teamNumber + '">' + '<span id="avatar' + teamData.teamNumber + '">' + avatar + '</span><span class="teamTableName">' + teamInfo.nameShortLocal + '</span></td>';
-    }
-    if (teamInfo.cityStateLocal === "") {
-        returnData += '<td id="teamTableCityState' + teamData.teamNumber + '">' + teamInfo.cityState + '</td>';
-    } else {
-        returnData += '<td  class="bg-success" id="teamTableCityState' + teamData.teamNumber + '">' + teamInfo.cityStateLocal + '</td>';
-    }
+	"use strict";
+	var teamInfo = JSON.parse(localStorage['teamData' + teamData.teamNumber]);
+	var lastVisit = "";
+	var avatar = "";
+	if (teamInfo.lastVisit === "No recent visit") {
+		lastVisit = "No recent visit";
+	} else {
+		lastVisit = moment(teamInfo.lastVisit).fromNow();
+	}
+	var returnData = '<tr class="teamsTableRow"><td class = "btn-default" id="teamTableNumber' + teamData.teamNumber + '" onclick="updateTeamInfo(' + teamData.teamNumber + ')"><span class="teamDataNumber">' + teamData.teamNumber + '</span><br><span id="lastVisit' + teamData.teamNumber + '" teamNumber = "' + teamData.teamNumber + '"  lastvisit = "' + teamInfo.lastVisit + '">' + lastVisit + '</span></td>';
+	returnData += '<td id="teamTableRank' + teamData.teamNumber + '" class="rank0"></td>';
+	if ((teamInfo.avatar !== "null") && (localStorage.currentYear === "2018" && (typeof teamInfo !== "undefined"))) {
+		avatar = '<img src="' + teamInfo.avatar + '">&nbsp;';
+	}
+	if (teamInfo.nameShortLocal === "") {
+		returnData += '<td id="teamTableName' + teamData.teamNumber + '">' + '<span id="avatar' + teamData.teamNumber + '">' + avatar + '</span><span class="teamTableName">' + teamInfo.nameShort + '</span></td>';
+	} else {
+		returnData += '<td  class="bg-success" id="teamTableName' + teamData.teamNumber + '">' + '<span id="avatar' + teamData.teamNumber + '">' + avatar + '</span><span class="teamTableName">' + teamInfo.nameShortLocal + '</span></td>';
+	}
+	if (teamInfo.cityStateLocal === "") {
+		returnData += '<td id="teamTableCityState' + teamData.teamNumber + '">' + teamInfo.cityState + '</td>';
+	} else {
+		returnData += '<td  class="bg-success" id="teamTableCityState' + teamData.teamNumber + '">' + teamInfo.cityStateLocal + '</td>';
+	}
 
-    if (teamInfo.topSponsorsLocal === "") {
-        returnData += '<td id="teamTableNameFull' + teamData.teamNumber + '">' + teamInfo.topSponsors + '</td>';
-    } else {
-        returnData += '<td  class="bg-success" id="teamTableNameFull' + teamData.teamNumber + '">' + teamInfo.topSponsorsLocal + '</td>';
-    }
+	if (teamInfo.topSponsorsLocal === "") {
+		returnData += '<td id="teamTableNameFull' + teamData.teamNumber + '">' + teamInfo.topSponsors + '</td>';
+	} else {
+		returnData += '<td  class="bg-success" id="teamTableNameFull' + teamData.teamNumber + '">' + teamInfo.topSponsorsLocal + '</td>';
+	}
 
-    if (teamInfo.organizationLocal === "") {
-        returnData += '<td id="teamTableOrganization' + teamData.teamNumber + '">' + teamInfo.organization + '</td>';
-    } else {
-        returnData += '<td class="bg-success" id="teamTableNameOrganization' + teamData.teamNumber + '">' + teamInfo.organizationLocal + '</td>';
-    }
-    returnData += '<td id="teamTableRookieYear' + teamData.teamNumber + '">' + rookieYearDisplay(teamInfo.rookieYear) + '</td>';
-    if ((teamInfo.robotName === null) && (teamInfo.robotNameLocal === "")) {
-        returnData += '<td id="teamTableRobotName' + teamData.teamNumber + '">' + "No robot name reported" + '</td>';
-    } else {
-        if (teamInfo.robotNameLocal === "") {
-            returnData += '<td id="teamTableRobotName' + teamData.teamNumber + '">' + teamInfo.robotName + '</td>';
-        } else {
-            returnData += '<td  class="bg-success" id="teamTableRobotName' + teamData.teamNumber + '">' + teamInfo.robotNameLocal + '</td>';
-        }
-    }
+	if (teamInfo.organizationLocal === "") {
+		returnData += '<td id="teamTableOrganization' + teamData.teamNumber + '">' + teamInfo.organization + '</td>';
+	} else {
+		returnData += '<td class="bg-success" id="teamTableNameOrganization' + teamData.teamNumber + '">' + teamInfo.organizationLocal + '</td>';
+	}
+	returnData += '<td id="teamTableRookieYear' + teamData.teamNumber + '">' + rookieYearDisplay(teamInfo.rookieYear) + '</td>';
+	if ((teamInfo.robotName === null) && (teamInfo.robotNameLocal === "")) {
+		returnData += '<td id="teamTableRobotName' + teamData.teamNumber + '">' + "No robot name reported" + '</td>';
+	} else {
+		if (teamInfo.robotNameLocal === "") {
+			returnData += '<td id="teamTableRobotName' + teamData.teamNumber + '">' + teamInfo.robotName + '</td>';
+		} else {
+			returnData += '<td  class="bg-success" id="teamTableRobotName' + teamData.teamNumber + '">' + teamInfo.robotNameLocal + '</td>';
+		}
+	}
 
-    return returnData + '</tr>';
+	return returnData + '</tr>';
 }
 
 function generateTeamTableRow(teamData) {
-    "use strict";
-    var teamInfo = {};
-    var avatar = "";
-    if (typeof (localStorage['teamData' + teamData.teamNumber]) !== 'undefined') {
-        teamInfo = JSON.parse(localStorage['teamData' + teamData.teamNumber]);
-        if (typeof teamInfo.cityStateSort === "undefined") {
-            teamInfo.cityStateSort = teamData.country + ":" + teamData.stateProv + ":" + teamData.city;
-        }
-    } else {
-        teamInfo = {
-            "nameShort": teamData.nameShort,
-            "cityState": teamData.city + ', ' + teamData.stateProv,
-            "cityStateSort": teamData.country + ":" + teamData.stateProv + ":" + teamData.city,
-            "nameFull": teamData.nameFull,
-            "rookieYear": teamData.rookieYear,
-            "robotName": teamData.robotName,
-            "organization": "",
-            "sponsors": "",
-            "topSponsors": "",
-            "awards": "",
-            "alliance": "",
-            "allianceName": "",
-            "allianceChoice": "",
-            "rank": "",
-            "sortOrder1": "",
-            "sortOrder2": "",
-            "sortOrder3": "",
-            "sortOrder4": "",
-            "sortOrder5": "",
-            "sortOrder6": "",
-            "wins": "",
-            "losses": "",
-            "ties": "",
-            "qualAverage": "",
-            "dq": "",
-            "matchesPlayed": "",
-            "nameShortLocal": "",
-            "cityStateLocal": "",
-            "topSponsorsLocal": "",
-            "sponsorsLocal": "",
-            "organizationLocal": "",
-            "robotNameLocal": "",
-            "awardsLocal": "",
-            "teamMottoLocal": "",
-            "teamNotesLocal": "",
-            "avatar": "null",
-            "lastVisit": "No recent visit"
-        };
-    }
+	"use strict";
+	var teamInfo = {};
+	var avatar = "";
+	if (typeof (localStorage['teamData' + teamData.teamNumber]) !== 'undefined') {
+		teamInfo = JSON.parse(localStorage['teamData' + teamData.teamNumber]);
+		if (typeof teamInfo.cityStateSort === "undefined") {
+			teamInfo.cityStateSort = teamData.country + ":" + teamData.stateProv + ":" + teamData.city;
+		}
+	} else {
+		teamInfo = {
+			"nameShort": teamData.nameShort,
+			"cityState": teamData.city + ', ' + teamData.stateProv,
+			"cityStateSort": teamData.country + ":" + teamData.stateProv + ":" + teamData.city,
+			"nameFull": teamData.nameFull,
+			"rookieYear": teamData.rookieYear,
+			"robotName": teamData.robotName,
+			"organization": "",
+			"sponsors": "",
+			"topSponsors": "",
+			"awards": "",
+			"alliance": "",
+			"allianceName": "",
+			"allianceChoice": "",
+			"rank": "",
+			"sortOrder1": "",
+			"sortOrder2": "",
+			"sortOrder3": "",
+			"sortOrder4": "",
+			"sortOrder5": "",
+			"sortOrder6": "",
+			"wins": "",
+			"losses": "",
+			"ties": "",
+			"qualAverage": "",
+			"dq": "",
+			"matchesPlayed": "",
+			"nameShortLocal": "",
+			"cityStateLocal": "",
+			"topSponsorsLocal": "",
+			"sponsorsLocal": "",
+			"organizationLocal": "",
+			"robotNameLocal": "",
+			"awardsLocal": "",
+			"teamMottoLocal": "",
+			"teamNotesLocal": "",
+			"avatar": "null",
+			"lastVisit": "No recent visit"
+		};
+	}
 
-    var returnData = "";
-    var robotName = "";
-    var organization = "";
-    var sponsors = "";
-    var topSponsors = "";
-    var topSponsorsArray = [];
-    var sponsorsRaw = teamData.nameFull;
-    var sponsorArray = [];
-    var organizationArray = [];
+	var returnData = "";
+	var robotName = "";
+	var organization = "";
+	var sponsors = "";
+	var topSponsors = "";
+	var topSponsorsArray = [];
+	var sponsorsRaw = teamData.nameFull;
+	var sponsorArray = [];
+	var organizationArray = [];
 
-    if (teamData.schoolName) {
-        organization = teamData.schoolName;
-    }
+	if (teamData.schoolName) {
+		organization = teamData.schoolName;
+	}
 
-    //determine if we have the organization already. If so, strip it out of the sponsors.
-    if (!organization) {
-        sponsorArray = trimArray(teamData.nameFull.split("/"));
-    } else {
-        if (organization === sponsorsRaw) {
-            sponsorArray[0] = sponsorsRaw;
-        } else {
-            sponsorsRaw = sponsorsRaw.slice(0, sponsorsRaw.length - organization.length).trim();
-            sponsorsRaw = sponsorsRaw.slice(0, sponsorsRaw.length - 1).trim();
-            sponsorArray = trimArray(sponsorsRaw.split("/"));
-        }
-    }
+	//determine if we have the organization already. If so, strip it out of the sponsors.
+	if (!organization) {
+		sponsorArray = trimArray(teamData.nameFull.split("/"));
+	} else {
+		if (organization === sponsorsRaw) {
+			sponsorArray[0] = sponsorsRaw;
+		} else {
+			sponsorsRaw = sponsorsRaw.slice(0, sponsorsRaw.length - organization.length).trim();
+			sponsorsRaw = sponsorsRaw.slice(0, sponsorsRaw.length - 1).trim();
+			sponsorArray = trimArray(sponsorsRaw.split("/"));
+		}
+	}
 
-    //Prepare for finding the organization from the NameFull field
-    organizationArray = trimArray(teamData.nameFull.split("/").pop().split("&"));
+	//Prepare for finding the organization from the NameFull field
+	organizationArray = trimArray(teamData.nameFull.split("/").pop().split("&"));
 
-    //If there's no sponsors or organization, add nice text.
+	//If there's no sponsors or organization, add nice text.
 
-    if (!sponsorArray && !organizationArray && !organization) {
-        organization = "No organization in TIMS";
-        sponsors = "No sponsors in TIMS";
-        topSponsorsArray[0] = sponsors;
-    }
+	if (!sponsorArray && !organizationArray && !organization) {
+		organization = "No organization in TIMS";
+		sponsors = "No sponsors in TIMS";
+		topSponsorsArray[0] = sponsors;
+	}
 
 
-    //Divide the sponsors into an array
-    if (sponsorArray.length === 1) {
-        sponsors = sponsorArray[0];
-        topSponsors = sponsors;
-    } else {
-        if (organizationArray.length > 1 && !organization) {
-            //To handle pre-2017 events, we need to remove the organization from the array
-            sponsorArray.pop();
-            sponsorArray.push(organizationArray.slice(0).shift());
-        }
-        //build the list of sponsors
-        topSponsorsArray = sponsorArray.slice(0, 5);
-        var lastSponsor = sponsorArray.pop();
-        sponsors = sponsorArray.join(", ");
-        sponsors += " & " + lastSponsor;
-        lastSponsor = topSponsorsArray.pop();
-        topSponsors = topSponsorsArray.join(", ");
-        topSponsors += " & " + lastSponsor;
-    }
+	//Divide the sponsors into an array
+	if (sponsorArray.length === 1) {
+		sponsors = sponsorArray[0];
+		topSponsors = sponsors;
+	} else {
+		if (organizationArray.length > 1 && !organization) {
+			//To handle pre-2017 events, we need to remove the organization from the array
+			sponsorArray.pop();
+			sponsorArray.push(organizationArray.slice(0).shift());
+		}
+		//build the list of sponsors
+		topSponsorsArray = sponsorArray.slice(0, 5);
+		var lastSponsor = sponsorArray.pop();
+		sponsors = sponsorArray.join(", ");
+		sponsors += " & " + lastSponsor;
+		lastSponsor = topSponsorsArray.pop();
+		topSponsors = topSponsorsArray.join(", ");
+		topSponsors += " & " + lastSponsor;
+	}
 
-    //Tease out the organization from the array if pre-2017
-    if (organizationArray.length === 1 && !organization) {
-        organization = organizationArray[0];
-    } else {
-        if (!organization) {
-            organizationArray.shift();
-            organization = organizationArray.join(" & ");
-        }
-    }
-    var lastVisit = "";
-    if (teamInfo.lastVisit === "No recent visit") {
-        lastVisit = "No recent visit";
-    } else {
-        lastVisit = moment(teamInfo.lastVisit).fromNow();
-    }
-    //Return the Team Table
-    returnData += '<tr class="teamsTableRow"><td class = "btn-default" id="teamTableNumber' + teamData.teamNumber + '" onclick="updateTeamInfo(' + teamData.teamNumber + ')"><span class="teamDataNumber">' + teamData.teamNumber + '</span><br><span id="lastVisit' + teamData.teamNumber + '" teamNumber = "' + teamData.teamNumber + '" lastvisit = "' + teamInfo.lastVisit + '">' + lastVisit + '</span></td>';
-    //returnData += '<td id="teamTableRank' + teamData.teamNumber + '" class="'+teamTableRankHighlight(teamInfo.rank)+'">' + teamInfo.rank + '</td>';
-    returnData += '<td id="teamTableRank' + teamData.teamNumber + '" class="rank0"></td>';
-    if ((teamInfo.avatar !== "null") && (localStorage.currentYear === "2018")) {
-        avatar = '<img src="' + teamInfo.avatar + '">&nbsp;';
-    }
-    if (teamInfo.nameShortLocal === "") {
-        returnData += '<td id="teamTableName' + teamData.teamNumber + '">' + '<span id="avatar' + teamData.teamNumber + '">' + avatar + '</span><span class="teamTableName">' + teamInfo.nameShort + '</span></td>';
-    } else {
-        returnData += '<td  class="bg-success" id="teamTableName' + teamData.teamNumber + '">' + '<span id="avatar' + teamData.teamNumber + '">' + avatar + '</span><span class="teamTableName">' + teamInfo.nameShortLocal + '</span></td>';
-    }
-    if (teamInfo.cityStateLocal === "") {
-        returnData += '<td id="teamTableCityState' + teamData.teamNumber + '">' + teamData.city + ", " + teamData.stateProv + '</td>';
-    } else {
-        returnData += '<td  class="bg-success" id="teamTableCityState' + teamData.teamNumber + '">' + teamInfo.cityStateLocal + '</td>';
-    }
-    if (teamInfo.topSponsorsLocal === "") {
-        returnData += '<td id="teamTableNameFull' + teamData.teamNumber + '">' + topSponsors + '</td>';
-    } else {
-        returnData += '<td  class="bg-success" id="teamTableNameFull' + teamData.teamNumber + '">' + teamInfo.topSponsorsLocal + '</td>';
-    }
-    if (teamInfo.organizationLocal === "") {
-        returnData += '<td id="teamTableOrganization' + teamData.teamNumber + '">' + organization + '</td>';
-    } else {
-        returnData += '<td  class="bg-success" id="teamTableNameOrganization' + teamData.teamNumber + '">' + teamInfo.organizationLocal + '</td>';
-    } //replace with organization function.
-    returnData += '<td id="teamTableRookieYear' + teamData.teamNumber + '">' + rookieYearDisplay(teamData.rookieYear) + '</td>';
-    if ((teamData.robotName === null) && (teamInfo.robotNameLocal === "")) {
-        returnData += '<td id="teamTableRobotName' + teamData.teamNumber + '">' + "No robot name reported" + '</td>';
-    } else {
-        if (teamInfo.robotNameLocal === "") {
-            returnData += '<td id="teamTableRobotName' + teamData.teamNumber + '">' + teamData.robotName + '</td>';
-        } else {
-            returnData += '<td  class="bg-success" id="teamTableRobotName' + teamData.teamNumber + '">' + teamInfo.robotNameLocal + '</td>';
-        }
-        robotName = teamData.robotName;
-    }
-    returnData += '<td class = "cityStateSort">' + teamInfo.cityStateSort + '</td>';
-    teamInfo.sponsors = sponsors;
-    teamInfo.topSponsors = topSponsors;
-    teamInfo.organization = organization;
-    localStorage['teamData' + teamData.teamNumber] = JSON.stringify(teamInfo);
+	//Tease out the organization from the array if pre-2017
+	if (organizationArray.length === 1 && !organization) {
+		organization = organizationArray[0];
+	} else {
+		if (!organization) {
+			organizationArray.shift();
+			organization = organizationArray.join(" & ");
+		}
+	}
+	var lastVisit = "";
+	if (teamInfo.lastVisit === "No recent visit") {
+		lastVisit = "No recent visit";
+	} else {
+		lastVisit = moment(teamInfo.lastVisit).fromNow();
+	}
+	//Return the Team Table
+	returnData += '<tr class="teamsTableRow"><td class = "btn-default" id="teamTableNumber' + teamData.teamNumber + '" onclick="updateTeamInfo(' + teamData.teamNumber + ')"><span class="teamDataNumber">' + teamData.teamNumber + '</span><br><span id="lastVisit' + teamData.teamNumber + '" teamNumber = "' + teamData.teamNumber + '" lastvisit = "' + teamInfo.lastVisit + '">' + lastVisit + '</span></td>';
+	//returnData += '<td id="teamTableRank' + teamData.teamNumber + '" class="'+teamTableRankHighlight(teamInfo.rank)+'">' + teamInfo.rank + '</td>';
+	returnData += '<td id="teamTableRank' + teamData.teamNumber + '" class="rank0"></td>';
+	if ((teamInfo.avatar !== "null") && (localStorage.currentYear === "2018")) {
+		avatar = '<img src="' + teamInfo.avatar + '">&nbsp;';
+	}
+	if (teamInfo.nameShortLocal === "") {
+		returnData += '<td id="teamTableName' + teamData.teamNumber + '">' + '<span id="avatar' + teamData.teamNumber + '">' + avatar + '</span><span class="teamTableName">' + teamInfo.nameShort + '</span></td>';
+	} else {
+		returnData += '<td  class="bg-success" id="teamTableName' + teamData.teamNumber + '">' + '<span id="avatar' + teamData.teamNumber + '">' + avatar + '</span><span class="teamTableName">' + teamInfo.nameShortLocal + '</span></td>';
+	}
+	if (teamInfo.cityStateLocal === "") {
+		returnData += '<td id="teamTableCityState' + teamData.teamNumber + '">' + teamData.city + ", " + teamData.stateProv + '</td>';
+	} else {
+		returnData += '<td  class="bg-success" id="teamTableCityState' + teamData.teamNumber + '">' + teamInfo.cityStateLocal + '</td>';
+	}
+	if (teamInfo.topSponsorsLocal === "") {
+		returnData += '<td id="teamTableNameFull' + teamData.teamNumber + '">' + topSponsors + '</td>';
+	} else {
+		returnData += '<td  class="bg-success" id="teamTableNameFull' + teamData.teamNumber + '">' + teamInfo.topSponsorsLocal + '</td>';
+	}
+	if (teamInfo.organizationLocal === "") {
+		returnData += '<td id="teamTableOrganization' + teamData.teamNumber + '">' + organization + '</td>';
+	} else {
+		returnData += '<td  class="bg-success" id="teamTableNameOrganization' + teamData.teamNumber + '">' + teamInfo.organizationLocal + '</td>';
+	} //replace with organization function.
+	returnData += '<td id="teamTableRookieYear' + teamData.teamNumber + '">' + rookieYearDisplay(teamData.rookieYear) + '</td>';
+	if ((teamData.robotName === null) && (teamInfo.robotNameLocal === "")) {
+		returnData += '<td id="teamTableRobotName' + teamData.teamNumber + '">' + "No robot name reported" + '</td>';
+	} else {
+		if (teamInfo.robotNameLocal === "") {
+			returnData += '<td id="teamTableRobotName' + teamData.teamNumber + '">' + teamData.robotName + '</td>';
+		} else {
+			returnData += '<td  class="bg-success" id="teamTableRobotName' + teamData.teamNumber + '">' + teamInfo.robotNameLocal + '</td>';
+		}
+		robotName = teamData.robotName;
+	}
+	returnData += '<td class = "cityStateSort">' + teamInfo.cityStateSort + '</td>';
+	teamInfo.sponsors = sponsors;
+	teamInfo.topSponsors = topSponsors;
+	teamInfo.organization = organization;
+	localStorage['teamData' + teamData.teamNumber] = JSON.stringify(teamInfo);
 
-    return returnData + '</tr>';
+	return returnData + '</tr>';
 }
 
 function trimArray(arr) {
-    "use strict";
-    for (var i = 0; i <= arr.length - 1; i++) {
-        arr[i] = arr[i].trim();
-    }
-    return arr;
+	"use strict";
+	for (var i = 0; i <= arr.length - 1; i++) {
+		arr[i] = arr[i].trim();
+	}
+	return arr;
 }
 
 function teamTableRankHighlight(rank) {
-    "use strict";
-    if ((rank <= 8) && (rank > 1)) {
-        return "rank2";
-    } else if ((rank < 11) && (rank > 8)) {
-        return "rank9";
-    } else if (rank === 1) {
-        return "rank1";
+	"use strict";
+	if ((rank <= 8) && (rank > 1)) {
+		return "rank2";
+	} else if ((rank < 11) && (rank > 8)) {
+		return "rank9";
+	} else if (rank === 1) {
+		return "rank1";
 
-    } else {
-        return "rank0";
-    }
+	} else {
+		return "rank0";
+	}
 
 }
 
 function rankHighlight(station, rank) {
-    "use strict";
-    if ((rank <= 8) && (rank > 1)) {
-        document.getElementById(station).style.color = "white";
-        document.getElementById(station).style.backgroundColor = "green";
-    } else if ((rank < 11) && (rank > 8)) {
-        document.getElementById(station).style.color = "black";
-        document.getElementById(station).style.backgroundColor = "yellow";
-    } else if (rank === 1) {
-        document.getElementById(station).style.color = "white";
-        document.getElementById(station).style.backgroundColor = "orange";
+	"use strict";
+	if ((rank <= 8) && (rank > 1)) {
+		document.getElementById(station).style.color = "white";
+		document.getElementById(station).style.backgroundColor = "green";
+	} else if ((rank < 11) && (rank > 8)) {
+		document.getElementById(station).style.color = "black";
+		document.getElementById(station).style.backgroundColor = "yellow";
+	} else if (rank === 1) {
+		document.getElementById(station).style.color = "white";
+		document.getElementById(station).style.backgroundColor = "orange";
 
-    } else {
-        document.getElementById(station).style.color = "";
-        document.getElementById(station).style.backgroundColor = "";
-    }
+	} else {
+		document.getElementById(station).style.color = "";
+		document.getElementById(station).style.backgroundColor = "";
+	}
 
 }
 
 function updateTeamInfo(teamNumber) {
-    "use strict";
-    localStorage.currentTeam = teamNumber;
-    var teamData = JSON.parse(localStorage["teamData" + teamNumber]);
-    $("#teamNumberUpdate").html(teamNumber);
+	"use strict";
+	localStorage.currentTeam = teamNumber;
+	var teamData = JSON.parse(localStorage["teamData" + teamNumber]);
+	$("#teamNumberUpdate").html(teamNumber);
 
-    if (teamData.nameShort) {
-        $("#teamNameUpdateTIMS").html(teamData.nameShort);
-    } else {
-        $("#teamNameUpdateTIMS").html("No value");
-    }
-    if (teamData.nameShortLocal === "") {
-        $("#teamNameUpdate").val(teamData.nameShort);
-        $("#teamNameUpdateLabel").removeClass("bg-success");
-    } else {
-        $("#teamNameUpdate").val(teamData.nameShortLocal);
-        $("#teamNameUpdateLabel").addClass("bg-success");
-    }
+	if (teamData.nameShort) {
+		$("#teamNameUpdateTIMS").html(teamData.nameShort);
+	} else {
+		$("#teamNameUpdateTIMS").html("No value");
+	}
+	if (teamData.nameShortLocal === "") {
+		$("#teamNameUpdate").val(teamData.nameShort);
+		$("#teamNameUpdateLabel").removeClass("bg-success");
+	} else {
+		$("#teamNameUpdate").val(teamData.nameShortLocal);
+		$("#teamNameUpdateLabel").addClass("bg-success");
+	}
 
-    if (teamData.organization) {
-        $("#organizationUpdateTIMS").html(teamData.organization);
-    } else {
-        $("#organizationUpdateTIMS").html("No value");
-    }
-    if (teamData.organizationLocal === "") {
-        $("#organizationUpdate").val(teamData.organization);
-        $("#organizationUpdateLabel").removeClass("bg-success");
-    } else {
-        $("#organizationUpdate").val(teamData.organizationLocal);
-        $("#organizationUpdateLabel").addClass("bg-success");
-    }
+	if (teamData.organization) {
+		$("#organizationUpdateTIMS").html(teamData.organization);
+	} else {
+		$("#organizationUpdateTIMS").html("No value");
+	}
+	if (teamData.organizationLocal === "") {
+		$("#organizationUpdate").val(teamData.organization);
+		$("#organizationUpdateLabel").removeClass("bg-success");
+	} else {
+		$("#organizationUpdate").val(teamData.organizationLocal);
+		$("#organizationUpdateLabel").addClass("bg-success");
+	}
 
-    if (teamData.robotName) {
-        $("#robotNameUpdateTIMS").html(teamData.robotName);
-    } else {
-        $("#robotNameUpdateTIMS").html("No value");
-    }
-    if (teamData.robotNameLocal === "") {
-        $("#robotNameUpdate").val(teamData.robotName);
-        $("#robotNameUpdateLabel").removeClass("bg-success");
-    } else {
-        $("#robotNameUpdate").val(teamData.robotNameLocal);
-        $("#robotNameUpdateLabel").addClass("bg-success");
-    }
+	if (teamData.robotName) {
+		$("#robotNameUpdateTIMS").html(teamData.robotName);
+	} else {
+		$("#robotNameUpdateTIMS").html("No value");
+	}
+	if (teamData.robotNameLocal === "") {
+		$("#robotNameUpdate").val(teamData.robotName);
+		$("#robotNameUpdateLabel").removeClass("bg-success");
+	} else {
+		$("#robotNameUpdate").val(teamData.robotNameLocal);
+		$("#robotNameUpdateLabel").addClass("bg-success");
+	}
 
-    if (teamData.cityState) {
-        $("#cityStateUpdateTIMS").html(teamData.cityState);
-    } else {
-        $("#cityStateUpdateTIMS").html("No value");
-    }
-    if (teamData.cityStateLocal === "") {
-        $("#cityStateUpdate").val(teamData.cityState);
-        $("#cityStateUpdateLabel").removeClass("bg-success");
-    } else {
-        $("#cityStateUpdate").val(teamData.cityStateLocal);
-        $("#cityStateUpdateLabel").addClass("bg-success");
-    }
+	if (teamData.cityState) {
+		$("#cityStateUpdateTIMS").html(teamData.cityState);
+	} else {
+		$("#cityStateUpdateTIMS").html("No value");
+	}
+	if (teamData.cityStateLocal === "") {
+		$("#cityStateUpdate").val(teamData.cityState);
+		$("#cityStateUpdateLabel").removeClass("bg-success");
+	} else {
+		$("#cityStateUpdate").val(teamData.cityStateLocal);
+		$("#cityStateUpdateLabel").addClass("bg-success");
+	}
 
-    if (teamData.topSponsorsLocal === "") {
-        $("#topSponsorsUpdate").val(teamData.topSponsors);
-        $("#topSponsorsUpdateLabel").removeClass("bg-success");
-    } else {
-        $("#topSponsorsUpdate").val(teamData.topSponsorsLocal);
-        $("#topSponsorsUpdateLabel").addClass("bg-success");
-    }
+	if (teamData.topSponsorsLocal === "") {
+		$("#topSponsorsUpdate").val(teamData.topSponsors);
+		$("#topSponsorsUpdateLabel").removeClass("bg-success");
+	} else {
+		$("#topSponsorsUpdate").val(teamData.topSponsorsLocal);
+		$("#topSponsorsUpdateLabel").addClass("bg-success");
+	}
 
-    if (teamData.sponsorsLocal === "") {
-        $("#sponsorsUpdate").val(teamData.sponsors);
-        $("#sponsorsUpdateLabel").removeClass("bg-success");
-    } else {
-        $("#sponsorsUpdate").val(teamData.sponsorsLocal);
-        $("#sponsorsUpdateLabel").addClass("bg-success");
-    }
+	if (teamData.sponsorsLocal === "") {
+		$("#sponsorsUpdate").val(teamData.sponsors);
+		$("#sponsorsUpdateLabel").removeClass("bg-success");
+	} else {
+		$("#sponsorsUpdate").val(teamData.sponsorsLocal);
+		$("#sponsorsUpdateLabel").addClass("bg-success");
+	}
 
-    if (teamData.awardsLocal === "") {
-        //$("#awardsUpdate").val(teamData.awards);
-        $("#awardsUpdate").html(teamData.awards);
-        $("#awardsUpdateLabel").removeClass("bg-success");
-    } else {
-        //$("#awardsUpdate").val(teamData.awardsLocal);
-        $("#awardsUpdate").html(teamData.awardsLocal);
-        $("#awardsUpdateLabel").addClass("bg-success");
-    }
+	if (teamData.awardsLocal === "") {
+		//$("#awardsUpdate").val(teamData.awards);
+		$("#awardsUpdate").html(teamData.awards);
+		$("#awardsUpdateLabel").removeClass("bg-success");
+	} else {
+		//$("#awardsUpdate").val(teamData.awardsLocal);
+		$("#awardsUpdate").html(teamData.awardsLocal);
+		$("#awardsUpdateLabel").addClass("bg-success");
+	}
 
-    $("#teamMottoUpdate").val(teamData.teamMottoLocal);
-    $("#teamMottoUpdateLabel").addClass("bg-success");
+	$("#teamMottoUpdate").val(teamData.teamMottoLocal);
+	$("#teamMottoUpdateLabel").addClass("bg-success");
 
-    $("#teamNotesUpdate").val(teamData.teamNotesLocal);
-    $("#teamNotesUpdateLabel").addClass("bg-success");
+	$("#teamNotesUpdate").val(teamData.teamNotesLocal);
+	$("#teamNotesUpdateLabel").addClass("bg-success");
 
-    // Get all elements with class="tabcontent" and hide them
-    $(".tabcontent").hide();
+	// Get all elements with class="tabcontent" and hide them
+	$(".tabcontent").hide();
 
-    // Show the current tab, and add an "active" class to the link that opened the tab
-    $("#teamDataEntry").show();
+	// Show the current tab, and add an "active" class to the link that opened the tab
+	$("#teamDataEntry").show();
 }
 
 
 function updateTeamInfoDone(cloudSave) {
-    "use strict";
-    var teamNumber = localStorage.currentTeam;
-    var teamData = JSON.parse(localStorage["teamData" + teamNumber]);
+	"use strict";
+	var teamNumber = localStorage.currentTeam;
+	var teamData = JSON.parse(localStorage["teamData" + teamNumber]);
 
-    if ((teamData.nameShort !== $("#teamNameUpdate").val()) && ($("#teamNameUpdate").val() !== "")) {
-        teamData.nameShortLocal = $("#teamNameUpdate").val();
-        $("#teamTableName" + teamNumber).html($("#teamNameUpdate").val());
-    } else {
-        teamData.nameShortLocal = "";
-        $("#teamTableName" + teamNumber).html(teamData.nameShort);
-    }
+	if ((teamData.nameShort !== $("#teamNameUpdate").val()) && ($("#teamNameUpdate").val() !== "")) {
+		teamData.nameShortLocal = $("#teamNameUpdate").val();
+		$("#teamTableName" + teamNumber).html($("#teamNameUpdate").val());
+	} else {
+		teamData.nameShortLocal = "";
+		$("#teamTableName" + teamNumber).html(teamData.nameShort);
+	}
 
-    if ((teamData.cityState !== $("#cityStateUpdate").val()) && ($("#cityStateUpdate").val() !== "")) {
-        teamData.cityStateLocal = $("#cityStateUpdate").val();
-        $("#teamTableCityState" + teamNumber).html($("#cityStateUpdate").val());
-    } else {
-        teamData.cityStateLocal = "";
-        $("#teamTableCityState" + teamNumber).html(teamData.cityState);
-    }
+	if ((teamData.cityState !== $("#cityStateUpdate").val()) && ($("#cityStateUpdate").val() !== "")) {
+		teamData.cityStateLocal = $("#cityStateUpdate").val();
+		$("#teamTableCityState" + teamNumber).html($("#cityStateUpdate").val());
+	} else {
+		teamData.cityStateLocal = "";
+		$("#teamTableCityState" + teamNumber).html(teamData.cityState);
+	}
 
-    if (teamData.teamNotesLocal !== $("#teamNotesUpdate").val()) {
-        teamData.teamNotesLocal = $("#teamNotesUpdate").val();
-    }
+	if (teamData.teamNotesLocal !== $("#teamNotesUpdate").val()) {
+		teamData.teamNotesLocal = $("#teamNotesUpdate").val();
+	}
 
-    if ((teamData.topSponsors !== $("#topSponsorsUpdate").val()) && ($("#topSponsorsUpdate").val() !== "")) {
-        teamData.topSponsorsLocal = $("#topSponsorsUpdate").val();
-        $("#teamTableTopSponsors" + teamNumber).html($("#topSponsorsUpdate").val());
-    } else {
-        teamData.topSponsorsLocal = "";
-        $("#teamTableTopSponsors" + teamNumber).html(teamData.topSponsors);
-    }
-    if ((teamData.sponsors !== $("#sponsorsUpdate").val()) && ($("#sponsorsUpdate").val() !== "")) {
-        teamData.sponsorsLocal = $("#sponsorsUpdate").val();
-        $("#teamTableSponsors" + teamNumber).html($("#sponsorsUpdate").val());
-    } else {
-        teamData.sponsorsLocal = "";
-        $("#teamTableSponsors" + teamNumber).html(teamData.sponsors);
-    }
-    if ((teamData.organization !== $("#organizationUpdate").val()) && ($("#organizationUpdate").val() !== "")) {
-        teamData.organizationLocal = $("#organizationUpdate").val();
-        $("#teamTableOrganization" + teamNumber).html($("#organizationUpdate").val());
-    } else {
-        teamData.organizationLocal = "";
-        $("#teamTableOrganization" + teamNumber).html(teamData.organization);
-    }
-    if ((teamData.robotName !== $("#robotNameUpdate").val()) && ($("#robotNameUpdate").val() !== "")) {
-        teamData.robotNameLocal = $("#robotNameUpdate").val();
-        $("#teamTableRobotName" + teamNumber).html($("#robotNameUpdate").val());
-    } else {
-        teamData.robotNameLocal = "";
-        $("#teamTableRobotName" + teamNumber).html(teamData.robotName);
-    }
-    //    if ((teamData.awards !== $("#awardsUpdate").val()) && ($("#awardsUpdate").val() !== "")) {
-    //        teamData.awardsLocal = $("#awardsUpdate").val();
-    //        $("#teamTableAwards" + teamNumber).html($("#awardsUpdate").val());
-    //    } else {
-    //        teamData.awardsLocal = "";
-    //        $("#teamTableAwards" + teamNumber).html(teamData.awards);
-    //    }
+	if ((teamData.topSponsors !== $("#topSponsorsUpdate").val()) && ($("#topSponsorsUpdate").val() !== "")) {
+		teamData.topSponsorsLocal = $("#topSponsorsUpdate").val();
+		$("#teamTableTopSponsors" + teamNumber).html($("#topSponsorsUpdate").val());
+	} else {
+		teamData.topSponsorsLocal = "";
+		$("#teamTableTopSponsors" + teamNumber).html(teamData.topSponsors);
+	}
+	if ((teamData.sponsors !== $("#sponsorsUpdate").val()) && ($("#sponsorsUpdate").val() !== "")) {
+		teamData.sponsorsLocal = $("#sponsorsUpdate").val();
+		$("#teamTableSponsors" + teamNumber).html($("#sponsorsUpdate").val());
+	} else {
+		teamData.sponsorsLocal = "";
+		$("#teamTableSponsors" + teamNumber).html(teamData.sponsors);
+	}
+	if ((teamData.organization !== $("#organizationUpdate").val()) && ($("#organizationUpdate").val() !== "")) {
+		teamData.organizationLocal = $("#organizationUpdate").val();
+		$("#teamTableOrganization" + teamNumber).html($("#organizationUpdate").val());
+	} else {
+		teamData.organizationLocal = "";
+		$("#teamTableOrganization" + teamNumber).html(teamData.organization);
+	}
+	if ((teamData.robotName !== $("#robotNameUpdate").val()) && ($("#robotNameUpdate").val() !== "")) {
+		teamData.robotNameLocal = $("#robotNameUpdate").val();
+		$("#teamTableRobotName" + teamNumber).html($("#robotNameUpdate").val());
+	} else {
+		teamData.robotNameLocal = "";
+		$("#teamTableRobotName" + teamNumber).html(teamData.robotName);
+	}
+	//    if ((teamData.awards !== $("#awardsUpdate").val()) && ($("#awardsUpdate").val() !== "")) {
+	//        teamData.awardsLocal = $("#awardsUpdate").val();
+	//        $("#teamTableAwards" + teamNumber).html($("#awardsUpdate").val());
+	//    } else {
+	//        teamData.awardsLocal = "";
+	//        $("#teamTableAwards" + teamNumber).html(teamData.awards);
+	//    }
 
-    if ($("#awardsUpdate").html() === "<br>") {
-        $("#awardsUpdate").html("");
-    }
+	if ($("#awardsUpdate").html() === "<br>") {
+		$("#awardsUpdate").html("");
+	}
 
-    if ((teamData.awards !== $("#awardsUpdate").html()) && ($("#awardsUpdate").html() !== "")) {
-        teamData.awardsLocal = $("#awardsUpdate").html();
-        $("#teamTableAwards" + teamNumber).html($("#awardsUpdate").html());
-    } else {
-        teamData.awardsLocal = "";
-        $("#teamTableAwards" + teamNumber).html(teamData.awards);
-    }
+	if ((teamData.awards !== $("#awardsUpdate").html()) && ($("#awardsUpdate").html() !== "")) {
+		teamData.awardsLocal = $("#awardsUpdate").html();
+		$("#teamTableAwards" + teamNumber).html($("#awardsUpdate").html());
+	} else {
+		teamData.awardsLocal = "";
+		$("#teamTableAwards" + teamNumber).html(teamData.awards);
+	}
 
 
-    if (teamData.teamMottoLocal !== $("#teamMottoUpdate").val()) {
-        teamData.teamMottoLocal = $("#teamMottoUpdate").val();
-    }
+	if (teamData.teamMottoLocal !== $("#teamMottoUpdate").val()) {
+		teamData.teamMottoLocal = $("#teamMottoUpdate").val();
+	}
 
-    teamData.lastVisit = moment().format();
+	teamData.lastVisit = moment().format();
 
-    localStorage["teamData" + teamNumber] = JSON.stringify(teamData);
-    if (cloudSave) {
-        teamUpdateCalls++;
-        sendTeamUpdates(teamNumber);
-        BootstrapDialog.show({
-            message: "Team data saved to gatool Cloud. Thank you for sharing your local data for Team " + localStorage.currentTeam + " with the FIRST GA and MC community.",
-            buttons: [{
-                icon: 'glyphicon glyphicon-cloud-upload',
-                label: 'OK',
-                hotkey: 13, // Enter.
-                title: 'OK',
-                action: function (dialogRef) {
-                    dialogRef.close();
-                }
-            }]
-        });
-    }
-    // Get all elements with class="tabcontent" and hide them
+	localStorage["teamData" + teamNumber] = JSON.stringify(teamData);
+	if (cloudSave) {
+		teamUpdateCalls++;
+		sendTeamUpdates(teamNumber);
+		BootstrapDialog.show({
+			message: "Team data saved to gatool Cloud. Thank you for sharing your local data for Team " + localStorage.currentTeam + " with the FIRST GA and MC community.",
+			buttons: [{
+				icon: 'glyphicon glyphicon-cloud-upload',
+				label: 'OK',
+				hotkey: 13, // Enter.
+				title: 'OK',
+				action: function (dialogRef) {
+					dialogRef.close();
+				}
+			}]
+		});
+	}
+	// Get all elements with class="tabcontent" and hide them
 
-    $(".tabcontent").hide();
+	$(".tabcontent").hide();
 
-    // Show the current tab, and add an "active" class to the link that opened the tab
-    updateTeamTable();
-    if ($("#announceDisplay").css("display") !== "none") {
-        announceDisplay();
-    }
-    $("#teamdata").show();
-    document.getElementById('teamDataTabPicker').click();
+	// Show the current tab, and add an "active" class to the link that opened the tab
+	updateTeamTable();
+	
+	$("#teamdata").show();
+	document.getElementById('teamDataTabPicker').click();
 }
 
 function rookieYearDisplay(year) {
-    "use strict";
-    var currrentYear = localStorage.currentYear;
-    var years = currrentYear - year + 1;
-    var yearTest = years.toString().slice(-1);
-    var tag = "";
-    switch (years) {
-        case 1:
-            return year + " (Rookie Year)";
-        case 2:
-            return year + " (2nd season)";
-        case 3:
-            return year + " (3rd season)";
-        case 10:
-            return year + " (10th season)";
-        case 11:
-            return year + " (11th season)";
-        case 12:
-            return year + " (12th season)";
-        case 13:
-            return year + " (13th season)";
-        default:
-            if (yearTest === "1") {
-                tag = "st";
-            } else if (yearTest === "2") {
-                tag = "nd";
-            } else if (yearTest === "3") {
-                tag = "rd";
-            } else {
-                tag = "th";
-            }
-            return year + " (" + parseInt(currrentYear - year + 1) + tag + " season)";
-    }
+	"use strict";
+	var currrentYear = localStorage.currentYear;
+	var years = currrentYear - year + 1;
+	var yearTest = years.toString().slice(-1);
+	var tag = "";
+	switch (years) {
+		case 1:
+			return year + " (Rookie Year)";
+		case 2:
+			return year + " (2nd season)";
+		case 3:
+			return year + " (3rd season)";
+		case 10:
+			return year + " (10th season)";
+		case 11:
+			return year + " (11th season)";
+		case 12:
+			return year + " (12th season)";
+		case 13:
+			return year + " (13th season)";
+		default:
+			if (yearTest === "1") {
+				tag = "st";
+			} else if (yearTest === "2") {
+				tag = "nd";
+			} else if (yearTest === "3") {
+				tag = "rd";
+			} else {
+				tag = "th";
+			}
+			return year + " (" + parseInt(currrentYear - year + 1) + tag + " season)";
+	}
 }
 
 function resetLocalStorage() {
-    "use strict";
-    BootstrapDialog.show({
-        type: 'type-danger',
-        title: '<b>Reset Local Storage</b>',
-        message: 'You are about to erase all of your local changes to team information. This action will effectively reset gatool to its "factory" condition. Are you sure you want to do this?',
-        buttons: [{
-            icon: 'glyphicon glyphicon-check',
-            label: "No, don't reset my local changes.",
-            hotkey: 78, // "N".
-            cssClass: "btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton",
-            action: function (dialogRef) {
-                dialogRef.close();
-            }
-        }, {
-            icon: 'glyphicon glyphicon-refresh',
-            label: 'Yes, I do want to reset my local changes.<br>I understand that I will now need to<br>re-enter my changes or<br>download them from the gatool cloud.',
-            hotkey: 13, // Enter.
-            cssClass: 'btn btn-danger col-md-5 col-xs-12 col-sm-12 alertButton',
-            action: function (dialogRef) {
-                dialogRef.close();
-                localStorage.clear();
-                BootstrapDialog.show({
-                    message: "LocalStorage cleared.<br>Page will now reload to recover data from the server. Select your event after the page reloads.",
-                    buttons: [{
-                        icon: 'glyphicon glyphicon-refresh',
-                        label: 'OK',
-                        hotkey: 13, // Enter.
-                        title: 'OK',
-                        action: function (dialogRef) {
-                            location.reload();
-                        }
-                    }]
-                });
+	"use strict";
+	BootstrapDialog.show({
+		type: 'type-danger',
+		title: '<b>Reset Local Storage</b>',
+		message: 'You are about to erase all of your local changes to team information. This action will effectively reset gatool to its "factory" condition. Are you sure you want to do this?',
+		buttons: [{
+			icon: 'glyphicon glyphicon-check',
+			label: "No, don't reset my local changes.",
+			hotkey: 78, // "N".
+			cssClass: "btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton",
+			action: function (dialogRef) {
+				dialogRef.close();
+			}
+		}, {
+			icon: 'glyphicon glyphicon-refresh',
+			label: 'Yes, I do want to reset my local changes.<br>I understand that I will now need to<br>re-enter my changes or<br>download them from the gatool cloud.',
+			hotkey: 13, // Enter.
+			cssClass: 'btn btn-danger col-md-5 col-xs-12 col-sm-12 alertButton',
+			action: function (dialogRef) {
+				dialogRef.close();
+				localStorage.clear();
+				BootstrapDialog.show({
+					message: "LocalStorage cleared.<br>Page will now reload to recover data from the server. Select your event after the page reloads.",
+					buttons: [{
+						icon: 'glyphicon glyphicon-refresh',
+						label: 'OK',
+						hotkey: 13, // Enter.
+						title: 'OK',
+						action: function (dialogRef) {
+							location.reload();
+						}
+					}]
+				});
 
-            }
-        }]
-    });
+			}
+		}]
+	});
 }
 
 function logout() {
-    "use strict";
-    BootstrapDialog.show({
-        type: 'type-primary',
-        title: '<b>Logout of gatool</b>',
-        message: 'You are about to logout of gatool. Your local changes will be preserved until you reset your browser cache, so your changes will be here when you login again on this device. Are you sure you want to do this?',
-        buttons: [{
-            icon: 'glyphicon glyphicon-check',
-            label: "No, I don't want to logout now.",
-            hotkey: 78, // "N".
-            cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
-            action: function (dialogRef) {
-                dialogRef.close();
-            }
-        }, {
-            icon: 'glyphicon glyphicon-log-out',
-            label: 'Yes, I do want to logout now.',
-            hotkey: 13, // Enter.
-            cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
-            action: function (dialogRef) {
-                dialogRef.close();
-                location.href = "/logout";
-            }
-        }]
-    });
+	"use strict";
+	BootstrapDialog.show({
+		type: 'type-primary',
+		title: '<b>Logout of gatool</b>',
+		message: 'You are about to logout of gatool. Your local changes will be preserved until you reset your browser cache, so your changes will be here when you login again on this device. Are you sure you want to do this?',
+		buttons: [{
+			icon: 'glyphicon glyphicon-check',
+			label: "No, I don't want to logout now.",
+			hotkey: 78, // "N".
+			cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
+			action: function (dialogRef) {
+				dialogRef.close();
+			}
+		}, {
+			icon: 'glyphicon glyphicon-log-out',
+			label: 'Yes, I do want to logout now.',
+			hotkey: 13, // Enter.
+			cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
+			action: function (dialogRef) {
+				dialogRef.close();
+				location.href = "/logout";
+			}
+		}]
+	});
 }
 
 function saveTeamUpdates() {
-    //This function saves ALL of the team data to gatool Cloud.
-    "use strict";
-    BootstrapDialog.show({
-        type: 'type-info',
-        title: '<b>Save Team Updates to the gatool Cloud</b>',
-        message: "<b>You are about to save your local updates to the gatool Cloud. <span class='danger'>This will replace data in gatool Cloud with the changes you have made to teams in this event</span>.</b><br>With great power comes great responsibility. To ensure the best experience for everyone, we ask that only the GAs and MCs who are working an event save their changes.<br>If you are not working at an event, <b>please do not save changes between Wednesday and Sunday during the competition season</b>. This policy will allow everyone to benefit from the on-site team's research.<br><b>Are you sure you want to do this?</b>",
-        buttons: [{
-            icon: 'glyphicon glyphicon-check',
-            label: "No, don't save my updates now.",
-            hotkey: 78, // "N".
-            cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
-            action: function (dialogRef) {
-                dialogRef.close();
-            }
-        }, {
-            icon: 'glyphicon glyphicon-cloud-upload',
-            label: 'Yes, save my updates now.',
-            hotkey: 13, // Enter.
-            cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
-            action: function (dialogRef) {
-                dialogRef.close();
-                BootstrapDialog.show({
-                    type: 'type-success',
-                    icon: 'glyphicon glyphicon-thumbs-up',
-                    title: '<b>Are you sure you want to upload Team Data for ' + localStorage.currentEvent + '?</b>',
-                    message: "<span class = 'allianceAnnounceDialog'>Are you sure you want to upload Team Data for " + localStorage.currentEvent + "? You can upload data for a specific team from the Team Data Screen.</span>",
-                    buttons: [{
-                        icon: 'glyphicon glyphicon-thumbs-down',
-                        label: 'No, I do not want to do this now.',
-                        hotkey: 78, // "N".
-                        cssClass: "btn btn-danger col-md-5 col-xs-12 col-sm-12 alertButton",
-                        action: function (dialogRef) {
-                            dialogRef.close();
-                        }
-                    }, {
-                        icon: 'glyphicon glyphicon-thumbs-up',
-                        cssClass: "btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton",
-                        label: 'Yes, I do want to do this now.',
-                        hotkey: 13, // Enter.
-                        action: function (dialogRef) {
-                            dialogRef.close();
-                            //var teamData = JSON.parse(localStorage.teamList);
-                            var teamData = eventTeamList.slice(0);
-                            for (var i = 0; i < teamData.length; i++) {
-                                teamUpdateCalls++;
-                                sendTeamUpdates(teamData[i].teamNumber);
-                            }
-                            BootstrapDialog.show({
-                                message: "Team data saved to gatool Cloud. Thank you for sharing your local data for " + localStorage.currentEvent + " with the FIRST GA and MC community.",
-                                buttons: [{
-                                    icon: 'glyphicon glyphicon-cloud-upload',
-                                    cssClass: "btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton",
-                                    label: 'OK',
-                                    hotkey: 13, // Enter.
-                                    title: 'OK',
-                                    action: function (dialogRef) {
-                                        dialogRef.close();
-                                    }
-                                }]
-                            });
-                        }
-                    }]
-                });
-            }
-        }]
-    });
+	//This function saves ALL of the team data to gatool Cloud.
+	"use strict";
+	BootstrapDialog.show({
+		type: 'type-info',
+		title: '<b>Save Team Updates to the gatool Cloud</b>',
+		message: "<b>You are about to save your local updates to the gatool Cloud. <span class='danger'>This will replace data in gatool Cloud with the changes you have made to teams in this event</span>.</b><br>With great power comes great responsibility. To ensure the best experience for everyone, we ask that only the GAs and MCs who are working an event save their changes.<br>If you are not working at an event, <b>please do not save changes between Wednesday and Sunday during the competition season</b>. This policy will allow everyone to benefit from the on-site team's research.<br><b>Are you sure you want to do this?</b>",
+		buttons: [{
+			icon: 'glyphicon glyphicon-check',
+			label: "No, don't save my updates now.",
+			hotkey: 78, // "N".
+			cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
+			action: function (dialogRef) {
+				dialogRef.close();
+			}
+		}, {
+			icon: 'glyphicon glyphicon-cloud-upload',
+			label: 'Yes, save my updates now.',
+			hotkey: 13, // Enter.
+			cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
+			action: function (dialogRef) {
+				dialogRef.close();
+				BootstrapDialog.show({
+					type: 'type-success',
+					icon: 'glyphicon glyphicon-thumbs-up',
+					title: '<b>Are you sure you want to upload Team Data for ' + localStorage.currentEvent + '?</b>',
+					message: "<span class = 'allianceAnnounceDialog'>Are you sure you want to upload Team Data for " + localStorage.currentEvent + "? You can upload data for a specific team from the Team Data Screen.</span>",
+					buttons: [{
+						icon: 'glyphicon glyphicon-thumbs-down',
+						label: 'No, I do not want to do this now.',
+						hotkey: 78, // "N".
+						cssClass: "btn btn-danger col-md-5 col-xs-12 col-sm-12 alertButton",
+						action: function (dialogRef) {
+							dialogRef.close();
+						}
+					}, {
+						icon: 'glyphicon glyphicon-thumbs-up',
+						cssClass: "btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton",
+						label: 'Yes, I do want to do this now.',
+						hotkey: 13, // Enter.
+						action: function (dialogRef) {
+							dialogRef.close();
+							//var teamData = JSON.parse(localStorage.teamList);
+							var teamData = eventTeamList.slice(0);
+							for (var i = 0; i < teamData.length; i++) {
+								teamUpdateCalls++;
+								sendTeamUpdates(teamData[i].teamNumber);
+							}
+							BootstrapDialog.show({
+								message: "Team data saved to gatool Cloud. Thank you for sharing your local data for " + localStorage.currentEvent + " with the FIRST GA and MC community.",
+								buttons: [{
+									icon: 'glyphicon glyphicon-cloud-upload',
+									cssClass: "btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton",
+									label: 'OK',
+									hotkey: 13, // Enter.
+									title: 'OK',
+									action: function (dialogRef) {
+										dialogRef.close();
+									}
+								}]
+							});
+						}
+					}]
+				});
+			}
+		}]
+	});
 }
 
 function saveTeamUpdate() {
-    //This function saves the team stored in localStorage.currentTeam's data to gatool Cloud.
-    "use strict";
-    BootstrapDialog.show({
-        type: 'type-info',
-        title: '<b>Save Team ' + localStorage.currentTeam + ' Update to the gatool Cloud</b>',
-        message: "<b>You are about to save your local updates to the gatool Cloud. <span class='danger'>This will replace data in gatool Cloud with the changes you have made to this specific team in this event</span>.</b><br>With great power comes great responsibility. To ensure the best experience for everyone, we ask that only the GAs and MCs who are working an event save their changes.<br>If you are not working at an event, <b>please do not save changes between Wednesday and Sunday during the competition season</b>. This policy will allow everyone to benefit from the on-site team's research.<br><b>Are you sure you want to do this?</b>",
-        buttons: [{
-            icon: 'glyphicon glyphicon-check',
-            label: "No, don't save this update now.",
-            hotkey: 78, // "N".
-            cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
-            action: function (dialogRef) {
-                dialogRef.close();
-            }
-        }, {
-            icon: 'glyphicon glyphicon-cloud-upload',
-            label: 'Yes, save this update now.',
-            hotkey: 13, // Enter.
-            cssClass: 'bth btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
-            action: function (dialogRef) {
-                dialogRef.close();
-                updateTeamInfoDone("true");
-            }
-        }]
-    });
+	//This function saves the team stored in localStorage.currentTeam's data to gatool Cloud.
+	"use strict";
+	BootstrapDialog.show({
+		type: 'type-info',
+		title: '<b>Save Team ' + localStorage.currentTeam + ' Update to the gatool Cloud</b>',
+		message: "<b>You are about to save your local updates to the gatool Cloud. <span class='danger'>This will replace data in gatool Cloud with the changes you have made to this specific team in this event</span>.</b><br>With great power comes great responsibility. To ensure the best experience for everyone, we ask that only the GAs and MCs who are working an event save their changes.<br>If you are not working at an event, <b>please do not save changes between Wednesday and Sunday during the competition season</b>. This policy will allow everyone to benefit from the on-site team's research.<br><b>Are you sure you want to do this?</b>",
+		buttons: [{
+			icon: 'glyphicon glyphicon-check',
+			label: "No, don't save this update now.",
+			hotkey: 78, // "N".
+			cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
+			action: function (dialogRef) {
+				dialogRef.close();
+			}
+		}, {
+			icon: 'glyphicon glyphicon-cloud-upload',
+			label: 'Yes, save this update now.',
+			hotkey: 13, // Enter.
+			cssClass: 'bth btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
+			action: function (dialogRef) {
+				dialogRef.close();
+				updateTeamInfoDone("true");
+			}
+		}]
+	});
 }
 
 
 function loadTeamUpdates() {
-    "use strict";
-    BootstrapDialog.show({
-        type: 'type-warning',
-        title: '<b>Load Team Updates from the gatool Cloud</b>',
-        message: 'You are about to load team data updates from the gatool Cloud. <b>This will replace your local changes to the teams in this event</b> with the data you <b><i>or others</i></b> may have stored in the gatool Cloud.<br><b>Are you sure you want to do this?</b>',
-        buttons: [{
-            icon: 'glyphicon glyphicon-check',
-            label: "No, I don't want to load updates now.",
-            hotkey: 78, // "N".
-            cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
-            action: function (dialogRef) {
-                dialogRef.close();
-            }
-        }, {
-            icon: 'glyphicon glyphicon-cloud-download',
-            label: 'Yes, I do want to load updates now.',
-            hotkey: 13, // Enter.
-            cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
-            action: function (dialogRef) {
-                dialogRef.close();
-                //var teamData = JSON.parse(localStorage.teamList);
-                var teamData = eventTeamList.slice(0);
+	"use strict";
+	BootstrapDialog.show({
+		type: 'type-warning',
+		title: '<b>Load Team Updates from the gatool Cloud</b>',
+		message: 'You are about to load team data updates from the gatool Cloud. <b>This will replace your local changes to the teams in this event</b> with the data you <b><i>or others</i></b> may have stored in the gatool Cloud.<br><b>Are you sure you want to do this?</b>',
+		buttons: [{
+			icon: 'glyphicon glyphicon-check',
+			label: "No, I don't want to load updates now.",
+			hotkey: 78, // "N".
+			cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
+			action: function (dialogRef) {
+				dialogRef.close();
+			}
+		}, {
+			icon: 'glyphicon glyphicon-cloud-download',
+			label: 'Yes, I do want to load updates now.',
+			hotkey: 13, // Enter.
+			cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
+			action: function (dialogRef) {
+				dialogRef.close();
+				//var teamData = JSON.parse(localStorage.teamList);
+				var teamData = eventTeamList.slice(0);
 
-                for (var i = 0; i < teamData.length; i++) {
-                    teamUpdateCalls++;
-                    getTeamUpdates(teamData[i].teamNumber);
-                }
-                BootstrapDialog.show({
-                    message: "Team data loaded from gatool Cloud. Your local data for " + localStorage.currentEvent + " is now showing data from the FIRST GA and MC community.",
-                    buttons: [{
-                        icon: 'glyphicon glyphicon-cloud-download',
-                        cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
-                        label: 'OK',
-                        hotkey: 13, // Enter.
-                        title: 'OK',
-                        action: function (dialogRef) {
-                            dialogRef.close();
-                            updateTeamTable();
-                            if ($("#announceDisplay").css("display") !== "none") {
-                                announceDisplay();
-                            }
-                        }
-                    }]
-                });
-            }
-        }]
-    });
+				for (var i = 0; i < teamData.length; i++) {
+					teamUpdateCalls++;
+					getTeamUpdates(teamData[i].teamNumber);
+				}
+				BootstrapDialog.show({
+					message: "Team data loaded from gatool Cloud. Your local data for " + localStorage.currentEvent + " is now showing data from the FIRST GA and MC community.",
+					buttons: [{
+						icon: 'glyphicon glyphicon-cloud-download',
+						cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
+						label: 'OK',
+						hotkey: 13, // Enter.
+						title: 'OK',
+						action: function (dialogRef) {
+							dialogRef.close();
+							updateTeamTable();
+						}
+					}]
+				});
+			}
+		}]
+	});
 }
 
 function loadTeamUpdate() {
-    "use strict";
-    var currentTeam = localStorage.currentTeam;
-    BootstrapDialog.show({
-        type: 'type-warning',
-        title: '<b>Load Team Updates for ' + currentTeam + ' from the gatool Cloud</b>',
-        message: 'You are about to load team data updates for Team ' + currentTeam + ' from the gatool Cloud. <b>This will replace your local changes to this team</b> with the data you <b><i>or others</i></b> may have stored in the gatool Cloud.<br><b>Are you sure you want to do this?</b>',
-        buttons: [{
-            icon: 'glyphicon glyphicon-check',
-            label: "No, I don't want to load updates now.",
-            hotkey: 78, // "N".
-            cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
-            action: function (dialogRef) {
-                dialogRef.close();
-            }
-        }, {
-            icon: 'glyphicon glyphicon-cloud-download',
-            label: 'Yes, I do want to load updates now.',
-            hotkey: 13, // Enter.
-            cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
-            action: function (dialogRef) {
-                dialogRef.close();
-                teamUpdateCalls++;
-                getTeamUpdates(currentTeam);
-                BootstrapDialog.show({
-                    message: "Team data loaded from gatool Cloud. Your local data for " + currentTeam + " is now showing data from the FIRST GA and MC community.",
-                    buttons: [{
-                        icon: 'glyphicon glyphicon-cloud-download',
-                        cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
-                        label: 'OK',
-                        hotkey: 13, // Enter.
-                        title: 'OK',
-                        action: function (dialogRef) {
-                            dialogRef.close();
-                            updateTeamTable();
-                            updateTeamInfo(currentTeam);
-                            if ($("#announceDisplay").css("display") !== "none") {
-                                announceDisplay();
-                            }
-                        }
-                    }]
-                });
-            }
-        }]
-    });
+	"use strict";
+	var currentTeam = localStorage.currentTeam;
+	BootstrapDialog.show({
+		type: 'type-warning',
+		title: '<b>Load Team Updates for ' + currentTeam + ' from the gatool Cloud</b>',
+		message: 'You are about to load team data updates for Team ' + currentTeam + ' from the gatool Cloud. <b>This will replace your local changes to this team</b> with the data you <b><i>or others</i></b> may have stored in the gatool Cloud.<br><b>Are you sure you want to do this?</b>',
+		buttons: [{
+			icon: 'glyphicon glyphicon-check',
+			label: "No, I don't want to load updates now.",
+			hotkey: 78, // "N".
+			cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
+			action: function (dialogRef) {
+				dialogRef.close();
+			}
+		}, {
+			icon: 'glyphicon glyphicon-cloud-download',
+			label: 'Yes, I do want to load updates now.',
+			hotkey: 13, // Enter.
+			cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
+			action: function (dialogRef) {
+				dialogRef.close();
+				teamUpdateCalls++;
+				getTeamUpdates(currentTeam);
+				BootstrapDialog.show({
+					message: "Team data loaded from gatool Cloud. Your local data for " + currentTeam + " is now showing data from the FIRST GA and MC community.",
+					buttons: [{
+						icon: 'glyphicon glyphicon-cloud-download',
+						cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
+						label: 'OK',
+						hotkey: 13, // Enter.
+						title: 'OK',
+						action: function (dialogRef) {
+							dialogRef.close();
+							updateTeamTable();
+							updateTeamInfo(currentTeam);
+						}
+					}]
+				});
+			}
+		}]
+	});
 }
 
 function resetAwards() {
-    "use strict";
-    BootstrapDialog.show({
-        type: 'type-warning',
-        title: '<b>Reset the locally stored Team Awards</b>',
-        message: 'You are about to reset your team awards updates for <b>' + localStorage.eventName + '</b> in your local gatool. <b>This will replace your local changes for this event</b> with the data from TIMS. The freshly loaded awards data will be formatted according to your settings on the Setup Screen.<br><b>Are you sure you want to do this?</b>',
-        buttons: [{
-            icon: 'glyphicon glyphicon-check',
-            label: "No, I don't want to reset now.",
-            hotkey: 78, // "N".
-            cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
-            action: function (dialogRef) {
-                dialogRef.close();
-            }
-        }, {
-            icon: 'glyphicon glyphicon-cloud-download',
-            label: 'Yes, I do want to reset now.',
-            hotkey: 13, // Enter.
-            cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
-            action: function (dialogRef) {
-                dialogRef.close();
-                BootstrapDialog.show({
-                    type: 'type-warning',
-                    title: '<b>Reset the locally stored Team Awards</b>',
-                    message: "Are you sure you want to reset your team awards updates for <b>" + localStorage.eventName + "</b> in your local gatool? <b>This will replace your local changes for this event</b> with the data from TIMS.",
-                    buttons: [{
-                        icon: 'glyphicon glyphicon-check',
-                        label: "No, I don't want to reset now.",
-                        hotkey: 78, // "N".
-                        cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
-                        action: function (dialogRef) {
-                            dialogRef.close();
-                        }
-                    }, {
-                        icon: 'glyphicon glyphicon-cloud-download',
-                        cssClass: "btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton",
-                        label: 'OK',
-                        hotkey: 13, // Enter.
-                        title: 'OK',
-                        action: function (dialogRef) {
-                            dialogRef.close();
-                            var teamData = eventTeamList.slice(0);
-                            for (var i = 0; i < teamData.length; i++) {
-                                var team = JSON.parse(localStorage["teamData" + teamData[i].teamNumber]);
-                                team.awardsLocal = "";
-                                localStorage["teamData" + teamData[i].teamNumber] = JSON.stringify(team);
-                            }
-                            updateTeamTable();
-                            if ($("#announceDisplay").css("display") !== "none") {
-                                announceDisplay();
-                            }
-                        }
+	"use strict";
+	BootstrapDialog.show({
+		type: 'type-warning',
+		title: '<b>Reset the locally stored Team Awards</b>',
+		message: 'You are about to reset your team awards updates for <b>' + localStorage.eventName + '</b> in your local gatool. <b>This will replace your local changes for this event</b> with the data from TIMS. The freshly loaded awards data will be formatted according to your settings on the Setup Screen.<br><b>Are you sure you want to do this?</b>',
+		buttons: [{
+			icon: 'glyphicon glyphicon-check',
+			label: "No, I don't want to reset now.",
+			hotkey: 78, // "N".
+			cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
+			action: function (dialogRef) {
+				dialogRef.close();
+			}
+		}, {
+			icon: 'glyphicon glyphicon-cloud-download',
+			label: 'Yes, I do want to reset now.',
+			hotkey: 13, // Enter.
+			cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
+			action: function (dialogRef) {
+				dialogRef.close();
+				BootstrapDialog.show({
+					type: 'type-warning',
+					title: '<b>Reset the locally stored Team Awards</b>',
+					message: "Are you sure you want to reset your team awards updates for <b>" + localStorage.eventName + "</b> in your local gatool? <b>This will replace your local changes for this event</b> with the data from TIMS.",
+					buttons: [{
+						icon: 'glyphicon glyphicon-check',
+						label: "No, I don't want to reset now.",
+						hotkey: 78, // "N".
+						cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
+						action: function (dialogRef) {
+							dialogRef.close();
+						}
+					}, {
+						icon: 'glyphicon glyphicon-cloud-download',
+						cssClass: "btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton",
+						label: 'OK',
+						hotkey: 13, // Enter.
+						title: 'OK',
+						action: function (dialogRef) {
+							dialogRef.close();
+							var teamData = eventTeamList.slice(0);
+							for (var i = 0; i < teamData.length; i++) {
+								var team = JSON.parse(localStorage["teamData" + teamData[i].teamNumber]);
+								team.awardsLocal = "";
+								localStorage["teamData" + teamData[i].teamNumber] = JSON.stringify(team);
+							}
+							updateTeamTable();
+						}
 
-                    }]
-                });
-            }
-        }]
-    });
+					}]
+				});
+			}
+		}]
+	});
 }
 
 function timer() {
-    "use strict";
-    if (localStorage.clock === "running") {
-        // Update the count down every 1 second
+	"use strict";
+	if (localStorage.clock === "running") {
+		// Update the count down every 1 second
 
-        // Get todays date and time
-        localStorage.matchTimer -= 1;
-        if (localStorage.matchTimer >= 0) {
-            if ((matchLength - localStorage.matchTimer) <= autoLength) {
-                $("#timer").css({
-                    "background-color": "orange",
-                    "color": "black"
-                });
-                $("#clock").html(localStorage.matchTimer + " AUTO (" + (autoLength - (matchLength - localStorage.matchTimer)) + ")");
-            }
-            if ((matchLength - localStorage.matchTimer) > autoLength && (localStorage.matchTimer > endGame)) {
-                $("#timer").css({
-                    "background-color": "green",
-                    "color": "white"
-                });
-                $("#clock").html(localStorage.matchTimer + " TELEOP");
-            }
-            if (localStorage.matchTimer <= endGame) {
-                $("#timer").css({
-                    "background-color": "red",
-                    "animation-delay": "20s",
-                    "animation-name": "timerHighlight",
-                    "animation-duration": "1s",
-                    "animation-iteration-count": "10",
-                    "color": "white"
-                });
-                $("#clock").html(localStorage.matchTimer + " ENDGAME");
-            }
-        } else {
-            resetTimer();
-        }
+		// Get todays date and time
+		localStorage.matchTimer -= 1;
+		if (localStorage.matchTimer >= 0) {
+			if ((matchLength - localStorage.matchTimer) <= autoLength) {
+				$("#timer").css({
+					"background-color": "orange",
+					"color": "black"
+				});
+				$("#clock").html(localStorage.matchTimer + " AUTO (" + (autoLength - (matchLength - localStorage.matchTimer)) + ")");
+			}
+			if ((matchLength - localStorage.matchTimer) > autoLength && (localStorage.matchTimer > endGame)) {
+				$("#timer").css({
+					"background-color": "green",
+					"color": "white"
+				});
+				$("#clock").html(localStorage.matchTimer + " TELEOP");
+			}
+			if (localStorage.matchTimer <= endGame) {
+				$("#timer").css({
+					"background-color": "red",
+					"animation-delay": "20s",
+					"animation-name": "timerHighlight",
+					"animation-duration": "1s",
+					"animation-iteration-count": "10",
+					"color": "white"
+				});
+				$("#clock").html(localStorage.matchTimer + " ENDGAME");
+			}
+		} else {
+			resetTimer();
+		}
 
 
-    }
+	}
 
-    //display the delay on the Announce Screen if we have a schedule
-    if (localStorage.qualsList !== '{"Schedule":[]}') {
-        var timeDifference = 0;
-        if (currentMatchData.actualStartTime) {
-            $("#matchTime").html('<b><span id="currentTime"></span></b><br>Actual match time:<br>' + moment(currentMatchData.actualStartTime).format("MMM Do, h:mm a"));
-            $("#matchTimeContainer").removeClass();
-            $("#matchTimeContainer").addClass("col2");
-            timeDifference = moment(currentMatchData.actualStartTime).diff(currentMatchData.startTime, "minutes");
-            if (timeDifference < 0) {
-                $("#matchTimeContainer").addClass("alert-success");
-            } else if ((timeDifference >= 0) && (timeDifference < 10)) {
-                $("#matchTimeContainer").addClass("alert-success");
-            } else if ((timeDifference >= 10) && (timeDifference < 20)) {
-                $("#matchTimeContainer").addClass("alert-warning");
-            } else if (timeDifference >= 20) {
-                $("#matchTimeContainer").addClass("alert-danger");
-            }
-        } else {
-            if (localStorage.offseason === "true") {
-                $("#matchTime").html('<b><span id="currentTime"></span></b><br>Starts:<br>' + currentMatchData.startTime);
-            } else {
-                $("#matchTime").html('<b><span id="currentTime"></span></b><br>Starts:<br>' + moment(currentMatchData.startTime).fromNow());
+	//display the delay on the Announce Screen if we have a schedule
+	if (localStorage.qualsList !== '{"Schedule":[]}') {
+		var timeDifference = 0;
+		if (currentMatchData.actualStartTime) {
+			$("#matchTime").html('<b><span id="currentTime"></span></b><br>Actual match time:<br>' + moment(currentMatchData.actualStartTime).format("MMM Do, h:mm a"));
+			$("#matchTimeContainer").removeClass();
+			$("#matchTimeContainer").addClass("col2");
+			timeDifference = moment(currentMatchData.actualStartTime).diff(currentMatchData.startTime, "minutes");
+			if (timeDifference < 0) {
+				$("#matchTimeContainer").addClass("alert-success");
+			} else if ((timeDifference >= 0) && (timeDifference < 10)) {
+				$("#matchTimeContainer").addClass("alert-success");
+			} else if ((timeDifference >= 10) && (timeDifference < 20)) {
+				$("#matchTimeContainer").addClass("alert-warning");
+			} else if (timeDifference >= 20) {
+				$("#matchTimeContainer").addClass("alert-danger");
+			}
+		} else {
+			if (localStorage.offseason === "true") {
+				$("#matchTime").html('<b><span id="currentTime"></span></b><br>Starts:<br>' + currentMatchData.startTime);
+			} else {
+				$("#matchTime").html('<b><span id="currentTime"></span></b><br>Starts:<br>' + moment(currentMatchData.startTime).fromNow());
 
-                timeDifference = moment(Date.now()).diff(currentMatchData.startTime, "minutes");
-                if (timeDifference < 0) {
-                    $("#matchTimeContainer").addClass("alert-success");
-                } else if ((timeDifference >= 0) && (timeDifference < 10)) {
-                    $("#matchTimeContainer").addClass("alert-success");
-                } else if ((timeDifference >= 10) && (timeDifference < 20)) {
-                    $("#matchTimeContainer").addClass("alert-warning");
-                } else if (timeDifference >= 20) {
-                    $("#matchTimeContainer").addClass("alert-danger");
-                }
-            }
-            $("#matchTimeContainer").removeClass();
-            $("#matchTimeContainer").addClass("col2");
-        }
-    }
-    $("#currentTime").html(moment().format('h:mm:ss a'));
+				timeDifference = moment(Date.now()).diff(currentMatchData.startTime, "minutes");
+				if (timeDifference < 0) {
+					$("#matchTimeContainer").addClass("alert-success");
+				} else if ((timeDifference >= 0) && (timeDifference < 10)) {
+					$("#matchTimeContainer").addClass("alert-success");
+				} else if ((timeDifference >= 10) && (timeDifference < 20)) {
+					$("#matchTimeContainer").addClass("alert-warning");
+				} else if (timeDifference >= 20) {
+					$("#matchTimeContainer").addClass("alert-danger");
+				}
+			}
+			$("#matchTimeContainer").removeClass();
+			$("#matchTimeContainer").addClass("col2");
+		}
+	}
+	$("#currentTime").html(moment().format('h:mm:ss a'));
 
-    //display the last pit visit time
-    $("[lastVisit]").each(function () {
-        if ($(this).attr("lastvisit") !== "No recent visit") {
-            $(this).html(moment($(this).attr("lastVisit")).fromNow());
-        }
-    });
+	//display the last pit visit time
+	$("[lastVisit]").each(function () {
+		if ($(this).attr("lastvisit") !== "No recent visit") {
+			$(this).html(moment($(this).attr("lastVisit")).fromNow());
+		}
+	});
 
-    //display the amount of localStorage in use
-    $("#localStorageUsage").html(localStorageSpace() + " in use");
+	//display the amount of localStorage in use
+	$("#localStorageUsage").html(localStorageSpace() + " in use");
 
-    //display the last time we had rankings
-    $("#allianceselectionlastupdated").html(" (Ranks last updated " + moment(lastRanksUpdate).fromNow() + ")<br>");
-    $("#rankstablelastupdated").html("Ranks last updated " + moment(lastRanksUpdate).fromNow());
+	//display the last time we had rankings
+	$("#allianceselectionlastupdated").html(" (Ranks last updated " + moment(lastRanksUpdate).fromNow() + ")<br>");
+	$("#rankstablelastupdated").html("Ranks last updated " + moment(lastRanksUpdate).fromNow());
 
 }
 
 function parsePlayoffMatchName(matchName) {
-    "use strict";
-    var matchArray = matchName.split(" ");
-    if ((matchArray[0] === "Quarterfinal") && (matchArray[1] <= 4)) {
-        return "Quarterfinal " + matchArray[1] + " Match 1";
-    }
-    $("#davidPrice").removeClass("redScore");
-    $("#davidPrice").removeClass("blueScore");
-    if ((matchArray[0] === "Quarterfinal") && (matchArray[1] > 4)) {
-        if (playoffResults["Quarterfinal " + (matchArray[1] - 4)] === "Red") {
-            $("#davidPrice").addClass("redScore");
-            return "Quarterfinal " + (matchArray[1] - 4) + " Match 2 <br><span class='redScoreWin'>Advantage " + playoffResults["Quarterfinal " + (matchArray[1] - 4)] + "</span>";
-        } else if (playoffResults["Quarterfinal " + (matchArray[1] - 4)] === "Blue") {
-            $("#davidPrice").addClass("blueScore");
-            return "Quarterfinal " + (matchArray[1] - 4) + " Match 2 <br><span class='blueScoreWin'>Advantage " + playoffResults["Quarterfinal " + (matchArray[1] - 4)] + "</span>";
-        } else if (playoffResults["Quarterfinal " + (matchArray[1] - 4)] === "No results yet") {
-            return "Quarterfinal " + (matchArray[1] - 4) + " Match 2 <br>First match not reported yet";
-        } else {
-            return "Quarterfinal " + (matchArray[1] - 4) + " Match 2 <br>First match tied";
-        }
-    }
+	"use strict";
+	var matchArray = matchName.split(" ");
+	if ((matchArray[0] === "Quarterfinal") && (matchArray[1] <= 4)) {
+		return "Quarterfinal " + matchArray[1] + " Match 1";
+	}
+	$("#davidPrice").removeClass("redScore");
+	$("#davidPrice").removeClass("blueScore");
+	if ((matchArray[0] === "Quarterfinal") && (matchArray[1] > 4)) {
+		if (playoffResults["Quarterfinal " + (matchArray[1] - 4)] === "Red") {
+			$("#davidPrice").addClass("redScore");
+			return "Quarterfinal " + (matchArray[1] - 4) + " Match 2 <br><span class='redScoreWin'>Advantage " + playoffResults["Quarterfinal " + (matchArray[1] - 4)] + "</span>";
+		} else if (playoffResults["Quarterfinal " + (matchArray[1] - 4)] === "Blue") {
+			$("#davidPrice").addClass("blueScore");
+			return "Quarterfinal " + (matchArray[1] - 4) + " Match 2 <br><span class='blueScoreWin'>Advantage " + playoffResults["Quarterfinal " + (matchArray[1] - 4)] + "</span>";
+		} else if (playoffResults["Quarterfinal " + (matchArray[1] - 4)] === "No results yet") {
+			return "Quarterfinal " + (matchArray[1] - 4) + " Match 2 <br>First match not reported yet";
+		} else {
+			return "Quarterfinal " + (matchArray[1] - 4) + " Match 2 <br>First match tied";
+		}
+	}
 
-    if ((matchArray[0] === "Semifinal") && (matchArray[1] <= 2)) {
-        return "Semifinal " + matchArray[1] + " Match 1";
-    }
+	if ((matchArray[0] === "Semifinal") && (matchArray[1] <= 2)) {
+		return "Semifinal " + matchArray[1] + " Match 1";
+	}
 
-    if ((matchArray[0] === "Semifinal") && (matchArray[1] > 2)) {
-        if (playoffResults["Semifinal " + (matchArray[1] - 2)] === "Red") {
-            $("#davidPrice").addClass("redScore");
-            return "Semifinal " + (matchArray[1] - 2) + " Match 2<br><span class='redScoreWin'>Advantage " + playoffResults["Semifinal " + (matchArray[1] - 2)] + "</span>";
-        } else if (playoffResults["Semifinal " + (matchArray[1] - 2)] === "Blue") {
-            $("#davidPrice").addClass("blueScore");
-            return "Semifinal " + (matchArray[1] - 2) + " Match 2<br><span class='blueScoreWin'>Advantage " + playoffResults["Semifinal " + (matchArray[1] - 2)] + "</span>";
-        } else if (playoffResults["Semifinal " + (matchArray[1] - 2)] === "No results yet") {
-            return "Semifinal " + (matchArray[1] - 2) + " Match 2<br>First match not reported yet";
-        } else {
-            return "Semifinal " + (matchArray[1] - 2) + " Match 2<br>First match tied";
-        }
+	if ((matchArray[0] === "Semifinal") && (matchArray[1] > 2)) {
+		if (playoffResults["Semifinal " + (matchArray[1] - 2)] === "Red") {
+			$("#davidPrice").addClass("redScore");
+			return "Semifinal " + (matchArray[1] - 2) + " Match 2<br><span class='redScoreWin'>Advantage " + playoffResults["Semifinal " + (matchArray[1] - 2)] + "</span>";
+		} else if (playoffResults["Semifinal " + (matchArray[1] - 2)] === "Blue") {
+			$("#davidPrice").addClass("blueScore");
+			return "Semifinal " + (matchArray[1] - 2) + " Match 2<br><span class='blueScoreWin'>Advantage " + playoffResults["Semifinal " + (matchArray[1] - 2)] + "</span>";
+		} else if (playoffResults["Semifinal " + (matchArray[1] - 2)] === "No results yet") {
+			return "Semifinal " + (matchArray[1] - 2) + " Match 2<br>First match not reported yet";
+		} else {
+			return "Semifinal " + (matchArray[1] - 2) + " Match 2<br>First match tied";
+		}
 
-    }
-    if (matchArray[0] === "Tiebreaker") {
-        return matchArray[0] + " " + (matchArray[1] || "");
-    }
+	}
+	if (matchArray[0] === "Tiebreaker") {
+		return matchArray[0] + " " + (matchArray[1] || "");
+	}
 
-    if (matchArray[0] === "Final") {
-        if (matchArray[1] === "2") {
-            if (playoffResults["Final 1"] === "Red") {
-                $("#davidPrice").addClass("redScore");
-                return matchArray[0] + " " + (matchArray[1] || "") + "<br><span class='redScoreWin'>Advantage Red</span>";
-            } else if (playoffResults["Final 1"] === "Blue") {
-                $("#davidPrice").addClass("blueScore");
-                return matchArray[0] + " " + (matchArray[1] || "") + "<br><span class='blueScoreWin'>Advantage Blue</span>";
-            } else if (playoffResults["Final 1"] === "No results yet") {
-                return matchArray[0] + " " + (matchArray[1] || "") + "<br>First match not reported yet";
-            } else {
-                return matchArray[0] + " " + (matchArray[1] || "") + "<br>First match tied";
-            }
-        }
-        return matchArray[0] + " " + (matchArray[1] || "");
-    }
+	if (matchArray[0] === "Final") {
+		if (matchArray[1] === "2") {
+			if (playoffResults["Final 1"] === "Red") {
+				$("#davidPrice").addClass("redScore");
+				return matchArray[0] + " " + (matchArray[1] || "") + "<br><span class='redScoreWin'>Advantage Red</span>";
+			} else if (playoffResults["Final 1"] === "Blue") {
+				$("#davidPrice").addClass("blueScore");
+				return matchArray[0] + " " + (matchArray[1] || "") + "<br><span class='blueScoreWin'>Advantage Blue</span>";
+			} else if (playoffResults["Final 1"] === "No results yet") {
+				return matchArray[0] + " " + (matchArray[1] || "") + "<br>First match not reported yet";
+			} else {
+				return matchArray[0] + " " + (matchArray[1] || "") + "<br>First match tied";
+			}
+		}
+		return matchArray[0] + " " + (matchArray[1] || "");
+	}
 
 }
 
 function startTimer() {
-    "use strict";
-    if (localStorage.clock === "running") {
-        resetTimer();
-    } else {
-        localStorage.clock = "running";
-    }
+	"use strict";
+	if (localStorage.clock === "running") {
+		resetTimer();
+	} else {
+		localStorage.clock = "running";
+	}
 }
 
 function resetTimer() {
-    "use strict";
-    localStorage.matchTimer = matchLength;
-    $("#timer").css({
-        "background-color": "white",
-        "animation-delay": "0s",
-        "animation-name": "timerReset",
-        "animation-duration": "1s",
-        "animation-iteration-count": "1",
-        "color": "black"
-    });
-    localStorage.clock = "ready";
-    $("#clock").html("Tap for match timer");
+	"use strict";
+	localStorage.matchTimer = matchLength;
+	$("#timer").css({
+		"background-color": "white",
+		"animation-delay": "0s",
+		"animation-name": "timerReset",
+		"animation-duration": "1s",
+		"animation-iteration-count": "1",
+		"color": "black"
+	});
+	localStorage.clock = "ready";
+	$("#clock").html("Tap for match timer");
 }
 
 function inChamps() {
-    "use strict";
-    if (champs.indexOf(localStorage.currentEvent) >= 0) {
-        return true;
-    } else {
-        return false;
-    }
+	"use strict";
+	if (champs.indexOf(localStorage.currentEvent) >= 0) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 function inDivision() {
-    "use strict";
-    if (champDivisions.indexOf(localStorage.currentEvent) >= 0) {
-        return true;
-    } else {
-        return false;
-    }
+	"use strict";
+	if (champDivisions.indexOf(localStorage.currentEvent) >= 0) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 function inSubdivision() {
-    "use strict";
-    if (champSubdivisions.indexOf(localStorage.currentEvent) >= 0) {
-        return true;
-    } else {
-        return false;
-    }
+	"use strict";
+	if (champSubdivisions.indexOf(localStorage.currentEvent) >= 0) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 function inMiChamps() {
-    "use strict";
-    if (miChamps.indexOf(localStorage.currentEvent) >= 0) {
-        return true;
-    } else {
-        return false;
-    }
+	"use strict";
+	if (miChamps.indexOf(localStorage.currentEvent) >= 0) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 function inMiDivision() {
-    "use strict";
-    if (miDivisions.indexOf(localStorage.currentEvent) >= 0) {
-        return true;
-    } else {
-        return false;
-    }
+	"use strict";
+	if (miDivisions.indexOf(localStorage.currentEvent) >= 0) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 function awardsHilight(awardName) {
-    "use strict";
-    if (awardName === "District Chairman's Award" || awardName === "District Event Winner" || awardName === "District Event Finalist" || awardName === "Regional Engineering Inspiration Award" || awardName === "District Engineering Inspiration Award" || awardName === "District Championship Finalist" || awardName === "District Championship Winner" || awardName === "Regional Winners" || awardName === "Regional Finalists" || awardName === "Regional Chairman's Award" || awardName === "FIRST Dean's List Finalist Award" || awardName === "Championship Subdivision Winner" || awardName === "Championship Subdivision Finalist" || awardName === "Championship Winner" || awardName === "Championship Finalist" || awardName === "Chairman's Award" || awardName === "FIRST Dean's List Award" || awardName === "Woodie Flowers Award") {
-        return {
-            "before": "<span class ='awardHilight'>",
-            "after": "</span>"
-        };
-    } else {
-        return {
-            "before": "<span>",
-            "after": "</span>"
-        };
-    }
+	"use strict";
+	if (awardName === "District Chairman's Award" || awardName === "District Event Winner" || awardName === "District Event Finalist" || awardName === "Regional Engineering Inspiration Award" || awardName === "District Engineering Inspiration Award" || awardName === "District Championship Finalist" || awardName === "District Championship Winner" || awardName === "Regional Winners" || awardName === "Regional Finalists" || awardName === "Regional Chairman's Award" || awardName === "FIRST Dean's List Finalist Award" || awardName === "Championship Subdivision Winner" || awardName === "Championship Subdivision Finalist" || awardName === "Championship Winner" || awardName === "Championship Finalist" || awardName === "Chairman's Award" || awardName === "FIRST Dean's List Award" || awardName === "Woodie Flowers Award") {
+		return {
+			"before": "<span class ='awardHilight'>",
+			"after": "</span>"
+		};
+	} else {
+		return {
+			"before": "<span>",
+			"after": "</span>"
+		};
+	}
 }
 
 function inHallOfFame(team, position) {
-    "use strict";
-    var hofDisplay = "";
-    $("#" + position + "HOF").hide();
-    for (i = 0; i < hallOfFame.length; i++) {
-        if (team === hallOfFame[i].Chairmans) {
-            hofDisplay += hallOfFame[i].Year + " " + hallOfFame[i].Challenge + " Chairman's Award" + localStorage.awardSeparator;
-        }
-        if ((team === hallOfFame[i].Winner1) || (team === hallOfFame[i].Winner2) || (team === hallOfFame[i].Winner3) || (team === hallOfFame[i].Winner4) || (team === hallOfFame[i].Winner5)) {
-            hofDisplay += hallOfFame[i].Year + " " + hallOfFame[i].Challenge + " Winner" + localStorage.awardSeparator;
-        }
-    }
-    if (hofDisplay !== "") {
-        hofDisplay = hofDisplay.slice(0, hofDisplay.length - localStorage.awardSeparator.length);
-        $("#" + position + "HOF").html(hofDisplay);
-        $("#" + position + "HOF").show();
-    }
+	"use strict";
+	var hofDisplay = "";
+	$("#" + position + "HOF").hide();
+	for (i = 0; i < hallOfFame.length; i++) {
+		if (team === hallOfFame[i].Chairmans) {
+			hofDisplay += hallOfFame[i].Year + " " + hallOfFame[i].Challenge + " Chairman's Award" + localStorage.awardSeparator;
+		}
+		if ((team === hallOfFame[i].Winner1) || (team === hallOfFame[i].Winner2) || (team === hallOfFame[i].Winner3) || (team === hallOfFame[i].Winner4) || (team === hallOfFame[i].Winner5)) {
+			hofDisplay += hallOfFame[i].Year + " " + hallOfFame[i].Challenge + " Winner" + localStorage.awardSeparator;
+		}
+	}
+	if (hofDisplay !== "") {
+		hofDisplay = hofDisplay.slice(0, hofDisplay.length - localStorage.awardSeparator.length);
+		$("#" + position + "HOF").html(hofDisplay);
+		$("#" + position + "HOF").show();
+	}
 
 }
 
 function handleQualsFiles(e) {
-    "use strict";
-    var rABS = true; // true: readAsBinaryString ; false: readAsArrayBuffer
+	"use strict";
+	var rABS = true; // true: readAsBinaryString ; false: readAsArrayBuffer
 
-    var files = e.target.files;
-    var i, f;
-    for (i = 0; i !== files.length; ++i) {
-        f = files[i];
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            var data = e.target.result;
+	var files = e.target.files;
+	var i, f;
+	for (i = 0; i !== files.length; ++i) {
+		f = files[i];
+		var reader = new FileReader();
+		reader.onload = function (e) {
+			var data = e.target.result;
 
-            var workbook;
-            if (rABS) {
-                /* if binary string, read with type 'binary' */
-                workbook = XLSX.read(data, {
-                    type: 'binary'
-                });
-            } else {
-                /* if array buffer, convert to base64 */
-                var arr = fixdata(data);
-                workbook = XLSX.read(btoa(arr), {
-                    type: 'base64'
-                });
-            }
+			var workbook;
+			if (rABS) {
+				/* if binary string, read with type 'binary' */
+				workbook = XLSX.read(data, {
+					type: 'binary'
+				});
+			} else {
+				/* if array buffer, convert to base64 */
+				var arr = fixdata(data);
+				workbook = XLSX.read(btoa(arr), {
+					type: 'base64'
+				});
+			}
 
-            /* DO SOMETHING WITH workbook HERE */
-            var worksheet = workbook.Sheets[workbook.SheetNames[0]];
-            var schedule = XLSX.utils.sheet_to_json(worksheet, {
-                range: 4
-            });
-            var formattedSchedule = {};
-            var innerSchedule = [];
-            var teamListArray = [];
-            var teamList = [];
-            var teamToInsert = {};
-            var teamTable = "";
+			/* DO SOMETHING WITH workbook HERE */
+			var worksheet = workbook.Sheets[workbook.SheetNames[0]];
+			var schedule = XLSX.utils.sheet_to_json(worksheet, {
+				range: 4
+			});
+			var formattedSchedule = {};
+			var innerSchedule = [];
+			var teamListArray = [];
+			var teamList = [];
+			var teamToInsert = {};
+			var teamTable = "";
 
-            for (var i = 0; i < schedule.length; i++) {
-                if (schedule[i].Match) {
-                    var tempRow = {
-                        "description": schedule[i].Description,
-                        "tournamentLevel": "Qualification",
-                        "matchNumber": schedule[i].Match,
-                        "startTime": schedule[i].Time,
-                        "actualStartTime": "",
-                        "postResultTime": "",
-                        "scoreRedFinal": "",
-                        "scoreRedFoul": "",
-                        "scoreRedAuto": "",
-                        "scoreBlueFinal": "",
-                        "scoreBlueFoul": "",
-                        "scoreBlueAuto": "",
-                        "Teams": [{
-                            "teamNumber": schedule[i]["Red 1"],
-                            "station": "Red1",
-                            "surrogate": false,
-                            "dq": false
-                        }, {
-                            "teamNumber": schedule[i]["Red 2"],
-                            "station": "Red2",
-                            "surrogate": false,
-                            "dq": false
-                        }, {
-                            "teamNumber": schedule[i]["Red 3"],
-                            "station": "Red3",
-                            "surrogate": false,
-                            "dq": false
-                        }, {
-                            "teamNumber": schedule[i]["Blue 1"],
-                            "station": "Blue1",
-                            "surrogate": false,
-                            "dq": false
-                        }, {
-                            "teamNumber": schedule[i]["Blue 2"],
-                            "station": "Blue2",
-                            "surrogate": false,
-                            "dq": false
-                        }, {
-                            "teamNumber": schedule[i]["Blue 3"],
-                            "station": "Blue3",
-                            "surrogate": false,
-                            "dq": false
-                        }]
-                    };
-                    if (teamListArray.indexOf(schedule[i]["Red 1"]) === -1) {
-                        teamListArray.push(schedule[i]["Red 1"]);
-                    }
-                    if (teamListArray.indexOf(schedule[i]["Red 2"]) === -1) {
-                        teamListArray.push(schedule[i]["Red 2"]);
-                    }
-                    if (teamListArray.indexOf(schedule[i]["Red 3"]) === -1) {
-                        teamListArray.push(schedule[i]["Red 3"]);
-                    }
-                    if (teamListArray.indexOf(schedule[i]["Blue 1"]) === -1) {
-                        teamListArray.push(schedule[i]["Blue 1"]);
-                    }
-                    if (teamListArray.indexOf(schedule[i]["Blue 2"]) === -1) {
-                        teamListArray.push(schedule[i]["Blue 2"]);
-                    }
-                    if (teamListArray.indexOf(schedule[i]["Blue 3"]) === -1) {
-                        teamListArray.push(schedule[i]["Blue 3"]);
-                    }
+			for (var i = 0; i < schedule.length; i++) {
+				if (schedule[i].Match) {
+					var tempRow = {
+						"description": schedule[i].Description,
+						"tournamentLevel": "Qualification",
+						"matchNumber": schedule[i].Match,
+						"startTime": schedule[i].Time,
+						"actualStartTime": "",
+						"postResultTime": "",
+						"scoreRedFinal": "",
+						"scoreRedFoul": "",
+						"scoreRedAuto": "",
+						"scoreBlueFinal": "",
+						"scoreBlueFoul": "",
+						"scoreBlueAuto": "",
+						"Teams": [{
+							"teamNumber": schedule[i]["Red 1"],
+							"station": "Red1",
+							"surrogate": false,
+							"dq": false
+						}, {
+							"teamNumber": schedule[i]["Red 2"],
+							"station": "Red2",
+							"surrogate": false,
+							"dq": false
+						}, {
+							"teamNumber": schedule[i]["Red 3"],
+							"station": "Red3",
+							"surrogate": false,
+							"dq": false
+						}, {
+							"teamNumber": schedule[i]["Blue 1"],
+							"station": "Blue1",
+							"surrogate": false,
+							"dq": false
+						}, {
+							"teamNumber": schedule[i]["Blue 2"],
+							"station": "Blue2",
+							"surrogate": false,
+							"dq": false
+						}, {
+							"teamNumber": schedule[i]["Blue 3"],
+							"station": "Blue3",
+							"surrogate": false,
+							"dq": false
+						}]
+					};
+					if (teamListArray.indexOf(schedule[i]["Red 1"]) === -1) {
+						teamListArray.push(schedule[i]["Red 1"]);
+					}
+					if (teamListArray.indexOf(schedule[i]["Red 2"]) === -1) {
+						teamListArray.push(schedule[i]["Red 2"]);
+					}
+					if (teamListArray.indexOf(schedule[i]["Red 3"]) === -1) {
+						teamListArray.push(schedule[i]["Red 3"]);
+					}
+					if (teamListArray.indexOf(schedule[i]["Blue 1"]) === -1) {
+						teamListArray.push(schedule[i]["Blue 1"]);
+					}
+					if (teamListArray.indexOf(schedule[i]["Blue 2"]) === -1) {
+						teamListArray.push(schedule[i]["Blue 2"]);
+					}
+					if (teamListArray.indexOf(schedule[i]["Blue 3"]) === -1) {
+						teamListArray.push(schedule[i]["Blue 3"]);
+					}
 
-                    innerSchedule.push(tempRow);
-                }
-            }
-            formattedSchedule.Schedule = innerSchedule;
+					innerSchedule.push(tempRow);
+				}
+			}
+			formattedSchedule.Schedule = innerSchedule;
 
-            teamListArray.sort(function (a, b) {
-                return a - b;
-            });
+			teamListArray.sort(function (a, b) {
+				return a - b;
+			});
 
-            for (i = 0; i < teamListArray.length; i++) {
-                teamToInsert = {
-                    "teamNumber": teamListArray[i]
-                };
-                teamList.push(teamToInsert);
-            }
+			for (i = 0; i < teamListArray.length; i++) {
+				teamToInsert = {
+					"teamNumber": teamListArray[i]
+				};
+				teamList.push(teamToInsert);
+			}
 
-            $("#eventTeamCount").html(teamList.length);
+			$("#eventTeamCount").html(teamList.length);
 
-            $('#teamsListEventName').html(localStorage.eventName);
+			$('#teamsListEventName').html(localStorage.eventName);
 
-            getTeamData(teamList, localStorage.currentYear);
+			getTeamData(teamList, localStorage.currentYear);
 
 
-            localStorage.qualsList = JSON.stringify(formattedSchedule);
-            getHybridSchedule();
-            $("#QualsFiles").hide();
-            $("#QualsFilesReset").show();
-        };
-        reader.readAsBinaryString(f);
-    }
+			localStorage.qualsList = JSON.stringify(formattedSchedule);
+			getHybridSchedule();
+			$("#QualsFiles").hide();
+			$("#QualsFilesReset").show();
+		};
+		reader.readAsBinaryString(f);
+	}
 
 
 }
 
 function handlePlayoffFiles(e) {
-    "use strict";
-    var rABS = true; // true: readAsBinaryString ; false: readAsArrayBuffer
+	"use strict";
+	var rABS = true; // true: readAsBinaryString ; false: readAsArrayBuffer
 
-    var files = e.target.files;
-    var i, f;
-    for (i = 0; i !== files.length; ++i) {
-        f = files[i];
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            var data = e.target.result;
+	var files = e.target.files;
+	var i, f;
+	for (i = 0; i !== files.length; ++i) {
+		f = files[i];
+		var reader = new FileReader();
+		reader.onload = function (e) {
+			var data = e.target.result;
 
-            var workbook;
-            if (rABS) {
-                /* if binary string, read with type 'binary' */
-                workbook = XLSX.read(data, {
-                    type: 'binary'
-                });
-            } else {
-                /* if array buffer, convert to base64 */
-                var arr = fixdata(data);
-                workbook = XLSX.read(btoa(arr), {
-                    type: 'base64'
-                });
-            }
+			var workbook;
+			if (rABS) {
+				/* if binary string, read with type 'binary' */
+				workbook = XLSX.read(data, {
+					type: 'binary'
+				});
+			} else {
+				/* if array buffer, convert to base64 */
+				var arr = fixdata(data);
+				workbook = XLSX.read(btoa(arr), {
+					type: 'base64'
+				});
+			}
 
-            /* DO SOMETHING WITH workbook HERE */
-            var worksheet = workbook.Sheets[workbook.SheetNames[0]];
-            var schedule = XLSX.utils.sheet_to_json(worksheet, {
-                range: 4
-            });
-            var formattedSchedule = {};
-            var innerSchedule = [];
-            for (var i = 0; i < schedule.length; i++) {
-                if (schedule[i].Match) {
-                    var tempRow = {
-                        "description": schedule[i].Description,
-                        "tournamentLevel": "Playoff",
-                        "matchNumber": schedule[i].Match,
-                        "startTime": schedule[i].Time,
-                        "actualStartTime": "",
-                        "postResultTime": "",
-                        "scoreRedFinal": "",
-                        "scoreRedFoul": "",
-                        "scoreRedAuto": "",
-                        "scoreBlueFinal": "",
-                        "scoreBlueFoul": "",
-                        "scoreBlueAuto": "",
-                        "Teams": [{
-                            "teamNumber": schedule[i]["Red 1"],
-                            "station": "Red1",
-                            "surrogate": false,
-                            "dq": false
-                        }, {
-                            "teamNumber": schedule[i]["Red 2"],
-                            "station": "Red2",
-                            "surrogate": false,
-                            "dq": false
-                        }, {
-                            "teamNumber": schedule[i]["Red 3"],
-                            "station": "Red3",
-                            "surrogate": false,
-                            "dq": false
-                        }, {
-                            "teamNumber": schedule[i]["Blue 1"],
-                            "station": "Blue1",
-                            "surrogate": false,
-                            "dq": false
-                        }, {
-                            "teamNumber": schedule[i]["Blue 2"],
-                            "station": "Blue2",
-                            "surrogate": false,
-                            "dq": false
-                        }, {
-                            "teamNumber": schedule[i]["Blue 3"],
-                            "station": "Blue3",
-                            "surrogate": false,
-                            "dq": false
-                        }]
-                    };
-                    innerSchedule.push(tempRow);
-                }
-            }
-            formattedSchedule.Schedule = innerSchedule;
-            localStorage.playoffList = JSON.stringify(formattedSchedule);
-            getHybridSchedule();
-            $("#PlayoffFiles").hide();
-            $("#PlayoffFilesReset").show();
-        };
-        reader.readAsBinaryString(f);
-    }
+			/* DO SOMETHING WITH workbook HERE */
+			var worksheet = workbook.Sheets[workbook.SheetNames[0]];
+			var schedule = XLSX.utils.sheet_to_json(worksheet, {
+				range: 4
+			});
+			var formattedSchedule = {};
+			var innerSchedule = [];
+			for (var i = 0; i < schedule.length; i++) {
+				if (schedule[i].Match) {
+					var tempRow = {
+						"description": schedule[i].Description,
+						"tournamentLevel": "Playoff",
+						"matchNumber": schedule[i].Match,
+						"startTime": schedule[i].Time,
+						"actualStartTime": "",
+						"postResultTime": "",
+						"scoreRedFinal": "",
+						"scoreRedFoul": "",
+						"scoreRedAuto": "",
+						"scoreBlueFinal": "",
+						"scoreBlueFoul": "",
+						"scoreBlueAuto": "",
+						"Teams": [{
+							"teamNumber": schedule[i]["Red 1"],
+							"station": "Red1",
+							"surrogate": false,
+							"dq": false
+						}, {
+							"teamNumber": schedule[i]["Red 2"],
+							"station": "Red2",
+							"surrogate": false,
+							"dq": false
+						}, {
+							"teamNumber": schedule[i]["Red 3"],
+							"station": "Red3",
+							"surrogate": false,
+							"dq": false
+						}, {
+							"teamNumber": schedule[i]["Blue 1"],
+							"station": "Blue1",
+							"surrogate": false,
+							"dq": false
+						}, {
+							"teamNumber": schedule[i]["Blue 2"],
+							"station": "Blue2",
+							"surrogate": false,
+							"dq": false
+						}, {
+							"teamNumber": schedule[i]["Blue 3"],
+							"station": "Blue3",
+							"surrogate": false,
+							"dq": false
+						}]
+					};
+					innerSchedule.push(tempRow);
+				}
+			}
+			formattedSchedule.Schedule = innerSchedule;
+			localStorage.playoffList = JSON.stringify(formattedSchedule);
+			getHybridSchedule();
+			$("#PlayoffFiles").hide();
+			$("#PlayoffFilesReset").show();
+		};
+		reader.readAsBinaryString(f);
+	}
 
 }
 
 function toJSON(dataGrid, headerNames, headerTypes, newLine) {
-    "use strict";
-    //inits...
-    var commentLine = "//";
-    var commentLineEnd = "";
-    var outputText = "[";
-    var numRows = dataGrid.length;
-    var numColumns = headerNames.length;
+	"use strict";
+	//inits...
+	var commentLine = "//";
+	var commentLineEnd = "";
+	var outputText = "[";
+	var numRows = dataGrid.length;
+	var numColumns = headerNames.length;
 
-    //begin render loop
-    for (var i = 0; i < numRows; i++) {
-        var row = dataGrid[i];
-        var rowOutput = "";
-        outputText += "{";
-        for (var j = 0; j < numColumns; j++) {
-            if ((headerTypes[j] === "int") || (headerTypes[j] === "float")) {
-                rowOutput = row[j] || "null";
-            } else {
-                rowOutput = '"' + (row[j] || "") + '"';
-            }
+	//begin render loop
+	for (var i = 0; i < numRows; i++) {
+		var row = dataGrid[i];
+		var rowOutput = "";
+		outputText += "{";
+		for (var j = 0; j < numColumns; j++) {
+			if ((headerTypes[j] === "int") || (headerTypes[j] === "float")) {
+				rowOutput = row[j] || "null";
+			} else {
+				rowOutput = '"' + (row[j] || "") + '"';
+			}
 
-            outputText += ('"' + headerNames[j] + '"' + ":" + rowOutput);
+			outputText += ('"' + headerNames[j] + '"' + ":" + rowOutput);
 
-            if (j < (numColumns - 1)) {
-                outputText += ",";
-            }
-        }
-        outputText += "}";
-        if (i < (numRows - 1)) {
-            outputText += "," + newLine;
-        }
-    }
-    outputText += "]";
+			if (j < (numColumns - 1)) {
+				outputText += ",";
+			}
+		}
+		outputText += "}";
+		if (i < (numRows - 1)) {
+			outputText += "," + newLine;
+		}
+	}
+	outputText += "]";
 
-    return outputText;
+	return outputText;
 }
 
 function handleQualsFilesReset() {
-    "use strict";
-    clearFileInput("QualsFiles");
-    document.getElementById("QualsFiles").addEventListener('change', handleQualsFiles, false);
-    $("#QualsFiles").show();
-    $("#QualsFilesReset").hide();
-    localStorage.qualsList = '{"Schedule":[]}';
-    getOffseasonSchedule();
+	"use strict";
+	clearFileInput("QualsFiles");
+	document.getElementById("QualsFiles").addEventListener('change', handleQualsFiles, false);
+	$("#QualsFiles").show();
+	$("#QualsFilesReset").hide();
+	localStorage.qualsList = '{"Schedule":[]}';
+	getOffseasonSchedule();
 
 }
 
 function handlePlayoffFilesReset() {
-    "use strict";
-    clearFileInput("PlayoffFiles");
-    document.getElementById("PlayoffFiles").addEventListener('change', handlePlayoffFiles, false);
-    $("#PlayoffFiles").show();
-    $("#PlayoffFilesReset").hide();
-    localStorage.playoffList = '{"Schedule":[]}';
-    getOffseasonSchedule();
+	"use strict";
+	clearFileInput("PlayoffFiles");
+	document.getElementById("PlayoffFiles").addEventListener('change', handlePlayoffFiles, false);
+	$("#PlayoffFiles").show();
+	$("#PlayoffFilesReset").hide();
+	localStorage.playoffList = '{"Schedule":[]}';
+	getOffseasonSchedule();
 }
 
 function clearFileInput(id) {
-    "use strict";
-    var oldInput = document.getElementById(id);
+	"use strict";
+	var oldInput = document.getElementById(id);
 
-    var newInput = document.createElement("input");
+	var newInput = document.createElement("input");
 
-    newInput.type = "file";
-    newInput.id = oldInput.id;
-    newInput.name = oldInput.name;
-    newInput.className = oldInput.className;
-    newInput.style.cssText = oldInput.style.cssText;
-    // TODO: copy any other relevant attributes 
+	newInput.type = "file";
+	newInput.id = oldInput.id;
+	newInput.name = oldInput.name;
+	newInput.className = oldInput.className;
+	newInput.style.cssText = oldInput.style.cssText;
+	// TODO: copy any other relevant attributes 
 
-    oldInput.parentNode.replaceChild(newInput, oldInput);
+	oldInput.parentNode.replaceChild(newInput, oldInput);
 }
 
 function localStorageSpace() {
-    "use strict";
-    var allStrings = '';
-    var localStorageSize = {};
-    for (var key in window.localStorage) {
-        if (window.localStorage.hasOwnProperty(key)) {
-            allStrings += window.localStorage[key];
-        }
-    }
-    if (allStrings) {} {
-        localStorageSize.size = ((allStrings.length * 16) / (8 * 1024));
-        localStorageSize.marker = " KB";
-        if (localStorageSize.size > 1024) {
-            localStorageSize.marker = " MB";
-            localStorageSize.size = localStorageSize.size / 1024;
-        }
-    }
-    return allStrings ? (3 + Math.round(localStorageSize.size)) + localStorageSize.marker : 'Empty (0 KB)';
+	"use strict";
+	var allStrings = '';
+	var localStorageSize = {};
+	for (var key in window.localStorage) {
+		if (window.localStorage.hasOwnProperty(key)) {
+			allStrings += window.localStorage[key];
+		}
+	}
+	if (allStrings) {} {
+		localStorageSize.size = ((allStrings.length * 16) / (8 * 1024));
+		localStorageSize.marker = " KB";
+		if (localStorageSize.size > 1024) {
+			localStorageSize.marker = " MB";
+			localStorageSize.size = localStorageSize.size / 1024;
+		}
+	}
+	return allStrings ? (3 + Math.round(localStorageSize.size)) + localStorageSize.marker : 'Empty (0 KB)';
 }
