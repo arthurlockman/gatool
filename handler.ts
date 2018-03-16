@@ -2,6 +2,49 @@ import { Handler, Context, Callback } from 'aws-lambda';
 const rp = require('request-promise');
 const AWS = require('aws-sdk');
 const DynamoDB = new AWS.DynamoDB.DocumentClient({ region: 'us-east-1' });
+const WebsiteS3 = new AWS.S3();
+
+const ServeUI: Handler = (event: any, context: Context, callback: Callback) => {
+    const page: string = (event.pathParameters && event.pathParameters.page) ? event.pathParameters.page : 'index.html';
+    let type = 'text/html';
+    switch (page.split('.')[1]) {
+        case 'css':
+            type = 'text/css';
+            break;
+        case 'js':
+            type = 'application/javascript';
+            break;
+        case 'html':
+        default:
+            type = 'text/html';
+            break;
+    }
+    WebsiteS3.getObject({
+        Bucket: process.env.WEBSITE_BUCKET,
+        Key: page
+    }, (err, data) => {
+        if (err) {
+            console.error(err, err.stack);
+            callback(null, {
+                statusCode: 500,
+                headers: {
+                    'Content-Type': 'text/plain'
+                },
+                isBase64Encoded: false,
+                body: err.message
+            });
+        } else {
+            callback(null, {
+                statusCode: 200,
+                body: data.Body.toString('ascii'),
+                headers: {
+                    'Content-Type': type
+                },
+                isBase64Encoded: false
+            });
+        }
+    })
+};
 
 const GetEvents: Handler = (event: any, context: Context, callback: Callback) => {
     return GetDataFromFIRSTAndReturn(event.pathParameters.year + '/events', callback);
@@ -64,7 +107,6 @@ const UpdateHighScores: Handler = (event: any, context: Context, callback: Callb
             // Qual (no fouls), Playoff (no fouls)
             // Qual (offsetting fouls), Playoff (offsetting fouls)
             // Qual, Playoff
-            let qualNoFoul, playoffNoFoul, qualOffset, playoffOffset, qual, playoff;
             for (const match of data) {
                 const eventCode = order[data.indexOf(match)].eventCode;
                 const type = order[data.indexOf(match)].type;
@@ -79,7 +121,7 @@ const UpdateHighScores: Handler = (event: any, context: Context, callback: Callb
     });
 };
 
-export { GetEvents, GetEventTeams, GetTeamAwards, GetEventScores, GetEventSchedule, UpdateHighScores }
+export { GetEvents, GetEventTeams, GetTeamAwards, GetEventScores, GetEventSchedule, UpdateHighScores, ServeUI }
 
 /**
  * Get and return data from the FIRST API

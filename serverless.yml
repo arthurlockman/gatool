@@ -19,8 +19,27 @@ provider:
     FRC_CURRENT_SEASON: 2018
     HIGH_SCORES_TABLE_NAME: HighScoresTable
     USERS_TABLE_NAME: UsersTable
+    WEBSITE_BUCKET: gatoolwebsite
 
 functions: # TODO: outline all functions
+  ServeUI:
+    handler: handler.ServeUI
+    description: Serve the UI
+    events:
+      - http:
+          path: /{page}
+          method: get
+          request:
+            parameters:
+              path:
+                page: true
+  ServeUIBase:
+    handler: handler.ServeUI
+    description: Serve the UI
+    events:
+      - http:
+          path: /
+          method: get
   GetEvents:
     handler: handler.GetEvents
     description: Get events for a specific year
@@ -130,3 +149,11 @@ resources:
 plugins:
   - serverless-plugin-typescript
   - serverless-offline
+  - serverless-finch
+
+custom:
+  client:
+    bucketName: gatoolwebsite
+    distributionFolder: ui
+    indexDocument: index.html
+    errorDocument: error.html
