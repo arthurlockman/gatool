@@ -1,3 +1,5 @@
+@import url("https://use.typekit.net/oft7ueo.css");
+
 html {
 	position: relative;
 	min-height: 100%;
@@ -484,7 +486,7 @@ color: black;
 .davidPrice {
 	font-size: 500px;
 	text-align: center;
-	font-family: Impact, Haettenschweiler, "Franklin Gothic Bold", "Arial Black", "sans-serif";
+	font-family: "alternate-gothic-no-1-d",sans-serif;
 	line-height: 100%
 }
 
@@ -568,14 +570,7 @@ ul.tab li a {
 	display: none
 }
 .davidPrice {
-	font-size: 400px;
-	-ms-transform: scaleX(.7); /* IE 9 */
-	-webkit-transform: scaleX(.7); /* Safari 3-8 */
-	transform: scaleX(.7);
-	-ms-transform-origin: 0% 0%;
-	-webkit-transform-origin: 0% 0%;
-	transform-origin: 0% 0%
-}
+	font-size: 400px;}
 }
 
 @media (min-width: 541px) and (max-width: 767px) {
@@ -603,12 +598,6 @@ ul.tab li a {
 }
 .davidPrice {
 	font-size: 300px;
-	-ms-transform: scaleX(.7); /* IE 9 */
-	-webkit-transform: scaleX(.7); /* Safari 3-8 */
-	transform: scaleX(.7);
-	-ms-transform-origin: 0% 0%;
-	-webkit-transform-origin: 0% 0%;
-	transform-origin: 0% 0%
 }
 }
 
@@ -625,10 +614,6 @@ ul.tab li a {
 }
 .davidPrice {
 	font-size: 300px;
-	-ms-transform: scaleX(.7); /* IE 9 */
-	-webkit-transform: scaleX(.7); /* Safari 3-8 */
-	transform: scaleX(.7);
-	transform-origin: -0% 0%
 }
 }
 
