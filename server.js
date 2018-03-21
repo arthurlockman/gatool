@@ -16,6 +16,7 @@ var http = require('http'),
 	cors = require('cors'),
 	winston = require('winston'),
 	base64ToImage = require('base64-to-image');
+require('winston-daily-rotate-file');
 
 var logger = winston.createLogger({
 	level: 'info',
@@ -25,16 +26,28 @@ var logger = winston.createLogger({
 		// - Write to all logs with level `info` and below to `combined.log` 
 		// - Write all logs error (and below) to `error.log`.
 		//
-		new winston.transports.File({
-			filename: 'error.log',
-			level: 'error'
+		new winston.transports.DailyRotateFile({
+			filename: 'error-%DATE%.log',
+			level: 'error',
+			datePattern: 'YYYY-MM-DD-HH',
+    zippedArchive: true,
+    maxSize: '20m',
+    maxFiles: '14d'
 		}),
-		new winston.transports.File({
-			filename: 'info.log',
-			level: 'info'
+		new winston.transports.DailyRotateFile({
+			filename: 'info-%DATE%.log',
+			level: 'info',
+			datePattern: 'YYYY-MM-DD-HH',
+    zippedArchive: true,
+    maxSize: '20m',
+    maxFiles: '14d'
 		}),
-		new winston.transports.File({
-			filename: 'combined.log'
+		new winston.transports.DailyRotateFile({
+			filename: 'combined-%DATE%.log',
+			datePattern: 'YYYY-MM-DD-HH',
+    zippedArchive: true,
+    maxSize: '20m',
+    maxFiles: '14d'
 		})
 	]
 });
@@ -50,9 +63,9 @@ var highscoreOffsetting = {};
 var highscorePenaltyFree = {};
 
 
-//var list = require("./newusers");
+var list = require("./newusers.json");
 //var list = [{username:'dirtvoice@hotmail.com', password:'ScottLovesFIRST!'}];
-var list = [];
+//var list = [];
 
 var bcrypt = require('bcrypt');
 var saltRounds = 10;
@@ -247,6 +260,7 @@ router.route('/:year/highscore').get(function (req, res) {
 	var scoreList = {};
 	var score = {};
 	scoreList.scores = [];
+	
 	scoreList.highQuals = {
 		'score': 0
 	};
@@ -276,13 +290,16 @@ router.route('/:year/highscore').get(function (req, res) {
 			if (score.score > scoreList.highPlayoff.score) {
 				scoreList.highPlayoff = score;
 			}
+			score.highScoreType = "highPlayoff";
 		}
 		if (score.details.tournamentLevel === "Qualification") {
 			if (score.score > scoreList.highQuals.score) {
 				scoreList.highQuals = score;
 			}
+			score.highScoreType = "highQuals";
 		}
-		scoreList.scores.push(score);
+		
+		scoreList.scores.push(score);		
 	}
 	//check for penalty free matches
 	var penaltyKeys = Object.keys(highscorePenaltyFree[String(req.params.year)]);
@@ -293,13 +310,15 @@ router.route('/:year/highscore').get(function (req, res) {
 			if (score.score > scoreList.highPlayoffPenaltyFree.score) {
 				scoreList.highPlayoffPenaltyFree = score;
 			}
+			score.highScoreType = "highPlayoffPenaltyFree";
 		}
 		if (score.details.tournamentLevel === "Qualification") {
 			if (score.score > scoreList.highQualsPenaltyFree.score) {
 				scoreList.highQualsPenaltyFree = score;
 			}
+			score.highScoreType = "highQualsPenaltyFree";
 		}
-		scoreList.scores.push(score);
+		scoreList.scores.push(score);		
 	}
 
 	//check for offsetting penalties
@@ -310,11 +329,13 @@ router.route('/:year/highscore').get(function (req, res) {
 			if (score.score > scoreList.highPlayoffPenaltyFreeOffsetting.score) {
 				scoreList.highPlayoffPenaltyFreeOffsetting = score;
 			}
+			score.highScoreType = "highPlayoffPenaltyFreeOffsetting";
 		}
 		if (score.details.tournamentLevel === "Qualification") {
 			if (score.score > scoreList.highQualsPenaltyFreeOffsetting.score) {
 				scoreList.highQualsPenaltyFreeOffsetting = score;
 			}
+			score.highScoreType = "highQualsPenaltyFreeOffsetting";
 		}
 		scoreList.scores.push(score);
 	}
@@ -661,7 +682,7 @@ router.route('/:year/schedule/:eventCode/:tlevel').get(cache('15 seconds'), func
 			if (req.query.returnschedule === "true") {
 				res.json(safeParseJson(response.body));
 			}
-			if (req.params.year === "2018") {
+			if (Number(req.params.year) >= 2016) {
 				logger.info({
 					"message": "starting schedule parsing",
 					"response": response

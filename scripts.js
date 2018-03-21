@@ -495,7 +495,7 @@ function prepareAllianceSelection() {
 	rankingsList = [];
 	// allianceSelectionOrder = ["Alliance1Round1", "Alliance2Round1", "Alliance3Round1", "Alliance4Round1", "Alliance5Round1", "Alliance6Round1", "Alliance7Round1", "Alliance8Round1", "Alliance8Round2", "Alliance7Round2", "Alliance6Round2", "Alliance5Round2", "Alliance4Round2", "Alliance3Round2", "Alliance2Round2", "Alliance1Round2"];
 	currentAllianceChoice = 0;
-
+	$("#allianceSelectionWarning").html('<p class="alert-danger"><strong>Do not proceed with Alliance Selection until you confirm that the rank order below agrees with the rank order in FMS.</strong></p>');
 	$("#allianceSelectionTable").html('<table> <tr> <td><table class="availableTeams"> <tr> <td colspan="5"><strong>Teams for Alliance Selection</strong></td></tr><tr> <td id="allianceTeamList1" class="col1"><div class="allianceTeam">List of teams</div></td><td id="allianceTeamList2" class="col1"><div class="allianceTeam">List of teams</div></td><td id="allianceTeamList3" class="col1"><div class="allianceTeam">List of teams</div></td><td id="allianceTeamList4" class="col1"><div class="allianceTeam">List of teams</div></td><td id="allianceTeamList5" class="col1"><div class="allianceTeam allianceCaptain">List of teams</div></td></tr></table></td><td class="col1"><table id="backupTeamsTable" class="backupAlliancesTable"> <tr> <td><p><strong>Backup Alliances</strong></p></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam1">List of teams</div></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam2">List of teams</div></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam3">List of teams</div></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam4">List of teams</div></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam5">List of teams</div></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam6">List of teams</div></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam7">List of teams</div></td></tr><tr> <td><div class="allianceTeam" id="backupAllianceTeam8">List of teams</div></td></tr></table></td><td><table class="alliancesTeamsTable"> <tr class="col6"> <td id="Alliance1" class="col3 dropzone"><div class="alliancedrop" id="Alliance1Captain">Alliance 1 Captain</div><div class="alliancedrop nextAllianceChoice" id="Alliance1Round1" >Alliance 1 first choice</div><div class="alliancedrop" id="Alliance1Round2" >Alliance 1 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance1Round3" >Alliance 1 third choice</div></td><td id="Alliance8" class="col3"><div class="alliancedrop" id="Alliance8Captain" >Alliance 8 Captain</div><div class="alliancedrop" id="Alliance8Round1" >Alliance 8 first choice</div><div class="alliancedrop" id="Alliance8Round2" >Alliance 8 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance8Round3" >Alliance 8 third choice</div></td></tr><tr class="col6"> <td id="Alliance2" class="col3"><div class="alliancedrop" id="Alliance2Captain" >Alliance 2 Captain</div><div class="alliancedrop" id="Alliance2Round1" >Alliance 2 first choice</div><div class="alliancedrop" id="Alliance2Round2" >Alliance 2 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance2Round3" >Alliance 2 third choice</div></td><td id="Alliance7" class="col3"><div class="alliancedrop" id="Alliance7Captain" >Alliance 7 Captain</div><div class="alliancedrop" id="Alliance7Round1" >Alliance 7 first choice</div><div class="alliancedrop" id="Alliance7Round2" >Alliance 7 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance7Round3" >Alliance 7 third choice</div></td></tr><tr class="col6"> <td id="Alliance3" class="col3"><div class="alliancedrop" id="Alliance3Captain" >Alliance 3 Captain</div><div class="alliancedrop" id="Alliance3Round1" >Alliance 3 first choice</div><div class="alliancedrop" id="Alliance3Round2" >Alliance 3 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance3Round3" >Alliance 3 third choice</div></td><td id="Alliance6" class="col3"><div class="alliancedrop" id="Alliance6Captain" >Alliance 6 Captain</div><div class="alliancedrop" id="Alliance6Round1" >Alliance 6 first choice</div><div class="alliancedrop" id="Alliance6Round2" >Alliance 6 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance6Round3" >Alliance 6 third choice</div></td></tr><tr class="col6"> <td id="Alliance4" class="col3"><div class="alliancedrop" id="Alliance4Captain" >Alliance 4 Captain</div><div class="alliancedrop" id="Alliance4Round1" >Alliance 4 first choice</div><div class="alliancedrop" id="Alliance4Round2" >Alliance 4 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance4Round3" >Alliance 4 third choice</div></td><td id="Alliance5" class="col3"><div class="alliancedrop" id="Alliance5Captain" >Alliance 5 Captain</div><div class="alliancedrop" id="Alliance5Round1" >Alliance 5 first choice</div><div class="alliancedrop" id="Alliance5Round2" >Alliance 5 second choice</div><div class="alliancedrop thirdAllianceSelection" id="Alliance5Round3" >Alliance 5 third choice</div></td></tr></table></td></tr></table>');
 
 }
@@ -1244,31 +1244,67 @@ function getAvatars() {
 	req.send();
 }
 
+function winningAllianceTeams(match) {
+	"use strict";
+	var teams = [];
+	for (var i = 0; i < match.details.teams.length; i++) {
+		if (match.details.teams[i].station.startsWith(match.alliance)) {
+			teams.push(match.details.teams[i].teamNumber);
+		}
+	}
+	return teams.join(", ");
+}
+
 function getHighScores() {
 	"use strict";
 	var req = new XMLHttpRequest();
 	var eventNames = JSON.parse(localStorage.events);
 	req.open('GET', apiURL + localStorage.currentYear + '/highscore/');
 	req.addEventListener('load', function () {
+		$("#eventhighscorestable").html('<thead><tr><td colspan="2">Event High Scores</td></tr></thead><tr><td id="eventHighQualsNoFouls">Qual (no penalties)<br>No matches meet criteria<br></td><td id="eventHighPlayoffNoFouls">Playoff (no penalties)<br>No matches meet criteria</td></tr><tr> <td id="eventHighQualsOffsettingFouls">Qual (offsetting fouls)<br>No matches meet criteria<br></td><td id="eventHighPlayoffOffsettingFouls">Playoff (offsetting fouls)<br>No matches meet criteria<br></td></tr><tr><td id="eventHighQuals">Qual<br>No matches meet criteria<br></td><td id="eventHighPlayoff">Playoff<br>No matches meet criteria</td></tr>');
 		var data = JSON.parse(req.responseText);
+		var scores = data.scores;
 		$("#highscoreyear").html(" " + localStorage.currentYear);
 		if (data.highQualsPenaltyFree.score) {
-			$("#highQualsNoFouls").html("Qual (no fouls) " + data.highQualsPenaltyFree.score + " Match " + data.highQualsPenaltyFree.details.matchNumber + "<br>" + eventNames[data.highQualsPenaltyFree.event]);
+			$("#highQualsNoFouls").html("Qual (no fouls) " + data.highQualsPenaltyFree.score + "<br>Match " + data.highQualsPenaltyFree.details.matchNumber + "<br>" + eventNames[data.highQualsPenaltyFree.event] + "<br>" + data.highQualsPenaltyFree.alliance + " alliance (" + winningAllianceTeams(data.highQualsPenaltyFree) + ")");
 		}
 		if (data.highQualsPenaltyFreeOffsetting.score) {
-			$("#highQualsOffsettingFouls").html("Qual (offsetting fouls) " + data.highQualsPenaltyFreeOffsetting.score + " Match " + data.highQualsPenaltyFreeOffsetting.details.matchNumber + "<br>" + eventNames[data.highQualsPenaltyFreeOffsetting.event]);
+			$("#highQualsOffsettingFouls").html("Qual (offsetting fouls) " + data.highQualsPenaltyFreeOffsetting.score + "<br>Match " + data.highQualsPenaltyFreeOffsetting.details.matchNumber + "<br>" + eventNames[data.highQualsPenaltyFreeOffsetting.event] + "<br>" + data.highQualsPenaltyFreeOffsetting.alliance + " alliance (" + winningAllianceTeams(data.highQualsPenaltyFreeOffsetting) + ")");
 		}
 		if (data.highQuals.score) {
-			$("#highQuals").html("Qual " + data.highQuals.score + " Match " + data.highQuals.details.matchNumber + "<br>" + eventNames[data.highQuals.event]);
+			$("#highQuals").html("Qual " + data.highQuals.score + "<br>Match " + data.highQuals.details.matchNumber + "<br>" + eventNames[data.highQuals.event] + "<br>" + data.highQuals.alliance + " alliance (" + winningAllianceTeams(data.highQuals) + ")");
 		}
 		if (data.highPlayoffPenaltyFree.score) {
-			$("#highPlayoffNoFouls").html("Playoff (no fouls) " + data.highPlayoffPenaltyFree.score + " Match " + data.highPlayoffPenaltyFree.details.matchNumber + "<br>" + eventNames[data.highPlayoffPenaltyFree.event]);
+			$("#highPlayoffNoFouls").html("Playoff (no fouls) " + data.highPlayoffPenaltyFree.score + "<br>Match " + data.highPlayoffPenaltyFree.details.matchNumber + "<br>" + eventNames[data.highPlayoffPenaltyFree.event] + "<br>" + data.highPlayoffPenaltyFree.alliance + " alliance (" + winningAllianceTeams(data.highPlayoffPenaltyFree) + ")");
 		}
 		if (data.highPlayoffPenaltyFreeOffsetting.score) {
-			$("#highPlayoffOffsettingFouls").html("Playoff (offsetting fouls) " + data.highPlayoffPenaltyFreeOffsetting.score + " Match " + data.highPlayoffPenaltyFreeOffsetting.details.matchNumber + "<br>" + eventNames[data.highPlayoffPenaltyFreeOffsetting.event]);
+			$("#highPlayoffOffsettingFouls").html("Playoff (offsetting fouls) " + data.highPlayoffPenaltyFreeOffsetting.score + "<br>Match " + data.highPlayoffPenaltyFreeOffsetting.details.matchNumber + "<br>" + eventNames[data.highPlayoffPenaltyFreeOffsetting.event] + "<br>" + data.highPlayoffPenaltyFreeOffsetting.alliance + " alliance (" + winningAllianceTeams(data.highPlayoffPenaltyFreeOffsetting) + ")");
 		}
 		if (data.highPlayoff.score) {
-			$("#highPlayoff").html("Playoff " + data.highPlayoff.score + " Match " + data.highPlayoff.details.matchNumber + "<br>" + eventNames[data.highPlayoff.event]);
+			$("#highPlayoff").html("Playoff " + data.highPlayoff.score + "<br>Match " + data.highPlayoff.details.matchNumber + "<br>" + eventNames[data.highPlayoff.event] + "<br>" + data.highPlayoff.alliance + " alliance (" + winningAllianceTeams(data.highPlayoff) + ")");
+		}
+
+		for (var i = 0; i < scores.length; i++) {
+			if (scores[i].event === localStorage.currentEvent) {
+				if (scores[i].highScoreType === "highQualsPenaltyFree") {
+					$("#eventHighQualsNoFouls").html("Qual (no fouls) " + scores[i].score + "<br>Match " + scores[i].details.matchNumber + "<br>" + eventNames[scores[i].event] + "<br>" + scores[i].alliance + " alliance (" + winningAllianceTeams(scores[i]) + ")");
+				}
+				if (scores[i].highScoreType === "highQualsPenaltyFreeOffsetting") {
+					$("#eventHighQualsOffsettingFouls").html("Qual (offsetting fouls) " + scores[i].score + "<br>Match " + scores[i].details.matchNumber + "<br>" + eventNames[scores[i].event] + "<br>" + scores[i].alliance + " alliance (" + winningAllianceTeams(scores[i]) + ")");
+				}
+				if (scores[i].highScoreType === "highQuals") {
+					$("#eventHighQuals").html("Qual " + scores[i].score + "<br>Match " + scores[i].details.matchNumber + "<br>" + eventNames[scores[i].event] + "<br>" + scores[i].alliance + " alliance (" + winningAllianceTeams(scores[i]) + ")");
+				}
+				if (scores[i].highScoreType === "highPlayoffPenaltyFree") {
+					$("#eventHighPlayoffNoFouls").html("Playoff (no fouls) " + scores[i].score + "<br>Match " + scores[i].details.matchNumber + "<br>" + eventNames[scores[i].event] + "<br>" + scores[i].alliance + " alliance (" + winningAllianceTeams(scores[i]) + ")");
+				}
+				if (scores[i].highScoreType === "highPlayoffPenaltyFreeOffsetting") {
+					$("#eventHighPlayoffOffsettingFouls").html("Playoff (offsetting fouls) " + scores[i].score + "<br>Match " + scores[i].details.matchNumber + "<br>" + eventNames[scores[i].event] + "<br>" + scores[i].alliance + " alliance (" + winningAllianceTeams(scores[i]) + ")");
+				}
+				if (scores[i].highScoreType === "highPlayoff") {
+					$("#eventHighPlayoff").html("Playoff " + scores[i].score + "<br>Match " + scores[i].details.matchNumber + "<br>" + eventNames[scores[i].event] + "<br>" + scores[i].alliance + " alliance (" + winningAllianceTeams(scores[i]) + ")");
+				}
+			}
 		}
 
 	});
@@ -1468,7 +1504,7 @@ function announceDisplay() {
 		$("#topMatchNameAnnounce").html(localStorage.eventName + "<br>" + parsePlayoffMatchName(currentMatchData.description));
 		$("#matchName").html(parsePlayoffMatchName(currentMatchData.description));
 		$("#topMatchNamePlayByPlay").html(parsePlayoffMatchName(currentMatchData.description));
-		$("#davidPriceNumber").html(davidPriceFormat(parsePlayoffMatchName(currentMatchData.description)));
+		$("#davidPriceNumber").html(davidPriceFormat(currentMatchData.description));
 
 	} else {
 		$("#matchNameAnnounce").html("<b>" + currentMatchData.description + " of " + qualsList.Schedule.length + "</b>");
@@ -1480,14 +1516,6 @@ function announceDisplay() {
 	$("#eventHighScorePlayByPlay").html("<b>Current High Score: " + localStorage.matchHighScore + "<br>from " + localStorage.highScoreDetails + "</b>");
 	getHighScores();
 
-	function davidPriceFormat(MatchData) {
-		var str = MatchData.split(" ", 4);
-		MatchData = "";
-		for (var i = 0; i < str.length; i++) {
-			MatchData += str[i].replace("Qualification", "").replace("Quarterfinal", "Q").replace("Semifinal", "S").replace("Final", "F").replace("Match", "M").replace("Tiebreaker", "T");
-		}
-		return MatchData.trim();
-	}
 
 	function checkTeam(element) {
 		return element !== currentMatchData.teams[ii].teamNumber;
@@ -2851,7 +2879,7 @@ function updateTeamInfoDone(cloudSave) {
 
 	// Show the current tab, and add an "active" class to the link that opened the tab
 	updateTeamTable();
-	
+
 	$("#teamdata").show();
 	document.getElementById('teamDataTabPicker').click();
 }
@@ -3306,14 +3334,10 @@ function parsePlayoffMatchName(matchName) {
 	if ((matchArray[0] === "Quarterfinal") && (matchArray[1] <= 4)) {
 		return "Quarterfinal " + matchArray[1] + " Match 1";
 	}
-	$("#davidPrice").removeClass("redScore");
-	$("#davidPrice").removeClass("blueScore");
 	if ((matchArray[0] === "Quarterfinal") && (matchArray[1] > 4)) {
 		if (playoffResults["Quarterfinal " + (matchArray[1] - 4)] === "Red") {
-			$("#davidPrice").addClass("redScore");
 			return "Quarterfinal " + (matchArray[1] - 4) + " Match 2 <br><span class='redScoreWin'>Advantage " + playoffResults["Quarterfinal " + (matchArray[1] - 4)] + "</span>";
 		} else if (playoffResults["Quarterfinal " + (matchArray[1] - 4)] === "Blue") {
-			$("#davidPrice").addClass("blueScore");
 			return "Quarterfinal " + (matchArray[1] - 4) + " Match 2 <br><span class='blueScoreWin'>Advantage " + playoffResults["Quarterfinal " + (matchArray[1] - 4)] + "</span>";
 		} else if (playoffResults["Quarterfinal " + (matchArray[1] - 4)] === "No results yet") {
 			return "Quarterfinal " + (matchArray[1] - 4) + " Match 2 <br>First match not reported yet";
@@ -3328,10 +3352,8 @@ function parsePlayoffMatchName(matchName) {
 
 	if ((matchArray[0] === "Semifinal") && (matchArray[1] > 2)) {
 		if (playoffResults["Semifinal " + (matchArray[1] - 2)] === "Red") {
-			$("#davidPrice").addClass("redScore");
 			return "Semifinal " + (matchArray[1] - 2) + " Match 2<br><span class='redScoreWin'>Advantage " + playoffResults["Semifinal " + (matchArray[1] - 2)] + "</span>";
 		} else if (playoffResults["Semifinal " + (matchArray[1] - 2)] === "Blue") {
-			$("#davidPrice").addClass("blueScore");
 			return "Semifinal " + (matchArray[1] - 2) + " Match 2<br><span class='blueScoreWin'>Advantage " + playoffResults["Semifinal " + (matchArray[1] - 2)] + "</span>";
 		} else if (playoffResults["Semifinal " + (matchArray[1] - 2)] === "No results yet") {
 			return "Semifinal " + (matchArray[1] - 2) + " Match 2<br>First match not reported yet";
@@ -3347,10 +3369,8 @@ function parsePlayoffMatchName(matchName) {
 	if (matchArray[0] === "Final") {
 		if (matchArray[1] === "2") {
 			if (playoffResults["Final 1"] === "Red") {
-				$("#davidPrice").addClass("redScore");
 				return matchArray[0] + " " + (matchArray[1] || "") + "<br><span class='redScoreWin'>Advantage Red</span>";
 			} else if (playoffResults["Final 1"] === "Blue") {
-				$("#davidPrice").addClass("blueScore");
 				return matchArray[0] + " " + (matchArray[1] || "") + "<br><span class='blueScoreWin'>Advantage Blue</span>";
 			} else if (playoffResults["Final 1"] === "No results yet") {
 				return matchArray[0] + " " + (matchArray[1] || "") + "<br>First match not reported yet";
@@ -3362,6 +3382,73 @@ function parsePlayoffMatchName(matchName) {
 	}
 
 }
+
+function davidPriceFormat(matchName) {
+	"use strict";
+	var matchArray = matchName.split(" ");
+	if ((matchArray[0] === "Qualification")) {
+		return matchArray[1];
+	}
+	if ((matchArray[0] === "Quarterfinal") && (matchArray[1] <= 4)) {
+		return "Q" + matchArray[1] + "M1";
+	}
+	$("#davidPrice").removeClass("redScore");
+	$("#davidPrice").removeClass("blueScore");
+	if ((matchArray[0] === "Quarterfinal") && (matchArray[1] > 4)) {
+		if (playoffResults["Quarterfinal " + (matchArray[1] - 4)] === "Red") {
+			$("#davidPrice").addClass("redScore");
+			return "Q" + (matchArray[1] - 4) + "M2";
+		} else if (playoffResults["Quarterfinal " + (matchArray[1] - 4)] === "Blue") {
+			$("#davidPrice").addClass("blueScore");
+			return "Q" + (matchArray[1] - 4) + "M2";
+		} else if (playoffResults["Quarterfinal " + (matchArray[1] - 4)] === "No results yet") {
+			return "Q" + (matchArray[1] - 4) + "M2";
+		} else {
+			return "Q" + (matchArray[1] - 4) + " M2 M1 Tie";
+		}
+	}
+
+	if ((matchArray[0] === "Semifinal") && (matchArray[1] <= 2)) {
+		return "S" + matchArray[1] + "M1";
+	}
+
+	if ((matchArray[0] === "Semifinal") && (matchArray[1] > 2)) {
+		if (playoffResults["Semifinal " + (matchArray[1] - 2)] === "Red") {
+			$("#davidPrice").addClass("redScore");
+			return "S" + (matchArray[1] - 2) + "M2";
+		} else if (playoffResults["Semifinal " + (matchArray[1] - 2)] === "Blue") {
+			$("#davidPrice").addClass("blueScore");
+			return "S" + (matchArray[1] - 2) + "M2";
+		} else if (playoffResults["Semifinal " + (matchArray[1] - 2)] === "No results yet") {
+			return "S" + (matchArray[1] - 2) + "M2";
+		} else {
+			return "S" + (matchArray[1] - 2) + "M2 M1 Tie";
+		}
+
+	}
+	if (matchArray[0] === "Tiebreaker") {
+		return "TB " + (matchArray[1] || "");
+	}
+
+	if (matchArray[0] === "Final") {
+		if (matchArray[1] === "2") {
+			if (playoffResults["Final 1"] === "Red") {
+				$("#davidPrice").addClass("redScore");
+				return "F" + (matchArray[1] || "");
+			} else if (playoffResults["Final 1"] === "Blue") {
+				$("#davidPrice").addClass("blueScore");
+				return "F" + (matchArray[1] || "");
+			} else if (playoffResults["Final 1"] === "No results yet") {
+				return "F" + (matchArray[1] || "");
+			} else {
+				return "F" + (matchArray[1] || "") + "M1 Tie";
+			}
+		}
+		return "F" + (matchArray[1] || "");
+	}
+
+}
+
 
 function startTimer() {
 	"use strict";
