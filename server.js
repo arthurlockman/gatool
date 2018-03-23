@@ -30,24 +30,24 @@ var logger = winston.createLogger({
 			filename: 'error-%DATE%.log',
 			level: 'error',
 			datePattern: 'YYYY-MM-DD-HH',
-    zippedArchive: true,
-    maxSize: '20m',
-    maxFiles: '14d'
+			zippedArchive: true,
+			maxSize: '20m',
+			maxFiles: '14d'
 		}),
 		new winston.transports.DailyRotateFile({
 			filename: 'info-%DATE%.log',
 			level: 'info',
 			datePattern: 'YYYY-MM-DD-HH',
-    zippedArchive: true,
-    maxSize: '20m',
-    maxFiles: '14d'
+			zippedArchive: true,
+			maxSize: '20m',
+			maxFiles: '14d'
 		}),
 		new winston.transports.DailyRotateFile({
 			filename: 'combined-%DATE%.log',
 			datePattern: 'YYYY-MM-DD-HH',
-    zippedArchive: true,
-    maxSize: '20m',
-    maxFiles: '14d'
+			zippedArchive: true,
+			maxSize: '20m',
+			maxFiles: '14d'
 		})
 	]
 });
@@ -260,7 +260,7 @@ router.route('/:year/highscore').get(function (req, res) {
 	var scoreList = {};
 	var score = {};
 	scoreList.scores = [];
-	
+
 	scoreList.highQuals = {
 		'score': 0
 	};
@@ -298,8 +298,8 @@ router.route('/:year/highscore').get(function (req, res) {
 			}
 			score.highScoreType = "highQuals";
 		}
-		
-		scoreList.scores.push(score);		
+
+		scoreList.scores.push(score);
 	}
 	//check for penalty free matches
 	var penaltyKeys = Object.keys(highscorePenaltyFree[String(req.params.year)]);
@@ -318,7 +318,7 @@ router.route('/:year/highscore').get(function (req, res) {
 			}
 			score.highScoreType = "highQualsPenaltyFree";
 		}
-		scoreList.scores.push(score);		
+		scoreList.scores.push(score);
 	}
 
 	//check for offsetting penalties
@@ -680,7 +680,20 @@ router.route('/:year/schedule/:eventCode/:tlevel').get(cache('15 seconds'), func
 		})
 		.end(function (response) {
 			if (req.query.returnschedule === "true") {
-				res.json(safeParseJson(response.body));
+				if (!response.headers['last-modified']) {
+					res.writeHead(200, {
+						'Content-type': 'application/json',
+						'Last-Modified': "1 Jan 2018 01:24:20 GMT"
+					});
+				} else {
+					res.writeHead(200, {
+						'Content-type': 'application/json',
+						'Last-Modified': response.headers['last-modified']
+					});
+				}
+				//res.json(safeParseJson(response.body));
+
+				res.end(JSON.stringify(safeParseJson(response.body)), 'utf-8');
 			}
 			if (Number(req.params.year) >= 2016) {
 				logger.info({
