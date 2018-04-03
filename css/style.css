@@ -487,7 +487,13 @@ color: black;
 	font-size: 500px;
 	text-align: center;
 	font-family: "alternate-gothic-no-1-d",sans-serif;
-	line-height: 100%
+	line-height: 85%
+}
+.davidPriceAlliances {
+	font-size: 300px;
+	text-align: center;
+	font-family: "alternate-gothic-no-1-d",sans-serif;
+	line-height: 50%
 }
 
 @media (max-width: 768px) {
@@ -570,7 +576,10 @@ ul.tab li a {
 	display: none
 }
 .davidPrice {
-	font-size: 400px;}
+	font-size: 400px}
+}
+.davidPriceAlliances {
+	font-size: 300px
 }
 
 @media (min-width: 541px) and (max-width: 767px) {
@@ -599,6 +608,9 @@ ul.tab li a {
 .davidPrice {
 	font-size: 300px;
 }
+	.davidPriceAlliances {
+	font-size: 250px
+}
 }
 
 @media (max-width: 540px) {
@@ -614,6 +626,9 @@ ul.tab li a {
 }
 .davidPrice {
 	font-size: 300px;
+}
+	.davidPriceAlliances {
+	font-size: 250px
 }
 }
 

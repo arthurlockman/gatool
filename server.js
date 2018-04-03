@@ -104,6 +104,10 @@ var events = level("./events/", {
 	valueEncoding: 'json'
 });
 
+var environment = level("./environment/", {
+	valueEncoding: 'json'
+});
+
 function initializeHighScores(year) {
 	"use strict";
 	seasonHighScore.get(String(year), function (err, storedRequest) {
@@ -135,7 +139,9 @@ var bodyParser = require('body-parser');
 initializeHighScores(2018);
 app.use(cors()); //enable cors for mobile and desktop apps
 app.use(compression());
-app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.json({
+	limit: '15mb'
+})); // support json encoded bodies
 app.use(bodyParser.urlencoded({
 	extended: true
 })); // support encoded bodies
@@ -281,63 +287,66 @@ router.route('/:year/highscore').get(function (req, res) {
 	scoreList.highPlayoffPenaltyFreeOffsetting = {
 		'score': 0
 	};
-	//check for overall high score
-	var highScoreKeys = Object.keys(highscore[String(req.params.year)]);
-	for (i = 0; i < highScoreKeys.length; i++) {
-		score = highscore[String(req.params.year)][highScoreKeys[i]];
 
-		if (score.details.tournamentLevel === "Playoff") {
-			if (score.score > scoreList.highPlayoff.score) {
-				scoreList.highPlayoff = score;
+	if (req.params.year >= 2018) {
+		//check for overall high score
+		var highScoreKeys = Object.keys(highscore[String(req.params.year)]);
+		for (i = 0; i < highScoreKeys.length; i++) {
+			score = highscore[String(req.params.year)][highScoreKeys[i]];
+
+			if (score.details.tournamentLevel === "Playoff") {
+				if (score.score > scoreList.highPlayoff.score) {
+					scoreList.highPlayoff = score;
+				}
+				score.highScoreType = "highPlayoff";
 			}
-			score.highScoreType = "highPlayoff";
+			if (score.details.tournamentLevel === "Qualification") {
+				if (score.score > scoreList.highQuals.score) {
+					scoreList.highQuals = score;
+				}
+				score.highScoreType = "highQuals";
+			}
+
+			scoreList.scores.push(score);
 		}
-		if (score.details.tournamentLevel === "Qualification") {
-			if (score.score > scoreList.highQuals.score) {
-				scoreList.highQuals = score;
+		//check for penalty free matches
+		var penaltyKeys = Object.keys(highscorePenaltyFree[String(req.params.year)]);
+		for (i = 0; i < penaltyKeys.length; i++) {
+			score = highscorePenaltyFree[String(req.params.year)][penaltyKeys[i]];
+
+			if (score.details.tournamentLevel === "Playoff") {
+				if (score.score > scoreList.highPlayoffPenaltyFree.score) {
+					scoreList.highPlayoffPenaltyFree = score;
+				}
+				score.highScoreType = "highPlayoffPenaltyFree";
 			}
-			score.highScoreType = "highQuals";
+			if (score.details.tournamentLevel === "Qualification") {
+				if (score.score > scoreList.highQualsPenaltyFree.score) {
+					scoreList.highQualsPenaltyFree = score;
+				}
+				score.highScoreType = "highQualsPenaltyFree";
+			}
+			scoreList.scores.push(score);
 		}
 
-		scoreList.scores.push(score);
-	}
-	//check for penalty free matches
-	var penaltyKeys = Object.keys(highscorePenaltyFree[String(req.params.year)]);
-	for (i = 0; i < penaltyKeys.length; i++) {
-		score = highscorePenaltyFree[String(req.params.year)][penaltyKeys[i]];
-
-		if (score.details.tournamentLevel === "Playoff") {
-			if (score.score > scoreList.highPlayoffPenaltyFree.score) {
-				scoreList.highPlayoffPenaltyFree = score;
+		//check for offsetting penalties
+		var offsettingKeys = Object.keys(highscoreOffsetting[String(req.params.year)]);
+		for (i = 0; i < offsettingKeys.length; i++) {
+			score = highscoreOffsetting[String(req.params.year)][offsettingKeys[i]];
+			if (score.details.tournamentLevel === "Playoff") {
+				if (score.score > scoreList.highPlayoffPenaltyFreeOffsetting.score) {
+					scoreList.highPlayoffPenaltyFreeOffsetting = score;
+				}
+				score.highScoreType = "highPlayoffPenaltyFreeOffsetting";
 			}
-			score.highScoreType = "highPlayoffPenaltyFree";
-		}
-		if (score.details.tournamentLevel === "Qualification") {
-			if (score.score > scoreList.highQualsPenaltyFree.score) {
-				scoreList.highQualsPenaltyFree = score;
+			if (score.details.tournamentLevel === "Qualification") {
+				if (score.score > scoreList.highQualsPenaltyFreeOffsetting.score) {
+					scoreList.highQualsPenaltyFreeOffsetting = score;
+				}
+				score.highScoreType = "highQualsPenaltyFreeOffsetting";
 			}
-			score.highScoreType = "highQualsPenaltyFree";
+			scoreList.scores.push(score);
 		}
-		scoreList.scores.push(score);
-	}
-
-	//check for offsetting penalties
-	var offsettingKeys = Object.keys(highscoreOffsetting[String(req.params.year)]);
-	for (i = 0; i < offsettingKeys.length; i++) {
-		score = highscoreOffsetting[String(req.params.year)][offsettingKeys[i]];
-		if (score.details.tournamentLevel === "Playoff") {
-			if (score.score > scoreList.highPlayoffPenaltyFreeOffsetting.score) {
-				scoreList.highPlayoffPenaltyFreeOffsetting = score;
-			}
-			score.highScoreType = "highPlayoffPenaltyFreeOffsetting";
-		}
-		if (score.details.tournamentLevel === "Qualification") {
-			if (score.score > scoreList.highQualsPenaltyFreeOffsetting.score) {
-				scoreList.highQualsPenaltyFreeOffsetting = score;
-			}
-			score.highScoreType = "highQualsPenaltyFreeOffsetting";
-		}
-		scoreList.scores.push(score);
 	}
 	res.json(scoreList);
 
@@ -581,6 +590,52 @@ router.route('/putTeamUpdate/:teamNumber/:teamData/').get(function (req, res) {
 	});
 	res.end("OK", 'utf-8');
 });
+
+router.route('/saveenvironment/').post(function (req, res) {
+	'use strict';
+	var cookieRaw = (req.headers.cookie || "");
+	var cookies = cookie.parse(cookieRaw);
+	// Get the visitor name set in the cookie 
+	loggedin = (cookies.loggedin || "");
+	if (loggedin !== "") {
+		environment.put(loggedin, JSON.stringify(req.body));
+		res.writeHead(200, {
+			'Content-type': 'text/html'
+		});
+		res.end("OK", 'utf-8');
+		return;
+	} else {
+		sendFile(res, 'login.html', 'text/html');
+		return;
+	}
+	//console.log("writing data for " + req.params.teamNumber);
+
+});
+
+router.route('/loadenvironment/').get(function (req, res) {
+	'use strict';
+	var cookieRaw = (req.headers.cookie || "");
+	var cookies = cookie.parse(cookieRaw);
+	// Get the visitor name set in the cookie 
+	loggedin = (cookies.loggedin || "");
+	if (loggedin !== "") {
+		environment.get(loggedin, function (err, data) {
+			if (err) {
+				res.writeHead(200, {
+					'Content-type': 'text/html'
+				});
+				res.end("Error loading", 'utf-8');
+			} else {
+				res.json(JSON.parse(data));
+			}
+		});
+	} else {
+		sendFile(res, 'login.html', 'text/html');
+		return;
+	}
+
+});
+
 
 router.route('/getTeamUpdate/:teamNumber/').get(function (req, res) {
 	'use strict';
@@ -1386,10 +1441,17 @@ router.route('/:year/rankings/:eventCode/').get(cache('15 seconds'), function (r
 		})
 		.end(function (response) {
 			//res.json(safeParseJson(response.body));
-			res.writeHead(200, {
-				'Content-type': 'application/json',
-				'Last-Modified': response.headers['last-modified']
-			});
+			if (!response.headers['last-modified']) {
+				res.writeHead(200, {
+					'Content-type': 'application/json',
+					'Last-Modified': "1 Jan 2018 01:24:20 GMT"
+				});
+			} else {
+				res.writeHead(200, {
+					'Content-type': 'application/json',
+					'Last-Modified': response.headers['last-modified']
+				});
+			}
 			res.end(JSON.stringify(safeParseJson(response.body)), 'utf-8');
 		});
 

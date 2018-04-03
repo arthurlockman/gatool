@@ -5,3 +5,15 @@ token.json
 database/*.*
 server.crt
 server.key
+/seasonHighScore/
+/seasonOffsetting/
+/seasonPenaltyFree/
+/offseasonEvents/
+/users/
+/teamUpdate/
+/teamdata/
+/teamAwards/
+/events/
+/database/
+/avatars/
+/environment/

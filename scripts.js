@@ -110,6 +110,9 @@ var lastQualsUpdate = "";
 var qualsComplete = false;
 var haveSchedule = false;
 var rankQualThreshold = 15;
+var matchCount = 0;
+var allianceSelectionReady = false;
+var environment = {};
 
 for (var i = 1; i < 9; i++) {
 	allianceChoices['Alliance' + i + 'Captain'] = "";
@@ -489,6 +492,7 @@ function initEnvironment() {
 	$('#ranksContainer').html("No Rankings available.");
 	$('#allianceSelectionTable').hide();
 	$('#allianceUndoButton').hide();
+	$("#davidPriceAlliances").hide();
 }
 
 function prepareAllianceSelection() {
@@ -536,6 +540,7 @@ function handleEventSelection() {
 	lastRanksUpdate = "";
 	lastQualsUpdate = "";
 	qualsComplete = false;
+	allianceSelectionReady = false;
 
 	var e = document.getElementById('eventSelector');
 	var data = JSON.parse(e.value);
@@ -586,6 +591,7 @@ function handleOffseasonEventSelection() {
 	localStorage.currentMatch = 1;
 	localStorage.playoffList = '{"Schedule":[]}';
 	localStorage.qualsList = '{"Schedule":[]}';
+	allianceSelectionReady = false;
 
 	var data = JSON.parse(localStorage.offseasonEventData);
 	localStorage.eventSelector = "offseason";
@@ -862,12 +868,13 @@ function getHybridSchedule() {
 
 function ranksQualsCompare() {
 	"use strict";
-	var qualDate = new moment(lastQualsUpdate);
-	var ranksDate = new moment(lastRanksUpdate);
-	if ((Math.abs(moment.duration(qualDate.diff(ranksDate)).as('seconds')) < rankQualThreshold ) && qualsComplete) {
-		$("#allianceSelectionWarning").html('<p class="alert alert-success"><strong>Your ranks appear to be current, but confirm that the rank order below agrees with the rank order in FMS before proceeding with Alliance Selection</strong></p>');
+	//	var qualDate = new moment(lastQualsUpdate);
+	//	var ranksDate = new moment(lastRanksUpdate);
+	//	if ((Math.abs(moment.duration(qualDate.diff(ranksDate)).as('seconds')) < rankQualThreshold ) && qualsComplete) {
+	if (allianceSelectionReady) {
+		$("#allianceSelectionWarning").html('<p class="alert alert-success" onclick="announceDisplay();"><strong>Your ranks appear to be current, but you must confirm that the rank order below agrees with the rank order in FMS before proceeding with Alliance Selection</strong> If you see a discrepancy, tap this alert to see if we can get a more current rankings.</p>');
 	} else {
-		$("#allianceSelectionWarning").html('<p class="alert alert-danger" onclick="announceDisplay();"><strong>Do not proceed with Alliance Selection until you confirm that the rank order below agrees with the rank order in FMS. Tap to see if we can get a more current schedule and rankings.</strong></p>');
+		$("#allianceSelectionWarning").html('<p class="alert alert-danger" onclick="announceDisplay();"><strong>Do not proceed with Alliance Selection until you confirm that the rank order below agrees with the rank order in FMS. Tap this alert to see if we can get a more current schedule and rankings.</strong></p>');
 	}
 }
 
@@ -930,6 +937,7 @@ function getRegularSeasonSchedule() {
 			}
 			$('#scheduleTabPicker').removeClass('alert-danger');
 			$('#scheduleTabPicker').addClass('alert-success');
+			matchCount = parseInt(Number(JSON.parse(localStorage.qualsList).Schedule.length) * 6 / Number(JSON.parse(localStorage.teamList).length));
 		}
 
 
@@ -1484,8 +1492,9 @@ function scaleRows() {
 
 function announceDisplay() {
 	"use strict";
-	$("#davidPrice").removeClass("redScore");
-	$("#davidPrice").removeClass("blueScore");
+	$("#davidPriceNumber").removeClass("redScore");
+	$("#davidPriceNumber").removeClass("blueScore");
+	$("#davidPriceAlliances").hide();
 	var qualsList = JSON.parse(localStorage.qualsList);
 	var currentMatch = localStorage.currentMatch - 1;
 	var teamCount = 6;
@@ -1503,6 +1512,7 @@ function announceDisplay() {
 	var blueAlliance = {};
 	getTeamRanks();
 	$(".champsDisplay").hide();
+
 	if (inChamps() || (inSubdivision() && (localStorage.currentMatch > qualsList.Schedule.length))) {
 		teamCount = 8;
 		$(".champsDisplay").show();
@@ -1524,14 +1534,14 @@ function announceDisplay() {
 		$("#topMatchNameAnnounce").html(localStorage.eventName + "<br>" + parsePlayoffMatchName(currentMatchData.description));
 		$("#matchName").html(parsePlayoffMatchName(currentMatchData.description));
 		$("#topMatchNamePlayByPlay").html(parsePlayoffMatchName(currentMatchData.description));
-		$("#davidPriceNumber").html(davidPriceFormat(currentMatchData.description));
+		$("#davidPriceNumber").html(davidPriceFormat(currentMatchData));
 
 	} else {
 		$("#matchNameAnnounce").html("<b>" + currentMatchData.description + " of " + qualsList.Schedule.length + "</b>");
 		$("#topMatchNameAnnounce").html("<b>" + localStorage.eventName + "<br>" + currentMatchData.description + " of " + qualsList.Schedule.length + "</b>");
 		$("#matchName").html("<b>" + currentMatchData.description + " of " + qualsList.Schedule.length + "</b>");
 		$("#topMatchNamePlayByPlay").html("<b>" + currentMatchData.description + " of " + qualsList.Schedule.length + "</b>");
-		$("#davidPriceNumber").html(davidPriceFormat(currentMatchData.description));
+		$("#davidPriceNumber").html(davidPriceFormat(currentMatchData));
 	}
 	$("#eventHighScorePlayByPlay").html("<b>Current High Score: " + localStorage.matchHighScore + "<br>from " + localStorage.highScoreDetails + "</b>");
 	getHighScores();
@@ -1583,6 +1593,7 @@ function announceDisplay() {
 		if ((localStorage.currentMatch > JSON.parse(localStorage.qualsList).Schedule.length) || inChamps() || (inMiChamps() && (localStorage.currentYear >= 2017))) {
 			$('#' + stationList[ii] + 'Alliance').html(teamData.allianceName + "<br>" + teamData.allianceChoice);
 			$('#' + stationList[ii] + 'PlayByPlayAlliance').html("<p><b>" + teamData.allianceName + "<br>" + teamData.allianceChoice + "<b></p>");
+
 		} else {
 			$('#' + stationList[ii] + 'Alliance').html("");
 			$('#' + stationList[ii] + 'PlayByPlayAlliance').html("");
@@ -1665,6 +1676,15 @@ function announceDisplay() {
 		}
 
 	}
+
+	if ((localStorage.currentMatch > JSON.parse(localStorage.qualsList).Schedule.length) || inChamps() || (inMiChamps() && (localStorage.currentYear >= 2017))) {
+		$('#davidPriceRedAlliance').html($("#red1Alliance").html().split("<br>")[0].split(" ")[1]);
+		$('#davidPriceBlueAlliance').html($("#blue1Alliance").html().split("<br>")[0].split(" ")[1]);
+		$('#davidPriceAlliances').show();
+
+	}
+
+
 	displayAwards();
 }
 
@@ -1785,6 +1805,12 @@ function getTeamRanks() {
 				$("#teamTableRank" + data.Rankings[i].teamNumber).attr("class", teamTableRankHighlight(data.Rankings[i].rank));
 				ranksList += updateRanksTableRow(team, data.Rankings[i].teamNumber);
 				localStorage['teamData' + data.Rankings[i].teamNumber] = JSON.stringify(team);
+
+				if (data.Rankings[i].matchesPlayed < matchCount) {
+					allianceSelectionReady = false;
+				} else {
+					allianceSelectionReady = true;
+				}
 
 			}
 			$("#ranksProgressBar").hide();
@@ -2949,7 +2975,7 @@ function resetLocalStorage() {
 			icon: 'glyphicon glyphicon-check',
 			label: "No, don't reset my local changes.",
 			hotkey: 78, // "N".
-			cssClass: "btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton",
+			cssClass: "btn btn-success alertButton",
 			action: function (dialogRef) {
 				dialogRef.close();
 			}
@@ -2957,7 +2983,7 @@ function resetLocalStorage() {
 			icon: 'glyphicon glyphicon-refresh',
 			label: 'Yes, I do want to reset my local changes.<br>I understand that I will now need to<br>re-enter my changes or<br>download them from the gatool cloud.',
 			hotkey: 13, // Enter.
-			cssClass: 'btn btn-danger col-md-5 col-xs-12 col-sm-12 alertButton',
+			cssClass: 'btn btn-danger alertButton',
 			action: function (dialogRef) {
 				dialogRef.close();
 				localStorage.clear();
@@ -3112,7 +3138,7 @@ function loadTeamUpdates() {
 		message: 'You are about to load team data updates from the gatool Cloud. <b>This will replace your local changes to the teams in this event</b> with the data you <b><i>or others</i></b> may have stored in the gatool Cloud.<br><b>Are you sure you want to do this?</b>',
 		buttons: [{
 			icon: 'glyphicon glyphicon-check',
-			label: "No, I don't want to load updates now.",
+			label: "No, I don't want to<br>load updates now.",
 			hotkey: 78, // "N".
 			cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
 			action: function (dialogRef) {
@@ -3120,7 +3146,7 @@ function loadTeamUpdates() {
 			}
 		}, {
 			icon: 'glyphicon glyphicon-cloud-download',
-			label: 'Yes, I do want to load updates now.',
+			label: 'Yes, I do want to<br>load updates now.',
 			hotkey: 13, // Enter.
 			cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
 			action: function (dialogRef) {
@@ -3160,7 +3186,7 @@ function loadTeamUpdate() {
 		message: 'You are about to load team data updates for Team ' + currentTeam + ' from the gatool Cloud. <b>This will replace your local changes to this team</b> with the data you <b><i>or others</i></b> may have stored in the gatool Cloud.<br><b>Are you sure you want to do this?</b>',
 		buttons: [{
 			icon: 'glyphicon glyphicon-check',
-			label: "No, I don't want to load updates now.",
+			label: "No, I don't want to<br>load updates now.",
 			hotkey: 78, // "N".
 			cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
 			action: function (dialogRef) {
@@ -3168,7 +3194,7 @@ function loadTeamUpdate() {
 			}
 		}, {
 			icon: 'glyphicon glyphicon-cloud-download',
-			label: 'Yes, I do want to load updates now.',
+			label: 'Yes, I do want to<br>load updates now.',
 			hotkey: 13, // Enter.
 			cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
 			action: function (dialogRef) {
@@ -3190,6 +3216,184 @@ function loadTeamUpdate() {
 						}
 					}]
 				});
+			}
+		}]
+	});
+}
+
+function loadEnvironment() {
+	"use strict";
+	BootstrapDialog.show({
+		type: 'type-warning',
+		title: '<b>Load environment from the gatool Cloud</b>',
+		message: 'You are about to load your saved gatool environment from the gatool Cloud. <b>This will replace your gatool environment with what you have previously pushed to gatool Cloud.<br><b>Are you sure you want to do this?</b>',
+		buttons: [{
+			icon: 'glyphicon glyphicon-check',
+			label: "No, I don't want to<br>load my environment now.",
+			hotkey: 78, // "N".
+			cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
+			action: function (dialogRef) {
+				dialogRef.close();
+			}
+		}, {
+			icon: 'glyphicon glyphicon-cloud-download',
+			label: 'Yes, I do want to<br>load my environment now.',
+			hotkey: 13, // Enter.
+			cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
+			action: function (dialogRef) {
+
+				var req = new XMLHttpRequest();
+				req.open('GET', apiURL + '/loadenvironment/');
+				//req.setRequestHeader("userKey", getCookie("loggedin"));
+				req.addEventListener('load', function () {
+					dialogRef.close();
+					environment = JSON.parse(req.responseText);
+					var environmentKeys = Object.keys(environment.localStorage);
+					for (var i = 0; i<environmentKeys.length; i++) {
+						localStorage[environmentKeys[i]] = environment.localStorage[environmentKeys[i]];
+					}
+					playoffResults = environment.playoffResults;
+					allianceTeamList = environment.allianceTeamList;
+					allianceListUnsorted = environment.allianceListUnsorted;
+					rankingsList = environment.rankingsList;
+					eventTeamList = environment.eventTeamList;
+					eventQualsSchedule = environment.eventQualsSchedule;
+					eventPlayoffSchedule = environment.eventPlayoffSchedule;
+					currentAllianceChoice = environment.currentAllianceChoice;
+					allianceChoices = environment.allianceChoices;
+					replacementAlliance = environment.replacementAlliance;
+					allianceChoicesUndo = environment.allianceChoicesUndo;
+					allianceListUnsortedUndo = environment.allianceListUnsortedUndo;
+					allianceTeamListUndo = environment.allianceTeamListUndo;
+					teamNumberUndo = environment.teamNumberUndo;
+					teamContainerUndo = environment.teamContainerUndo;
+					lastMatchPlayed = environment.lastMatchPlayed;
+					allianceSelectionTableUndo = environment.allianceSelectionTableUndo;
+					currentMatchData = environment.currentMatchData;
+					teamCountTotal = environment.teamCountTotal;
+					haveRanks = environment.haveRanks;
+					highScores = environment.highScores;
+					currentEventList = environment.currentEventList;
+					lastRanksUpdate = environment.lastRanksUpdate;
+					lastQualsUpdate = environment.lastQualsUpdate;
+					qualsComplete = environment.qualsComplete;
+					haveSchedule = environment.haveSchedule;
+					matchCount = environment.matchCount;
+					allianceSelectionReady = environment.allianceSelectionReady;
+
+					BootstrapDialog.show({
+						message: "Environment loaded from gatool Cloud. Your local data has been replaced.",
+						buttons: [{
+							icon: 'glyphicon glyphicon-cloud-download',
+							cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
+							label: 'OK',
+							hotkey: 13, // Enter.
+							title: 'OK',
+							action: function (dialogRef) {
+								dialogRef.close();
+								location.reload();
+							}
+						}]
+					});
+				});
+				req.send();
+
+			}
+		}]
+	});
+}
+
+function saveEnvironment() {
+	"use strict";
+
+	BootstrapDialog.show({
+		type: 'type-warning',
+		title: '<b>Save environment to the gatool Cloud</b>',
+		message: 'You are about to save your gatool environment to the gatool Cloud.<br><b>Are you sure you want to do this?</b>',
+		buttons: [{
+			icon: 'glyphicon glyphicon-check',
+			label: "No, I don't want to<br>save my environment now.",
+			hotkey: 78, // "N".
+			cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
+			action: function (dialogRef) {
+				dialogRef.close();
+			}
+		}, {
+			icon: 'glyphicon glyphicon-cloud-download',
+			label: 'Yes, I do want to<br>save my environment now.',
+			hotkey: 13, // Enter.
+			cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
+			action: function (dialogRef) {
+				environment.localStorage = localStorage;
+				environment.playoffResults = playoffResults;
+				environment.allianceTeamList = allianceTeamList;
+				environment.allianceListUnsorted = allianceListUnsorted;
+				environment.rankingsList = rankingsList;
+				environment.eventTeamList = eventTeamList;
+				environment.eventQualsSchedule = eventQualsSchedule;
+				environment.eventPlayoffSchedule = eventPlayoffSchedule;
+				environment.currentAllianceChoice = currentAllianceChoice;
+				environment.allianceChoices = allianceChoices;
+				environment.replacementAlliance = replacementAlliance;
+				environment.allianceChoicesUndo = allianceChoicesUndo;
+				environment.allianceListUnsortedUndo = allianceListUnsortedUndo;
+				environment.allianceTeamListUndo = allianceTeamListUndo;
+				environment.teamNumberUndo = teamNumberUndo;
+				environment.teamContainerUndo = teamContainerUndo;
+				environment.lastMatchPlayed = lastMatchPlayed;
+				environment.allianceSelectionTableUndo = allianceSelectionTableUndo;
+				environment.currentMatchData = currentMatchData;
+				environment.teamCountTotal = teamCountTotal;
+				environment.haveRanks = haveRanks;
+				environment.highScores = highScores;
+				environment.currentEventList = currentEventList;
+				environment.lastRanksUpdate = lastRanksUpdate;
+				environment.lastQualsUpdate = lastQualsUpdate;
+				environment.qualsComplete = qualsComplete;
+				environment.haveSchedule = haveSchedule;
+				environment.matchCount = matchCount;
+				environment.allianceSelectionReady = allianceSelectionReady;
+
+				var req = new XMLHttpRequest();
+				req.open('POST', apiURL + '/saveenvironment/');
+				req.setRequestHeader("Content-type", "application/json");
+				//req.setRequestHeader("userKey", getCookie("loggedin"));
+				req.addEventListener('load', function () {
+					dialogRef.close();
+					if (req.responseText === "OK") {
+						BootstrapDialog.show({
+							message: "Environment saved to gatool Cloud.",
+							buttons: [{
+								icon: 'glyphicon glyphicon-cloud-download',
+								cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
+								label: 'OK',
+								hotkey: 13, // Enter.
+								title: 'OK',
+								action: function (dialogRef) {
+									dialogRef.close();
+
+								}
+							}]
+						});
+					} else {
+						BootstrapDialog.show({
+							message: "Environment not saved to gatool Cloud.<br>Please try again.",
+							buttons: [{
+								icon: 'glyphicon glyphicon-cloud-download',
+								cssClass: 'btn btn-danger col-md-5 col-xs-12 col-sm-12 alertButton',
+								label: 'OK',
+								hotkey: 13, // Enter.
+								title: 'OK',
+								action: function (dialogRef) {
+									dialogRef.close();
+
+								}
+							}]
+						});
+					}
+				});
+				req.send(JSON.stringify(environment));
+
 			}
 		}]
 	});
@@ -3404,23 +3608,23 @@ function parsePlayoffMatchName(matchName) {
 
 }
 
-function davidPriceFormat(matchName) {
+function davidPriceFormat(priceMatchData) {
 	"use strict";
-	var matchArray = matchName.split(" ");
+	var matchArray = priceMatchData.description.split(" ");
 	if ((matchArray[0] === "Qualification")) {
 		return matchArray[1];
 	}
 	if ((matchArray[0] === "Quarterfinal") && (matchArray[1] <= 4)) {
 		return "Q" + matchArray[1] + "M1";
 	}
-	$("#davidPrice").removeClass("redScore");
-	$("#davidPrice").removeClass("blueScore");
+	$("#davidPriceNumber").removeClass("redScore");
+	$("#davidPriceNumber").removeClass("blueScore");
 	if ((matchArray[0] === "Quarterfinal") && (matchArray[1] > 4)) {
 		if (playoffResults["Quarterfinal " + (matchArray[1] - 4)] === "Red") {
-			$("#davidPrice").addClass("redScore");
+			$("#davidPriceNumber").addClass("redScore");
 			return "Q" + (matchArray[1] - 4) + "M2";
 		} else if (playoffResults["Quarterfinal " + (matchArray[1] - 4)] === "Blue") {
-			$("#davidPrice").addClass("blueScore");
+			$("#davidPriceNumber").addClass("blueScore");
 			return "Q" + (matchArray[1] - 4) + "M2";
 		} else if (playoffResults["Quarterfinal " + (matchArray[1] - 4)] === "No results yet") {
 			return "Q" + (matchArray[1] - 4) + "M2";
@@ -3435,10 +3639,10 @@ function davidPriceFormat(matchName) {
 
 	if ((matchArray[0] === "Semifinal") && (matchArray[1] > 2)) {
 		if (playoffResults["Semifinal " + (matchArray[1] - 2)] === "Red") {
-			$("#davidPrice").addClass("redScore");
+			$("#davidPriceNumber").addClass("redScore");
 			return "S" + (matchArray[1] - 2) + "M2";
 		} else if (playoffResults["Semifinal " + (matchArray[1] - 2)] === "Blue") {
-			$("#davidPrice").addClass("blueScore");
+			$("#davidPriceNumber").addClass("blueScore");
 			return "S" + (matchArray[1] - 2) + "M2";
 		} else if (playoffResults["Semifinal " + (matchArray[1] - 2)] === "No results yet") {
 			return "S" + (matchArray[1] - 2) + "M2";
@@ -3454,10 +3658,10 @@ function davidPriceFormat(matchName) {
 	if (matchArray[0] === "Final") {
 		if (matchArray[1] === "2") {
 			if (playoffResults["Final 1"] === "Red") {
-				$("#davidPrice").addClass("redScore");
+				$("#davidPriceNumber").addClass("redScore");
 				return "F" + (matchArray[1] || "");
 			} else if (playoffResults["Final 1"] === "Blue") {
-				$("#davidPrice").addClass("blueScore");
+				$("#davidPriceNumber").addClass("blueScore");
 				return "F" + (matchArray[1] || "");
 			} else if (playoffResults["Final 1"] === "No results yet") {
 				return "F" + (matchArray[1] || "");

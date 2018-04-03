@@ -61,7 +61,7 @@
 <div class="spacer"></div>
 <div class="container-fluid" id="body-container">
     <div id="setup" class="tabcontent container-fluid">
-        <div id="eventInfoContainer" class="col-xs-12 col-md-7 col-sm-7">
+        <div id="eventInfoContainer" class="col-xs-12 col-md-6 col-sm-6">
             <p>
                 <select class="selectpicker" id="yearPicker" data-width="fit">
                     <option id="yearPicker2018">2018</option>
@@ -110,7 +110,7 @@
             <p id="playoffScheduleAlert" onclick="getHybridSchedule()" class="btn-default alert playoffAlert col-lg-6 col-md-6 col-sm-7 col-xs-6"><span class="glyphicon glyphicon-refresh">&nbsp;</span>Tap here to refresh Playoff schedule, when available.</p>
             <p><img src="images/FIRST-FRC18-PowerUp-Stack_small.png" alt="PowerUp Logo"/></p>
         </div>
-        <div id="maintenanceTasks" class="col-xs-12 col-md-5 col-sm-5">
+        <div id="maintenanceTasks" class="col-xs-12 col-md-6 col-sm-6">
             <p>
                 <input name="showSponsors" id="showSponsors" type="checkbox" value="true" checked>
                 &nbsp;Show Sponsors on Announce</p>
@@ -123,34 +123,70 @@
             <p>
                 <input name="showMottoes" id="showMottoes" type="checkbox" value="true" checked>
                 &nbsp;Show Mottoes on Play-by-play</p>
-            <p><strong>The following settings are specific to how we display Awards.</strong></p>
-            <p>You can mix and match settings. You will see the changes when the team data reloads. If you make manual adjustments to awards on the Team Info screen, then you will need to reset those adjusted fields in order to see new awards that accumulate during the current season.</p>
-            <p><b>How many years of awards do you want us to retrieve for each team?</b>
-                <select class="selectpicker" id="awardDepthPicker" data-width="fit">
-                    <option value = "3" id="awardDepth3">3</option>
-                    <option value = "2" id="awardDepth2">2</option>
-                    <option value = "1" id="awardDepth1">1</option>
-                </select>
-            </p>
-            <p><strong>Which separator should we use for awards?</strong>
-                <select class="selectpicker" id="awardSeparatorPicker" data-width="fit">
-                    <option id="awardSeparator1"> || </option>
-                    <option id="awardSeparator2"> // </option>
-                    <option id="awardSeparator3">line break</option>
-                </select>
-            </p>
             <p>
                 <input name="showEventNames" id="showEventNames" type="checkbox" value="true" checked>
                 &nbsp;Show Event Names instead of codes</p>
-            <p>
-                <input name="offseason" id="offseason" type="checkbox" value="false">
-                &nbsp;Offseason/Offline Mode. <br>
-                Use when your event does not appear in the Events dropdown under the Season selector.</p>
-            <div id="offseasonSetup" class="alert-info offseason">You can upload schedules in the Match Schedule Screen. You will need a Quals Schedule and Playoff Schedule, provided by your FTA as an XLSX export from FMS. On a tablet, use DropBox or a similar service to get the file on the device, and then select it from DrobBox using the button on the Match Schedule Screen.</div>
-            <p onclick="resetLocalStorage()" class="btn btn-danger alert col-md-12 col-xs-12 col-sm-12"><span class="glyphicon glyphicon-refresh">&nbsp;</span>Reset local storage. <span id="localStorageUsage"></span></p>
-            <p onclick="logout()" class="btn btn-primary alert col-md-12 col-xs-12 col-sm-12"><span class="glyphicon glyphicon-log-out">&nbsp;</span>Logout of gatool.</p>
-            <p onclick="saveTeamUpdates()" class="btn btn-info alert col-md-12 col-xs-12 col-sm-12"><span class="glyphicon glyphicon-cloud-upload">&nbsp;</span>Save to gatool Cloud.</p>
-            <p onclick="loadTeamUpdates()" class="btn btn-warning alert col-md-12 col-xs-12 col-sm-12"><span class="glyphicon glyphicon-cloud-download">&nbsp;</span>Load from gatool Cloud.</p>
+            <div class="container alert alert-warning col-sm-12">
+                <p><strong>The following settings are specific to how we display Awards.</strong></p>
+                <p>You can mix and match settings. You will see the changes when the team data reloads. If you make manual adjustments to awards on the Team Info screen, then you will need to reset those adjusted fields in order to see new awards that accumulate during the current season.</p>
+                <p><b>How many years of awards do you want us to retrieve for each team?</b>
+                    <select class="selectpicker" id="awardDepthPicker" data-width="fit">
+                        <option value = "3" id="awardDepth3">3</option>
+                        <option value = "2" id="awardDepth2">2</option>
+                        <option value = "1" id="awardDepth1">1</option>
+                    </select>
+                </p>
+                <p><strong>Which separator should we use for awards?</strong>
+                    <select class="selectpicker" id="awardSeparatorPicker" data-width="fit">
+                        <option id="awardSeparator1"> || </option>
+                        <option id="awardSeparator2"> // </option>
+                        <option id="awardSeparator3">line break</option>
+                    </select>
+                </p>
+            </div>
+            <div class="container alert alert-info col-sm-12">
+                <div>
+                    <input name="offseason" id="offseason" type="checkbox" value="false">
+                    &nbsp;Offseason/Offline Mode. <br>
+                    Use when your event does not appear in the Events dropdown under the Season selector.</div>
+                <div id="offseasonSetup" class="alert-info offseason">You can upload schedules in the Match Schedule Screen. You will need a Quals Schedule and Playoff Schedule, provided by your FTA as an XLSX export from FMS. On a tablet, use DropBox or a similar service to get the file on the device, and then select it from DrobBox using the button on the Match Schedule Screen.</div>
+            </div>
+            <div class="container alert alert-warning col-sm-12">
+                <p><b>Maintenance functions</b></p>
+                <div onclick="resetLocalStorage()" class="btn btn-danger alert col-md-6 col-xs-6 col-sm-6">
+                    <div><span class="glyphicon glyphicon-refresh">&nbsp;</span>Reset local storage<br>
+                        <span id="localStorageUsage"></span></div>
+                </div>
+                <div onclick="logout()" class="btn btn-primary alert col-md-6 col-xs-6 col-sm-6">
+                    <div><span class="glyphicon glyphicon-log-out">&nbsp;</span>Logout<br>
+                        of gatool</div>
+                </div>
+            </div>
+            <div class="container alert alert-warning col-sm-12">
+                <p><strong>gatool cloud Teams Information</strong></p>
+                <p>Use these buttons to save your local teams data changes and to load teams data changes from gatool cloud. </p>
+                <div onclick="saveTeamUpdates()" class="btn btn-info alert col-md-6 col-xs-6 col-sm-6">
+                    <div><span class="glyphicon glyphicon-cloud-upload">&nbsp;</span>Save Teams data<br>to
+                        gatool Cloud</div>
+                </div>
+                <div onclick="loadTeamUpdates()" class="btn btn-warning alert col-md-6 col-xs-6 col-sm-6">
+                    <div><span class="glyphicon glyphicon-cloud-download">&nbsp;</span>Load Teams data<br>from
+                        gatool Cloud</div>
+                </div>
+            </div>
+			<div class="container alert alert-warning col-sm-12">
+			    <p><strong>gatool Cloud Sync</strong></p>
+			    <p>Use these buttons to save your gatool environment to gatool cloud. You can then load it on another device. </p>
+			    <div onclick="saveEnvironment()" class="btn btn-success alert col-md-6 col-xs-6 col-sm-6">
+                    <div><span class="glyphicon glyphicon-cloud-upload">&nbsp;</span>Save Environment<br>to
+                        gatool Cloud</div>
+                </div>
+                <div onclick="loadEnvironment()" class="btn btn-primary alert col-md-6 col-xs-6 col-sm-6">
+                    <div><span class="glyphicon glyphicon-cloud-download">&nbsp;</span>Load Environment<br>from
+                        gatool Cloud</div>
+                </div>
+            </div>
+			
         </div>
     </div>
     <div id="offSeason" class="tabcontent container-fluid">
@@ -483,7 +519,8 @@
         <div id="allianceInfo" class="allianceAnnounce">
             <p><span id="eventNameAllianceSelection"></span><span id="allianceselectionlastupdated"></span>Before the selection begins and to help introduce the Alliance Captains with the MC, tap the Alliance Captains to see their team name, school/organization, and home town.<br>
                 <strong>IMPORTANT: Tap <em>Alliance Captain Announce</em> to continue announcing the Captains.</strong></p>
-            <p>When it's time for Alliance Selection, simply tap a team when their number is called. If they accept, tap <strong>Gratefully Accept</strong>. If they decline, tap <strong>Respectfully Decline</strong>.</p><span id="allianceSelectionWarning"></span>
+            <p>When it's time for Alliance Selection, simply tap a team when their number is called. If they accept, tap <strong>Gratefully Accept</strong>. If they decline, tap <strong>Respectfully Decline</strong>.</p>
+            <span id="allianceSelectionWarning"></span>
             <p id="allianceUndoButton" class="btn-warning">Undo Alliance Selection Choice<span id="undoAlliance"></span></p>
         </div>
         <div id="allianceSelectionTable">
@@ -642,60 +679,60 @@
     </div>
     <div id="stats" class="tabcontent container-fluid">
         <div id="topOfStats" class="row">
-                <div class="col-xs-12 col-md-6 col-sm-6">
-                    <table id="worldhighscorestable" class="table table-condensed gatool-worldHighScores alert-danger">
-                        <thead>
-                            <tr>
-                                <td colspan="2">World High Scores<span id="highscoreyear"></span></td>
-                            </tr>
-                        </thead>
+            <div class="col-xs-12 col-md-6 col-sm-6">
+                <table id="worldhighscorestable" class="table table-condensed gatool-worldHighScores alert-danger">
+                    <thead>
                         <tr>
-                            <td id="highQualsNoFouls">Qual (no penalties)<br>
-                                No matches meet criteria<br></td>
-                            <td id="highPlayoffNoFouls">Playoff (no penalties)<br>
-                                No matches meet criteria</td>
+                            <td colspan="2">World High Scores<span id="highscoreyear"></span></td>
                         </tr>
+                    </thead>
+                    <tr>
+                        <td id="highQualsNoFouls">Qual (no penalties)<br>
+                            No matches meet criteria<br></td>
+                        <td id="highPlayoffNoFouls">Playoff (no penalties)<br>
+                            No matches meet criteria</td>
+                    </tr>
+                    <tr>
+                        <td id="highQualsOffsettingFouls">Qual (offsetting fouls)<br>
+                            No matches meet criteria<br></td>
+                        <td id="highPlayoffOffsettingFouls">Playoff (offsetting fouls)<br>
+                            No matches meet criteria<br></td>
+                    </tr>
+                    <tr>
+                        <td id="highQuals">Qual<br>
+                            No matches meet criteria<br></td>
+                        <td id="highPlayoff">Playoff<br>
+                            No matches meet criteria</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-xs-12 col-md-6 col-sm-6">
+                <table id="eventhighscorestable" class="table table-condensed gatool-worldHighScores alert-info">
+                    <thead>
                         <tr>
-                            <td id="highQualsOffsettingFouls">Qual (offsetting fouls)<br>
-                                No matches meet criteria<br></td>
-                            <td id="highPlayoffOffsettingFouls">Playoff (offsetting fouls)<br>
-                                No matches meet criteria<br></td>
+                            <td colspan="2">Event High Scores</td>
                         </tr>
-                        <tr>
-                            <td id="highQuals">Qual<br>
-                                No matches meet criteria<br></td>
-                            <td id="highPlayoff">Playoff<br>
-                                No matches meet criteria</td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="col-xs-12 col-md-6 col-sm-6">
-                    <table id="eventhighscorestable" class="table table-condensed gatool-worldHighScores alert-info">
-                        <thead>
-                            <tr>
-                                <td colspan="2">Event High Scores</td>
-                            </tr>
-                        </thead>
-                        <tr>
-                            <td id="eventHighQualsNoFouls">Qual (no penalties)<br>
-                                No matches meet criteria<br></td>
-                            <td id="eventHighPlayoffNoFouls">Playoff (no penalties)<br>
-                                No matches meet criteria</td>
-                        </tr>
-                        <tr>
-                            <td id="eventHighQualsOffsettingFouls">Qual (offsetting fouls)<br>
-                                No matches meet criteria<br></td>
-                            <td id="eventHighPlayoffOffsettingFouls">Playoff (offsetting fouls)<br>
-                                No matches meet criteria<br></td>
-                        </tr>
-                        <tr>
-                            <td id="eventHighQuals">Qual<br>
-                                No matches meet criteria<br></td>
-                            <td id="eventHighPlayoff">Playoff<br>
-        event                        No matches meet criteria</td>
-                        </tr>
-                    </table>
-                </div>
+                    </thead>
+                    <tr>
+                        <td id="eventHighQualsNoFouls">Qual (no penalties)<br>
+                            No matches meet criteria<br></td>
+                        <td id="eventHighPlayoffNoFouls">Playoff (no penalties)<br>
+                            No matches meet criteria</td>
+                    </tr>
+                    <tr>
+                        <td id="eventHighQualsOffsettingFouls">Qual (offsetting fouls)<br>
+                            No matches meet criteria<br></td>
+                        <td id="eventHighPlayoffOffsettingFouls">Playoff (offsetting fouls)<br>
+                            No matches meet criteria<br></td>
+                    </tr>
+                    <tr>
+                        <td id="eventHighQuals">Qual<br>
+                            No matches meet criteria<br></td>
+                        <td id="eventHighPlayoff">Playoff<br>
+                            event                        No matches meet criteria</td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
     <div id="cheatsheet" class="tabcontent container-fluid">
@@ -738,6 +775,7 @@
     </div>
     <div id="davidPrice" class="container-fluid tabcontent">
         <div id="davidPriceNumber" class="container-fluid davidPrice">S2M2</div>
+        <div class = "davidPriceAlliances" id="davidPriceAlliances"><span id="davidPriceRedAlliance" class="redScore">2</span> v <span id="davidPriceBlueAlliance" class="blueScore">5</span></div>
     </div>
     <div id="scoreDetails" class="tabcontent container-fluid">
         <div class="container container-fluid">
