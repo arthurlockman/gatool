@@ -873,8 +873,12 @@ function ranksQualsCompare() {
 	//	if ((Math.abs(moment.duration(qualDate.diff(ranksDate)).as('seconds')) < rankQualThreshold ) && qualsComplete) {
 	if (allianceSelectionReady) {
 		$("#allianceSelectionWarning").html('<p class="alert alert-success" onclick="announceDisplay();"><strong>Your ranks appear to be current, but you must confirm that the rank order below agrees with the rank order in FMS before proceeding with Alliance Selection</strong> If you see a discrepancy, tap this alert to see if we can get a more current rankings.</p>');
+		$('#allianceSelectionTabPicker').removeClass('alert-danger');
+				$('#allianceSelectionTabPicker').addClass('alert-success');
 	} else {
 		$("#allianceSelectionWarning").html('<p class="alert alert-danger" onclick="announceDisplay();"><strong>Do not proceed with Alliance Selection until you confirm that the rank order below agrees with the rank order in FMS. Tap this alert to see if we can get a more current schedule and rankings.</strong></p>');
+		$('#allianceSelectionTabPicker').addClass('alert-danger');
+				$('#allianceSelectionTabPicker').removeClass('alert-success');
 	}
 }
 
@@ -921,8 +925,6 @@ function getRegularSeasonSchedule() {
 			//$("#allianceSelectionTable").show();
 			lastQualsUpdate = req.getResponseHeader("Last-Modified");
 			if (lastMatchPlayed >= data.Schedule.length - 1) {
-				$('#allianceSelectionTabPicker').removeClass('alert-danger');
-				$('#allianceSelectionTabPicker').addClass('alert-success');
 				$("#allianceSelectionPlaceholder").hide();
 				$("#allianceSelectionTable").show();
 				$(".thirdAllianceSelection").hide();
