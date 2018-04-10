@@ -598,7 +598,8 @@ router.route('/saveenvironment/').post(function (req, res) {
 	// Get the visitor name set in the cookie 
 	loggedin = (cookies.loggedin || "");
 	if (loggedin !== "") {
-		environment.put(loggedin, JSON.stringify(req.body));
+		environment.put(loggedin, JSON.stringify(req.body));		
+		//environment.put(loggedin, req.body);
 		res.writeHead(200, {
 			'Content-type': 'text/html'
 		});
@@ -627,6 +628,7 @@ router.route('/loadenvironment/').get(function (req, res) {
 				res.end("Error loading", 'utf-8');
 			} else {
 				res.json(JSON.parse(data));
+				//res.json(data);
 			}
 		});
 	} else {
