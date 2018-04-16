@@ -900,6 +900,20 @@ function getRegularSeasonSchedule() {
 			document.getElementById("matchPicker" + localStorage.currentMatch).selected = true;
 			$("#matchPicker").selectpicker('refresh');
 			localStorage.inPlayoffs = "true";
+			
+			if (localStorage.autoAdvance === "true") {
+				if (lastMatchPlayed < (qualScheduleLength)) {
+					localStorage.currentMatch = String(lastMatchPlayed + 1);
+				} else {
+					localStorage.currentMatch = String(lastMatchPlayed);
+				}
+				document.getElementById("matchPicker" + localStorage.currentMatch).selected = true;
+				$("#matchPicker").selectpicker('refresh');
+
+			} else if (localStorage.currentMatch) {
+				document.getElementById("matchPicker" + localStorage.currentMatch).selected = true;
+				$("#matchPicker").selectpicker('refresh');
+			}
 
 			//refresh the Game Announce and Play by Play displays and prepare to get the Playoff Schedule.
 
