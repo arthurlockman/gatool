@@ -24,20 +24,24 @@
 		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="js/bootstrap-switch.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="js/bootstrap-dialog.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="js/moment.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="js/base64.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="js/xlsx.full.min.js" type="text/javascript" charset="utf-8"></script>
+<script language="javascript" src="js/jquery-3.2.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script language="javascript" src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+<script language="javascript" src="js/bootstrap-switch.min.js" type="text/javascript" charset="utf-8"></script>
+<script language="javascript" src="js/bootstrap-dialog.min.js" type="text/javascript" charset="utf-8"></script>
+<script language="javascript" src="js/moment.min.js" type="text/javascript" charset="utf-8"></script>
+<script language="javascript" src="js/base64.min.js" type="text/javascript" charset="utf-8"></script>
+<script language="javascript" src="js/xlsx.full.min.js" type="text/javascript" charset="utf-8"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 
-<script src="//use.edgefonts.net/bebas-neue.js"></script>
-<script src="js/bootstrap-select.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="js/w3.js" type="text/javascript" charset="utf-8"></script>
+<script language="javascript" src="//use.edgefonts.net/bebas-neue.js"></script>
+<script language="javascript" src="js/bootstrap-select.min.js" type="text/javascript" charset="utf-8"></script>
+<script language="javascript" src="js/w3.js" type="text/javascript" charset="utf-8"></script>
 <script language="javascript" src="js/lz-string.min.js" type="text/javascript" charset="utf-8"></script>
-<script src="js/scripts.min.js" type="text/javascript" charset="utf-8"></script>
+<script language="javascript" src="js/staticvariables.min.js" type="text/javascript" charset="utf-8"></script>
+<script language="javascript" src="js/scoresfunctions.min.js" type="text/javascript" charset="utf-8"></script>
+<script language="javascript" src="js/teamupdates.min.js" type="text/javascript" charset="utf-8"></script>
+<script language="javascript" src="js/supportfunctions.min.js" type="text/javascript" charset="utf-8"></script>
+<script language="javascript" src="js/scripts.min.js" type="text/javascript" charset="utf-8"></script>
 </head>
 
 <body>
@@ -127,6 +131,9 @@
             <p>
                 <input name="showEventNames" id="showEventNames" type="checkbox" value="true" checked>
                 &nbsp;Show Event Names instead of codes</p>
+			<p>
+                <input name="autoAdvance" id="autoAdvance" type="checkbox" value="true" checked>
+                &nbsp;Automatically advance to the next match when loading</p>
             <div class="container alert alert-warning col-sm-12">
                 <p><strong>The following settings are specific to how we display Awards.</strong></p>
                 <p>You can mix and match settings. You will see the changes when the team data reloads. If you make manual adjustments to awards on the Team Info screen, then you will need to reset those adjusted fields in order to see new awards that accumulate during the current season.</p>

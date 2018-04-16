@@ -57,535 +57,14 @@ if (!localStorage.eventFilters) {
 if (!localStorage.currentEventList) {
 	localStorage.currentEventList = [];
 }
+if (!localStorage.autoAdvance) {
+	localStorage.autoAdvance = "true";
+}
 
 // reset some of those variables, which will be adjusted later.
 localStorage.clock = "ready";
 localStorage.matchHighScore = 0;
 localStorage.highScoreDetails = "{}";
-
-// Cache the prior years events to reduce server calls.
-
-var events2015 = {
-	"ABCA": "Western Canada Regional",
-	"ARCHIMEDES": "FIRST Championship - Archimedes Subdivision",
-	"ARFA": "Arkansas Rock City Regional",
-	"ARTE": "FIRST Championship - ARTE Division",
-	"AUSY": "Australia Regional",
-	"AZCH": "Arizona East Regional",
-	"AZPX": "Arizona West Regional",
-	"CALB": "Los Angeles Regional sponsored by The Roddenberry Foundation",
-	"CAMA": "Central Valley Regional",
-	"CARM": "Inland Empire Regional",
-	"CARSON": "FIRST Championship - Carson Subdivision",
-	"CARVER": "FIRST Championship - Carver Subdivision",
-	"CASA": "Sacramento Regional",
-	"CASD": "San Diego Regional ",
-	"CASJ": "Silicon Valley Regional sponsored by Google.org",
-	"CAVE": "Ventura Regional",
-	"CMP": "FIRST Championship",
-	"CODE": "Colorado Regional",
-	"CTHAR": "NE District - Hartford Event",
-	"CTWAT": "NE District - Waterbury Event",
-	"CUCA": "FIRST Championship - CUCA Division",
-	"CURIE": "FIRST Championship - Curie Subdivision",
-	"DCWA": "Greater DC Regional",
-	"FLFO": "South Florida Regional ",
-	"FLOR": "Orlando Regional",
-	"GACA": "FIRST Championship - GACA Division",
-	"GADU": "Peachtree Regional",
-	"GALILEO": "FIRST Championship - Galileo Subdivision",
-	"GAPE": "Georgia Southern Classic Regional",
-	"HIHO": "Hawaii Regional",
-	"HOPPER": "FIRST Championship - Hopper Subdivision",
-	"ILCH": "Midwest Regional",
-	"ILIL": "Central Illinois Regional",
-	"INCMP": "Indiana FIRST District Championship",
-	"ININD": "IN District - Indianapolis Event",
-	"INKOK": "IN District - Kokomo City of Firsts Event sponsored by AndyMark",
-	"INWLA": "IN District - Purdue Event",
-	"IRI": "Indiana Robotics Invitational",
-	"ISTA": "Israel Regional",
-	"LAKE": "Bayou Regional",
-	"MABOS": "NE District - Northeastern University Event",
-	"MANDA": "NE District - UMass - Dartmouth Event",
-	"MAREA": "NE District - Reading Event",
-	"MASPR": "NE District - Pioneer Valley Event",
-	"MDCP": "Chesapeake Regional",
-	"MELEW": "NE District - Pine Tree Event",
-	"MIBED": "FIM District - Bedford Event",
-	"MICEN": "FIM District - Center Line Event",
-	"MICMP": "FIRST in Michigan District Championship",
-	"MIESC": "FIM District - Escanaba Event",
-	"MIFLA": "FIM District - Woodhaven Event",
-	"MIGUL": "FIM District - Gull Lake Event",
-	"MIHOW": "FIM District - Howell Event",
-	"MIKEN": "FIM District - Kentwood Event",
-	"MIKET": "FIM District - Kettering University Event",
-	"MILAN": "FIM District - Lansing Event",
-	"MILIV": "FIM District - Livonia Event",
-	"MIMID": "FIM District - Great Lakes Bay Region Event",
-	"MISJO": "FIM District - St. Joseph Event",
-	"MISOU": "FIM District - Southfield Event",
-	"MISTA": "FIM District - Standish Event",
-	"MITRY": "FIM District - Troy Event",
-	"MITVC": "FIM District - Traverse City Event",
-	"MIWAT": "FIM District - Waterford Event",
-	"MIWMI": "FIM District - West Michigan Event",
-	"MNDU": "Lake Superior Regional",
-	"MNDU2": "Northern Lights Regional",
-	"MNMI": "Minnesota 10000 Lakes Regional",
-	"MNMI2": "Minnesota North Star Regional",
-	"MOKC": "Greater Kansas City Regional",
-	"MOSL": "St. Louis Regional",
-	"MRCMP": "Mid-Atlantic Robotics District Championship",
-	"MXMC": "Mexico City Regional ",
-	"NCRE": "North Carolina Regional",
-	"NECMP": "NE FIRST District Championship presented by United Technologies",
-	"NEHO": "FIRST Championship - NEHO Division",
-	"NEWTON": "FIRST Championship - Newton Subdivision",
-	"NHDUR": "NE District - UNH Event",
-	"NHNAS": "NE District - Granite State Event",
-	"NJBRI": "MAR District - Bridgewater-Raritan Event",
-	"NJFLA": "MAR District - Mt. Olive Event",
-	"NJNBR": "MAR District - North Brunswick Event",
-	"NJTAB": "MAR District - Seneca Event",
-	"NVLV": "Las Vegas Regional",
-	"NYLI": "SBPLI Long Island Regional",
-	"NYNY": "New York City Regional",
-	"NYRO": "Finger Lakes Regional ",
-	"NYTR": "New York Tech Valley Regional",
-	"OHCI": "Queen City Regional",
-	"OHCL": "Buckeye Regional",
-	"OKOK": "Oklahoma Regional ",
-	"ONNB": "North Bay Regional",
-	"ONTO": "Greater Toronto East Regional ",
-	"ONTO2": "Greater Toronto Central Regional",
-	"ONWA": "Waterloo Regional ",
-	"ONWI": "Windsor Essex Great Lakes Regional",
-	"ORORE": "PNW District - Oregon City Event",
-	"ORPHI": "PNW District - Philomath Event",
-	"ORWIL": "PNW District - Wilsonville Event",
-	"PADRE": "MAR District - Upper Darby Event",
-	"PAHAT": "MAR District - Hatboro-Horsham Event",
-	"PAPHI": "MAR District - Springside Chestnut Hill Event",
-	"PAPI": "Greater Pittsburgh Regional",
-	"PNCMP": "Pacific Northwest District Championship",
-	"QCMO": "FRC Festival de Robotique - Montreal Regional",
-	"RISMI": "NE District - Rhode Island Event",
-	"SCMB": "Palmetto Regional",
-	"TESLA": "FIRST Championship - Tesla Subdivision",
-	"TNKN": "Smoky Mountains Regional",
-	"TXDA": "Dallas Regional",
-	"TXHO": "Lone Star Regional",
-	"TXLU": "Hub City Regional",
-	"TXSA": "Alamo Regional sponsored by Rackspace Hosting",
-	"UTWV": "Utah Regional",
-	"VARI": "Virginia Regional",
-	"WAAHS": "PNW District - Auburn Event",
-	"WAAMV": "PNW District - Auburn Mountainview Event",
-	"WAELL": "PNW District - Central Washington University Event",
-	"WAMOU": "PNW District - Mount Vernon Event",
-	"WASHO": "PNW District - Shorewood Event",
-	"WASNO": "PNW District - Glacier Peak Event",
-	"WASPO": "PNW District - West Valley Event",
-	"WIMI": "Wisconsin Regional"
-};
-var events2016 = {
-	"ABCA": "Western Canada Regional",
-	"ALHU": "Rocket City Regional",
-	"ARCHIMEDES": "FIRST Championship - Archimedes Subdivision",
-	"ARLR": "Arkansas Rock City Regional",
-	"ARTE": "FIRST Championship - ARTE Division",
-	"AUSY": "Australia Regional",
-	"AZFL": "Arizona North Regional",
-	"AZPX": "Arizona West Regional",
-	"CADA": "Sacramento Regional",
-	"CALB": "Los Angeles Regional",
-	"CAMA": "Central Valley Regional",
-	"CAPL": "Orange County Regional",
-	"CARSON": "FIRST Championship - Carson Subdivision",
-	"CARVER": "FIRST Championship - Carver Subdivision",
-	"CASD": "San Diego Regional",
-	"CASJ": "Silicon Valley Regional presented by Google.org",
-	"CAVE": "Ventura Regional",
-	"CHCMP": "FIRST Chesapeake District Championship sponsored by Booz Allen Hamilton",
-	"CMP": "FIRST Championship",
-	"CODE": "Colorado Regional",
-	"CTHAR": "NE District - Hartford Event",
-	"CTWAT": "NE District - Waterbury Event",
-	"CUCA": "FIRST Championship - CUCA Division",
-	"CURIE": "FIRST Championship - Curie Subdivision",
-	"FLOR": "Orlando Regional",
-	"FLWP": "South Florida Regional ",
-	"GAALB": "PCH District - Albany Event",
-	"GACA": "FIRST Championship - GACA Division",
-	"GACMP": "Peachtree District State Championship",
-	"GACOL": "PCH District - Columbus Event",
-	"GADAL": "PCH District - Dalton Event",
-	"GAKEN": "PCH District - Kennesaw Event",
-	"GALILEO": "FIRST Championship - Galileo Subdivision",
-	"HEAT": "Summer Heat",
-	"HIHO": "Hawaii Regional",
-	"HOPPER": "FIRST Championship - Hopper Subdivision",
-	"IACF": "Iowa Regional",
-	"IDBO": "Idaho Regional",
-	"ILCH": "Midwest Regional",
-	"ILPE": "Central Illinois Regional",
-	"INCMP": "Indiana State Championship",
-	"INPMH": "IN District - Perry Meridian Event",
-	"INWCH": "IN District - Walker Warren Event",
-	"INWLA": "IN District - Tippecanoe Event",
-	"IRI": "Indiana Robotics Invitational",
-	"ISTA": "Israel Regional",
-	"LAKE": "Bayou Regional",
-	"MABOS": "NE District - Boston Event",
-	"MANDA": "NE District - UMass-Dartmouth Event",
-	"MAREA": "NE District - North Shore Event",
-	"MAWOR": "NE District - WPI Event",
-	"MDBET": "CHS District - Greater DC Event",
-	"MDBLR": "CHS District - Northern Maryland Event",
-	"MDEDG": "CHS District - Central Maryland Event",
-	"MELEW": "NE District - Pine Tree Event",
-	"MIANN": "FIM District - Ann Arbor Skyline Event",
-	"MIBRO": "FIM District - Woodhaven Event",
-	"MICEN": "FIM District - Center Line Event",
-	"MICMP": "Michigan State Championship",
-	"MIESC": "FIM District - Escanaba Event",
-	"MIHOW": "FIM District - Howell Event",
-	"MIKE2": "FIM District - Kettering University Event #2",
-	"MIKEN": "FIM District - East Kentwood Event",
-	"MIKET": "FIM District - Kettering University Event #1",
-	"MILAK": "FIM District - Lakeview Event",
-	"MILAN": "FIM District - Lansing Event",
-	"MILIV": "FIM District - Livonia Event",
-	"MILSU": "FIM District - Lake Superior State University Event",
-	"MIMAR": "FIM District - Marysville Event",
-	"MIMID": "FIM District - Midland Event",
-	"MISJO": "FIM District - St. Joseph Event",
-	"MISOU": "FIM District - Southfield Event",
-	"MISTA": "FIM District - Standish-Sterling Event",
-	"MITRY": "FIM District - Troy Event",
-	"MITVC": "FIM District - Traverse City Event",
-	"MIWAT": "FIM District - Waterford Event",
-	"MIWMI": "FIM District - West Michigan Event",
-	"MNDU": "Lake Superior Regional",
-	"MNDU2": "Northern Lights Regional",
-	"MNMI": "Minnesota 10000 Lakes Regional",
-	"MNMI2": "Minnesota North Star Regional",
-	"MOKC": "Greater Kansas City Regional",
-	"MOSL": "St. Louis Regional",
-	"MRCMP": "Mid-Atlantic Robotics District Championship",
-	"MXMC": "Mexico City Regional ",
-	"NCASH": "NC District - UNC Asheville Event",
-	"NCBUI": "NC District - Campbell University/Johnston Community College Event",
-	"NCCMP": "NC FIRST Robotics State Championship",
-	"NCMCL": "NC District - Guilford County Event",
-	"NCRAL": "NC District - Wake County Event",
-	"NECMP": "New England District Championship",
-	"NEHO": "FIRST Championship - NEHO Division",
-	"NEWTON": "FIRST Championship - Newton Subdivision",
-	"NHDUR": "NE District - UNH Event",
-	"NHGRS": "NE District - Granite State Event",
-	"NJBRI": "MAR District - Bridgewater-Raritan Event",
-	"NJFLA": "MAR District - Mt. Olive Event",
-	"NJSKI": "MAR District - Montgomery Event",
-	"NJTAB": "MAR District - Seneca Event",
-	"NVLV": "Las Vegas Regional",
-	"NYLI": "SBPLI Long Island Regional",
-	"NYNY": "New York City Regional",
-	"NYRO": "Finger Lakes Regional ",
-	"NYTR": "New York Tech Valley Regional",
-	"OHCI": "Queen City Regional",
-	"OHCL": "Buckeye Regional",
-	"OKOK": "Oklahoma Regional ",
-	"ONNB": "North Bay Regional",
-	"ONTO": "Greater Toronto East Regional ",
-	"ONTO2": "Greater Toronto Central Regional",
-	"ONWA": "Waterloo Regional ",
-	"ONWI": "Windsor Essex Great Lakes Regional",
-	"ORORE": "PNW District - Clackamas Academy of Industrial Science Event",
-	"ORPHI": "PNW District - Philomath Event",
-	"ORWIL": "PNW District - Wilsonville Event",
-	"PACA": "Greater Pittsburgh Regional",
-	"PAHAT": "MAR District - Hatboro-Horsham Event",
-	"PAPHI": "MAR District - Springside Chestnut Hill Event",
-	"PAWCH": "MAR District - Westtown Event",
-	"PNCMP": "Pacific Northwest District Championship sponsored by Autodesk",
-	"QCMO": "FRC Festival de Robotique - Montreal Regional",
-	"RIPRO": "NE District - Rhode Island Event",
-	"SCMB": "Palmetto Regional",
-	"TESLA": "FIRST Championship - Tesla Subdivision",
-	"TNKN": "Smoky Mountains Regional",
-	"TXDA": "Dallas Regional",
-	"TXHO": "Lone Star Regional",
-	"TXLU": "Hub City Regional",
-	"TXSA": "Alamo Regional sponsored by Rackspace Hosting",
-	"UTWV": "Utah Regional",
-	"VABLA": "CHS District - Southwest Virginia Event",
-	"VADOS": "CHS District - Central Virginia Event",
-	"VAHAY": "CHS District - Northern Virginia Event",
-	"VAPOR": "CHS District - Hampton Roads Event",
-	"WAAHS": "PNW District - Auburn Event",
-	"WAAMV": "PNW District - Auburn Mountainview Event",
-	"WAELL": "PNW District - Central Washington University Event",
-	"WAMOU": "PNW District - Mount Vernon Event",
-	"WASNO": "PNW District - Glacier Peak Event",
-	"WASPO": "PNW District - West Valley Event",
-	"WEEK0": "Week 0",
-	"WIMI": "Wisconsin Regional",
-	"WVROX": "West Virginia ROX"
-};
-var events2017 = {
-	"ABCA": "Western Canada Regional",
-	"ALHU": "Rocket City Regional",
-	"ARCHIMEDES": "FIRST Championship - St. Louis - Archimedes Subdivision",
-	"ARDA": "FIRST Championship - St. Louis - ARDA Division",
-	"ARLI": "Arkansas Rock City Regional",
-	"AUSC": "Southern Cross Regional",
-	"AUSP": "South Pacific Regional",
-	"AZCMP": "Sanghi Foundation FRC AZ State Championship",
-	"AZFL": "Arizona North Regional",
-	"AZPX": "Arizona West Regional",
-	"BC18": "BattleCry 18",
-	"CADA": "Sacramento Regional",
-	"CAIR": "Orange County Regional",
-	"CALB": "Los Angeles Regional",
-	"CAMA": "Central Valley Regional",
-	"CANE": "FIRST Championship - Houston - CANE Division",
-	"CARSON": "FIRST Championship - St. Louis - Carson Subdivision",
-	"CARVER": "FIRST Championship - Houston - Carver Subdivision",
-	"CASD": "San Diego Regional presented by Qualcomm",
-	"CASF": "San Francisco Regional",
-	"CASJ": "Silicon Valley Regional",
-	"CATE": "FIRST Championship - St. Louis - CATE Division",
-	"CAVE": "Ventura Regional",
-	"CHCMP": "FIRST Chesapeake District Championship sponsored by Booz Allen Hamilton",
-	"CMPMO": "FIRST Championship - St. Louis",
-	"CMPTX": "FIRST Championship - Houston",
-	"CODE": "Colorado Regional",
-	"CTHAR": "NE District - Hartford Event",
-	"CTTD": "Cow Town ThrowDown",
-	"CTWAT": "NE District - Waterbury Event",
-	"CUDA": "FIRST Championship - St. Louis - CUDA Division",
-	"CURIE": "FIRST Championship - St. Louis - Curie Subdivision",
-	"DALY": "FIRST Championship - St. Louis - Daly Subdivision",
-	"DARWIN": "FIRST Championship - St. Louis - Darwin Subdivision",
-	"EMCC": "East Metro Collaborative Competition",
-	"FLOR": "Orlando Regional",
-	"FLWP": "South Florida Regional ",
-	"FOC": "Festival of Champions",
-	"FOC17": "Festival of Champions",
-	"GAALB": "PCH District - Albany Event",
-	"GACMP": "Peachtree State Championship",
-	"GACOL": "PCH District - Columbus Event",
-	"GADAL": "PCH District - Dalton Event",
-	"GAGAI": "PCH District - Gainesville Event",
-	"GALILEO": "FIRST Championship - Houston - Galileo Subdivision",
-	"GARO": "FIRST Championship - Houston - GARO Division",
-	"GGGT": "Gitchi Gummi Get-Together",
-	"GRITS": "Georgia Robotics Invitational Tournament & Showcase",
-	"GUSH": "Shenzhen Regional",
-	"HIHO": "Hawaii Regional",
-	"HOPPER": "FIRST Championship - Houston - Hopper Subdivision",
-	"HOTU": "FIRST Championship - Houston - HOTU Division",
-	"IACF": "Iowa Regional",
-	"IDBO": "Idaho Regional",
-	"ILCH": "Midwest Regional",
-	"ILPE": "Central Illinois Regional",
-	"INCMP": "Indiana State Championship",
-	"INMIS": "IN District - St. Joseph Event",
-	"INPMH": "IN District - Perry Meridian Event",
-	"INWLA": "IN District - Tippecanoe Event",
-	"IRI": "Indiana Robotics Invitational",
-	"IROC": "IROC",
-	"ISCMP": "FIRST Israel District Championship",
-	"ISDE1": "ISR District Event #1",
-	"ISDE2": "ISR District Event #2",
-	"ISDE3": "ISR District Event #3",
-	"ISDE4": "ISR District Event #4",
-	"LAKE": "Bayou Regional",
-	"MABOS": "NE District - Greater Boston Event",
-	"MABRI": "NE District - SE Mass Event",
-	"MAREA": "NE District - North Shore Event",
-	"MAWOR": "NE District - Worcester Polytechnic Institute Event",
-	"MDBET": "CHS District - Greater DC Event sponsored by Accenture",
-	"MDBOB": "Battle O’ Baltimore",
-	"MDEDG": "CHS District - Central Maryland Event sponsored by Leidos",
-	"MDOWI": "CHS District - Northern Maryland Event",
-	"MELEW": "NE District - Pine Tree Event",
-	"MEMS": "Mainely SPIRIT 7",
-	"MESH": "Summer Heat",
-	"MIANN": "FIM District - Ann Arbor Pioneer Event",
-	"MIBRO": "FIM District - Woodhaven Event",
-	"MICEN": "FIM District - Center Line Event",
-	"MICMP": "Michigan State Championship",
-	"MICMP1": "Michigan State Championship - Consumers Energy Division",
-	"MICMP2": "Michigan State Championship - Dow Division",
-	"MICMP3": "Michigan State Championship - DTE Energy Foundation Division",
-	"MICMP4": "Michigan State Championship - Ford Division",
-	"MIESC": "FIM District - Escanaba Event",
-	"MIGAY": "FIM District - Gaylord Event",
-	"MIGUL": "FIM District - Gull Lake Event",
-	"MIHOW": "FIM District - Howell Event",
-	"MIKE2": "FIM District - Kettering University Event #2",
-	"MIKEN": "FIM District - East Kentwood Event",
-	"MIKET": "FIM District - Kettering University Event #1",
-	"MILAK": "FIM District - Lakeview Event",
-	"MILAN": "FIM District - Lansing Event",
-	"MILIV": "FIM District - Livonia Event",
-	"MILSU": "FIM District - Lake Superior State University Event",
-	"MIMAR": "FIM District - Marysville Event",
-	"MIMID": "FIM District - Midland Event",
-	"MISHE": "FIM District - Shepherd Event",
-	"MISJO": "FIM District - St. Joseph Event",
-	"MISOU": "FIM District - Southfield Event",
-	"MITRY": "FIM District - Troy Event",
-	"MITVC": "FIM District - Traverse City Event",
-	"MIWAT": "FIM District - Waterford Event",
-	"MIWMI": "FIM District - West Michigan Event",
-	"MNCL": "Northern Minnesota Robotics Conference Tournament",
-	"MNCMP": "MSHSL FIRST State Robotics Championship",
-	"MNDU": "Lake Superior Regional",
-	"MNDU2": "Northern Lights Regional",
-	"MNMI": "Minnesota 10000 Lakes Regional",
-	"MNMI2": "Minnesota North Star Regional",
-	"MNRI": "Minnesota Robotics Invitational",
-	"MOKC": "Greater Kansas City Regional",
-	"MOSL": "St. Louis Regional",
-	"MRCMP": "FIRST Mid-Atlantic District Championship sponsored by Johnson & Johnson",
-	"MXTL": "Toluca Regional",
-	"MXTO": "Laguna Regional",
-	"NCASH": "NC District - UNC Asheville Event",
-	"NCCMP": "FIRST North Carolina State Championship",
-	"NCGRE": "NC District - Greensboro Event",
-	"NCRAL": "NC District - Raleigh Event",
-	"NCWIN": "NC District - Pitt County Event",
-	"NECMP": "New England District Championship",
-	"NEWTON": "FIRST Championship - Houston - Newton Subdivision",
-	"NHBED": "NE District - Southern NH Event",
-	"NHBOB": "Battle Of the Bay",
-	"NHGRS": "NE District - Granite State Event",
-	"NHRR": "RiverRage 21",
-	"NJBE": "Brunswick Eruption",
-	"NJBRI": "MAR District - Bridgewater-Raritan Event",
-	"NJFLA": "MAR District - Mount Olive Event",
-	"NJSKI": "MAR District - Montgomery Event",
-	"NJTAB": "MAR District - Seneca Event",
-	"NTTR": "North Texas Tournament of Robots",
-	"NVLV": "Las Vegas Regional",
-	"NYLI": "SBPLI Long Island Regional",
-	"NYNY": "New York City Regional",
-	"NYRO": "Finger Lakes Regional ",
-	"NYSU": "Hudson Valley Regional",
-	"NYTR": "New York Tech Valley Regional",
-	"OHCL": "Buckeye Regional",
-	"OHSP": "Miami Valley Regional",
-	"OKOK": "Oklahoma Regional ",
-	"ONBAR": "ONT District - Georgian College Event",
-	"ONCMP": "FIRST Ontario Provincial Championship",
-	"ONHA2": "STEMley Cup",
-	"ONHAM": "ONT District - McMaster University Event",
-	"ONLON": "ONT District - Western University, Engineering Event",
-	"ONNOB": "ONT District - North Bay Event",
-	"ONOSH": "ONT District - Durham College Event",
-	"ONTO1": "ONT District - Ryerson University Event",
-	"ONTO2": "ONT District - Victoria Park Collegiate Event",
-	"ONWAT": "ONT District - University of Waterloo Event",
-	"ONWIN": "ONT District - Windsor Essex Great Lakes Event",
-	"ORLAK": "PNW District - Lake Oswego Event",
-	"ORORE": "PNW District - Clackamas Academy of Industrial Science Event",
-	"ORWIL": "PNW District - Wilsonville Event",
-	"PACA": "Greater Pittsburgh Regional",
-	"PAHAT": "MAR District - Hatboro-Horsham Event",
-	"PAPHI": "MAR District - Springside Chestnut Hill Academy Event",
-	"PAWCH": "MAR District - Westtown Event",
-	"PNCMP": "Pacific Northwest District Championship",
-	"QCMO": "Festival de Robotique - Montreal Regional",
-	"R2OC": "Rock River Off-Season Competition",
-	"RIPRO": "NE District - Rhode Island Event",
-	"ROEBLING": "FIRST Championship - Houston - Roebling Subdivision",
-	"SCMB": "Palmetto Regional",
-	"TESLA": "FIRST Championship - St. Louis - Tesla Subdivision",
-	"TNKN": "Smoky Mountains Regional",
-	"TURING": "FIRST Championship - Houston - Turing Subdivision",
-	"TXDA": "Dallas Regional",
-	"TXHO": "Lone Star Central Regional",
-	"TXLU": "Hub City Regional",
-	"TXRI": "Texas Robotics Invitational",
-	"TXRR": "Texas Robot Roundup",
-	"TXSA": "Alamo Regional",
-	"TXTR": "The Remix",
-	"TXWA": "Brazos Valley Regional",
-	"TXWO": "Lone Star North Regional",
-	"UTWV": "Utah Regional",
-	"VABLA": "CHS District - Southwest Virginia Event",
-	"VAGLE": "CHS District - Central Virginia Event",
-	"VAHAY": "CHS District - Northern Virginia Event sponsored by Bechtel",
-	"VAPOR": "CHS District - Hampton Roads Event sponsored by Newport News Shipbuilding",
-	"WAAHS": "PNW District - Auburn Event",
-	"WAAMV": "PNW District - Auburn Mountainview Event",
-	"WAELL": "PNW District - Central Washington University Event",
-	"WAGG": "Washington Girls Generation",
-	"WAMOU": "PNW District - Mount Vernon Event",
-	"WAPP": "Peak Performance",
-	"WASNO": "PNW District - Glacier Peak Event",
-	"WASPO": "PNW District - West Valley Event",
-	"WEEK0": "Week 0",
-	"WILA": "Seven Rivers Regional",
-	"WIMI": "Wisconsin Regional"
-};
-var events2016Data = JSON.parse(`{"Events":[{"code":"ABCA","divisionCode":null,"name":"Western Canada Regional","type":"Regional","districtCode":null,"venue":"The Olympic Oval","address":null,"city":"Calgary","stateprov":"AB","country":"Canada","website":null,"webcasts":[],"timezone":"Mountain Standard Time","dateStart":"2016-04-03T00:00:00","dateEnd":"2016-04-06T23:59:59"},{"code":"ALHU","divisionCode":null,"name":"Rocket City Regional","type":"Regional","districtCode":null,"venue":"Von Braun Center","address":null,"city":"Huntsville","stateprov":"AL","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-03-23T00:00:00","dateEnd":"2016-03-26T23:59:59"},{"code":"ARCHIMEDES","divisionCode":"ARTE","name":"FIRST Championship - Archimedes Subdivision","type":"ChampionshipSubdivision","districtCode":null,"venue":"The Dome at America's Center","address":null,"city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-04-27T00:00:00","dateEnd":"2016-04-30T23:59:59"},{"code":"ARLR","divisionCode":null,"name":"Arkansas Rock City Regional","type":"Regional","districtCode":null,"venue":"Arkansas State Fairgrounds - Barton Coliseum","address":null,"city":"Little Rock","stateprov":"AR","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-03-09T00:00:00","dateEnd":"2016-03-12T23:59:59"},{"code":"ARTE","divisionCode":"CMP","name":"FIRST Championship - ARTE Division","type":"ChampionshipDivision","districtCode":null,"venue":"The Dome at America's Center","address":null,"city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-04-27T00:00:00","dateEnd":"2016-04-30T23:59:59"},{"code":"AUSY","divisionCode":null,"name":"Australia Regional","type":"Regional","districtCode":null,"venue":"Sydney Olympic Park Sports Centre","address":null,"city":"Sydney Olympic Park","stateprov":"NSW","country":"Australia","website":null,"webcasts":[],"timezone":"E. Australia Standard Time","dateStart":"2016-03-16T00:00:00","dateEnd":"2016-03-19T23:59:59"},{"code":"AZFL","divisionCode":null,"name":"Arizona North Regional","type":"Regional","districtCode":null,"venue":"Walkup Skydome - Northern Arizona University","address":null,"city":"Flagstaff","stateprov":"AZ","country":"USA","website":null,"webcasts":[],"timezone":"US Mountain Standard Time","dateStart":"2016-03-09T00:00:00","dateEnd":"2016-03-12T23:59:59"},{"code":"AZPX","divisionCode":null,"name":"Arizona West Regional","type":"Regional","districtCode":null,"venue":"Grand Canyon University Arena","address":null,"city":"Phoenix","stateprov":"AZ","country":"USA","website":null,"webcasts":[],"timezone":"US Mountain Standard Time","dateStart":"2016-04-06T00:00:00","dateEnd":"2016-04-09T23:59:59"},{"code":"CADA","divisionCode":null,"name":"Sacramento Regional","type":"Regional","districtCode":null,"venue":"UC Davis ARC Pavilion","address":null,"city":"Davis","stateprov":"CA","country":"USA","website":null,"webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2016-03-23T00:00:00","dateEnd":"2016-03-26T23:59:59"},{"code":"CALB","divisionCode":null,"name":"Los Angeles Regional","type":"Regional","districtCode":null,"venue":"Long Beach Convention and Entertainment Center","address":null,"city":"Long Beach","stateprov":"CA","country":"USA","website":null,"webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2016-03-09T00:00:00","dateEnd":"2016-03-12T23:59:59"},{"code":"CAMA","divisionCode":null,"name":"Central Valley Regional","type":"Regional","districtCode":null,"venue":"Madera South High School","address":null,"city":"Madera","stateprov":"CA","country":"USA","website":null,"webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2016-03-10T00:00:00","dateEnd":"2016-03-13T23:59:59"},{"code":"CAPL","divisionCode":null,"name":"Orange County Regional","type":"Regional","districtCode":null,"venue":"Valencia High School","address":null,"city":"Placentia","stateprov":"CA","country":"USA","website":null,"webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2016-03-30T00:00:00","dateEnd":"2016-04-02T23:59:59"},{"code":"CARSON","divisionCode":"GACA","name":"FIRST Championship - Carson Subdivision","type":"ChampionshipSubdivision","districtCode":null,"venue":"The Dome at America's Center","address":null,"city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-04-27T00:00:00","dateEnd":"2016-04-30T23:59:59"},{"code":"CARVER","divisionCode":"CUCA","name":"FIRST Championship - Carver Subdivision","type":"ChampionshipSubdivision","districtCode":null,"venue":"The Dome at America's Center","address":null,"city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-04-27T00:00:00","dateEnd":"2016-04-30T23:59:59"},{"code":"CASD","divisionCode":null,"name":"San Diego Regional","type":"Regional","districtCode":null,"venue":"Del Mar Fairgrounds Arena Complex","address":null,"city":"Del Mar","stateprov":"CA","country":"USA","website":null,"webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2016-03-02T00:00:00","dateEnd":"2016-03-05T23:59:59"},{"code":"CASJ","divisionCode":null,"name":"Silicon Valley Regional presented by Google.org","type":"Regional","districtCode":null,"venue":"San Jose State University - The Event Center","address":null,"city":"San Jose","stateprov":"CA","country":"USA","website":null,"webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2016-04-06T00:00:00","dateEnd":"2016-04-09T23:59:59"},{"code":"CAVE","divisionCode":null,"name":"Ventura Regional","type":"Regional","districtCode":null,"venue":"Ventura College","address":null,"city":"Ventura","stateprov":"CA","country":"USA","website":null,"webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2016-03-23T00:00:00","dateEnd":"2016-03-26T23:59:59"},{"code":"CHCMP","divisionCode":null,"name":"FIRST Chesapeake District Championship sponsored by Booz Allen Hamilton","type":"DistrictChampionship","districtCode":"CHS","venue":"XFINITY Center - University of Maryland","address":null,"city":"College Park","stateprov":"MD","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-04-06T00:00:00","dateEnd":"2016-04-09T23:59:59"},{"code":"CMP","divisionCode":null,"name":"FIRST Championship","type":"Championship","districtCode":null,"venue":"The Dome at America's Center","address":null,"city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-04-27T00:00:00","dateEnd":"2016-04-30T23:59:59"},{"code":"CODE","divisionCode":null,"name":"Colorado Regional","type":"Regional","districtCode":null,"venue":"University of Denver - Daniel L. Ritchie Center","address":null,"city":"Denver","stateprov":"CO","country":"USA","website":null,"webcasts":[],"timezone":"Mountain Standard Time","dateStart":"2016-03-23T00:00:00","dateEnd":"2016-03-26T23:59:59"},{"code":"CTHAR","divisionCode":null,"name":"NE District - Hartford Event","type":"DistrictEvent","districtCode":"NE","venue":"Hartford Public High School","address":null,"city":"Hartford","stateprov":"CT","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-04-01T00:00:00","dateEnd":"2016-04-03T23:59:59"},{"code":"CTWAT","divisionCode":null,"name":"NE District - Waterbury Event","type":"DistrictEvent","districtCode":"NE","venue":"Wilby High School","address":null,"city":"Waterbury","stateprov":"CT","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-04T00:00:00","dateEnd":"2016-03-06T23:59:59"},{"code":"CUCA","divisionCode":"CMP","name":"FIRST Championship - CUCA Division","type":"ChampionshipDivision","districtCode":null,"venue":"The Dome at America's Center","address":null,"city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-04-27T00:00:00","dateEnd":"2016-04-30T23:59:59"},{"code":"CURIE","divisionCode":"CUCA","name":"FIRST Championship - Curie Subdivision","type":"ChampionshipSubdivision","districtCode":null,"venue":"The Dome at America's Center","address":null,"city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-04-27T00:00:00","dateEnd":"2016-04-30T23:59:59"},{"code":"FLOR","divisionCode":null,"name":"Orlando Regional","type":"Regional","districtCode":null,"venue":"CFE Arena at the University of Central Florida","address":null,"city":"Orlando","stateprov":"FL","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-09T00:00:00","dateEnd":"2016-03-12T23:59:59"},{"code":"FLWP","divisionCode":null,"name":"South Florida Regional ","type":"Regional","districtCode":null,"venue":"Palm Beach Convention Center","address":null,"city":"West Palm Beach","stateprov":"FL","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-30T00:00:00","dateEnd":"2016-04-02T23:59:59"},{"code":"GAALB","divisionCode":null,"name":"PCH District - Albany Event","type":"DistrictEvent","districtCode":"PCH","venue":"Albany Civic Center","address":null,"city":"Albany","stateprov":"GA","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-17T00:00:00","dateEnd":"2016-03-19T23:59:59"},{"code":"GACA","divisionCode":"CMP","name":"FIRST Championship - GACA Division","type":"ChampionshipDivision","districtCode":null,"venue":"The Dome at America's Center","address":null,"city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-04-27T00:00:00","dateEnd":"2016-04-30T23:59:59"},{"code":"GACMP","divisionCode":null,"name":"Peachtree District State Championship","type":"DistrictChampionship","districtCode":"PCH","venue":"University of Georgia - Stegeman Coliseum","address":null,"city":"Athens","stateprov":"GA","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-04-13T00:00:00","dateEnd":"2016-04-16T23:59:59"},{"code":"GACOL","divisionCode":null,"name":"PCH District - Columbus Event","type":"DistrictEvent","districtCode":"PCH","venue":"Columbus Civic Center","address":null,"city":"Columbus","stateprov":"GA","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-10T00:00:00","dateEnd":"2016-03-12T23:59:59"},{"code":"GADAL","divisionCode":null,"name":"PCH District - Dalton Event","type":"DistrictEvent","districtCode":"PCH","venue":"Dalton Convention Center","address":null,"city":"Dalton","stateprov":"GA","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-17T00:00:00","dateEnd":"2016-03-19T23:59:59"},{"code":"GAKEN","divisionCode":null,"name":"PCH District - Kennesaw Event","type":"DistrictEvent","districtCode":"PCH","venue":"Kennesaw State University - Convocation Center","address":null,"city":"Kennesaw","stateprov":"GA","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-04-08T00:00:00","dateEnd":"2016-04-10T23:59:59"},{"code":"GALILEO","divisionCode":"GACA","name":"FIRST Championship - Galileo Subdivision","type":"ChampionshipSubdivision","districtCode":null,"venue":"The Dome at America's Center","address":null,"city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-04-27T00:00:00","dateEnd":"2016-04-30T23:59:59"},{"code":"HEAT","divisionCode":null,"name":"Summer Heat","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"South Portland High School","address":null,"city":"South Portland","stateprov":"ME","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-07-16T00:00:00","dateEnd":"2016-07-16T23:59:59"},{"code":"HIHO","divisionCode":null,"name":"Hawaii Regional","type":"Regional","districtCode":null,"venue":"University of Hawaii at Manoa","address":null,"city":"Honolulu","stateprov":"HI","country":"USA","website":null,"webcasts":[],"timezone":"Hawaiian Standard Time","dateStart":"2016-03-30T00:00:00","dateEnd":"2016-04-02T23:59:59"},{"code":"HOPPER","divisionCode":"NEHO","name":"FIRST Championship - Hopper Subdivision","type":"ChampionshipSubdivision","districtCode":null,"venue":"The Dome at America's Center","address":null,"city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-04-27T00:00:00","dateEnd":"2016-04-30T23:59:59"},{"code":"IACF","divisionCode":null,"name":"Iowa Regional","type":"Regional","districtCode":null,"venue":"McLeod Center/UNI Dome","address":null,"city":"Cedar Falls","stateprov":"IA","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-03-23T00:00:00","dateEnd":"2016-03-26T23:59:59"},{"code":"IDBO","divisionCode":null,"name":"Idaho Regional","type":"Regional","districtCode":null,"venue":"Boise State University at Taco Bell Arena","address":null,"city":"Boise","stateprov":"ID","country":"USA","website":null,"webcasts":[],"timezone":"Mountain Standard Time","dateStart":"2016-03-30T00:00:00","dateEnd":"2016-04-02T23:59:59"},{"code":"ILCH","divisionCode":null,"name":"Midwest Regional","type":"Regional","districtCode":null,"venue":"UIC Pavilion ","address":null,"city":"Chicago","stateprov":"IL","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-03-30T00:00:00","dateEnd":"2016-04-02T23:59:59"},{"code":"ILPE","divisionCode":null,"name":"Central Illinois Regional","type":"Regional","districtCode":null,"venue":"Renaissance Coliseum - Bradley University","address":null,"city":"Peoria","stateprov":"IL","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-03-16T00:00:00","dateEnd":"2016-03-19T23:59:59"},{"code":"INCMP","divisionCode":null,"name":"Indiana State Championship","type":"DistrictChampionship","districtCode":"IN","venue":"Kokomo Memorial Gym","address":null,"city":"Kokomo","stateprov":"IN","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-04-14T00:00:00","dateEnd":"2016-04-16T23:59:59"},{"code":"INPMH","divisionCode":null,"name":"IN District - Perry Meridian Event","type":"DistrictEvent","districtCode":"IN","venue":"Perry Meridian High School","address":null,"city":"Indianapolis","stateprov":"IN","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-24T00:00:00","dateEnd":"2016-03-26T23:59:59"},{"code":"INWCH","divisionCode":null,"name":"IN District - Walker Warren Event","type":"DistrictEvent","districtCode":"IN","venue":"Warren Central High School","address":null,"city":"Indianapolis","stateprov":"IN","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-18T00:00:00","dateEnd":"2016-03-20T23:59:59"},{"code":"INWLA","divisionCode":null,"name":"IN District - Tippecanoe Event","type":"DistrictEvent","districtCode":"IN","venue":"William Henry Harrison High School","address":null,"city":"West Lafayette","stateprov":"IN","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-11T00:00:00","dateEnd":"2016-03-13T23:59:59"},{"code":"IRI","divisionCode":null,"name":"Indiana Robotics Invitational","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"Lawrence Central High School","address":null,"city":"Indianapolis","stateprov":"IN","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-07-15T00:00:00","dateEnd":"2016-07-16T23:59:59"},{"code":"ISTA","divisionCode":null,"name":"Israel Regional","type":"Regional","districtCode":null,"venue":"Menora Mivtachim Arena","address":null,"city":"Tel Aviv","stateprov":"TA","country":"Israel","website":null,"webcasts":[],"timezone":"Israel Standard Time","dateStart":"2016-03-08T00:00:00","dateEnd":"2016-03-10T23:59:59"},{"code":"LAKE","divisionCode":null,"name":"Bayou Regional","type":"Regional","districtCode":null,"venue":"Pontchartrain Center","address":null,"city":"Kenner","stateprov":"LA","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-03-16T00:00:00","dateEnd":"2016-03-19T23:59:59"},{"code":"MABOS","divisionCode":null,"name":"NE District - Boston Event","type":"DistrictEvent","districtCode":"NE","venue":"Agganis Arena - Boston University","address":null,"city":"Boston","stateprov":"MA","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-04-01T00:00:00","dateEnd":"2016-04-03T23:59:59"},{"code":"MANDA","divisionCode":null,"name":"NE District - UMass-Dartmouth Event","type":"DistrictEvent","districtCode":"NE","venue":"Tripp Athletic Center","address":null,"city":"North Dartmouth","stateprov":"MA","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-18T00:00:00","dateEnd":"2016-03-20T23:59:59"},{"code":"MAREA","divisionCode":null,"name":"NE District - North Shore Event","type":"DistrictEvent","districtCode":"NE","venue":"Reading High School","address":null,"city":"Reading","stateprov":"MA","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-11T00:00:00","dateEnd":"2016-03-13T23:59:59"},{"code":"MAWOR","divisionCode":null,"name":"NE District - WPI Event","type":"DistrictEvent","districtCode":"NE","venue":"WPI - Harrington Auditorium ","address":null,"city":"Worcester","stateprov":"MA","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-11T00:00:00","dateEnd":"2016-03-13T23:59:59"},{"code":"MDBET","divisionCode":null,"name":"CHS District - Greater DC Event","type":"DistrictEvent","districtCode":"CHS","venue":"Walt Whitman High School","address":null,"city":"Bethesda","stateprov":"MD","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-11T00:00:00","dateEnd":"2016-03-13T23:59:59"},{"code":"MDBLR","divisionCode":null,"name":"CHS District - Northern Maryland Event","type":"DistrictEvent","districtCode":"CHS","venue":"Harford Technical High School","address":null,"city":"Bel Air","stateprov":"MD","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-18T00:00:00","dateEnd":"2016-03-20T23:59:59"},{"code":"MDEDG","divisionCode":null,"name":"CHS District - Central Maryland Event","type":"DistrictEvent","districtCode":"CHS","venue":"South River High School","address":null,"city":"Edgewater","stateprov":"MD","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-24T00:00:00","dateEnd":"2016-03-26T23:59:59"},{"code":"MELEW","divisionCode":null,"name":"NE District - Pine Tree Event","type":"DistrictEvent","districtCode":"NE","venue":"Androscoggin Bank Colisee","address":null,"city":"Lewiston","stateprov":"ME","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-04-07T00:00:00","dateEnd":"2016-04-09T23:59:59"},{"code":"MIANN","divisionCode":null,"name":"FIM District - Ann Arbor Skyline Event","type":"DistrictEvent","districtCode":"FIM","venue":"Skyline High School","address":null,"city":"Ann Arbor","stateprov":"MI","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-04-07T00:00:00","dateEnd":"2016-04-09T23:59:59"},{"code":"MIBRO","divisionCode":null,"name":"FIM District - Woodhaven Event","type":"DistrictEvent","districtCode":"FIM","venue":"Woodhaven High School","address":null,"city":"Brownstown","stateprov":"MI","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-04-07T00:00:00","dateEnd":"2016-04-09T23:59:59"},{"code":"MICEN","divisionCode":null,"name":"FIM District - Center Line Event","type":"DistrictEvent","districtCode":"FIM","venue":"Center Line High School","address":null,"city":"Center Line","stateprov":"MI","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-17T00:00:00","dateEnd":"2016-03-19T23:59:59"},{"code":"MICMP","divisionCode":null,"name":"Michigan State Championship","type":"DistrictChampionship","districtCode":"FIM","venue":"DeltaPlex Arena","address":null,"city":"Grand Rapids","stateprov":"MI","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-04-13T00:00:00","dateEnd":"2016-04-16T23:59:59"},{"code":"MIESC","divisionCode":null,"name":"FIM District - Escanaba Event","type":"DistrictEvent","districtCode":"FIM","venue":"Escanaba High School","address":null,"city":"Escanaba","stateprov":"MI","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-17T00:00:00","dateEnd":"2016-03-19T23:59:59"},{"code":"MIHOW","divisionCode":null,"name":"FIM District - Howell Event","type":"DistrictEvent","districtCode":"FIM","venue":"Parker Middle School","address":null,"city":"Howell","stateprov":"MI","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-31T00:00:00","dateEnd":"2016-04-02T23:59:59"},{"code":"MIKE2","divisionCode":null,"name":"FIM District - Kettering University Event #2","type":"DistrictEvent","districtCode":"FIM","venue":"Kettering University","address":null,"city":"Flint","stateprov":"MI","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-10T00:00:00","dateEnd":"2016-03-12T23:59:59"},{"code":"MIKEN","divisionCode":null,"name":"FIM District - East Kentwood Event","type":"DistrictEvent","districtCode":"FIM","venue":"East Kentwood High School","address":null,"city":"Kentwood","stateprov":"MI","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-31T00:00:00","dateEnd":"2016-04-02T23:59:59"},{"code":"MIKET","divisionCode":null,"name":"FIM District - Kettering University Event #1","type":"DistrictEvent","districtCode":"FIM","venue":"Kettering University","address":null,"city":"Flint","stateprov":"MI","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-03T00:00:00","dateEnd":"2016-03-05T23:59:59"},{"code":"MILAK","divisionCode":null,"name":"FIM District - Lakeview Event","type":"DistrictEvent","districtCode":"FIM","venue":"Lakeview High School","address":null,"city":"Battle Creek","stateprov":"MI","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-10T00:00:00","dateEnd":"2016-03-12T23:59:59"},{"code":"MILAN","divisionCode":null,"name":"FIM District - Lansing Event","type":"DistrictEvent","districtCode":"FIM","venue":"Mason High School","address":null,"city":"Mason","stateprov":"MI","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-24T00:00:00","dateEnd":"2016-03-26T23:59:59"},{"code":"MILIV","divisionCode":null,"name":"FIM District - Livonia Event","type":"DistrictEvent","districtCode":"FIM","venue":"Churchill High School","address":null,"city":"Livonia","stateprov":"MI","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-24T00:00:00","dateEnd":"2016-03-26T23:59:59"},{"code":"MILSU","divisionCode":null,"name":"FIM District - Lake Superior State University Event","type":"DistrictEvent","districtCode":"FIM","venue":"Lake Superior State University","address":null,"city":"Sault Ste. Marie","stateprov":"MI","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-31T00:00:00","dateEnd":"2016-04-02T23:59:59"},{"code":"MIMAR","divisionCode":null,"name":"FIM District - Marysville Event","type":"DistrictEvent","districtCode":"FIM","venue":"Marysville High School","address":null,"city":"Marysville","stateprov":"MI","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-24T00:00:00","dateEnd":"2016-03-26T23:59:59"},{"code":"MIMID","divisionCode":null,"name":"FIM District - Midland Event","type":"DistrictEvent","districtCode":"FIM","venue":"H.H. Dow High School","address":null,"city":"Midland","stateprov":"MI","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-17T00:00:00","dateEnd":"2016-03-19T23:59:59"},{"code":"MISJO","divisionCode":null,"name":"FIM District - St. Joseph Event","type":"DistrictEvent","districtCode":"FIM","venue":"St. Joseph High School","address":null,"city":"St. Joseph","stateprov":"MI","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-10T00:00:00","dateEnd":"2016-03-12T23:59:59"},{"code":"MISOU","divisionCode":null,"name":"FIM District - Southfield Event","type":"DistrictEvent","districtCode":"FIM","venue":"Southfield High School","address":null,"city":"Southfield","stateprov":"MI","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-03T00:00:00","dateEnd":"2016-03-05T23:59:59"},{"code":"MISTA","divisionCode":null,"name":"FIM District - Standish-Sterling Event","type":"DistrictEvent","districtCode":"FIM","venue":"Standish-Sterling Central High School","address":null,"city":"Standish","stateprov":"MI","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-03T00:00:00","dateEnd":"2016-03-05T23:59:59"},{"code":"MITRY","divisionCode":null,"name":"FIM District - Troy Event","type":"DistrictEvent","districtCode":"FIM","venue":"Troy Athens High School","address":null,"city":"Troy","stateprov":"MI","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-31T00:00:00","dateEnd":"2016-04-02T23:59:59"},{"code":"MITVC","divisionCode":null,"name":"FIM District - Traverse City Event","type":"DistrictEvent","districtCode":"FIM","venue":"Traverse City Central High School","address":null,"city":"Traverse City","stateprov":"MI","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-04-07T00:00:00","dateEnd":"2016-04-09T23:59:59"},{"code":"MIWAT","divisionCode":null,"name":"FIM District - Waterford Event","type":"DistrictEvent","districtCode":"FIM","venue":"Waterford Mott High School","address":null,"city":"Waterford","stateprov":"MI","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-03T00:00:00","dateEnd":"2016-03-05T23:59:59"},{"code":"MIWMI","divisionCode":null,"name":"FIM District - West Michigan Event","type":"DistrictEvent","districtCode":"FIM","venue":"Grand Valley State University","address":null,"city":"Allendale","stateprov":"MI","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-24T00:00:00","dateEnd":"2016-03-26T23:59:59"},{"code":"MNDU","divisionCode":null,"name":"Lake Superior Regional","type":"Regional","districtCode":null,"venue":"DECC Arena/South Pioneer Hall","address":null,"city":"Duluth","stateprov":"MN","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-03-02T00:00:00","dateEnd":"2016-03-05T23:59:59"},{"code":"MNDU2","divisionCode":null,"name":"Northern Lights Regional","type":"Regional","districtCode":null,"venue":"DECC Arena/Edmund Fitzgerald Exhibit Hall","address":null,"city":"Duluth","stateprov":"MN","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-03-02T00:00:00","dateEnd":"2016-03-05T23:59:59"},{"code":"MNMI","divisionCode":null,"name":"Minnesota 10000 Lakes Regional","type":"Regional","districtCode":null,"venue":"Williams Arena/The Sports Pavilion Univ of MN","address":null,"city":"Minneapolis","stateprov":"MN","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-04-06T00:00:00","dateEnd":"2016-04-09T23:59:59"},{"code":"MNMI2","divisionCode":null,"name":"Minnesota North Star Regional","type":"Regional","districtCode":null,"venue":"Mariucci Arena - University of Minnesota","address":null,"city":"Minneapolis","stateprov":"MN","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-04-06T00:00:00","dateEnd":"2016-04-09T23:59:59"},{"code":"MOKC","divisionCode":null,"name":"Greater Kansas City Regional","type":"Regional","districtCode":null,"venue":"Metropolitan Community College/Bus. & Tech. Campus","address":null,"city":"Kansas City","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-03-09T00:00:00","dateEnd":"2016-03-12T23:59:59"},{"code":"MOSL","divisionCode":null,"name":"St. Louis Regional","type":"Regional","districtCode":null,"venue":"Chaifetz Arena","address":null,"city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-03-09T00:00:00","dateEnd":"2016-03-12T23:59:59"},{"code":"MRCMP","divisionCode":null,"name":"Mid-Atlantic Robotics District Championship","type":"DistrictChampionship","districtCode":"MAR","venue":"Stabler Arena, Lehigh University","address":null,"city":"Bethlehem","stateprov":"PA","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-04-13T00:00:00","dateEnd":"2016-04-16T23:59:59"},{"code":"MXMC","divisionCode":null,"name":"Mexico City Regional ","type":"Regional","districtCode":null,"venue":"Arena Ciudad de Mexico","address":null,"city":"Mexico City","stateprov":"DIF","country":"Mexico","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-03-09T00:00:00","dateEnd":"2016-03-12T23:59:59"},{"code":"NCASH","divisionCode":null,"name":"NC District - UNC Asheville Event","type":"DistrictEvent","districtCode":"NC","venue":"UNC Asheville Sherrill Center Kimmel Arena","address":null,"city":"Asheville","stateprov":"NC","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-18T00:00:00","dateEnd":"2016-03-20T23:59:59"},{"code":"NCBUI","divisionCode":null,"name":"NC District - Campbell University/Johnston Community College Event","type":"DistrictEvent","districtCode":"NC","venue":"Campbell University John W. Pope, Jr. Convocation Center","address":null,"city":"Buies Creek","stateprov":"NC","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-04-01T00:00:00","dateEnd":"2016-04-03T23:59:59"},{"code":"NCCMP","divisionCode":null,"name":"NC FIRST Robotics State Championship","type":"DistrictChampionship","districtCode":"NC","venue":"UNC Charlotte Halton Arena","address":null,"city":"Charlotte","stateprov":"NC","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-04-08T00:00:00","dateEnd":"2016-04-10T23:59:59"},{"code":"NCMCL","divisionCode":null,"name":"NC District - Guilford County Event","type":"DistrictEvent","districtCode":"NC","venue":"Northeast Guilford High School","address":null,"city":"McLeansville","stateprov":"NC","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-04T00:00:00","dateEnd":"2016-03-06T23:59:59"},{"code":"NCRAL","divisionCode":null,"name":"NC District - Wake County Event","type":"DistrictEvent","districtCode":"NC","venue":"Southeast Raleigh Magnet High School","address":null,"city":"Raleigh","stateprov":"NC","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-11T00:00:00","dateEnd":"2016-03-13T23:59:59"},{"code":"NECMP","divisionCode":null,"name":"New England District Championship","type":"DistrictChampionship","districtCode":"NE","venue":"XL Center","address":null,"city":"Hartford","stateprov":"CT","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-04-13T00:00:00","dateEnd":"2016-04-16T23:59:59"},{"code":"NEHO","divisionCode":"CMP","name":"FIRST Championship - NEHO Division","type":"ChampionshipDivision","districtCode":null,"venue":"The Dome at America's Center","address":null,"city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-04-27T00:00:00","dateEnd":"2016-04-30T23:59:59"},{"code":"NEWTON","divisionCode":"NEHO","name":"FIRST Championship - Newton Subdivision","type":"ChampionshipSubdivision","districtCode":null,"venue":"The Dome at America's Center","address":null,"city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-04-27T00:00:00","dateEnd":"2016-04-30T23:59:59"},{"code":"NHDUR","divisionCode":null,"name":"NE District - UNH Event","type":"DistrictEvent","districtCode":"NE","venue":"University of New Hampshire","address":null,"city":"Durham","stateprov":"NH","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-24T00:00:00","dateEnd":"2016-03-26T23:59:59"},{"code":"NHGRS","divisionCode":null,"name":"NE District - Granite State Event","type":"DistrictEvent","districtCode":"NE","venue":"Windham High School","address":null,"city":"Windham","stateprov":"NH","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-04T00:00:00","dateEnd":"2016-03-06T23:59:59"},{"code":"NJBRI","divisionCode":null,"name":"MAR District - Bridgewater-Raritan Event","type":"DistrictEvent","districtCode":"MAR","venue":"Bridgewater-Raritan High School","address":null,"city":"Bridgewater","stateprov":"NJ","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-04-01T00:00:00","dateEnd":"2016-04-03T23:59:59"},{"code":"NJFLA","divisionCode":null,"name":"MAR District - Mt. Olive Event","type":"DistrictEvent","districtCode":"MAR","venue":"Mt. Olive High School","address":null,"city":"Flanders","stateprov":"NJ","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-04T00:00:00","dateEnd":"2016-03-06T23:59:59"},{"code":"NJSKI","divisionCode":null,"name":"MAR District - Montgomery Event","type":"DistrictEvent","districtCode":"MAR","venue":"Montgomery Township High School","address":null,"city":"Skillman","stateprov":"NJ","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-04-08T00:00:00","dateEnd":"2016-04-10T23:59:59"},{"code":"NJTAB","divisionCode":null,"name":"MAR District - Seneca Event","type":"DistrictEvent","districtCode":"MAR","venue":"Seneca High School","address":null,"city":"Tabernacle","stateprov":"NJ","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-18T00:00:00","dateEnd":"2016-03-20T23:59:59"},{"code":"NVLV","divisionCode":null,"name":"Las Vegas Regional","type":"Regional","districtCode":null,"venue":"Las Vegas Convention Center - South Hall","address":null,"city":"Las Vegas","stateprov":"NV","country":"USA","website":null,"webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2016-03-30T00:00:00","dateEnd":"2016-04-02T23:59:59"},{"code":"NYLI","divisionCode":null,"name":"SBPLI Long Island Regional","type":"Regional","districtCode":null,"venue":"Hofstra University","address":null,"city":"Hempstead","stateprov":"NY","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-30T00:00:00","dateEnd":"2016-04-02T23:59:59"},{"code":"NYNY","divisionCode":null,"name":"New York City Regional","type":"Regional","districtCode":null,"venue":"Jacob K. Javits Convention Center","address":null,"city":"New York","stateprov":"NY","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-10T00:00:00","dateEnd":"2016-03-13T23:59:59"},{"code":"NYRO","divisionCode":null,"name":"Finger Lakes Regional ","type":"Regional","districtCode":null,"venue":"Gordon Field House","address":null,"city":"Rochester","stateprov":"NY","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-23T00:00:00","dateEnd":"2016-03-26T23:59:59"},{"code":"NYTR","divisionCode":null,"name":"New York Tech Valley Regional","type":"Regional","districtCode":null,"venue":"Rensselaer Polytechnic Institute","address":null,"city":"Troy","stateprov":"NY","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-16T00:00:00","dateEnd":"2016-03-19T23:59:59"},{"code":"OHCI","divisionCode":null,"name":"Queen City Regional","type":"Regional","districtCode":null,"venue":"Cintas Arena - Xavier University","address":null,"city":"Cincinnati","stateprov":"OH","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-30T00:00:00","dateEnd":"2016-04-02T23:59:59"},{"code":"OHCL","divisionCode":null,"name":"Buckeye Regional","type":"Regional","districtCode":null,"venue":"Cleveland State University - Wolstein Center","address":null,"city":"Cleveland","stateprov":"OH","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-16T00:00:00","dateEnd":"2016-03-19T23:59:59"},{"code":"OKOK","divisionCode":null,"name":"Oklahoma Regional ","type":"Regional","districtCode":null,"venue":"Cox Arena - SMG Convention Center","address":null,"city":"Oklahoma City","stateprov":"OK","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-03-23T00:00:00","dateEnd":"2016-03-26T23:59:59"},{"code":"ONNB","divisionCode":null,"name":"North Bay Regional","type":"Regional","districtCode":null,"venue":"Nipissing University","address":null,"city":"North Bay","stateprov":"ON","country":"Canada","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-23T00:00:00","dateEnd":"2016-03-26T23:59:59"},{"code":"ONTO","divisionCode":null,"name":"Greater Toronto East Regional ","type":"Regional","districtCode":null,"venue":"University of Ontario Institute of Technology / Durham College","address":null,"city":"Oshawa","stateprov":"ON","country":"Canada","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-09T00:00:00","dateEnd":"2016-03-12T23:59:59"},{"code":"ONTO2","divisionCode":null,"name":"Greater Toronto Central Regional","type":"Regional","districtCode":null,"venue":"Ryerson University - Mattamy Athletic Centre","address":null,"city":"Toronto","stateprov":"ON","country":"Canada","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-02T00:00:00","dateEnd":"2016-03-05T23:59:59"},{"code":"ONWA","divisionCode":null,"name":"Waterloo Regional ","type":"Regional","districtCode":null,"venue":"University of Waterloo - Physical Activities Complex","address":null,"city":"Waterloo","stateprov":"ON","country":"Canada","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-30T00:00:00","dateEnd":"2016-04-02T23:59:59"},{"code":"ONWI","divisionCode":null,"name":"Windsor Essex Great Lakes Regional","type":"Regional","districtCode":null,"venue":"University of Windsor - St. Denis Centre","address":null,"city":"Windsor","stateprov":"ON","country":"Canada","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-04-06T00:00:00","dateEnd":"2016-04-09T23:59:59"},{"code":"ORORE","divisionCode":null,"name":"PNW District - Clackamas Academy of Industrial Science Event","type":"DistrictEvent","districtCode":"PNW","venue":"Clackamas Academy of Industrial Science","address":null,"city":"Oregon City","stateprov":"OR","country":"USA","website":null,"webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2016-03-31T00:00:00","dateEnd":"2016-04-02T23:59:59"},{"code":"ORPHI","divisionCode":null,"name":"PNW District - Philomath Event","type":"DistrictEvent","districtCode":"PNW","venue":"Philomath High School","address":null,"city":"Philomath","stateprov":"OR","country":"USA","website":null,"webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2016-03-24T00:00:00","dateEnd":"2016-03-26T23:59:59"},{"code":"ORWIL","divisionCode":null,"name":"PNW District - Wilsonville Event","type":"DistrictEvent","districtCode":"PNW","venue":"Wilsonville High School","address":null,"city":"Wilsonville","stateprov":"OR","country":"USA","website":null,"webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2016-03-10T00:00:00","dateEnd":"2016-03-12T23:59:59"},{"code":"PACA","divisionCode":null,"name":"Greater Pittsburgh Regional","type":"Regional","districtCode":null,"venue":"California University of Pennsylvania","address":null,"city":"California","stateprov":"PA","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-09T00:00:00","dateEnd":"2016-03-12T23:59:59"},{"code":"PAHAT","divisionCode":null,"name":"MAR District - Hatboro-Horsham Event","type":"DistrictEvent","districtCode":"MAR","venue":"Hatboro-Horsham High School","address":null,"city":"Horsham","stateprov":"PA","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-04T00:00:00","dateEnd":"2016-03-06T23:59:59"},{"code":"PAPHI","divisionCode":null,"name":"MAR District - Springside Chestnut Hill Event","type":"DistrictEvent","districtCode":"MAR","venue":"Springside Chestnut Hill Academy","address":null,"city":"Philadelphia","stateprov":"PA","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-18T00:00:00","dateEnd":"2016-03-20T23:59:59"},{"code":"PAWCH","divisionCode":null,"name":"MAR District - Westtown Event","type":"DistrictEvent","districtCode":"MAR","venue":"Westtown School","address":null,"city":"West Chester","stateprov":"PA","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-04-01T00:00:00","dateEnd":"2016-04-03T23:59:59"},{"code":"PNCMP","divisionCode":null,"name":"Pacific Northwest District Championship sponsored by Autodesk","type":"DistrictChampionship","districtCode":"PNW","venue":"Veterans Memorial Coliseum","address":null,"city":"Portland","stateprov":"OR","country":"USA","website":null,"webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2016-04-06T00:00:00","dateEnd":"2016-04-09T23:59:59"},{"code":"QCMO","divisionCode":null,"name":"FRC Festival de Robotique - Montreal Regional","type":"Regional","districtCode":null,"venue":"Stade Uniprix","address":null,"city":"Montreal","stateprov":"QC","country":"Canada","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-30T00:00:00","dateEnd":"2016-04-02T23:59:59"},{"code":"RIPRO","divisionCode":null,"name":"NE District - Rhode Island Event","type":"DistrictEvent","districtCode":"NE","venue":"Providence Career and Technology Academy","address":null,"city":"Providence","stateprov":"RI","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-24T00:00:00","dateEnd":"2016-03-26T23:59:59"},{"code":"SCMB","divisionCode":null,"name":"Palmetto Regional","type":"Regional","districtCode":null,"venue":"Myrtle Beach Convention Center","address":null,"city":"Myrtle Beach","stateprov":"SC","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-02-24T00:00:00","dateEnd":"2016-02-27T23:59:59"},{"code":"TESLA","divisionCode":"ARTE","name":"FIRST Championship - Tesla Subdivision","type":"ChampionshipSubdivision","districtCode":null,"venue":"The Dome at America's Center","address":null,"city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-04-27T00:00:00","dateEnd":"2016-04-30T23:59:59"},{"code":"TNKN","divisionCode":null,"name":"Smoky Mountains Regional","type":"Regional","districtCode":null,"venue":"Thompson-Boling Arena - University of Tennessee","address":null,"city":"Knoxville","stateprov":"TN","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-30T00:00:00","dateEnd":"2016-04-02T23:59:59"},{"code":"TXDA","divisionCode":null,"name":"Dallas Regional","type":"Regional","districtCode":null,"venue":"Irving Convention Center","address":null,"city":"Irving","stateprov":"TX","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-03-23T00:00:00","dateEnd":"2016-03-26T23:59:59"},{"code":"TXHO","divisionCode":null,"name":"Lone Star Regional","type":"Regional","districtCode":null,"venue":"George R. Brown Convention Center","address":null,"city":"Houston","stateprov":"TX","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-04-06T00:00:00","dateEnd":"2016-04-09T23:59:59"},{"code":"TXLU","divisionCode":null,"name":"Hub City Regional","type":"Regional","districtCode":null,"venue":"United Supermarkets Arena - Texas Tech University","address":null,"city":"Lubbock","stateprov":"TX","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-03-31T00:00:00","dateEnd":"2016-04-03T23:59:59"},{"code":"TXSA","divisionCode":null,"name":"Alamo Regional sponsored by Rackspace Hosting","type":"Regional","districtCode":null,"venue":"Henry B. Gonzalez Convention Center","address":null,"city":"San Antonio","stateprov":"TX","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-03-09T00:00:00","dateEnd":"2016-03-12T23:59:59"},{"code":"UTWV","divisionCode":null,"name":"Utah Regional","type":"Regional","districtCode":null,"venue":"Maverik Center","address":null,"city":"West Valley City","stateprov":"UT","country":"USA","website":null,"webcasts":[],"timezone":"Mountain Standard Time","dateStart":"2016-03-16T00:00:00","dateEnd":"2016-03-19T23:59:59"},{"code":"VABLA","divisionCode":null,"name":"CHS District - Southwest Virginia Event","type":"DistrictEvent","districtCode":"CHS","venue":"Blacksburg High School","address":null,"city":"Blacksburg","stateprov":"VA","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-11T00:00:00","dateEnd":"2016-03-13T23:59:59"},{"code":"VADOS","divisionCode":null,"name":"CHS District - Central Virginia Event","type":"DistrictEvent","districtCode":"CHS","venue":"Farm Bureau Center - Meadow Event Park","address":null,"city":"Doswell","stateprov":"VA","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-24T00:00:00","dateEnd":"2016-03-26T23:59:59"},{"code":"VAHAY","divisionCode":null,"name":"CHS District - Northern Virginia Event","type":"DistrictEvent","districtCode":"CHS","venue":"Battlefield High School","address":null,"city":"Haymarket","stateprov":"VA","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-04T00:00:00","dateEnd":"2016-03-06T23:59:59"},{"code":"VAPOR","divisionCode":null,"name":"CHS District - Hampton Roads Event","type":"DistrictEvent","districtCode":"CHS","venue":"Churchland High School","address":null,"city":"Portsmouth","stateprov":"VA","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-03-18T00:00:00","dateEnd":"2016-03-20T23:59:59"},{"code":"WAAHS","divisionCode":null,"name":"PNW District - Auburn Event","type":"DistrictEvent","districtCode":"PNW","venue":"Auburn High School","address":null,"city":"Auburn","stateprov":"WA","country":"USA","website":null,"webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2016-04-01T00:00:00","dateEnd":"2016-04-03T23:59:59"},{"code":"WAAMV","divisionCode":null,"name":"PNW District - Auburn Mountainview Event","type":"DistrictEvent","districtCode":"PNW","venue":"Auburn Mountainview High School","address":null,"city":"Auburn","stateprov":"WA","country":"USA","website":null,"webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2016-03-03T00:00:00","dateEnd":"2016-03-05T23:59:59"},{"code":"WAELL","divisionCode":null,"name":"PNW District - Central Washington University Event","type":"DistrictEvent","districtCode":"PNW","venue":"Central Washington University - Nicholson Pavilion","address":null,"city":"Ellensburg","stateprov":"WA","country":"USA","website":null,"webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2016-03-17T00:00:00","dateEnd":"2016-03-19T23:59:59"},{"code":"WAMOU","divisionCode":null,"name":"PNW District - Mount Vernon Event","type":"DistrictEvent","districtCode":"PNW","venue":"Mount Vernon High School","address":null,"city":"Mount Vernon","stateprov":"WA","country":"USA","website":null,"webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2016-03-18T00:00:00","dateEnd":"2016-03-20T23:59:59"},{"code":"WASNO","divisionCode":null,"name":"PNW District - Glacier Peak Event","type":"DistrictEvent","districtCode":"PNW","venue":"Glacier Peak High School","address":null,"city":"Snohomish","stateprov":"WA","country":"USA","website":null,"webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2016-03-11T00:00:00","dateEnd":"2016-03-13T23:59:59"},{"code":"WASPO","divisionCode":null,"name":"PNW District - West Valley Event","type":"DistrictEvent","districtCode":"PNW","venue":"West Valley High School","address":null,"city":"Spokane","stateprov":"WA","country":"USA","website":null,"webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2016-03-03T00:00:00","dateEnd":"2016-03-05T23:59:59"},{"code":"WEEK0","divisionCode":null,"name":"Week 0","type":"OffSeason","districtCode":null,"venue":"Merrimack High School","address":null,"city":"Merrimack","stateprov":"NH","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-02-20T00:00:00","dateEnd":"2016-02-20T23:59:59"},{"code":"WIMI","divisionCode":null,"name":"Wisconsin Regional","type":"Regional","districtCode":null,"venue":"UW - Milwaukee Panther Arena","address":null,"city":"Milwaukee","stateprov":"WI","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2016-03-23T00:00:00","dateEnd":"2016-03-26T23:59:59"},{"code":"WVROX","divisionCode":null,"name":"West Virginia ROX","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"West Virginia University","address":null,"city":"Morganstown","stateprov":"WV","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2016-08-04T00:00:00","dateEnd":"2016-08-06T23:59:59"}],"eventCount":143}`);
-var events2017Data = JSON.parse(`{"Events":[{"code":"ABCA","divisionCode":null,"name":"Western Canada Regional","type":"Regional","districtCode":null,"venue":"The Olympic Oval","address":"University of Calgary","city":"Calgary","stateprov":"AB","country":"Canada","website":"http://frcwest.com/","webcasts":[],"timezone":"Mountain Standard Time","dateStart":"2017-04-05T00:00:00","dateEnd":"2017-04-08T23:59:59"},{"code":"ALHU","divisionCode":null,"name":"Rocket City Regional","type":"Regional","districtCode":null,"venue":"Von Braun Center","address":"700 Monroe Street SW","city":"Huntsville","stateprov":"AL","country":"USA","website":"http://firstinalabama.org/events/frc-events/rocket-city-regional/","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-03-22T00:00:00","dateEnd":"2017-03-25T23:59:59"},{"code":"ARCHIMEDES","divisionCode":"ARDA","name":"FIRST Championship - St. Louis - Archimedes Subdivision","type":"ChampionshipSubdivision","districtCode":null,"venue":"America's Center/Dome","address":"901 N Broadway","city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-26T00:00:00","dateEnd":"2017-04-29T23:59:59"},{"code":"ARDA","divisionCode":"CMPMO","name":"FIRST Championship - St. Louis - ARDA Division","type":"ChampionshipDivision","districtCode":null,"venue":"America's Center/Dome","address":"901 N Broadway","city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-26T00:00:00","dateEnd":"2017-04-29T23:59:59"},{"code":"ARLI","divisionCode":null,"name":"Arkansas Rock City Regional","type":"Regional","districtCode":null,"venue":"Arkansas State Fairgrounds - Barton Coliseum","address":"Barton Coliseum 2600 Howard Street","city":"Little Rock","stateprov":"AR","country":"USA","website":"http://arfirst.org","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-03-08T00:00:00","dateEnd":"2017-03-11T23:59:59"},{"code":"AUSC","divisionCode":null,"name":"Southern Cross Regional","type":"Regional","districtCode":null,"venue":"Sydney Olympic Park Sports Centre","address":"Olympic Boulevard","city":"Sydney Olympic Park","stateprov":"NSW","country":"Australia","website":"https://firstaustralia.org/","webcasts":[],"timezone":"AUS Eastern Standard Time","dateStart":"2017-03-13T00:00:00","dateEnd":"2017-03-15T23:59:59"},{"code":"AUSP","divisionCode":null,"name":"South Pacific Regional","type":"Regional","districtCode":null,"venue":"Sydney Olympic Park Sports Centre","address":"Olympic Boulevard","city":"Sydney Olympic Park","stateprov":"NSW","country":"Australia","website":"https://firstaustralia.org/","webcasts":[],"timezone":"AUS Eastern Standard Time","dateStart":"2017-03-16T00:00:00","dateEnd":"2017-03-18T23:59:59"},{"code":"AZCMP","divisionCode":null,"name":"Sanghi Foundation FRC AZ State Championship","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"","address":"Wells Fargo Arena, Arizona State University","city":"Tempe","stateprov":"AZ","country":"USA","website":null,"webcasts":[],"timezone":"Mountain Standard Time","dateStart":"2017-10-21T00:00:00","dateEnd":"2017-10-21T23:59:59"},{"code":"AZFL","divisionCode":null,"name":"Arizona North Regional","type":"Regional","districtCode":null,"venue":"J. Lawrence Walkup Skydome - Northern Arizona University","address":"1701 S. San Francisco Street","city":"Flagstaff","stateprov":"AZ","country":"USA","website":"http://www.azfirst.org/","webcasts":[],"timezone":"US Mountain Standard Time","dateStart":"2017-03-08T00:00:00","dateEnd":"2017-03-11T23:59:59"},{"code":"AZPX","divisionCode":null,"name":"Arizona West Regional","type":"Regional","districtCode":null,"venue":"Grand Canyon University Arena","address":"3300 W. Camelback Road","city":"Phoenix","stateprov":"AZ","country":"USA","website":"http://www.azfirst.org/","webcasts":[],"timezone":"US Mountain Standard Time","dateStart":"2017-04-05T00:00:00","dateEnd":"2017-04-08T23:59:59"},{"code":"BC18","divisionCode":null,"name":"BattleCry 18","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"WPI Harrington Auditorium ","address":"100 Institute Road","city":"Worcester","stateprov":"MA","country":"USA","website":"https://wpi.edu/+bc","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-05-19T00:00:00","dateEnd":"2017-05-21T23:59:59"},{"code":"CADA","divisionCode":null,"name":"Sacramento Regional","type":"Regional","districtCode":null,"venue":"UC Davis ARC Pavilion","address":"Corner of Orchard and LaRue","city":"Davis","stateprov":"CA","country":"USA","website":"http://www.firstsac.org","webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2017-03-22T00:00:00","dateEnd":"2017-03-25T23:59:59"},{"code":"CAIR","divisionCode":null,"name":"Orange County Regional","type":"Regional","districtCode":null,"venue":"University of California, Irvine","address":"Bren Events Center 100 Bren Events Center","city":"Irvine","stateprov":"CA","country":"USA","website":"http://www.firstoc.org/","webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2017-03-29T00:00:00","dateEnd":"2017-04-01T23:59:59"},{"code":"CALB","divisionCode":null,"name":"Los Angeles Regional","type":"Regional","districtCode":null,"venue":"Walter Pyramid","address":"1250 N Bellflower Blvd Long Beach State University","city":"Long Beach","stateprov":"CA","country":"USA","website":"http://www.firstlaregional.com","webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2017-03-23T00:00:00","dateEnd":"2017-03-26T23:59:59"},{"code":"CAMA","divisionCode":null,"name":"Central Valley Regional","type":"Regional","districtCode":null,"venue":"Madera South High School","address":"705 W. Pecan Avenue","city":"Madera","stateprov":"CA","country":"USA","website":"http://www.cvrobotics.org/frc/regional.html","webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2017-03-09T00:00:00","dateEnd":"2017-03-12T23:59:59"},{"code":"CANE","divisionCode":"CMPTX","name":"FIRST Championship - Houston - CANE Division","type":"ChampionshipDivision","districtCode":null,"venue":"George R. Brown Convention Center","address":"1001 Avenida De Las Americas","city":"Houston","stateprov":"TX","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-19T00:00:00","dateEnd":"2017-04-22T23:59:59"},{"code":"CARSON","divisionCode":"CATE","name":"FIRST Championship - St. Louis - Carson Subdivision","type":"ChampionshipSubdivision","districtCode":null,"venue":"America's Center/Dome","address":"901 N Broadway","city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-26T00:00:00","dateEnd":"2017-04-29T23:59:59"},{"code":"CARVER","divisionCode":"CANE","name":"FIRST Championship - Houston - Carver Subdivision","type":"ChampionshipSubdivision","districtCode":null,"venue":"George R. Brown Convention Center","address":"1001 Avenida De Las Americas","city":"Houston","stateprov":"TX","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-19T00:00:00","dateEnd":"2017-04-22T23:59:59"},{"code":"CASD","divisionCode":null,"name":"San Diego Regional presented by Qualcomm","type":"Regional","districtCode":null,"venue":"Del Mar Fairgrounds Arena Complex","address":"2260 Jimmy Durante Blvd","city":"Del Mar","stateprov":"CA","country":"USA","website":"http://sandiegoregional.com/","webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2017-03-08T00:00:00","dateEnd":"2017-03-11T23:59:59"},{"code":"CASF","divisionCode":null,"name":"San Francisco Regional","type":"Regional","districtCode":null,"venue":"St. Ignatius College Preparatory","address":"2001 37th Avenue","city":"San Francisco","stateprov":"CA","country":"USA","website":"http://www.firstsfbay.org","webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2017-03-16T00:00:00","dateEnd":"2017-03-19T23:59:59"},{"code":"CASJ","divisionCode":null,"name":"Silicon Valley Regional","type":"Regional","districtCode":null,"venue":"San Jose State University - The Event Center","address":"290 South 7th Street","city":"San Jose","stateprov":"CA","country":"USA","website":"http://www.firstsv.org","webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2017-03-29T00:00:00","dateEnd":"2017-04-01T23:59:59"},{"code":"CATE","divisionCode":"CMPMO","name":"FIRST Championship - St. Louis - CATE Division","type":"ChampionshipDivision","districtCode":null,"venue":"America's Center/Dome","address":"901 N Broadway","city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-26T00:00:00","dateEnd":"2017-04-29T23:59:59"},{"code":"CAVE","divisionCode":null,"name":"Ventura Regional","type":"Regional","districtCode":null,"venue":"Ventura College","address":"4667 Telegraph Road","city":"Ventura","stateprov":"CA","country":"USA","website":"http://www.frcventuraregional.com/","webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2017-03-15T00:00:00","dateEnd":"2017-03-18T23:59:59"},{"code":"CHCMP","divisionCode":null,"name":"FIRST Chesapeake District Championship sponsored by Booz Allen Hamilton","type":"DistrictChampionship","districtCode":"CHS","venue":"Virginia Commonwealth University","address":"Siegel Center 1200 West Broad Street","city":"Richmond","stateprov":"VA","country":"USA","website":"http://www.firstchesapeake.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-04-05T00:00:00","dateEnd":"2017-04-08T23:59:59"},{"code":"CMPMO","divisionCode":null,"name":"FIRST Championship - St. Louis","type":"Championship","districtCode":null,"venue":"America's Center/Dome","address":"901 N Broadway","city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-26T00:00:00","dateEnd":"2017-04-29T23:59:59"},{"code":"CMPTX","divisionCode":null,"name":"FIRST Championship - Houston","type":"Championship","districtCode":null,"venue":"George R. Brown Convention Center","address":"1001 Avenida De Las Americas","city":"Houston","stateprov":"TX","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-19T00:00:00","dateEnd":"2017-04-22T23:59:59"},{"code":"CODE","divisionCode":null,"name":"Colorado Regional","type":"Regional","districtCode":null,"venue":"University of Denver - Daniel L. Ritchie Center","address":"2201 East Asbury Ave","city":"Denver","stateprov":"CO","country":"USA","website":"http://coloradofirst.org/COFIRST/programs/frc/colorado-regional/","webcasts":[],"timezone":"Mountain Standard Time","dateStart":"2017-03-22T00:00:00","dateEnd":"2017-03-25T23:59:59"},{"code":"CTHAR","divisionCode":null,"name":"NE District - Hartford Event","type":"DistrictEvent","districtCode":"NE","venue":"Hartford Public High School","address":"55 Forest Street","city":"Hartford","stateprov":"CT","country":"USA","website":"http://www.nefirst.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-31T00:00:00","dateEnd":"2017-04-02T23:59:59"},{"code":"CTTD","divisionCode":null,"name":"Cow Town ThrowDown","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"Lee's Summit High School","address":"400 SE Blue Pkwy","city":"Lee's Summit","stateprov":"MO","country":"USA","website":"http://cttd-robotics.com/","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-10-27T00:00:00","dateEnd":"2017-10-28T23:59:59"},{"code":"CTWAT","divisionCode":null,"name":"NE District - Waterbury Event","type":"DistrictEvent","districtCode":"NE","venue":"Wilby High School","address":"460 Buck Hill Road","city":"Waterbury","stateprov":"CT","country":"USA","website":"http://www.nefirst.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-03T00:00:00","dateEnd":"2017-03-05T23:59:59"},{"code":"CUDA","divisionCode":"CMPMO","name":"FIRST Championship - St. Louis - CUDA Division","type":"ChampionshipDivision","districtCode":null,"venue":"America's Center/Dome","address":"901 N Broadway","city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-26T00:00:00","dateEnd":"2017-04-29T23:59:59"},{"code":"CURIE","divisionCode":"CUDA","name":"FIRST Championship - St. Louis - Curie Subdivision","type":"ChampionshipSubdivision","districtCode":null,"venue":"America's Center/Dome","address":"901 N Broadway","city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-26T00:00:00","dateEnd":"2017-04-29T23:59:59"},{"code":"DALY","divisionCode":"ARDA","name":"FIRST Championship - St. Louis - Daly Subdivision","type":"ChampionshipSubdivision","districtCode":null,"venue":"America's Center/Dome","address":"901 N Broadway","city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-26T00:00:00","dateEnd":"2017-04-29T23:59:59"},{"code":"DARWIN","divisionCode":"CUDA","name":"FIRST Championship - St. Louis - Darwin Subdivision","type":"ChampionshipSubdivision","districtCode":null,"venue":"America's Center/Dome","address":"901 N Broadway","city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-26T00:00:00","dateEnd":"2017-04-29T23:59:59"},{"code":"EMCC","divisionCode":null,"name":"East Metro Collaborative Competition","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"East Ridge High School","address":"4200 Pioneer Drive","city":"Woodbury","stateprov":"MN","country":"55125","website":"http://www.em-cc.org/","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-09-16T00:00:00","dateEnd":"2017-09-16T23:59:59"},{"code":"FLOR","divisionCode":null,"name":"Orlando Regional","type":"Regional","districtCode":null,"venue":"CFE Arena at the University of Central Florida","address":"12777 Gemini Blvd N","city":"Orlando","stateprov":"FL","country":"USA","website":"http://orlandofrc.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-08T00:00:00","dateEnd":"2017-03-11T23:59:59"},{"code":"FLWP","divisionCode":null,"name":"South Florida Regional ","type":"Regional","districtCode":null,"venue":"Palm Beach Convention Center","address":"650 Okeechobee Blvd","city":"West Palm Beach","stateprov":"FL","country":"USA","website":"","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-01T00:00:00","dateEnd":"2017-03-04T23:59:59"},{"code":"FOC","divisionCode":null,"name":"Festival of Champions","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"SNHU Arena","address":"555 Elm St","city":"Manchester","stateprov":"NH","country":"USA","website":"https://www.firstchampionship.org/festival-of-champions","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-07-28T00:00:00","dateEnd":"2017-07-29T23:59:59"},{"code":"GAALB","divisionCode":null,"name":"PCH District - Albany Event","type":"DistrictEvent","districtCode":"PCH","venue":"Albany Civic Center","address":"100 W. Oglethorpe Blvd","city":"Albany","stateprov":"GA","country":"USA","website":"http://www.gafirst.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-23T00:00:00","dateEnd":"2017-03-25T23:59:59"},{"code":"GACMP","divisionCode":null,"name":"Peachtree State Championship","type":"DistrictChampionship","districtCode":"PCH","venue":"University of Georgia - Stegeman Coliseum","address":"100 Smith Street","city":"Athens","stateprov":"GA","country":"USA","website":"http://www.gafirst.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-04-05T00:00:00","dateEnd":"2017-04-08T23:59:59"},{"code":"GACOL","divisionCode":null,"name":"PCH District - Columbus Event","type":"DistrictEvent","districtCode":"PCH","venue":"Columbus State University","address":"4225 University Avenue","city":"Columbus","stateprov":"GA","country":"USA","website":"http://www.gafirst.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-16T00:00:00","dateEnd":"2017-03-18T23:59:59"},{"code":"GADAL","divisionCode":null,"name":"PCH District - Dalton Event","type":"DistrictEvent","districtCode":"PCH","venue":"Dalton Convention Center","address":"2211 Dug Gap Battle Road","city":"Dalton","stateprov":"GA","country":"USA","website":"http://www.gafirst.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-09T00:00:00","dateEnd":"2017-03-11T23:59:59"},{"code":"GAGAI","divisionCode":null,"name":"PCH District - Gainesville Event","type":"DistrictEvent","districtCode":"PCH","venue":"Riverside Military Academy","address":"2001 Riverside Drive","city":"Gainesville","stateprov":"GA","country":"USA","website":"http://www.gafirst.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-03T00:00:00","dateEnd":"2017-03-05T23:59:59"},{"code":"GALILEO","divisionCode":"GARO","name":"FIRST Championship - Houston - Galileo Subdivision","type":"ChampionshipSubdivision","districtCode":null,"venue":"George R. Brown Convention Center","address":"1001 Avenida De Las Americas","city":"Houston","stateprov":"TX","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-19T00:00:00","dateEnd":"2017-04-22T23:59:59"},{"code":"GARO","divisionCode":"CMPTX","name":"FIRST Championship - Houston - GARO Division","type":"ChampionshipDivision","districtCode":null,"venue":"George R. Brown Convention Center","address":"1001 Avenida De Las Americas","city":"Houston","stateprov":"TX","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-19T00:00:00","dateEnd":"2017-04-22T23:59:59"},{"code":"GGGT","divisionCode":null,"name":"Gitchi Gummi Get-Together","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"Duluth East High School","address":"301 N 40th Avenue East","city":"Duluth","stateprov":"MN","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-07-20T00:00:00","dateEnd":"2017-07-22T23:59:59"},{"code":"GRITS","divisionCode":null,"name":"Georgia Robotics Invitational Tournament & Showcase","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"Riverside Military Academy","address":"2001 Riverside Drive","city":"Gainesville","stateprov":"GA","country":"USA","website":"http://gafirst.org/events/grits-2017/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-10-28T00:00:00","dateEnd":"2017-10-29T23:59:59"},{"code":"GUSH","divisionCode":null,"name":"Shenzhen Regional","type":"Regional","districtCode":null,"venue":"The Sports Center of Shenzhen University","address":"No. 2032 Liuxian Road Nanshan District","city":"Shenzhen City","stateprov":"44","country":"China","website":"http://share.hisports.tv/HiSportVideo.aspx?c=6208","webcasts":[],"timezone":"China Standard Time","dateStart":"2017-03-08T00:00:00","dateEnd":"2017-03-11T23:59:59"},{"code":"HIHO","divisionCode":null,"name":"Hawaii Regional","type":"Regional","districtCode":null,"venue":"University of Hawaii at Manoa","address":"Stan Sheriff Center","city":"Honolulu","stateprov":"HI","country":"USA","website":"http://www.friendsofhawaiirobotics.org","webcasts":[],"timezone":"Hawaiian Standard Time","dateStart":"2017-03-29T00:00:00","dateEnd":"2017-04-01T23:59:59"},{"code":"HOPPER","divisionCode":"HOTU","name":"FIRST Championship - Houston - Hopper Subdivision","type":"ChampionshipSubdivision","districtCode":null,"venue":"George R. Brown Convention Center","address":"1001 Avenida De Las Americas","city":"Houston","stateprov":"TX","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-19T00:00:00","dateEnd":"2017-04-22T23:59:59"},{"code":"HOTU","divisionCode":"CMPTX","name":"FIRST Championship - Houston - HOTU Division","type":"ChampionshipDivision","districtCode":null,"venue":"George R. Brown Convention Center","address":"1001 Avenida De Las Americas","city":"Houston","stateprov":"TX","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-19T00:00:00","dateEnd":"2017-04-22T23:59:59"},{"code":"IACF","divisionCode":null,"name":"Iowa Regional","type":"Regional","districtCode":null,"venue":"McLeod Center/UNI Dome","address":"2501 Hudson Road","city":"Cedar Falls","stateprov":"IA","country":"USA","website":"http://iafirst.org/","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-03-22T00:00:00","dateEnd":"2017-03-25T23:59:59"},{"code":"IDBO","divisionCode":null,"name":"Idaho Regional","type":"Regional","districtCode":null,"venue":"Boise State University at Taco Bell Arena","address":"1401 Bronco Lane","city":"Boise","stateprov":"ID","country":"USA","website":null,"webcasts":[],"timezone":"Mountain Standard Time","dateStart":"2017-03-29T00:00:00","dateEnd":"2017-04-01T23:59:59"},{"code":"ILCH","divisionCode":null,"name":"Midwest Regional","type":"Regional","districtCode":null,"venue":"UIC Pavilion ","address":"University of Illinois, Chicago 525 S. Racine Ave","city":"Chicago","stateprov":"IL","country":"USA","website":"http://www.firstillinoisrobotics.org/frc/events/midwest-regional.html","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-03-29T00:00:00","dateEnd":"2017-04-01T23:59:59"},{"code":"ILPE","divisionCode":null,"name":"Central Illinois Regional","type":"Regional","districtCode":null,"venue":"Renaissance Coliseum - Bradley University","address":"1600 W. Main Street","city":"Peoria","stateprov":"IL","country":"USA","website":"http://www.firstillinoisrobotics.org/frc/events/central-illinois-regional/","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-03-15T00:00:00","dateEnd":"2017-03-18T23:59:59"},{"code":"INCMP","divisionCode":null,"name":"Indiana State Championship","type":"DistrictChampionship","districtCode":"IN","venue":"Huntington North High School","address":"450 McGahn Street","city":"Huntington","stateprov":"IN","country":"USA","website":"http://www.indianafirst.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-04-06T00:00:00","dateEnd":"2017-04-08T23:59:59"},{"code":"INMIS","divisionCode":null,"name":"IN District - St. Joseph Event","type":"DistrictEvent","districtCode":"IN","venue":"Penn High School","address":"56100 Bittersweet Road","city":"Mishawaka","stateprov":"IN","country":"USA","website":"http://www.indianafirst.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-10T00:00:00","dateEnd":"2017-03-12T23:59:59"},{"code":"INPMH","divisionCode":null,"name":"IN District - Perry Meridian Event","type":"DistrictEvent","districtCode":"IN","venue":"Perry Meridian High School","address":"401 W. Meridian School Road","city":"Indianapolis","stateprov":"IN","country":"USA","website":"http://www.indianafirst.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-23T00:00:00","dateEnd":"2017-03-25T23:59:59"},{"code":"INWLA","divisionCode":null,"name":"IN District - Tippecanoe Event","type":"DistrictEvent","districtCode":"IN","venue":"William Henry Harrison High School","address":"5701 N 50 W","city":"West Lafayette","stateprov":"IN","country":"USA","website":"http://www.indianafirst.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-03T00:00:00","dateEnd":"2017-03-05T23:59:59"},{"code":"IRI","divisionCode":null,"name":"Indiana Robotics Invitational","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"Lawrence North High School","address":"7802 Hague Road","city":"Indianapolis","stateprov":"IN","country":"USA","website":"http://indianaroboticsinvitational.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-07-14T00:00:00","dateEnd":"2017-07-15T23:59:59"},{"code":"IROC","divisionCode":null,"name":"IROC","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"Battlefield High School","address":"15000 Graduation Drive","city":"Haymarket","stateprov":"VA","country":"USA","website":"http://irocoffseason.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-10-21T00:00:00","dateEnd":"2017-10-21T23:59:59"},{"code":"ISCMP","divisionCode":null,"name":"FIRST Israel District Championship","type":"DistrictChampionship","districtCode":"ISR","venue":"Menora Mivtachim Arena","address":"51 Yigal Allon Street","city":"Tel Aviv-Yafo","stateprov":"TA","country":"Israel","website":"http://firstisrael.org.il","webcasts":[],"timezone":"Israel Standard Time","dateStart":"2017-03-28T00:00:00","dateEnd":"2017-03-30T23:59:59"},{"code":"ISDE1","divisionCode":null,"name":"ISR District Event #1","type":"DistrictEvent","districtCode":"ISR","venue":"Technion Sports Center","address":"Technion","city":"Haifa","stateprov":"HA","country":"Israel","website":"http://firstisrael.org.il","webcasts":[],"timezone":"Israel Standard Time","dateStart":"2017-03-06T00:00:00","dateEnd":"2017-03-07T23:59:59"},{"code":"ISDE2","divisionCode":null,"name":"ISR District Event #2","type":"DistrictEvent","districtCode":"ISR","venue":"Technion Sports Center","address":"Technion","city":"Haifa","stateprov":"HA","country":"Israel","website":"http://firstisrael.org.il","webcasts":[],"timezone":"Israel Standard Time","dateStart":"2017-03-08T00:00:00","dateEnd":"2017-03-09T23:59:59"},{"code":"ISDE3","divisionCode":null,"name":"ISR District Event #3","type":"DistrictEvent","districtCode":"ISR","venue":"Shlomo Group Arena","address":"7 Isaac Remba St","city":"Tel-Aviv, Yafo","stateprov":"TA","country":"Israel","website":"http://firstisrael.org.il","webcasts":[],"timezone":"Israel Standard Time","dateStart":"2017-03-13T00:00:00","dateEnd":"2017-03-15T23:59:59"},{"code":"ISDE4","divisionCode":null,"name":"ISR District Event #4","type":"DistrictEvent","districtCode":"ISR","venue":"Shlomo Group Arena","address":"7 Isaac Remba St","city":"Tel-Aviv, Yafo","stateprov":"TA","country":"Israel","website":"http://firstisrael.org.il","webcasts":[],"timezone":"Israel Standard Time","dateStart":"2017-03-15T00:00:00","dateEnd":"2017-03-17T23:59:59"},{"code":"LAKE","divisionCode":null,"name":"Bayou Regional","type":"Regional","districtCode":null,"venue":"Pontchartrain Center","address":"Pontchartrain Center  4545 Williams Blvd","city":"Kenner","stateprov":"LA","country":"USA","website":"http://www.frcbayouregional.org","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-03-22T00:00:00","dateEnd":"2017-03-25T23:59:59"},{"code":"MABOS","divisionCode":null,"name":"NE District - Greater Boston Event","type":"DistrictEvent","districtCode":"NE","venue":"Revere High School","address":"101 School Street","city":"Revere","stateprov":"MA","country":"USA","website":"http://www.nefirst.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-17T00:00:00","dateEnd":"2017-03-19T23:59:59"},{"code":"MABRI","divisionCode":null,"name":"NE District - SE Mass Event","type":"DistrictEvent","districtCode":"NE","venue":"Bridgewater-Raynham High School","address":"415 Center Street","city":"Bridgewater","stateprov":"MA","country":"USA","website":"http://www.nefirst.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-10T00:00:00","dateEnd":"2017-03-12T23:59:59"},{"code":"MAREA","divisionCode":null,"name":"NE District - North Shore Event","type":"DistrictEvent","districtCode":"NE","venue":"Reading Memorial High School","address":"62 Oakland Road","city":"Reading","stateprov":"MA","country":"USA","website":"http://www.nefirst.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-17T00:00:00","dateEnd":"2017-03-19T23:59:59"},{"code":"MAWOR","divisionCode":null,"name":"NE District - Worcester Polytechnic Institute Event","type":"DistrictEvent","districtCode":"NE","venue":"WPI Harrington Auditorium ","address":"100 Institute Road","city":"Worcester","stateprov":"MA","country":"USA","website":"http://www.nefirst.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-08T00:00:00","dateEnd":"2017-03-10T23:59:59"},{"code":"MDBET","divisionCode":null,"name":"CHS District - Greater DC Event sponsored by Accenture","type":"DistrictEvent","districtCode":"CHS","venue":"Walt Whitman High School","address":"7100 Whittier Blvd","city":"Bethesda","stateprov":"MD","country":"USA","website":"http://www.firstchesapeake.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-10T00:00:00","dateEnd":"2017-03-12T23:59:59"},{"code":"MDBOB","divisionCode":null,"name":"Battle O' Baltimore","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"McDonogh School","address":"8600 McDonogh Rd","city":"Owings Mills","stateprov":"MD","country":"USA","website":"http://www.battleobaltimore.com/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-09-23T00:00:00","dateEnd":"2017-09-23T23:59:59"},{"code":"MDEDG","divisionCode":null,"name":"CHS District - Central Maryland Event sponsored by Leidos","type":"DistrictEvent","districtCode":"CHS","venue":"South River High School","address":"201 Central Avenue East","city":"Edgewater","stateprov":"MD","country":"USA","website":"http://www.firstchesapeake.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-24T00:00:00","dateEnd":"2017-03-26T23:59:59"},{"code":"MDOWI","divisionCode":null,"name":"CHS District - Northern Maryland Event","type":"DistrictEvent","districtCode":"CHS","venue":"McDonogh School","address":"8600 McDonogh Road","city":"Owings Mills","stateprov":"MD","country":"USA","website":"http://www.firstchesapeake.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-17T00:00:00","dateEnd":"2017-03-19T23:59:59"},{"code":"MELEW","divisionCode":null,"name":"NE District - Pine Tree Event","type":"DistrictEvent","districtCode":"NE","venue":"Androscoggin Bank Colisee","address":"190 Birch Street","city":"Lewiston","stateprov":"ME","country":"USA","website":"http://www.nefirst.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-30T00:00:00","dateEnd":"2017-04-01T23:59:59"},{"code":"MEMS","divisionCode":null,"name":"Mainely SPIRIT 7","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"Messalonskee High School","address":"131 Messalonskee High Drive","city":"Oakland","stateprov":"ME","country":"USA","website":"http://offseason.team2648.com/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-09-09T00:00:00","dateEnd":"2017-09-09T23:59:59"},{"code":"MESH","divisionCode":null,"name":"Summer Heat","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"South Portland High School","address":"637 Highland Ave","city":"South Portland","stateprov":"ME","country":"USA","website":"http://riotcrew.org/SummerHeat.aspx","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-07-15T00:00:00","dateEnd":"2017-07-15T23:59:59"},{"code":"MIANN","divisionCode":null,"name":"FIM District - Ann Arbor Pioneer Event","type":"DistrictEvent","districtCode":"FIM","venue":"Pioneer High School","address":"601 West Stadium Boulevard","city":"Ann Arbor","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-09T00:00:00","dateEnd":"2017-03-11T23:59:59"},{"code":"MIBRO","divisionCode":null,"name":"FIM District - Woodhaven Event","type":"DistrictEvent","districtCode":"FIM","venue":"Woodhaven High School","address":"24787 Van Horn Road","city":"Brownstown","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-23T00:00:00","dateEnd":"2017-03-25T23:59:59"},{"code":"MICEN","divisionCode":null,"name":"FIM District - Center Line Event","type":"DistrictEvent","districtCode":"FIM","venue":"Center Line High School","address":"26300 Arsenal","city":"Center Line","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-09T00:00:00","dateEnd":"2017-03-11T23:59:59"},{"code":"MICMP","divisionCode":null,"name":"Michigan State Championship","type":"DistrictChampionshipWithLevels","districtCode":"FIM","venue":"Saginaw Valley State University","address":"Ryder Center 7400 Bay Road","city":"University Center","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-04-12T00:00:00","dateEnd":"2017-04-15T23:59:59"},{"code":"MICMP1","divisionCode":"MICMP","name":"Michigan State Championship - Consumers Energy Division","type":"DistrictChampionshipDivision","districtCode":"FIM","venue":"Saginaw Valley State University","address":"Ryder Center 7400 Bay Road","city":"University Center","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-04-12T00:00:00","dateEnd":"2017-04-15T23:59:59"},{"code":"MICMP2","divisionCode":"MICMP","name":"Michigan State Championship - Dow Division","type":"DistrictChampionshipDivision","districtCode":"FIM","venue":"Saginaw Valley State University","address":"Ryder Center 7400 Bay Road","city":"University Center","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-04-12T00:00:00","dateEnd":"2017-04-15T23:59:59"},{"code":"MICMP3","divisionCode":"MICMP","name":"Michigan State Championship - DTE Energy Foundation Division","type":"DistrictChampionshipDivision","districtCode":"FIM","venue":"Saginaw Valley State University","address":"Ryder Center 7400 Bay Road","city":"University Center","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-04-12T00:00:00","dateEnd":"2017-04-15T23:59:59"},{"code":"MICMP4","divisionCode":"MICMP","name":"Michigan State Championship - Ford Division","type":"DistrictChampionshipDivision","districtCode":"FIM","venue":"Saginaw Valley State University","address":"Ryder Center 7400 Bay Road","city":"University Center","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-04-12T00:00:00","dateEnd":"2017-04-15T23:59:59"},{"code":"MIESC","divisionCode":null,"name":"FIM District - Escanaba Event","type":"DistrictEvent","districtCode":"FIM","venue":"Escanaba High School","address":"500 S. Lincoln Road","city":"Escanaba","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-16T00:00:00","dateEnd":"2017-03-18T23:59:59"},{"code":"MIGAY","divisionCode":null,"name":"FIM District - Gaylord Event","type":"DistrictEvent","districtCode":"FIM","venue":"Gaylord High School","address":"90 Livingston Blvd","city":"Gaylord","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-16T00:00:00","dateEnd":"2017-03-18T23:59:59"},{"code":"MIGUL","divisionCode":null,"name":"FIM District - Gull Lake Event","type":"DistrictEvent","districtCode":"FIM","venue":"Gull Lake High School","address":"7753 N. 34th Street","city":"Richland","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-16T00:00:00","dateEnd":"2017-03-18T23:59:59"},{"code":"MIHOW","divisionCode":null,"name":"FIM District - Howell Event","type":"DistrictEvent","districtCode":"FIM","venue":"Parker Middle School","address":"400 Wright Road","city":"Howell","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-30T00:00:00","dateEnd":"2017-04-01T23:59:59"},{"code":"MIKE2","divisionCode":null,"name":"FIM District - Kettering University Event #2","type":"DistrictEvent","districtCode":"FIM","venue":"Kettering University","address":"Recreation Center","city":"Flint","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-09T00:00:00","dateEnd":"2017-03-11T23:59:59"},{"code":"MIKEN","divisionCode":null,"name":"FIM District - East Kentwood Event","type":"DistrictEvent","districtCode":"FIM","venue":"East Kentwood High School","address":"6230 Kalamazoo Avenue","city":"Kentwood","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-30T00:00:00","dateEnd":"2017-04-01T23:59:59"},{"code":"MIKET","divisionCode":null,"name":"FIM District - Kettering University Event #1","type":"DistrictEvent","districtCode":"FIM","venue":"Kettering University","address":"Recreation Center","city":"Flint","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-02T00:00:00","dateEnd":"2017-03-04T23:59:59"},{"code":"MILAK","divisionCode":null,"name":"FIM District - Lakeview Event","type":"DistrictEvent","districtCode":"FIM","venue":"Lakeview High School","address":"15060 Helmer Rd S","city":"Battle Creek","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-02T00:00:00","dateEnd":"2017-03-04T23:59:59"},{"code":"MILAN","divisionCode":null,"name":"FIM District - Lansing Event","type":"DistrictEvent","districtCode":"FIM","venue":"Mason High School","address":"1001 S. Barns Street","city":"Mason","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-23T00:00:00","dateEnd":"2017-03-25T23:59:59"},{"code":"MILIV","divisionCode":null,"name":"FIM District - Livonia Event","type":"DistrictEvent","districtCode":"FIM","venue":"Churchill High School","address":"8900 Newburgh Road","city":"Livonia","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-04-06T00:00:00","dateEnd":"2017-04-08T23:59:59"},{"code":"MILSU","divisionCode":null,"name":"FIM District - Lake Superior State University Event","type":"DistrictEvent","districtCode":"FIM","venue":"Lake Superior State University","address":"Norris Center 650 Meridian Street","city":"Sault Ste. Marie","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-30T00:00:00","dateEnd":"2017-04-01T23:59:59"},{"code":"MIMAR","divisionCode":null,"name":"FIM District - Marysville Event","type":"DistrictEvent","districtCode":"FIM","venue":"Marysville High School","address":"555 E. Huron Blvd.","city":"Marysville","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-04-06T00:00:00","dateEnd":"2017-04-08T23:59:59"},{"code":"MIMID","divisionCode":null,"name":"FIM District - Midland Event","type":"DistrictEvent","districtCode":"FIM","venue":"H.H. Dow High School","address":"3901 N. Saginaw Road","city":"Midland","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-23T00:00:00","dateEnd":"2017-03-25T23:59:59"},{"code":"MISHE","divisionCode":null,"name":"FIM District - Shepherd Event","type":"DistrictEvent","districtCode":"FIM","venue":"Shepherd High School","address":"100 E Hall Street","city":"Shepherd","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-04-06T00:00:00","dateEnd":"2017-04-08T23:59:59"},{"code":"MISJO","divisionCode":null,"name":"FIM District - St. Joseph Event","type":"DistrictEvent","districtCode":"FIM","venue":"St. Joseph High School","address":"2521 Stadium Drive","city":"St. Joseph","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-09T00:00:00","dateEnd":"2017-03-11T23:59:59"},{"code":"MISOU","divisionCode":null,"name":"FIM District - Southfield Event","type":"DistrictEvent","districtCode":"FIM","venue":"Southfield High School","address":"24675 Lahser Road","city":"Southfield","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-02T00:00:00","dateEnd":"2017-03-04T23:59:59"},{"code":"MITRY","divisionCode":null,"name":"FIM District - Troy Event","type":"DistrictEvent","districtCode":"FIM","venue":"Troy Athens High School","address":"4333 John R Road","city":"Troy","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-30T00:00:00","dateEnd":"2017-04-01T23:59:59"},{"code":"MITVC","divisionCode":null,"name":"FIM District - Traverse City Event","type":"DistrictEvent","districtCode":"FIM","venue":"Traverse City Central High School","address":"1150 Miliken Drive","city":"Traverse City","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-04-06T00:00:00","dateEnd":"2017-04-08T23:59:59"},{"code":"MIWAT","divisionCode":null,"name":"FIM District - Waterford Event","type":"DistrictEvent","districtCode":"FIM","venue":"Waterford Mott High School","address":"1151 Scott Lake Road","city":"Waterford","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-16T00:00:00","dateEnd":"2017-03-18T23:59:59"},{"code":"MIWMI","divisionCode":null,"name":"FIM District - West Michigan Event","type":"DistrictEvent","districtCode":"FIM","venue":"Grand Valley State University","address":"Field House","city":"Allendale","stateprov":"MI","country":"USA","website":"http://www.firstinmichigan.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-23T00:00:00","dateEnd":"2017-03-25T23:59:59"},{"code":"MNCL","divisionCode":null,"name":"Northern Minnesota Robotics Conference Tournament","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"Cass Lake-Bena HS","address":"15308 State HWY 371 NW","city":"Cass Lake","stateprov":"MN","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-10-28T00:00:00","dateEnd":"2017-10-28T23:59:59"},{"code":"MNCMP","divisionCode":null,"name":"MSHSL FIRST State Robotics Championship","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"Mariucci Arena","address":"4 Oak Street NE","city":"Minneapolis","stateprov":"MN","country":"USA","website":"http://mnfirst.org/offseason/mshsl","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-05-20T00:00:00","dateEnd":"2017-05-20T23:59:59"},{"code":"MNDU","divisionCode":null,"name":"Lake Superior Regional","type":"Regional","districtCode":null,"venue":"DECC Arena/South Pioneer Hall","address":"Duluth Entertainment Convention Center 350 Harbor Drive","city":"Duluth","stateprov":"MN","country":"USA","website":"http://www.mnfirst.org","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-03-01T00:00:00","dateEnd":"2017-03-04T23:59:59"},{"code":"MNDU2","divisionCode":null,"name":"Northern Lights Regional","type":"Regional","districtCode":null,"venue":"DECC Arena/Edmund Fitzgerald Exhibit Hall","address":"Duluth Entertainment Convention Center 350 Harbor Drive","city":"Duluth","stateprov":"MN","country":"USA","website":"http://www.mnfirst.org","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-03-01T00:00:00","dateEnd":"2017-03-04T23:59:59"},{"code":"MNMI","divisionCode":null,"name":"Minnesota 10000 Lakes Regional","type":"Regional","districtCode":null,"venue":"Williams Arena/The Sports Pavilion Univ of MN","address":"1925 University Avenue SE","city":"Minneapolis","stateprov":"MN","country":"USA","website":"http://www.mnfirst.org","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-05T00:00:00","dateEnd":"2017-04-08T23:59:59"},{"code":"MNMI2","divisionCode":null,"name":"Minnesota North Star Regional","type":"Regional","districtCode":null,"venue":"Mariucci Arena - University of Minnesota","address":"1901 4th Street SE","city":"Minneapolis","stateprov":"MN","country":"USA","website":"http://www.mnfirst.org","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-05T00:00:00","dateEnd":"2017-04-08T23:59:59"},{"code":"MNRI","divisionCode":null,"name":"Minnesota Robotics Invitational","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"Roseville Area High School","address":"1240 West County Road B2","city":"Roseville","stateprov":"MN","country":"USA","website":"http://firebears.org/?page_id=375","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-10-14T00:00:00","dateEnd":"2017-10-14T23:59:59"},{"code":"MOKC","divisionCode":null,"name":"Greater Kansas City Regional","type":"Regional","districtCode":null,"venue":"Metropolitan Community College/Bus. & Tech. Campus","address":"1775 Universal Avenue","city":"Kansas City","stateprov":"MO","country":"USA","website":"http://www.kcfirst.org","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-03-15T00:00:00","dateEnd":"2017-03-18T23:59:59"},{"code":"MOSL","divisionCode":null,"name":"St. Louis Regional","type":"Regional","districtCode":null,"venue":"Chaifetz Arena","address":"1 S. Compton Ave","city":"St. Louis","stateprov":"MO","country":"USA","website":"http://www.stlfirst.org/","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-03-08T00:00:00","dateEnd":"2017-03-11T23:59:59"},{"code":"MRCMP","divisionCode":null,"name":"FIRST Mid-Atlantic District Championship sponsored by Johnson & Johnson","type":"DistrictChampionship","districtCode":"MAR","venue":"Lehigh University - Stabler Arena","address":"124 Goodman Drive","city":"Bethlehem","stateprov":"PA","country":"USA","website":"http://www.midatlanticrobotics.com/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-04-05T00:00:00","dateEnd":"2017-04-08T23:59:59"},{"code":"MXTL","divisionCode":null,"name":"Toluca Regional","type":"Regional","districtCode":null,"venue":"ITESM Campus Toluca","address":"Eduardo Monroy Cardenas 2000 San Antonio Buenavista, C.P.","city":"Toluca de Lerdo","stateprov":"MEX","country":"Mexico","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-03-01T00:00:00","dateEnd":"2017-03-04T23:59:59"},{"code":"MXTO","divisionCode":null,"name":"Laguna Regional","type":"Regional","districtCode":null,"venue":"ITESM Campus Laguna - Santiago Garza de la Mora","address":"Paseo del Tecnologico #751","city":"Torreon","stateprov":"COA","country":"Mexico","website":"http://www.firstlagunaregional.com.mx/","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-03-29T00:00:00","dateEnd":"2017-04-01T23:59:59"},{"code":"NCASH","divisionCode":null,"name":"NC District - UNC Asheville Event","type":"DistrictEvent","districtCode":"NC","venue":"UNC Asheville - Kimmel Arena","address":"227 Campus Drive","city":"Asheville","stateprov":"NC","country":"USA","website":"http://www.firstnorthcarolina.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-17T00:00:00","dateEnd":"2017-03-19T23:59:59"},{"code":"NCCMP","divisionCode":null,"name":"FIRST North Carolina State Championship","type":"DistrictChampionship","districtCode":"NC","venue":"Campbell University - Gore Arena","address":"56 Main Street","city":"Lillington","stateprov":"NC","country":"USA","website":"http://www.firstnorthcarolina.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-31T00:00:00","dateEnd":"2017-04-02T23:59:59"},{"code":"NCGRE","divisionCode":null,"name":"NC District - Greensboro Event","type":"DistrictEvent","districtCode":"NC","venue":"UNC Greensboro - Fleming Gym","address":"1408 Walker Avenue","city":"Greensboro","stateprov":"NC","country":"USA","website":"http://www.firstnorthcarolina.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-09T00:00:00","dateEnd":"2017-03-11T23:59:59"},{"code":"NCRAL","divisionCode":null,"name":"NC District - Raleigh Event","type":"DistrictEvent","districtCode":"NC","venue":"SE Raleigh Magnet High School","address":"2600 Rock Quarry Road","city":"Raleigh","stateprov":"NC","country":"USA","website":"http://www.firstnorthcarolina.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-23T00:00:00","dateEnd":"2017-03-25T23:59:59"},{"code":"NCWIN","divisionCode":null,"name":"NC District - Pitt County Event","type":"DistrictEvent","districtCode":"NC","venue":"South Central High School","address":"570 Forlines Road","city":"Winterville","stateprov":"NC","country":"USA","website":"http://www.firstnorthcarolina.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-03T00:00:00","dateEnd":"2017-03-05T23:59:59"},{"code":"NECMP","divisionCode":null,"name":"New England District Championship","type":"DistrictChampionship","districtCode":"NE","venue":"UNH Whittemore Center","address":"128 Main Street","city":"Durham","stateprov":"NH","country":"USA","website":"http://www.nefirst.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-04-05T00:00:00","dateEnd":"2017-04-08T23:59:59"},{"code":"NEWTON","divisionCode":"CANE","name":"FIRST Championship - Houston - Newton Subdivision","type":"ChampionshipSubdivision","districtCode":null,"venue":"George R. Brown Convention Center","address":"1001 Avenida De Las Americas","city":"Houston","stateprov":"TX","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-19T00:00:00","dateEnd":"2017-04-22T23:59:59"},{"code":"NHBED","divisionCode":null,"name":"NE District - Southern NH Event","type":"DistrictEvent","districtCode":"NE","venue":"Bedford High School","address":"47 Nashua Road","city":"Bedford","stateprov":"NH","country":"USA","website":"http://www.nefirst.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-24T00:00:00","dateEnd":"2017-03-26T23:59:59"},{"code":"NHBOB","divisionCode":null,"name":"Battle Of the Bay","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"Prospect Mountain High School","address":"242 Suncook Valley Road","city":"Alton","stateprov":"NH","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-11-11T00:00:00","dateEnd":"2017-11-11T23:59:59"},{"code":"NHGRS","divisionCode":null,"name":"NE District - Granite State Event","type":"DistrictEvent","districtCode":"NE","venue":"Windham High School","address":"64 London Bridge Road","city":"Windham","stateprov":"NH","country":"USA","website":"http://www.nefirst.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-03T00:00:00","dateEnd":"2017-03-05T23:59:59"},{"code":"NHRR","divisionCode":null,"name":"RiverRage 21","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"Memorial High School","address":"1 Crusader Way","city":"Manchester","stateprov":"NH","country":"USA","website":"http://riverrage.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-10-14T00:00:00","dateEnd":"2017-10-14T23:59:59"},{"code":"NJBE","divisionCode":null,"name":"Brunswick Eruption","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"North Brunswick Township High School","address":"98 Raider Rd.","city":"North Brunswick","stateprov":"NJ","country":"USA","website":"http://be.raiderrobotix.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-11-11T00:00:00","dateEnd":"2017-11-11T23:59:59"},{"code":"NJBRI","divisionCode":null,"name":"MAR District - Bridgewater-Raritan Event","type":"DistrictEvent","districtCode":"MAR","venue":"Bridgewater-Raritan High School","address":"600 Garretson Road","city":"Bridgewater","stateprov":"NJ","country":"USA","website":"http://www.midatlanticrobotics.com/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-17T00:00:00","dateEnd":"2017-03-19T23:59:59"},{"code":"NJFLA","divisionCode":null,"name":"MAR District - Mount Olive Event","type":"DistrictEvent","districtCode":"MAR","venue":"Mount Olive High School","address":"18 Corey Road","city":"Flanders","stateprov":"NJ","country":"USA","website":"http://www.midatlanticrobotics.com/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-10T00:00:00","dateEnd":"2017-03-12T23:59:59"},{"code":"NJSKI","divisionCode":null,"name":"MAR District - Montgomery Event","type":"DistrictEvent","districtCode":"MAR","venue":"Montgomery Township High School","address":"1016 Route 601","city":"Skillman","stateprov":"NJ","country":"USA","website":"http://www.midatlanticrobotics.com/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-31T00:00:00","dateEnd":"2017-04-02T23:59:59"},{"code":"NJTAB","divisionCode":null,"name":"MAR District - Seneca Event","type":"DistrictEvent","districtCode":"MAR","venue":"Seneca High School","address":"110 Carranza Road","city":"Tabernacle","stateprov":"NJ","country":"USA","website":"http://www.midatlanticrobotics.com/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-24T00:00:00","dateEnd":"2017-03-26T23:59:59"},{"code":"NTTR","divisionCode":null,"name":"North Texas Tournament of Robots","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"Williams High School","address":"1717 17th Street","city":"Plano","stateprov":"TX","country":"USA","website":"https://ntxrobotics.com/","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-10-07T00:00:00","dateEnd":"2017-10-08T23:59:59"},{"code":"NVLV","divisionCode":null,"name":"Las Vegas Regional","type":"Regional","districtCode":null,"venue":"Cashman Center","address":"850 N. Las Vegas Blvd","city":"Las Vegas","stateprov":"NV","country":"USA","website":"http://www.firstnevada.org","webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2017-04-05T00:00:00","dateEnd":"2017-04-08T23:59:59"},{"code":"NYLI","divisionCode":null,"name":"SBPLI Long Island Regional","type":"Regional","districtCode":null,"venue":"Hofstra University","address":"Hofstra Arena","city":"Hempstead","stateprov":"NY","country":"USA","website":"http://www.sbpli-lifirst.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-29T00:00:00","dateEnd":"2017-04-01T23:59:59"},{"code":"NYNY","divisionCode":null,"name":"New York City Regional","type":"Regional","districtCode":null,"venue":"The Armory Track & Field Center","address":"216 Fort Washington Avenue","city":"New York","stateprov":"NY","country":"USA","website":"http://www.nycfirst.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-04-06T00:00:00","dateEnd":"2017-04-09T23:59:59"},{"code":"NYRO","divisionCode":null,"name":"Finger Lakes Regional ","type":"Regional","districtCode":null,"venue":"Gordon Field House","address":"Rochester Institute of Technology 149 Lomb Memorial Drive","city":"Rochester","stateprov":"NY","country":"USA","website":"http://upstatenyfirst.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-15T00:00:00","dateEnd":"2017-03-18T23:59:59"},{"code":"NYSU","divisionCode":null,"name":"Hudson Valley Regional","type":"Regional","districtCode":null,"venue":"Rockland Community College - Athletic Center","address":"145 College Road","city":"Suffern","stateprov":"NY","country":"USA","website":"http://www.nycfirst.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-23T00:00:00","dateEnd":"2017-03-26T23:59:59"},{"code":"NYTR","divisionCode":null,"name":"New York Tech Valley Regional","type":"Regional","districtCode":null,"venue":"Rensselaer Polytechnic Institute","address":"ECAV Arena Peoples Drive","city":"Troy","stateprov":"NY","country":"USA","website":"http://www.techvalleyfirst.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-15T00:00:00","dateEnd":"2017-03-18T23:59:59"},{"code":"OHCL","divisionCode":null,"name":"Buckeye Regional","type":"Regional","districtCode":null,"venue":"Cleveland State University - Wolstein Center","address":"2000 Prospect Street","city":"Cleveland","stateprov":"OH","country":"USA","website":"http://www.firstbuckeye.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-29T00:00:00","dateEnd":"2017-04-01T23:59:59"},{"code":"OHSP","divisionCode":null,"name":"Miami Valley Regional","type":"Regional","districtCode":null,"venue":"Wittenberg University","address":"200 W. Ward Street","city":"Springfield","stateprov":"OH","country":"USA","website":null,"webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-08T00:00:00","dateEnd":"2017-03-11T23:59:59"},{"code":"OKOK","divisionCode":null,"name":"Oklahoma Regional ","type":"Regional","districtCode":null,"venue":"Cox Arena - SMG Convention Center","address":"One Myriad Gardens","city":"Oklahoma City","stateprov":"OK","country":"USA","website":"http://first-oklahoma.com/","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-03-22T00:00:00","dateEnd":"2017-03-25T23:59:59"},{"code":"ONBAR","divisionCode":null,"name":"ONT District - Georgian College Event","type":"DistrictEvent","districtCode":"ONT","venue":"Georgian College - Athletic Fitness Centre","address":"1 Georgian Drive","city":"Barrie","stateprov":"ON","country":"Canada","website":"http://www.firstroboticscanada.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-24T00:00:00","dateEnd":"2017-03-26T23:59:59"},{"code":"ONCMP","divisionCode":null,"name":"FIRST Ontario Provincial Championship","type":"DistrictChampionship","districtCode":"ONT","venue":"Hershey Centre","address":"5500 Rose Cherry Place","city":"Mississauga","stateprov":"ON","country":"Canada","website":"http://www.firstroboticscanada.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-04-12T00:00:00","dateEnd":"2017-04-15T23:59:59"},{"code":"ONHA2","divisionCode":null,"name":"STEMley Cup","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"St. Mary Catholic Secondary School ","address":"200 Whitney Ave","city":"Hamilton","stateprov":"ON","country":"USA","website":"https://stemleycup.wordpress.com/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-11-11T00:00:00","dateEnd":"2017-11-11T23:59:59"},{"code":"ONHAM","divisionCode":null,"name":"ONT District - McMaster University Event","type":"DistrictEvent","districtCode":"ONT","venue":"McMaster University","address":"1280 Main Street West","city":"Hamilton","stateprov":"ON","country":"Canada","website":"http://www.firstroboticscanada.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-04-07T00:00:00","dateEnd":"2017-04-09T23:59:59"},{"code":"ONLON","divisionCode":null,"name":"ONT District - Western University, Engineering Event","type":"DistrictEvent","districtCode":"ONT","venue":"Western University","address":"1151 Richmond Street","city":"London","stateprov":"ON","country":"Canada","website":"http://www.firstroboticscanada.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-31T00:00:00","dateEnd":"2017-04-02T23:59:59"},{"code":"ONNOB","divisionCode":null,"name":"ONT District - North Bay Event","type":"DistrictEvent","districtCode":"ONT","venue":"Nipissing University","address":"Robert J. Surtees Athletic Centre 100 College Drive","city":"North Bay","stateprov":"ON","country":"Canada","website":"http://www.firstroboticscanada.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-04-06T00:00:00","dateEnd":"2017-04-08T23:59:59"},{"code":"ONOSH","divisionCode":null,"name":"ONT District - Durham College Event","type":"DistrictEvent","districtCode":"ONT","venue":"Durham College","address":"Campus Wellness & Recreation Center 2000 Simcoe Street North","city":"Oshawa","stateprov":"ON","country":"Canada","website":"http://www.firstroboticscanada.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-03T00:00:00","dateEnd":"2017-03-05T23:59:59"},{"code":"ONTO1","divisionCode":null,"name":"ONT District - Ryerson University Event","type":"DistrictEvent","districtCode":"ONT","venue":"Ryerson University","address":"Mattamy Athletic Centre 50 Carlton Street","city":"Toronto","stateprov":"ON","country":"Canada","website":"http://www.firstroboticscanada.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-10T00:00:00","dateEnd":"2017-03-12T23:59:59"},{"code":"ONTO2","divisionCode":null,"name":"ONT District - Victoria Park Collegiate Event","type":"DistrictEvent","districtCode":"ONT","venue":"Victoria Park Collegiate","address":"15 Wallingford Road","city":"Toronto","stateprov":"ON","country":"Canada","website":"http://www.firstroboticscanada.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-17T00:00:00","dateEnd":"2017-03-19T23:59:59"},{"code":"ONWAT","divisionCode":null,"name":"ONT District - University of Waterloo Event","type":"DistrictEvent","districtCode":"ONT","venue":"University of Waterloo","address":"Physical Activities Complex 200 University Avenue West","city":"Waterloo","stateprov":"ON","country":"Canada","website":"http://www.firstroboticscanada.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-23T00:00:00","dateEnd":"2017-03-25T23:59:59"},{"code":"ONWIN","divisionCode":null,"name":"ONT District - Windsor Essex Great Lakes Event","type":"DistrictEvent","districtCode":"ONT","venue":"University of Windsor","address":"St. Denis Centre 2555 College Avenue","city":"Windsor","stateprov":"ON","country":"Canada","website":"http://www.firstroboticscanada.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-30T00:00:00","dateEnd":"2017-04-01T23:59:59"},{"code":"ORLAK","divisionCode":null,"name":"PNW District - Lake Oswego Event","type":"DistrictEvent","districtCode":"PNW","venue":"Lake Oswego High School","address":"2501 Country Club Rd","city":"Lake Oswego","stateprov":"OR","country":"USA","website":"http://www.firstwa.org","webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2017-03-30T00:00:00","dateEnd":"2017-04-01T23:59:59"},{"code":"ORORE","divisionCode":null,"name":"PNW District - Clackamas Academy of Industrial Science Event","type":"DistrictEvent","districtCode":"PNW","venue":"Clackamas Academy","address":"1306 12th Street","city":"Oregon City","stateprov":"OR","country":"USA","website":"http://www.firstwa.org/","webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2017-03-23T00:00:00","dateEnd":"2017-03-25T23:59:59"},{"code":"ORWIL","divisionCode":null,"name":"PNW District - Wilsonville Event","type":"DistrictEvent","districtCode":"PNW","venue":"Wilsonville High School","address":"6800 SW Wilsonville Road","city":"Wilsonville","stateprov":"OR","country":"USA","website":"http://oregonfirst.org/","webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2017-03-09T00:00:00","dateEnd":"2017-03-11T23:59:59"},{"code":"PACA","divisionCode":null,"name":"Greater Pittsburgh Regional","type":"Regional","districtCode":null,"venue":"Convocation Center at","address":"California University of Pennsylvania  Riverview Drive","city":"California","stateprov":"PA","country":"USA","website":"http://www.pittsburghfirst.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-15T00:00:00","dateEnd":"2017-03-18T23:59:59"},{"code":"PAHAT","divisionCode":null,"name":"MAR District - Hatboro-Horsham Event","type":"DistrictEvent","districtCode":"MAR","venue":"Hatboro-Horsham High School","address":"899 Horsham Road","city":"Horsham","stateprov":"PA","country":"USA","website":"http://www.midatlanticrobotics.com/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-03T00:00:00","dateEnd":"2017-03-05T23:59:59"},{"code":"PAPHI","divisionCode":null,"name":"MAR District - Springside Chestnut Hill Academy Event","type":"DistrictEvent","districtCode":"MAR","venue":"Springside Chestnut Hill Academy","address":"500 West Willow Grove Avenue","city":"Philadelphia","stateprov":"PA","country":"USA","website":"http://www.midatlanticrobotics.com/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-17T00:00:00","dateEnd":"2017-03-19T23:59:59"},{"code":"PAWCH","divisionCode":null,"name":"MAR District - Westtown Event","type":"DistrictEvent","districtCode":"MAR","venue":"Westtown School","address":"975 Westtown Road","city":"West Chester","stateprov":"PA","country":"USA","website":"http://www.midatlanticrobotics.com","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-10T00:00:00","dateEnd":"2017-03-12T23:59:59"},{"code":"PNCMP","divisionCode":null,"name":"Pacific Northwest District Championship","type":"DistrictChampionship","districtCode":"PNW","venue":"Eastern Washington University - Reese Court","address":"526 5th Street","city":"Cheney","stateprov":"WA","country":"USA","website":"http://www.firstwa.org","webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2017-04-05T00:00:00","dateEnd":"2017-04-08T23:59:59"},{"code":"QCMO","divisionCode":null,"name":"Festival de Robotique - Montreal Regional","type":"Regional","districtCode":null,"venue":"Centre Claude-Robillard","address":"1000 Avenue Emile-Journault","city":"Montreal","stateprov":"QC","country":"Canada","website":"http://www.robotiquefirstquebec.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-22T00:00:00","dateEnd":"2017-03-25T23:59:59"},{"code":"R2OC","divisionCode":null,"name":"Rock River Off-Season Competition","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"Rock Valley College Physical Education Center","address":"3301 North Mulford Road","city":"Rockford","stateprov":"IL","country":"USA","website":"http://r2oc.org/","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-07-29T00:00:00","dateEnd":"2017-07-29T23:59:59"},{"code":"RIPRO","divisionCode":null,"name":"NE District - Rhode Island Event","type":"DistrictEvent","districtCode":"NE","venue":"Bryant University","address":"1150 Douglas Pike","city":"Smithfield","stateprov":"RI","country":"USA","website":"http://www.nefirst.org/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-24T00:00:00","dateEnd":"2017-03-26T23:59:59"},{"code":"ROEBLING","divisionCode":"GARO","name":"FIRST Championship - Houston - Roebling Subdivision","type":"ChampionshipSubdivision","districtCode":null,"venue":"George R. Brown Convention Center","address":"1001 Avenida De Las Americas","city":"Houston","stateprov":"TX","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-19T00:00:00","dateEnd":"2017-04-22T23:59:59"},{"code":"SCMB","divisionCode":null,"name":"Palmetto Regional","type":"Regional","districtCode":null,"venue":"Myrtle Beach Convention Center","address":"2101 Oak Street","city":"Myrtle Beach","stateprov":"SC","country":"USA","website":"http://www.myrtlebeachfirstrobotics.com","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-01T00:00:00","dateEnd":"2017-03-04T23:59:59"},{"code":"TESLA","divisionCode":"CATE","name":"FIRST Championship - St. Louis - Tesla Subdivision","type":"ChampionshipSubdivision","districtCode":null,"venue":"America's Center/Dome","address":"901 N Broadway","city":"St. Louis","stateprov":"MO","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-26T00:00:00","dateEnd":"2017-04-29T23:59:59"},{"code":"TNKN","divisionCode":null,"name":"Smoky Mountains Regional","type":"Regional","districtCode":null,"venue":"Thompson-Boling Arena - University of Tennessee","address":"1600 Phillip Fulmer Way #202","city":"Knoxville","stateprov":"TN","country":"USA","website":"http://tnfirst.org/events/","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-22T00:00:00","dateEnd":"2017-03-25T23:59:59"},{"code":"TURING","divisionCode":"HOTU","name":"FIRST Championship - Houston - Turing Subdivision","type":"ChampionshipSubdivision","districtCode":null,"venue":"George R. Brown Convention Center","address":"1001 Avenida De Las Americas","city":"Houston","stateprov":"TX","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-19T00:00:00","dateEnd":"2017-04-22T23:59:59"},{"code":"TXDA","divisionCode":null,"name":"Dallas Regional","type":"Regional","districtCode":null,"venue":"Irving Convention Center","address":"500 West Las Colinas Boulevard","city":"Irving","stateprov":"TX","country":"USA","website":"http://www.DallasFRC.org/","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-03-08T00:00:00","dateEnd":"2017-03-11T23:59:59"},{"code":"TXHO","divisionCode":null,"name":"Lone Star Central Regional","type":"Regional","districtCode":null,"venue":"Strake Jesuit College Preparatory","address":"8900 Bellaire Blvd","city":"Houston","stateprov":"TX","country":"USA","website":"http://houston.txfirst.org","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-03-15T00:00:00","dateEnd":"2017-03-18T23:59:59"},{"code":"TXLU","divisionCode":null,"name":"Hub City Regional","type":"Regional","districtCode":null,"venue":"Panhandle South Plains Fair","address":"105 E. Broadway","city":"Lubbock","stateprov":"TX","country":"USA","website":"http://hubcityregional.com","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-03-01T00:00:00","dateEnd":"2017-03-04T23:59:59"},{"code":"TXRI","divisionCode":null,"name":"Texas Robotics Invitational","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"Strake Jesuit College Prep","address":"8900 Bellaire Blvd","city":"Houston","stateprov":"TX","country":"USA","website":"http://www.spectrum3847.org/TRI","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-07-01T00:00:00","dateEnd":"2017-07-01T23:59:59"},{"code":"TXRR","divisionCode":null,"name":"Texas Robot Roundup","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"Vandegrift High School","address":"9500 McNeil Dr","city":"Austin","stateprov":"TX","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-07-28T00:00:00","dateEnd":"2017-07-29T23:59:59"},{"code":"TXSA","divisionCode":null,"name":"Alamo Regional","type":"Regional","districtCode":null,"venue":"Henry B. Gonzalez Convention Center","address":"200 East Market Street","city":"San Antonio","stateprov":"TX","country":"USA","website":"http://www.alamo-first.org","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-05T00:00:00","dateEnd":"2017-04-08T23:59:59"},{"code":"TXTR","divisionCode":null,"name":"The Remix","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"College Park HS","address":"3701 College Park Dr","city":"The Woodlands","stateprov":"TX","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-11-11T00:00:00","dateEnd":"2017-11-11T23:59:59"},{"code":"TXWA","divisionCode":null,"name":"Brazos Valley Regional","type":"Regional","districtCode":null,"venue":"University High School","address":"3201 S. New Road","city":"Waco","stateprov":"TX","country":"USA","website":"http://firstintexas.org/regions/alamo-region/brazos-valley-frc-regional/","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-03-30T00:00:00","dateEnd":"2017-04-02T23:59:59"},{"code":"TXWO","divisionCode":null,"name":"Lone Star North Regional","type":"Regional","districtCode":null,"venue":"College Park High School","address":"3701 College Park Drive","city":"The Woodlands","stateprov":"TX","country":"USA","website":"http://houston.txfirst.org","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-03-30T00:00:00","dateEnd":"2017-04-02T23:59:59"},{"code":"UTWV","divisionCode":null,"name":"Utah Regional","type":"Regional","districtCode":null,"venue":"Maverik Center","address":"3200 South Decker Lake Drive","city":"West Valley City","stateprov":"UT","country":"USA","website":"http://www.utfrc.utah.edu","webcasts":[],"timezone":"Mountain Standard Time","dateStart":"2017-03-08T00:00:00","dateEnd":"2017-03-11T23:59:59"},{"code":"VABLA","divisionCode":null,"name":"CHS District - Southwest Virginia Event","type":"DistrictEvent","districtCode":"CHS","venue":"Blacksburg High School","address":"3401 Bruin Lane","city":"Blacksburg","stateprov":"VA","country":"USA","website":"http://www.firstchesapeake.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-03T00:00:00","dateEnd":"2017-03-05T23:59:59"},{"code":"VAGLE","divisionCode":null,"name":"CHS District - Central Virginia Event","type":"DistrictEvent","districtCode":"CHS","venue":"Deep Run High School","address":"4801 Twin Hickory Road","city":"Glen Allen","stateprov":"VA","country":"USA","website":"http://www.firstchesapeake.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-24T00:00:00","dateEnd":"2017-03-26T23:59:59"},{"code":"VAHAY","divisionCode":null,"name":"CHS District - Northern Virginia Event sponsored by Bechtel","type":"DistrictEvent","districtCode":"CHS","venue":"Battlefield High School","address":"15000 Graduation Drive","city":"Haymarket","stateprov":"VA","country":"USA","website":"http://www.firstchesapeake.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-03T00:00:00","dateEnd":"2017-03-05T23:59:59"},{"code":"VAPOR","divisionCode":null,"name":"CHS District - Hampton Roads Event sponsored by Newport News Shipbuilding","type":"DistrictEvent","districtCode":"CHS","venue":"Churchland High School","address":"4301 Cedar Lane","city":"Portsmouth","stateprov":"VA","country":"USA","website":"http://www.firstchesapeake.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-03-17T00:00:00","dateEnd":"2017-03-19T23:59:59"},{"code":"WAAHS","divisionCode":null,"name":"PNW District - Auburn Event","type":"DistrictEvent","districtCode":"PNW","venue":"Auburn High School","address":"711 E. Main St.","city":"Auburn","stateprov":"WA","country":"USA","website":"http://www.firstwa.org","webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2017-03-31T00:00:00","dateEnd":"2017-04-02T23:59:59"},{"code":"WAAMV","divisionCode":null,"name":"PNW District - Auburn Mountainview Event","type":"DistrictEvent","districtCode":"PNW","venue":"Auburn Mountainview High School","address":"28900 124th Avenue SE","city":"Auburn","stateprov":"WA","country":"USA","website":"http://www.firstwa.org/","webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2017-03-03T00:00:00","dateEnd":"2017-03-05T23:59:59"},{"code":"WAELL","divisionCode":null,"name":"PNW District - Central Washington University Event","type":"DistrictEvent","districtCode":"PNW","venue":"Central Washington University - Nicholson Pavilion","address":"715 E. Dean Nicholson Blvd","city":"Ellensburg","stateprov":"WA","country":"USA","website":"http://www.firstwa.org","webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2017-03-16T00:00:00","dateEnd":"2017-03-18T23:59:59"},{"code":"WAGG","divisionCode":null,"name":"Washington Girls Generation","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"Maple View Middle School","address":"18200 SE 240th ST","city":"Kent","stateprov":"WA","country":"USA","website":null,"webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2017-10-28T00:00:00","dateEnd":"2017-10-28T23:59:59"},{"code":"WAMOU","divisionCode":null,"name":"PNW District - Mount Vernon Event","type":"DistrictEvent","districtCode":"PNW","venue":"Mount Vernon High School","address":"314 North 9th Street","city":"Mount Vernon","stateprov":"WA","country":"USA","website":"http://www.firstwa.org/","webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2017-03-17T00:00:00","dateEnd":"2017-03-19T23:59:59"},{"code":"WAPP","divisionCode":null,"name":"Peak Performance","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"Seattle Christian School","address":"18301 Military Rd S","city":"SeaTac","stateprov":"WA","country":"USA","website":"http://offseason.apexfrc.com/","webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2017-09-23T00:00:00","dateEnd":"2017-09-23T23:59:59"},{"code":"WASNO","divisionCode":null,"name":"PNW District - Glacier Peak Event","type":"DistrictEvent","districtCode":"PNW","venue":"Glacier Peak High School","address":"7401 144th Place SE","city":"Snohomish","stateprov":"WA","country":"USA","website":"http://www.firstwa.org/","webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2017-03-24T00:00:00","dateEnd":"2017-03-26T23:59:59"},{"code":"WASPO","divisionCode":null,"name":"PNW District - West Valley Event","type":"DistrictEvent","districtCode":"PNW","venue":"West Valley High School","address":"8301 E. Buckeye Avenue","city":"Spokane","stateprov":"WA","country":"USA","website":"http://www.firstwa.org","webcasts":[],"timezone":"Pacific Standard Time","dateStart":"2017-03-02T00:00:00","dateEnd":"2017-03-04T23:59:59"},{"code":"WEEK0","divisionCode":null,"name":"Week 0","type":"OffSeasonWithAzureSync","districtCode":null,"venue":"Bishop Guertin High School","address":"129 Almont Street","city":"Nashua","stateprov":"NH","country":"USA","website":"http://www.firstinspires.org","webcasts":[],"timezone":"Eastern Standard Time","dateStart":"2017-02-18T00:00:00","dateEnd":"2017-02-18T23:59:59"},{"code":"WILA","divisionCode":null,"name":"Seven Rivers Regional","type":"Regional","districtCode":null,"venue":"La Crosse Center","address":"300 Harborview Plaza","city":"La Crosse","stateprov":"WI","country":"USA","website":null,"webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-04-12T00:00:00","dateEnd":"2017-04-15T23:59:59"},{"code":"WIMI","divisionCode":null,"name":"Wisconsin Regional","type":"Regional","districtCode":null,"venue":"UW - Milwaukee Panther Arena","address":"400 West Kilbourn Avenue","city":"Milwaukee","stateprov":"WI","country":"USA","website":"http://www.wisconsinregional.com","webcasts":[],"timezone":"Central Standard Time","dateStart":"2017-03-22T00:00:00","dateEnd":"2017-03-25T23:59:59"}],"eventCount":196}`);
-var hallOfFame = JSON.parse('[{"Year":1992,"Chairmans":191,"Challenge":"Maize Craize","Winner1":126,"Winner2":null,"Winner3":null,"Winner4":null,"Winner5":null},{"Year":1993,"Chairmans":7,"Challenge":"Rug Rage","Winner1":148,"Winner2":null,"Winner3":null,"Winner4":null,"Winner5":null},{"Year":1994,"Chairmans":191,"Challenge":"Tower Power ","Winner1":144,"Winner2":null,"Winner3":null,"Winner4":null,"Winner5":null},{"Year":1995,"Chairmans":151,"Challenge":"Ramp-n-Roll","Winner1":100,"Winner2":null,"Winner3":null,"Winner4":null,"Winner5":null},{"Year":1996,"Chairmans":144,"Challenge":"Hexagon Havoc","Winner1":73,"Winner2":null,"Winner3":null,"Winner4":null,"Winner5":null},{"Year":1997,"Chairmans":47,"Challenge":"Toroid Terror","Winner1":71,"Winner2":null,"Winner3":null,"Winner4":null,"Winner5":null},{"Year":1998,"Chairmans":23,"Challenge":"Ladder Logic","Winner1":45,"Winner2":null,"Winner3":null,"Winner4":null,"Winner5":null},{"Year":1999,"Chairmans":120,"Challenge":"Double Trouble","Winner1":1,"Winner2":48,"Winner3":176,"Winner4":null,"Winner5":null},{"Year":2000,"Chairmans":16,"Challenge":"Co-Opertition FIRST","Winner1":25,"Winner2":232,"Winner3":255,"Winner4":null,"Winner5":null},{"Year":2001,"Chairmans":22,"Challenge":"Diabolical Dynamics","Winner1":71,"Winner2":125,"Winner3":279,"Winner4":294,"Winner5":365},{"Year":2002,"Chairmans":175,"Challenge":"Zone Zeal","Winner1":66,"Winner2":71,"Winner3":173,"Winner4":null,"Winner5":null},{"Year":2003,"Chairmans":103,"Challenge":"Stack Attack","Winner1":65,"Winner2":111,"Winner3":469,"Winner4":null,"Winner5":null},{"Year":2004,"Chairmans":254,"Challenge":"FIRST Frenzy - Raising the Bar","Winner1":71,"Winner2":435,"Winner3":494,"Winner4":null,"Winner5":null},{"Year":2005,"Chairmans":67,"Challenge":"Triple Play","Winner1":330,"Winner2":67,"Winner3":503,"Winner4":null,"Winner5":null},{"Year":2006,"Chairmans":111,"Challenge":"Aim High","Winner1":217,"Winner2":296,"Winner3":522,"Winner4":null,"Winner5":null},{"Year":2007,"Chairmans":365,"Challenge":"Rack-n-Roll","Winner1":177,"Winner2":190,"Winner3":987,"Winner4":null,"Winner5":null},{"Year":2008,"Chairmans":842,"Challenge":"FIRST Overdrive","Winner1":1114,"Winner2":217,"Winner3":148,"Winner4":null,"Winner5":null},{"Year":2009,"Chairmans":236,"Challenge":"Lunacy","Winner1":111,"Winner2":67,"Winner3":971,"Winner4":null,"Winner5":null},{"Year":2010,"Chairmans":341,"Challenge":"Breakaway!","Winner1":294,"Winner2":67,"Winner3":177,"Winner4":null,"Winner5":null},{"Year":2011,"Chairmans":359,"Challenge":"LogoMotion","Winner1":254,"Winner2":111,"Winner3":973,"Winner4":null,"Winner5":null},{"Year":2012,"Chairmans":1114,"Challenge":"Rebound Rumble","Winner1":180,"Winner2":16,"Winner3":25,"Winner4":null,"Winner5":null},{"Year":2013,"Chairmans":1538,"Challenge":"ULTIMATE ASCENT","Winner1":1241,"Winner2":1477,"Winner3":610,"Winner4":null,"Winner5":null},{"Year":2014,"Chairmans":27,"Challenge":"Arial Assist","Winner1":254,"Winner2":469,"Winner3":2848,"Winner4":74,"Winner5":null},{"Year":2015,"Chairmans":597,"Challenge":"Recycle Rush","Winner1":118,"Winner2":1671,"Winner3":1678,"Winner4":5012,"Winner5":null},{"Year":2016,"Chairmans":987,"Challenge":"FIRST Stronghold","Winner1":330,"Winner2":2481,"Winner3":120,"Winner4":1086,"Winner5":null},{"Year":2017,"Chairmans":3132,"Challenge":"STEAMworks Houston","Winner1":973,"Winner2":1011,"Winner3":2928,"Winner4":5499,"Winner5":null},{"Year":2017,"Chairmans":2614,"Challenge":"STEAMworks StLouis","Winner1":2767,"Winner2":254,"Winner3":862,"Winner4":1676,"Winner5":null},{"Year":2017,"Chairmans":null,"Challenge":"Festival of Champions","Winner1":2767,"Winner2":254,"Winner3":862,"Winner4":1676,"Winner5":null}]');
-
-//Set up the applicatton variables.
-var playoffResults = {};
-var matchLength = 150;
-var autoLength = 15;
-var endGame = 30;
-localStorage.matchTimer = matchLength;
-var allianceTeamList = [];
-var allianceListUnsorted = [];
-var allianceSelectionLength = 15;
-var rankingsList = [];
-var eventTeamList = [];
-var eventQualsSchedule = [];
-var eventPlayoffSchedule = [];
-var allianceSelectionOrder = ["Alliance1Round1", "Alliance2Round1", "Alliance3Round1", "Alliance4Round1", "Alliance5Round1", "Alliance6Round1", "Alliance7Round1", "Alliance8Round1", "Alliance8Round2", "Alliance7Round2", "Alliance6Round2", "Alliance5Round2", "Alliance4Round2", "Alliance3Round2", "Alliance2Round2", "Alliance1Round2", "Alliance1Round3", "Alliance2Round3", "Alliance3Round3", "Alliance4Round3", "Alliance5Round3", "Alliance6Round3", "Alliance7Round3", "Alliance8Round3"];
-var currentAllianceChoice = 0;
-var allianceChoices = {};
-var replacementAlliance = {};
-var allianceChoicesUndo = [];
-var allianceListUnsortedUndo = [];
-var allianceTeamListUndo = [];
-var teamNumberUndo = [];
-var teamContainerUndo = [];
-var teamAwardCalls = 0;
-var teamUpdateCalls = 0;
-var lastMatchPlayed = 0;
-var allianceSelectionTableUndo = [];
-var currentMatchData = {};
-var teamCountTotal = 0;
-var teamLoadProgressBar = 0;
-var lastSchedulePage = false;
-var haveRanks = false;
-var highScores = {};
-var currentEventList = [];
-var lastRanksUpdate = "";
-var lastQualsUpdate = "";
-var qualsComplete = false;
-var haveSchedule = false;
-var rankQualThreshold = 15;
-var matchCount = 0;
-var allianceSelectionReady = false;
-var environment = {};
-
-for (var i = 1; i < 9; i++) {
-	allianceChoices['Alliance' + i + 'Captain'] = "";
-}
-for (var i = 0; i < allianceSelectionOrder.length; i++) {
-	allianceChoices[allianceSelectionOrder[i]] = "";
-}
 
 //This heartbeat performs a number of functions related to clocks. See the timer() function for details.
 var matchTimer = setInterval(function () {
@@ -598,13 +77,6 @@ var matchTimer = setInterval(function () {
 //    "use strict";
 //    getSeasonHighScores(2018);
 //}, 300000);
-
-//Championship events receive special treatment. We define the Championshio events here, including Michigan.
-var champSubdivisions = ["ARCHIMEDES", "CARSON", "CARVER", "CURIE", "DALY", "DARWIN", "GALILEO", "HOPPER", "NEWTON", "ROEBLING", "TESLA", "TURING"];
-var champDivisions = ["ARDA", "CANE", "CATE", "CUDA", "GARO", "HOTU"];
-var champs = ["CMP", "CMPTX", "CMPMO", "CMPMI"];
-var miDivisions = ["MICMP1", "MICMP2", "MICMP3", "MICMP4"];
-var miChamps = ["MICMP"];
 
 //The apiURL determines the endpoint for API calls. On the web, it's the site itself. In the mobile app, we need to declare the complete API URL.
 var apiURL = "/api/";
@@ -671,6 +143,7 @@ window.onload = function () {
 	$("[name='showNotes']").bootstrapSwitch('state', (localStorage.showNotes === "true"));
 	$("[name='showMottoes']").bootstrapSwitch('state', (localStorage.showMottoes === "true"));
 	$("[name='showEventNames']").bootstrapSwitch('state', (localStorage.showEventNames === "true"));
+	$("[name='autoAdvance']").bootstrapSwitch('state', (localStorage.autoAdvance === "true"));
 	$("[name='offseason']").bootstrapSwitch('state', (localStorage.offseason === "true"));
 
 	//Ensure that the switch values are honored.
@@ -707,6 +180,13 @@ window.onload = function () {
 		localStorage.showEventNames = "true";
 	} else {
 		localStorage.showEventNames = "false";
+	}
+
+	// Handle Auto Advance toggle during loading.
+	if ($("#autoAdvance").bootstrapSwitch('state')) {
+		localStorage.autoAdvance = "true";
+	} else {
+		localStorage.autoAdvance = "false";
 	}
 
 	// Handle Offseason toggle in loading. Hide and show offseason annotations in the Setup/Schedule display.
@@ -805,12 +285,15 @@ window.onload = function () {
 		displayAwards();
 	};
 
-	// Handle showEventNames toggle in loading. 
-	if ($("#showEventNames").bootstrapSwitch('state')) {
-		localStorage.showEventNames = "true";
-	} else {
-		localStorage.showEventNames = "false";
-	}
+	//Handle a change in autoAdvance
+	document.getElementById('autoAdvance').onchange = function () {
+		if ($("#autoAdvance").bootstrapSwitch('state')) {
+			localStorage.autoAdvance = "true";
+		} else {
+			localStorage.autoAdvance = "false";
+		}
+	};
+
 
 	//Handle Event Filter change
 	document.getElementById('eventFilters').onchange = function () {
@@ -858,36 +341,6 @@ window.onload = function () {
 };
 
 window.addEventListener("resize", scaleRows);
-
-function getSeasonHighScores(year) {
-	"use strict";
-	var promises = [];
-	if (year === 2018) {
-		for (var i = 0; i < currentEventList.length; i++) {
-			promises.push(new Promise(function (resolve, reject) {
-				getEventScores(currentEventList[i].code, currentEventList[i].type, year, "qual");
-			}));
-			promises.push(new Promise(function (resolve, reject) {
-				getEventScores(currentEventList[i].code, currentEventList[i].type, year, "playoff");
-			}));
-		}
-		Promise.all(promises);
-	}
-}
-
-function getEventScores(eventCode, type, year, tlevel) {
-	"use strict";
-	return new Promise(function (resolve, reject) {
-
-		var req = new XMLHttpRequest();
-		req.open('GET', apiURL + year + '/schedule/' + eventCode + "/" + tlevel + "?returnschedule=false");
-		req.addEventListener('load', function () {
-			resolve(JSON.parse(req.responseText));
-		});
-		req.send();
-	});
-}
-
 
 
 function displayAwards() {
@@ -1096,7 +549,6 @@ function handleOffseasonEventSelection() {
 	$("#eventNameAwards").html("<b>" + localStorage.eventName + "</b><br>");
 }
 
-
 function loadEventsList() {
 	"use strict";
 	var e = document.getElementById('yearPicker');
@@ -1228,170 +680,6 @@ function createEventMenu() {
 	$("#eventUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
 }
 
-function getTeamUpdates(teamNumber, singleton) {
-	"use strict";
-	$('#teamDataTabPicker').addClass('alert-danger');
-	var req = new XMLHttpRequest();
-	req.open('GET', apiURL + 'getTeamUpdate/' + teamNumber);
-	req.addEventListener('load', function () {
-		var teamUpdates = JSON.parse(Base64.decode(req.responseText));
-		//var teamData = JSON.parse(localStorage["teamData" + teamNumber]);
-		var teamData = decompressLocalStorage("teamData" + teamNumber);
-		teamData.nameShortLocal = teamUpdates.nameShortLocal;
-		teamData.cityStateLocal = teamUpdates.cityStateLocal;
-		teamData.topSponsorsLocal = teamUpdates.topSponsorsLocal;
-		teamData.sponsorsLocal = teamUpdates.sponsorsLocal;
-		teamData.organizationLocal = teamUpdates.organizationLocal;
-		teamData.robotNameLocal = teamUpdates.robotNameLocal;
-		teamData.awardsLocal = teamUpdates.awardsLocal;
-		teamData.teamMottoLocal = teamUpdates.teamMottoLocal;
-		teamData.teamNotesLocal = teamUpdates.teamNotesLocal;
-		//localStorage["teamData" + teamNumber] = JSON.stringify(teamData);
-		compressLocalStorage("teamData" + teamNumber, teamData);
-		teamUpdateCalls--;
-		if ((teamAwardCalls === 0) && (teamUpdateCalls === 0) && (lastSchedulePage)) {
-			$('#teamDataTabPicker').removeClass('alert-danger');
-			$('#teamDataTabPicker').addClass('alert-success');
-			$('#teamloadprogress').hide();
-			$('#teamProgressBar').hide();
-			teamLoadProgressBar = 0;
-			$('#teamloadprogressbar').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
-			$('#teamProgressBarLoading').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
-			if (singleton) {
-				BootstrapDialog.show({
-					message: "Team data loaded from gatool Cloud. Your local data for " + teamNumber + " is now showing data from the FIRST GA and MC community.",
-					buttons: [{
-						icon: 'glyphicon glyphicon-cloud-download',
-						cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
-						label: 'OK',
-						hotkey: 13, // Enter.
-						title: 'OK',
-						action: function (dialogRef) {
-							dialogRef.close();
-							updateTeamTable();
-							updateTeamInfo(currentTeam);
-						}
-					}]
-				});
-			} else {
-				BootstrapDialog.show({
-					message: "Team data loaded from gatool Cloud. Your local data for " + localStorage.currentEvent + " is now showing data from the FIRST GA and MC community.",
-					buttons: [{
-						icon: 'glyphicon glyphicon-cloud-download',
-						cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
-						label: 'OK',
-						hotkey: 13, // Enter.
-						title: 'OK',
-						action: function (dialogRef) {
-							dialogRef.close();
-							updateTeamTable();
-						}
-					}]
-				});
-			}
-		}
-	});
-	req.send();
-}
-
-function sendTeamUpdates(teamNumber, singleton) {
-	"use strict";
-	$('#teamDataTabPicker').addClass('alert-danger');
-	var req = new XMLHttpRequest();
-	var teamUpdates = {};
-	//var teamData = JSON.parse(localStorage["teamData" + teamNumber]);
-	var teamData = decompressLocalStorage("teamData" + teamNumber);
-	teamUpdates.nameShortLocal = teamData.nameShortLocal;
-	teamUpdates.cityStateLocal = teamData.cityStateLocal;
-	teamUpdates.topSponsorsLocal = teamData.topSponsorsLocal;
-	teamUpdates.sponsorsLocal = teamData.sponsorsLocal;
-	teamUpdates.organizationLocal = teamData.organizationLocal;
-	teamUpdates.robotNameLocal = teamData.robotNameLocal;
-	teamUpdates.awardsLocal = teamData.awardsLocal;
-	teamUpdates.teamMottoLocal = teamData.teamMottoLocal;
-	teamUpdates.teamNotesLocal = teamData.teamNotesLocal;
-	teamUpdates.source = getCookie("loggedin");
-	req.open('GET', apiURL + 'putTeamUpdate/' + teamNumber + '/' + Base64.encode(JSON.stringify(teamUpdates)));
-	req.addEventListener('load', function () {
-		teamUpdateCalls--;
-		if ((teamAwardCalls === 0) && (teamUpdateCalls === 0) && (lastSchedulePage)) {
-			$('#teamDataTabPicker').removeClass('alert-danger');
-			$('#teamDataTabPicker').addClass('alert-success');
-			$('#teamloadprogress').hide();
-			$('#teamProgressBar').hide();
-			teamLoadProgressBar = 0;
-			$('#teamloadprogressbar').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
-			$('#teamProgressBarLoading').attr("style", "width:" + (teamLoadProgressBar / teamCountTotal * 100) + "%");
-			if (singleton) {
-				BootstrapDialog.show({
-					message: "Team data saved to gatool Cloud. Thank you for sharing your local data for Team " + teamNumber + " with the FIRST GA and MC community.",
-					buttons: [{
-						icon: 'glyphicon glyphicon-cloud-upload',
-						label: 'OK',
-						hotkey: 13, // Enter.
-						title: 'OK',
-						action: function (dialogRef) {
-							dialogRef.close();
-						}
-					}]
-				});
-			} else {
-				BootstrapDialog.show({
-					message: "Team data saved to gatool Cloud. Thank you for sharing your local data for " + localStorage.currentEvent + " with the FIRST GA and MC community.",
-					buttons: [{
-						icon: 'glyphicon glyphicon-cloud-upload',
-						cssClass: "btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton",
-						label: 'OK',
-						hotkey: 13, // Enter.
-						title: 'OK',
-						action: function (dialogRef) {
-							dialogRef.close();
-						}
-					}]
-				});
-			}
-
-		}
-	});
-	req.send();
-}
-
-function getCookie(cname) {
-	"use strict";
-	var name = cname + "=";
-	var decodedCookie = decodeURIComponent(document.cookie);
-	var ca = decodedCookie.split(';');
-	for (var i = 0; i < ca.length; i++) {
-		var c = ca[i];
-		while (c.charAt(0) === ' ') {
-			c = c.substring(1);
-		}
-		if (c.indexOf(name) === 0) {
-			return c.substring(name.length, c.length);
-		}
-	}
-	return "";
-}
-
-function openTab(evt, tabID) {
-	"use strict";
-
-	// Get all elements with class="tabcontent" and hide them
-	$(".tabcontent").hide();
-
-	// Get all elements with class="tablinks" and remove the class "active"
-	$(".tablinks").removeClass('active');
-
-	// Show the current tab, and add an "active" class to the link that opened the tab
-	$("#" + tabID).show();
-	//document.getElementById(tabID).style.display = "block";
-	//$("#" + evt.currentTarget).addClass("active");
-	evt.currentTarget.className += " active";
-
-	//resize the window
-	scaleRows();
-}
-
 function getHybridSchedule() {
 	"use strict";
 	if (localStorage.offseason === "true") {
@@ -1444,10 +732,14 @@ function getRegularSeasonSchedule() {
 			qualScheduleLength = data.Schedule.length;
 			for (var i = 0; i < data.Schedule.length; i++) {
 				var element = data.Schedule[i];
-				matchSchedule += generateMatchTableRow(element);
-				matchPicker += '<option id="matchPicker' + parseInt(i + 1) + '" matchNumber="' + parseInt(i + 1) + '" value="' + parseInt(i + 1) + '">' + element.description + '</option>';
+				var optionClass = "";
 				if ((element.scoreRedFinal !== null) && (element.scoreBlueFinal !== null)) {
-					lastMatchPlayed = element.matchNumber;
+					optionClass = ' class="bg-success" ';
+				}
+				matchSchedule += generateMatchTableRow(element);
+				matchPicker += '<option id="matchPicker' + parseInt(i + 1) + '"' + optionClass + ' matchNumber="' + parseInt(i + 1) + '" value="' + parseInt(i + 1) + '">' + element.description + '</option>';
+				if ((element.scoreRedFinal !== null) && (element.scoreBlueFinal !== null)) {
+					lastMatchPlayed = parseInt(i + 1);
 				}
 			}
 
@@ -1492,19 +784,40 @@ function getRegularSeasonSchedule() {
 			document.getElementById('scheduleContainer').innerHTML += '<p><b>No playoff matches have been scheduled for this event.</b></p>';
 			localStorage.playoffList = "";
 			$("#matchPicker").html(matchPicker);
-			if (document.getElementById("matchPicker" + localStorage.currentMatch)) {
+
+			if (localStorage.autoAdvance === "true") {
+				if (lastMatchPlayed < (qualScheduleLength)) {
+					localStorage.currentMatch = String(lastMatchPlayed + 1);
+				} else {
+					localStorage.currentMatch = String(lastMatchPlayed);
+				}
 				document.getElementById("matchPicker" + localStorage.currentMatch).selected = true;
+				$("#matchPicker").selectpicker('refresh');
+
+			} else if (localStorage.currentMatch) {
+				document.getElementById("matchPicker" + localStorage.currentMatch).selected = true;
+				$("#matchPicker").selectpicker('refresh');
 			}
-			$("#matchPicker").selectpicker('refresh');
+
 			if (haveSchedule) {
 				announceDisplay();
 			}
 
+
+
 		} else {
+			haveSchedule = true;
 			for (var i = 0; i < data.Schedule.length; i++) {
 				var element = data.Schedule[i];
+				var optionClass = "";
+				if ((element.scoreRedFinal !== null) && (element.scoreBlueFinal !== null)) {
+					optionClass = ' class="bg-success" ';
+					lastMatchPlayed = i + qualScheduleLength + 1;
+				}
 				matchSchedule += generateMatchTableRow(element);
-				matchPicker += '<option id="matchPicker' + parseInt(i + qualScheduleLength + 1) + '"  matchNumber="' + parseInt(i + qualScheduleLength + 1) + '" value="' + parseInt(i + qualScheduleLength + 1) + '">' + element.description + '</option>';
+				matchPicker += '<option id="matchPicker' + parseInt(i + qualScheduleLength + 1) + '"' + optionClass + ' matchNumber="' + parseInt(i + qualScheduleLength + 1) + '" value="' + parseInt(i + qualScheduleLength + 1) + '">' + element.description + '</option>';
+
+
 			}
 			//$("#playoffScheduleAlert").hide();
 			$("#matchPicker").html(matchPicker);
@@ -1537,6 +850,18 @@ function getRegularSeasonSchedule() {
 		$('#scheduleProgressBar').hide();
 		localStorage.playoffList = JSON.stringify(data);
 		$("#scheduleUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
+
+		if (localStorage.autoAdvance === "true") {
+			if (lastMatchPlayed < (qualScheduleLength + data.Schedule.length)) {
+				localStorage.currentMatch = String(lastMatchPlayed + 1);
+			} else {
+				localStorage.currentMatch = String(lastMatchPlayed);
+			}
+			document.getElementById("matchPicker" + localStorage.currentMatch).selected = true;
+			$("#matchPicker").selectpicker('refresh');
+
+		}
+
 		if (matchSchedule) {
 			announceDisplay();
 		}
@@ -1554,6 +879,7 @@ function getRegularSeasonSchedule() {
 			localStorage.qualsList = '{"Schedule":[]}';
 			localStorage.playoffList = '{"Schedule":[]}';
 		} else {
+			haveSchedule = true;
 			//we have a schedule. Create the table and display the schedule.
 			$("#scheduleContainer").html('<p class = "eventName">' + localStorage.eventName + '</p><table id="scheduleTable" class="table table-bordered table-responsive table-striped"></table>');
 			matchSchedule += '<thead class="thead-default"><tr><td class="col2"><b>Time</b></td><td  class="col2"><b>Description</b></td><td class="col1"><b>Match Number</b></td><td class="col1"><b>Score</b></td><td class="col1"><b>Station 1</b></td><td class="col1"><b>Station 2</b></td><td class="col1"><b>Station 3</b></td></tr></thead><tbody>';
@@ -1671,8 +997,6 @@ function getOffseasonSchedule() {
 	$("#scheduleUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
 	announceDisplay();
 }
-
-
 
 function handleMatchSelection(element) {
 	"use strict";
@@ -1829,65 +1153,6 @@ function winningAllianceTeams(match) {
 	return teams.join(", ");
 }
 
-function getHighScores() {
-	"use strict";
-	var req = new XMLHttpRequest();
-	var eventNames = JSON.parse(localStorage.events);
-	req.open('GET', apiURL + localStorage.currentYear + '/highscore/');
-	req.addEventListener('load', function () {
-		$("#eventhighscorestable").html('<thead><tr><td colspan="2">Event High Scores</td></tr></thead><tr><td id="eventHighQualsNoFouls">Qual (no penalties)<br>No matches meet criteria<br></td><td id="eventHighPlayoffNoFouls">Playoff (no penalties)<br>No matches meet criteria</td></tr><tr> <td id="eventHighQualsOffsettingFouls">Qual (offsetting fouls)<br>No matches meet criteria<br></td><td id="eventHighPlayoffOffsettingFouls">Playoff (offsetting fouls)<br>No matches meet criteria<br></td></tr><tr><td id="eventHighQuals">Qual<br>No matches meet criteria<br></td><td id="eventHighPlayoff">Playoff<br>No matches meet criteria</td></tr>');
-		var data = JSON.parse(req.responseText);
-		var scores = data.scores;
-		$("#highscoreyear").html(" " + localStorage.currentYear);
-		if (data.highQualsPenaltyFree.score) {
-			$("#highQualsNoFouls").html("Qual (no fouls) " + data.highQualsPenaltyFree.score + "<br>Match " + data.highQualsPenaltyFree.details.matchNumber + "<br>" + eventNames[data.highQualsPenaltyFree.event] + "<br>" + data.highQualsPenaltyFree.alliance + " alliance (" + winningAllianceTeams(data.highQualsPenaltyFree) + ")");
-		}
-		if (data.highQualsPenaltyFreeOffsetting.score) {
-			$("#highQualsOffsettingFouls").html("Qual (offsetting fouls) " + data.highQualsPenaltyFreeOffsetting.score + "<br>Match " + data.highQualsPenaltyFreeOffsetting.details.matchNumber + "<br>" + eventNames[data.highQualsPenaltyFreeOffsetting.event] + "<br>" + data.highQualsPenaltyFreeOffsetting.alliance + " alliance (" + winningAllianceTeams(data.highQualsPenaltyFreeOffsetting) + ")");
-		}
-		if (data.highQuals.score) {
-			$("#highQuals").html("Qual " + data.highQuals.score + "<br>Match " + data.highQuals.details.matchNumber + "<br>" + eventNames[data.highQuals.event] + "<br>" + data.highQuals.alliance + " alliance (" + winningAllianceTeams(data.highQuals) + ")");
-		}
-		if (data.highPlayoffPenaltyFree.score) {
-			$("#highPlayoffNoFouls").html("Playoff (no fouls) " + data.highPlayoffPenaltyFree.score + "<br>Match " + data.highPlayoffPenaltyFree.details.matchNumber + "<br>" + eventNames[data.highPlayoffPenaltyFree.event] + "<br>" + data.highPlayoffPenaltyFree.alliance + " alliance (" + winningAllianceTeams(data.highPlayoffPenaltyFree) + ")");
-		}
-		if (data.highPlayoffPenaltyFreeOffsetting.score) {
-			$("#highPlayoffOffsettingFouls").html("Playoff (offsetting fouls) " + data.highPlayoffPenaltyFreeOffsetting.score + "<br>Match " + data.highPlayoffPenaltyFreeOffsetting.details.matchNumber + "<br>" + eventNames[data.highPlayoffPenaltyFreeOffsetting.event] + "<br>" + data.highPlayoffPenaltyFreeOffsetting.alliance + " alliance (" + winningAllianceTeams(data.highPlayoffPenaltyFreeOffsetting) + ")");
-		}
-		if (data.highPlayoff.score) {
-			$("#highPlayoff").html("Playoff " + data.highPlayoff.score + "<br>Match " + data.highPlayoff.details.matchNumber + "<br>" + eventNames[data.highPlayoff.event] + "<br>" + data.highPlayoff.alliance + " alliance (" + winningAllianceTeams(data.highPlayoff) + ")");
-		}
-
-		for (var i = 0; i < scores.length; i++) {
-			if (scores[i].event === localStorage.currentEvent) {
-				if (scores[i].highScoreType === "highQualsPenaltyFree") {
-					$("#eventHighQualsNoFouls").html("Qual (no fouls) " + scores[i].score + "<br>Match " + scores[i].details.matchNumber + "<br>" + eventNames[scores[i].event] + "<br>" + scores[i].alliance + " alliance (" + winningAllianceTeams(scores[i]) + ")");
-				}
-				if (scores[i].highScoreType === "highQualsPenaltyFreeOffsetting") {
-					$("#eventHighQualsOffsettingFouls").html("Qual (offsetting fouls) " + scores[i].score + "<br>Match " + scores[i].details.matchNumber + "<br>" + eventNames[scores[i].event] + "<br>" + scores[i].alliance + " alliance (" + winningAllianceTeams(scores[i]) + ")");
-				}
-				if (scores[i].highScoreType === "highQuals") {
-					$("#eventHighQuals").html("Qual " + scores[i].score + "<br>Match " + scores[i].details.matchNumber + "<br>" + eventNames[scores[i].event] + "<br>" + scores[i].alliance + " alliance (" + winningAllianceTeams(scores[i]) + ")");
-				}
-				if (scores[i].highScoreType === "highPlayoffPenaltyFree") {
-					$("#eventHighPlayoffNoFouls").html("Playoff (no fouls) " + scores[i].score + "<br>Match " + scores[i].details.matchNumber + "<br>" + eventNames[scores[i].event] + "<br>" + scores[i].alliance + " alliance (" + winningAllianceTeams(scores[i]) + ")");
-				}
-				if (scores[i].highScoreType === "highPlayoffPenaltyFreeOffsetting") {
-					$("#eventHighPlayoffOffsettingFouls").html("Playoff (offsetting fouls) " + scores[i].score + "<br>Match " + scores[i].details.matchNumber + "<br>" + eventNames[scores[i].event] + "<br>" + scores[i].alliance + " alliance (" + winningAllianceTeams(scores[i]) + ")");
-				}
-				if (scores[i].highScoreType === "highPlayoff") {
-					$("#eventHighPlayoff").html("Playoff " + scores[i].score + "<br>Match " + scores[i].details.matchNumber + "<br>" + eventNames[scores[i].event] + "<br>" + scores[i].alliance + " alliance (" + winningAllianceTeams(scores[i]) + ")");
-				}
-			}
-		}
-
-	});
-	req.send();
-
-
-}
-
-
 function getTeamAwardsAsync(teamList, currentYear) {
 	"use strict";
 	var teamAwardRequests = [];
@@ -1902,7 +1167,6 @@ function getTeamAwardsAsync(teamList, currentYear) {
 		//console.log('finished');
 	});
 }
-
 
 function getAllianceList() {
 	"use strict";
@@ -2013,37 +1277,6 @@ function getPreviousMatch() {
 	}
 	announceDisplay();
 	updateMatchResults();
-}
-
-function scaleRows() {
-	"use strict";
-	var height = window.innerHeight;
-	var width = window.innerWidth - 30;
-	var col1width = width / 12;
-	var col2width = width / 6;
-	var col3width = width / 4;
-	var col4width = width / 3;
-	var col5width = width / 12 * 5;
-	var col6width = width / 2;
-	var col9width = width / 4 * 3;
-	var col10width = width / 6 * 5;
-	var verticalDivisions = 3;
-	if (inChamps() || (inSubdivision() && (localStorage.currentMatch > JSON.parse(localStorage.qualsList).Schedule.length))) {
-		verticalDivisions = 4;
-	}
-	var announceHeight = Math.round((height - $("#navbar").outerHeight() - $("#appTab").outerHeight() - $("#gameButtonsAnnounce").outerHeight() - $("#footer").outerHeight() - $("#announceTableHeader").outerHeight()) / (verticalDivisions * 2) - 10);
-	var playByPlayHeight = Math.round((height - $("#navbar").outerHeight() - $("#appTab").outerHeight() - $("#gameButtonsPlayByPlay").outerHeight() - $("#footer").outerHeight() - $("#announceTableHeader").outerHeight()) / verticalDivisions - 25);
-	$(".redAlliancePlayByPlay,.blueAlliancePlayByPlay").css("height", playByPlayHeight + "px");
-	$(".redAlliance,.blueAlliance").css("height", announceHeight + "px");
-	$(".col1").css("width", col1width + "px");
-	$(".col2").css("width", col2width + "px");
-	$(".col3").css("width", col3width + "px");
-	$(".col4").css("width", col4width + "px");
-	$(".col5").css("width", col5width + "px");
-	$(".col6").css("width", col6width + "px");
-	$(".col9").css("width", col9width + "px");
-	$(".col10").css("width", col10width + "px");
-	$(".spacer").css("height", ($("#navbar").outerHeight() - 35) + "px");
 }
 
 function announceDisplay() {
@@ -2237,14 +1470,23 @@ function announceDisplay() {
 		}
 
 		if ((localStorage.currentMatch > JSON.parse(localStorage.qualsList).Schedule.length) || inChamps() || (inMiChamps() && (localStorage.currentYear >= 2017))) {
-			$('#davidPriceRedAlliance').html($("#red1Alliance").html().split("<br>")[0].split(" ")[1]);
-			$('#davidPriceBlueAlliance').html($("#blue1Alliance").html().split("<br>")[0].split(" ")[1]);
+			if (inChamps() || inMiChamps()) {
+				$('#davidPriceRedAlliance').html(allianceShortNames[$("#red1Alliance").html().split("<br>")[0]]);
+				$('#davidPriceBlueAlliance').html(allianceShortNames[$("#blue1Alliance").html().split("<br>")[0]]);
+			} else {
+				$('#davidPriceRedAlliance').html($("#red1Alliance").html().split("<br>")[0].split(" ")[1]);
+				$('#davidPriceBlueAlliance').html($("#blue1Alliance").html().split("<br>")[0].split(" ")[1]);
+			}
+
+
 			$('#davidPriceAlliances').show();
 
 		}
 
 		getTeamRanks();
 		displayAwards();
+
+
 	}
 }
 
@@ -2293,134 +1535,6 @@ function replaceTeam(station, originalTeam) {
 	});
 }
 
-function getTeamRanks() {
-	"use strict";
-	$("#rankUpdateContainer").html("Loading ranking data...");
-	$('#ranksProgressBar').show();
-	$('#teamRanksPicker').addClass('alert-danger');
-	var team = {};
-	var req = new XMLHttpRequest();
-	req.open('GET', apiURL + localStorage.currentYear + '/Rankings/' + localStorage.currentEvent);
-	req.addEventListener('load', function () {
-		var data = JSON.parse(req.responseText);
-		if (data.Rankings.length === 0) {
-			$("#rankingDisplay").html('<b>No Rankings available.</b>');
-			$("#allianceSelectionPlaceholder").show();
-			$("#allianceSelectionTable").hide();
-			allianceListUnsorted = [];
-			var teamList = JSON.parse(localStorage.teamList);
-			for (var j = 0; j < teamList.length; j++) {
-				allianceListUnsorted[j] = teamList[j].teamNumber;
-				//team = JSON.parse(localStorage["teamData" + teamList[j].teamNumber]);
-				team = decompressLocalStorage("teamData" + teamList[j].teamNumber);
-
-				team.rank = "";
-				team.sortOrder1 = "";
-				team.sortOrder2 = "";
-				team.sortOrder3 = "";
-				team.sortOrder4 = "";
-				team.sortOrder5 = "";
-				team.sortOrder6 = "";
-				team.wins = "";
-				team.losses = "";
-				team.ties = "";
-				team.qualAverage = "";
-				team.dq = "";
-				team.matchesPlayed = "";
-				$("#teamTableRank" + teamList[j].teamNumber).html("");
-				$("#teamTableRank" + teamList[j].teamNumber).attr("class", teamTableRankHighlight(100));
-				//localStorage["teamData" + teamList[j].teamNumber] = JSON.stringify(team);
-				compressLocalStorage("teamData" + teamList[j].teamNumber, team);
-			}
-		} else {
-			haveRanks = true;
-			localStorage.Rankings = JSON.stringify(data.Rankings);
-			if (localStorage.currentMatch > JSON.parse(localStorage.qualsList).Schedule.length) {
-				$("#rankingDisplay").html("<b>Qual Seed<b>");
-			} else {
-				$("#rankingDisplay").html('<b>Ranking</b>');
-			}
-			$('#ranksContainer').html('<p class = "eventName">' + localStorage.eventName + ' (<b><span id="rankstablelastupdated"></span></b>)</p><p>This table lists the teams in rank order for this competition. This table updates during the competition, and freezes once Playoff Matches begin. </p><table id="ranksTable" class="table table-condensed table-responsive table-bordered table-striped"></table>');
-			var ranksList = '<thead  id="ranksTableHead" class="thead-default"><tr><td class="col1"><b>Team #</b></td><td class="col1"><b>Rank</b></td><td class="col2"><b>Team Name</b></td><td class = "col1"><b>RP Avg.</b></td><td class="col1"><b>Wins</b></td><td  class="col1"><b>Losses</b></td><td class="col1"><b>Ties</b></td><td class="col1"><b>Qual Avg</b></td><td class="col1"><b>DQ</b></td><td class="col1"><b>Matches Played</b></td></tr></thead><tbody>';
-
-			for (var i = 0; i < data.Rankings.length; i++) {
-
-				//team = JSON.parse(localStorage["teamData" + data.Rankings[i].teamNumber]);
-				team = decompressLocalStorage("teamData" + data.Rankings[i].teamNumber);
-
-				team.rank = data.Rankings[i].rank;
-				allianceTeamList[i] = data.Rankings[i].teamNumber;
-				allianceListUnsorted[i] = data.Rankings[i].teamNumber;
-				rankingsList = data.Rankings[i].teamNumber;
-				team.sortOrder1 = data.Rankings[i].sortOrder1;
-				team.sortOrder2 = data.Rankings[i].sortOrder2;
-				team.sortOrder3 = data.Rankings[i].sortOrder3;
-				team.sortOrder4 = data.Rankings[i].sortOrder4;
-				team.sortOrder5 = data.Rankings[i].sortOrder5;
-				team.sortOrder6 = data.Rankings[i].sortOrder6;
-				team.wins = data.Rankings[i].wins;
-				team.losses = data.Rankings[i].losses;
-				team.ties = data.Rankings[i].ties;
-				team.qualAverage = data.Rankings[i].qualAverage;
-				team.dq = data.Rankings[i].dq;
-				team.matchesPlayed = data.Rankings[i].matchesPlayed;
-				$("#teamTableRank" + data.Rankings[i].teamNumber).html(data.Rankings[i].rank);
-				$("#teamTableRank" + data.Rankings[i].teamNumber).attr("class", teamTableRankHighlight(data.Rankings[i].rank));
-				ranksList += updateRanksTableRow(team, data.Rankings[i].teamNumber);
-				//localStorage["teamData" + data.Rankings[i].teamNumber] = JSON.stringify(team);
-				compressLocalStorage("teamData" + data.Rankings[i].teamNumber, team);
-
-				if (data.Rankings[i].matchesPlayed < matchCount) {
-					allianceSelectionReady = false;
-				} else {
-					allianceSelectionReady = true;
-				}
-
-			}
-			$("#ranksProgressBar").hide();
-			$('#ranksTable').html(ranksList + "</tbody>");
-			$('#teamRanksPicker').removeClass('alert-danger');
-			$('#teamRanksPicker').addClass('alert-success');
-			lastRanksUpdate = req.getResponseHeader("Last-Modified");
-
-			$("#allianceUndoButton").hide();
-			allianceChoices.Alliance1Captain = allianceTeamList[0];
-			$("#Alliance1Captain").html("Alliance 1 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance1Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='chosenAllianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
-			allianceChoices.Alliance2Captain = allianceTeamList[0];
-			$("#Alliance2Captain").html("Alliance 2 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance2Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='allianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
-			allianceChoices.Alliance3Captain = allianceTeamList[0];
-			$("#Alliance3Captain").html("Alliance 3 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance3Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='allianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
-			allianceChoices.Alliance4Captain = allianceTeamList[0];
-			$("#Alliance4Captain").html("Alliance 4 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance4Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='allianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
-			allianceChoices.Alliance5Captain = allianceTeamList[0];
-			$("#Alliance5Captain").html("Alliance 5 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance5Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='allianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
-			allianceChoices.Alliance6Captain = allianceTeamList[0];
-			$("#Alliance6Captain").html("Alliance 6 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance6Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='allianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
-			allianceChoices.Alliance7Captain = allianceTeamList[0];
-			$("#Alliance7Captain").html("Alliance 7 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance7Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='allianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
-			allianceChoices.Alliance8Captain = allianceTeamList[0];
-			$("#Alliance8Captain").html("Alliance 8 Captain<div class ='allianceTeam allianceCaptain' captain='Alliance8Captain' teamnumber = '" + allianceTeamList[0] + "' id='allianceTeam" + allianceTeamList[0] + "' onclick='allianceAlert(this)'>" + allianceTeamList.shift() + "</div>");
-
-			$("#backupAllianceTeam1").html("<div id='backupAllianceTeamContainer1' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[0] + " onclick='allianceAlert(this)'>" + allianceTeamList[0] + "</div>");
-			$("#backupAllianceTeam2").html("<div id='backupAllianceTeamContainer2' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[1] + " onclick='allianceAlert(this)'>" + allianceTeamList[1] + "</div>");
-			$("#backupAllianceTeam3").html("<div id='backupAllianceTeamContainer3' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[2] + " onclick='allianceAlert(this)'>" + allianceTeamList[2] + "</div>");
-			$("#backupAllianceTeam4").html("<div id='backupAllianceTeamContainer4' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[3] + " onclick='allianceAlert(this)'>" + allianceTeamList[3] + "</div>");
-			$("#backupAllianceTeam5").html("<div id='backupAllianceTeamContainer5' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[4] + " onclick='allianceAlert(this)'>" + allianceTeamList[4] + "</div>");
-			$("#backupAllianceTeam6").html("<div id='backupAllianceTeamContainer6' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[5] + " onclick='allianceAlert(this)'>" + allianceTeamList[5] + "</div>");
-			$("#backupAllianceTeam7").html("<div id='backupAllianceTeamContainer7' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[6] + " onclick='allianceAlert(this)'>" + allianceTeamList[6] + "</div>");
-			$("#backupAllianceTeam8").html("<div id='backupAllianceTeamContainer8' class ='allianceTeam' captain='alliance' teamnumber=" + allianceTeamList[7] + " onclick='allianceAlert(this)'>" + allianceTeamList[7] + "</div>");
-
-			allianceTeamList = sortAllianceTeams(allianceTeamList);
-			displayAwardsTeams(allianceListUnsorted.slice(0));
-
-			$("#rankUpdateContainer").html(moment().format("dddd, MMMM Do YYYY, h:mm:ss a"));
-		}
-	});
-	if (localStorage.offseason !== "true") {
-		req.send();
-	}
-}
-
 function displayAwardsTeams(teamList) {
 	"use strict";
 	var column = 1;
@@ -2458,7 +1572,6 @@ function displayAwardsTeams(teamList) {
 		$("#awardsTeamList" + column).append("<div class ='awardAllianceTeam' onclick='awardsAlert(this)' teamnumber='" + sortedTeams[i] + "' id='awardsAllianceTeam" + sortedTeams[i] + "'>" + sortedTeams[i] + "</div></br>");
 	}
 }
-
 
 function displayAllianceCaptains(startingPosition) {
 	"use strict";
@@ -2866,15 +1979,6 @@ function getTeamData(teamList, year) {
 	});
 }
 
-function tournamentLevel(tournament) {
-	"use strict";
-	if (tournament === "Qualification") {
-		return "qual";
-	} else {
-		return "playoff";
-	}
-}
-
 function scoreDetails(matchNumber, tournamentLevel) {
 	"use strict";
 	var req = new XMLHttpRequest();
@@ -3256,14 +2360,6 @@ function generateTeamTableRow(teamData) {
 	return returnData + '</tr>';
 }
 
-function trimArray(arr) {
-	"use strict";
-	for (var i = 0; i <= arr.length - 1; i++) {
-		arr[i] = arr[i].trim();
-	}
-	return arr;
-}
-
 function teamTableRankHighlight(rank) {
 	"use strict";
 	if ((rank <= 8) && (rank > 1)) {
@@ -3395,7 +2491,6 @@ function updateTeamInfo(teamNumber) {
 	// Show the current tab, and add an "active" class to the link that opened the tab
 	$("#teamDataEntry").show();
 }
-
 
 function updateTeamInfoDone(cloudSave) {
 	"use strict";
@@ -3533,413 +2628,6 @@ function rookieYearDisplay(year) {
 	}
 }
 
-function resetLocalStorage() {
-	"use strict";
-	BootstrapDialog.show({
-		type: 'type-danger',
-		title: '<b>Reset Local Storage</b>',
-		message: 'You are about to erase all of your local changes to team information. This action will effectively reset gatool to its "factory" condition. Are you sure you want to do this?',
-		buttons: [{
-			icon: 'glyphicon glyphicon-check',
-			label: "No, don't reset my local changes.",
-			hotkey: 78, // "N".
-			cssClass: "btn btn-success alertButton",
-			action: function (dialogRef) {
-				dialogRef.close();
-			}
-		}, {
-			icon: 'glyphicon glyphicon-refresh',
-			label: 'Yes, I do want to reset my local changes.<br>I understand that I will now need to<br>re-enter my changes or<br>download them from the gatool cloud.',
-			hotkey: 13, // Enter.
-			cssClass: 'btn btn-danger alertButton',
-			action: function (dialogRef) {
-				dialogRef.close();
-				localStorage.clear();
-				BootstrapDialog.show({
-					message: "LocalStorage cleared.<br>Page will now reload to recover data from the server. Select your event after the page reloads.",
-					buttons: [{
-						icon: 'glyphicon glyphicon-refresh',
-						label: 'OK',
-						hotkey: 13, // Enter.
-						title: 'OK',
-						action: function (dialogRef) {
-							location.reload();
-						}
-					}]
-				});
-
-			}
-		}]
-	});
-}
-
-function logout() {
-	"use strict";
-	BootstrapDialog.show({
-		type: 'type-primary',
-		title: '<b>Logout of gatool</b>',
-		message: 'You are about to logout of gatool. Your local changes will be preserved until you reset your browser cache, so your changes will be here when you login again on this device. Are you sure you want to do this?',
-		buttons: [{
-			icon: 'glyphicon glyphicon-check',
-			label: "No, I don't want to logout now.",
-			hotkey: 78, // "N".
-			cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
-			action: function (dialogRef) {
-				dialogRef.close();
-			}
-		}, {
-			icon: 'glyphicon glyphicon-log-out',
-			label: 'Yes, I do want to logout now.',
-			hotkey: 13, // Enter.
-			cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
-			action: function (dialogRef) {
-				dialogRef.close();
-				location.href = "/logout";
-			}
-		}]
-	});
-}
-
-function saveTeamUpdates() {
-	//This function saves ALL of the team data to gatool Cloud.
-	"use strict";
-	BootstrapDialog.show({
-		type: 'type-info',
-		title: '<b>Save Team Updates to the gatool Cloud</b>',
-		message: "<b>You are about to save your local updates to the gatool Cloud. <span class='danger'>This will replace data in gatool Cloud with the changes you have made to teams in this event</span>.</b><br>With great power comes great responsibility. To ensure the best experience for everyone, we ask that only the GAs and MCs who are working an event save their changes.<br>If you are not working at an event, <b>please do not save changes between Wednesday and Sunday during the competition season</b>. This policy will allow everyone to benefit from the on-site team's research.<br><b>Are you sure you want to do this?</b>",
-		buttons: [{
-			icon: 'glyphicon glyphicon-check',
-			label: "No, don't save my updates now.",
-			hotkey: 78, // "N".
-			cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
-			action: function (dialogRef) {
-				dialogRef.close();
-			}
-		}, {
-			icon: 'glyphicon glyphicon-cloud-upload',
-			label: 'Yes, save my updates now.',
-			hotkey: 13, // Enter.
-			cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
-			action: function (dialogRef) {
-				dialogRef.close();
-				BootstrapDialog.show({
-					type: 'type-success',
-					icon: 'glyphicon glyphicon-thumbs-up',
-					title: '<b>Are you sure you want to upload Team Data for ' + localStorage.currentEvent + '?</b>',
-					message: "<span class = 'allianceAnnounceDialog'>Are you sure you want to upload Team Data for " + localStorage.currentEvent + "? You can upload data for a specific team from the Team Data Screen.</span>",
-					buttons: [{
-						icon: 'glyphicon glyphicon-thumbs-down',
-						label: 'No, I do not want to do this now.',
-						hotkey: 78, // "N".
-						cssClass: "btn btn-danger col-md-5 col-xs-12 col-sm-12 alertButton",
-						action: function (dialogRef) {
-							dialogRef.close();
-						}
-					}, {
-						icon: 'glyphicon glyphicon-thumbs-up',
-						cssClass: "btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton",
-						label: 'Yes, I do want to do this now.',
-						hotkey: 13, // Enter.
-						action: function (dialogRef) {
-							dialogRef.close();
-							//var teamData = JSON.parse(localStorage.teamList);
-							var teamData = eventTeamList.slice(0);
-							for (var i = 0; i < teamData.length; i++) {
-								teamUpdateCalls++;
-								sendTeamUpdates(teamData[i].teamNumber, false);
-							}
-
-						}
-					}]
-				});
-			}
-		}]
-	});
-}
-
-function saveTeamUpdate() {
-	//This function saves the team stored in localStorage.currentTeam's data to gatool Cloud.
-	"use strict";
-	BootstrapDialog.show({
-		type: 'type-info',
-		title: '<b>Save Team ' + localStorage.currentTeam + ' Update to the gatool Cloud</b>',
-		message: "<b>You are about to save your local updates to the gatool Cloud. <span class='danger'>This will replace data in gatool Cloud with the changes you have made to this specific team in this event</span>.</b><br>With great power comes great responsibility. To ensure the best experience for everyone, we ask that only the GAs and MCs who are working an event save their changes.<br>If you are not working at an event, <b>please do not save changes between Wednesday and Sunday during the competition season</b>. This policy will allow everyone to benefit from the on-site team's research.<br><b>Are you sure you want to do this?</b>",
-		buttons: [{
-			icon: 'glyphicon glyphicon-check',
-			label: "No, don't save this update now.",
-			hotkey: 78, // "N".
-			cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
-			action: function (dialogRef) {
-				dialogRef.close();
-			}
-		}, {
-			icon: 'glyphicon glyphicon-cloud-upload',
-			label: 'Yes, save this update now.',
-			hotkey: 13, // Enter.
-			cssClass: 'bth btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
-			action: function (dialogRef) {
-				dialogRef.close();
-				updateTeamInfoDone("true");
-			}
-		}]
-	});
-}
-
-
-function loadTeamUpdates() {
-	"use strict";
-	BootstrapDialog.show({
-		type: 'type-warning',
-		title: '<b>Load Team Updates from the gatool Cloud</b>',
-		message: 'You are about to load team data updates from the gatool Cloud. <b>This will replace your local changes to the teams in this event</b> with the data you <b><i>or others</i></b> may have stored in the gatool Cloud.<br><b>Are you sure you want to do this?</b>',
-		buttons: [{
-			icon: 'glyphicon glyphicon-check',
-			label: "No, I don't want to<br>load updates now.",
-			hotkey: 78, // "N".
-			cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
-			action: function (dialogRef) {
-				dialogRef.close();
-			}
-		}, {
-			icon: 'glyphicon glyphicon-cloud-download',
-			label: 'Yes, I do want to<br>load updates now.',
-			hotkey: 13, // Enter.
-			cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
-			action: function (dialogRef) {
-				dialogRef.close();
-				//var teamData = JSON.parse(localStorage.teamList);
-				var teamData = eventTeamList.slice(0);
-
-				for (var i = 0; i < teamData.length; i++) {
-					teamUpdateCalls++;
-					getTeamUpdates(teamData[i].teamNumber, false);
-				}
-
-			}
-		}]
-	});
-}
-
-function loadTeamUpdate() {
-	"use strict";
-	var currentTeam = localStorage.currentTeam;
-	BootstrapDialog.show({
-		type: 'type-warning',
-		title: '<b>Load Team Updates for ' + currentTeam + ' from the gatool Cloud</b>',
-		message: 'You are about to load team data updates for Team ' + currentTeam + ' from the gatool Cloud. <b>This will replace your local changes to this team</b> with the data you <b><i>or others</i></b> may have stored in the gatool Cloud.<br><b>Are you sure you want to do this?</b>',
-		buttons: [{
-			icon: 'glyphicon glyphicon-check',
-			label: "No, I don't want to<br>load updates now.",
-			hotkey: 78, // "N".
-			cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
-			action: function (dialogRef) {
-				dialogRef.close();
-			}
-		}, {
-			icon: 'glyphicon glyphicon-cloud-download',
-			label: 'Yes, I do want to<br>load updates now.',
-			hotkey: 13, // Enter.
-			cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
-			action: function (dialogRef) {
-				dialogRef.close();
-				teamUpdateCalls++;
-				getTeamUpdates(currentTeam, true);
-			}
-		}]
-	});
-}
-
-function loadEnvironment() {
-	"use strict";
-	BootstrapDialog.show({
-		type: 'type-warning',
-		title: '<b>Load environment from the gatool Cloud</b>',
-		message: 'You are about to load your saved gatool environment from the gatool Cloud. <b>This will replace your gatool environment with what you have previously pushed to gatool Cloud.<br><b>Are you sure you want to do this?</b>',
-		buttons: [{
-			icon: 'glyphicon glyphicon-check',
-			label: "No, I don't want to<br>load my environment now.",
-			hotkey: 78, // "N".
-			cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
-			action: function (dialogRef) {
-				dialogRef.close();
-			}
-		}, {
-			icon: 'glyphicon glyphicon-cloud-download',
-			label: 'Yes, I do want to<br>load my environment now.',
-			hotkey: 13, // Enter.
-			cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
-			action: function (dialogRef) {
-
-				var req = new XMLHttpRequest();
-				req.open('GET', apiURL + '/loadenvironment/');
-				//req.setRequestHeader("userKey", getCookie("loggedin"));
-				req.addEventListener('load', function () {
-					dialogRef.close();
-					environment = JSON.parse(req.responseText);
-					var environmentKeys = Object.keys(environment.localStorage);
-					for (var i = 0; i < environmentKeys.length; i++) {
-						if (environmentKeys[i].startsWith("teamData")) {
-							localStorage[environmentKeys[i]] = environment.localStorage[environmentKeys[i]];
-							compressLocalStorage(environmentKeys[i], JSON.parse(environment.localStorage[environmentKeys[i]]));
-						} else {
-							localStorage[environmentKeys[i]] = environment.localStorage[environmentKeys[i]];
-						}
-					}
-					playoffResults = environment.playoffResults;
-					allianceTeamList = environment.allianceTeamList;
-					allianceListUnsorted = environment.allianceListUnsorted;
-					rankingsList = environment.rankingsList;
-					eventTeamList = environment.eventTeamList;
-					eventQualsSchedule = environment.eventQualsSchedule;
-					eventPlayoffSchedule = environment.eventPlayoffSchedule;
-					currentAllianceChoice = environment.currentAllianceChoice;
-					allianceChoices = environment.allianceChoices;
-					replacementAlliance = environment.replacementAlliance;
-					allianceChoicesUndo = environment.allianceChoicesUndo;
-					allianceListUnsortedUndo = environment.allianceListUnsortedUndo;
-					allianceTeamListUndo = environment.allianceTeamListUndo;
-					teamNumberUndo = environment.teamNumberUndo;
-					teamContainerUndo = environment.teamContainerUndo;
-					lastMatchPlayed = environment.lastMatchPlayed;
-					allianceSelectionTableUndo = environment.allianceSelectionTableUndo;
-					currentMatchData = environment.currentMatchData;
-					teamCountTotal = environment.teamCountTotal;
-					haveRanks = environment.haveRanks;
-					highScores = environment.highScores;
-					currentEventList = environment.currentEventList;
-					lastRanksUpdate = environment.lastRanksUpdate;
-					lastQualsUpdate = environment.lastQualsUpdate;
-					qualsComplete = environment.qualsComplete;
-					haveSchedule = environment.haveSchedule;
-					matchCount = environment.matchCount;
-					allianceSelectionReady = environment.allianceSelectionReady;
-
-					BootstrapDialog.show({
-						message: "Environment loaded from gatool Cloud. Your local data has been replaced.",
-						buttons: [{
-							icon: 'glyphicon glyphicon-cloud-download',
-							cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
-							label: 'OK',
-							hotkey: 13, // Enter.
-							title: 'OK',
-							action: function (dialogRef) {
-								dialogRef.close();
-								location.reload();
-							}
-						}]
-					});
-				});
-				req.send();
-
-			}
-		}]
-	});
-}
-
-function saveEnvironment() {
-	"use strict";
-
-	BootstrapDialog.show({
-		type: 'type-warning',
-		title: '<b>Save environment to the gatool Cloud</b>',
-		message: 'You are about to save your gatool environment to the gatool Cloud.<br><b>Are you sure you want to do this?</b>',
-		buttons: [{
-			icon: 'glyphicon glyphicon-check',
-			label: "No, I don't want to<br>save my environment now.",
-			hotkey: 78, // "N".
-			cssClass: "btn btn-info col-md-5 col-xs-12 col-sm-12 alertButton",
-			action: function (dialogRef) {
-				dialogRef.close();
-			}
-		}, {
-			icon: 'glyphicon glyphicon-cloud-download',
-			label: 'Yes, I do want to<br>save my environment now.',
-			hotkey: 13, // Enter.
-			cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
-			action: function (dialogRef) {
-				environment.localStorage = {};
-				var localStorageKeys = Object.keys(localStorage);
-				for (var i = 0; i < localStorageKeys.length; i++) {
-					if (localStorageKeys[i].startsWith("teamData")) {
-						environment.localStorage[localStorageKeys[i]] = JSON.stringify(decompressLocalStorage(localStorageKeys[i]));
-					} else {
-						environment.localStorage[localStorageKeys[i]] = localStorage[localStorageKeys[i]];
-					}
-				}
-				environment.playoffResults = playoffResults;
-				environment.allianceTeamList = allianceTeamList;
-				environment.allianceListUnsorted = allianceListUnsorted;
-				environment.rankingsList = rankingsList;
-				environment.eventTeamList = eventTeamList;
-				environment.eventQualsSchedule = eventQualsSchedule;
-				environment.eventPlayoffSchedule = eventPlayoffSchedule;
-				environment.currentAllianceChoice = currentAllianceChoice;
-				environment.allianceChoices = allianceChoices;
-				environment.replacementAlliance = replacementAlliance;
-				environment.allianceChoicesUndo = allianceChoicesUndo;
-				environment.allianceListUnsortedUndo = allianceListUnsortedUndo;
-				environment.allianceTeamListUndo = allianceTeamListUndo;
-				environment.teamNumberUndo = teamNumberUndo;
-				environment.teamContainerUndo = teamContainerUndo;
-				environment.lastMatchPlayed = lastMatchPlayed;
-				environment.allianceSelectionTableUndo = allianceSelectionTableUndo;
-				environment.currentMatchData = currentMatchData;
-				environment.teamCountTotal = teamCountTotal;
-				environment.haveRanks = haveRanks;
-				environment.highScores = highScores;
-				environment.currentEventList = currentEventList;
-				environment.lastRanksUpdate = lastRanksUpdate;
-				environment.lastQualsUpdate = lastQualsUpdate;
-				environment.qualsComplete = qualsComplete;
-				environment.haveSchedule = haveSchedule;
-				environment.matchCount = matchCount;
-				environment.allianceSelectionReady = allianceSelectionReady;
-
-				var req = new XMLHttpRequest();
-				req.open('POST', apiURL + '/saveenvironment/');
-				req.setRequestHeader("Content-type", "application/json");
-				//req.setRequestHeader("userKey", getCookie("loggedin"));
-				req.addEventListener('load', function () {
-					dialogRef.close();
-					if (req.responseText === "OK") {
-						BootstrapDialog.show({
-							message: "Environment saved to gatool Cloud.",
-							buttons: [{
-								icon: 'glyphicon glyphicon-cloud-download',
-								cssClass: 'btn btn-success col-md-5 col-xs-12 col-sm-12 alertButton',
-								label: 'OK',
-								hotkey: 13, // Enter.
-								title: 'OK',
-								action: function (dialogRef) {
-									dialogRef.close();
-
-								}
-							}]
-						});
-					} else {
-						BootstrapDialog.show({
-							message: "Environment not saved to gatool Cloud.<br>Please try again.",
-							buttons: [{
-								icon: 'glyphicon glyphicon-cloud-download',
-								cssClass: 'btn btn-danger col-md-5 col-xs-12 col-sm-12 alertButton',
-								label: 'OK',
-								hotkey: 13, // Enter.
-								title: 'OK',
-								action: function (dialogRef) {
-									dialogRef.close();
-
-								}
-							}]
-						});
-					}
-				});
-				req.send(JSON.stringify(environment));
-
-			}
-		}]
-	});
-}
-
 function resetAwards() {
 	"use strict";
 	BootstrapDialog.show({
@@ -3997,103 +2685,6 @@ function resetAwards() {
 			}
 		}]
 	});
-}
-
-function timer() {
-	"use strict";
-	if (localStorage.clock === "running") {
-		// Update the count down every 1 second
-
-		// Get todays date and time
-		localStorage.matchTimer -= 1;
-		if (localStorage.matchTimer >= 0) {
-			if ((matchLength - localStorage.matchTimer) <= autoLength) {
-				$("#timer").css({
-					"background-color": "orange",
-					"color": "black"
-				});
-				$("#clock").html(localStorage.matchTimer + " AUTO (" + (autoLength - (matchLength - localStorage.matchTimer)) + ")");
-			}
-			if ((matchLength - localStorage.matchTimer) > autoLength && (localStorage.matchTimer > endGame)) {
-				$("#timer").css({
-					"background-color": "green",
-					"color": "white"
-				});
-				$("#clock").html(localStorage.matchTimer + " TELEOP");
-			}
-			if (localStorage.matchTimer <= endGame) {
-				$("#timer").css({
-					"background-color": "red",
-					"animation-delay": "20s",
-					"animation-name": "timerHighlight",
-					"animation-duration": "1s",
-					"animation-iteration-count": "10",
-					"color": "white"
-				});
-				$("#clock").html(localStorage.matchTimer + " ENDGAME");
-			}
-		} else {
-			resetTimer();
-		}
-
-
-	}
-
-	//display the delay on the Announce Screen if we have a schedule
-	if (localStorage.qualsList !== '{"Schedule":[]}') {
-		var timeDifference = 0;
-		if (currentMatchData.actualStartTime) {
-			$("#matchTime").html('<b><span id="currentTime"></span></b><br>Actual match time:<br>' + moment(currentMatchData.actualStartTime).format("MMM Do, h:mm a"));
-			$("#matchTimeContainer").removeClass();
-			$("#matchTimeContainer").addClass("col2");
-			timeDifference = moment(currentMatchData.actualStartTime).diff(currentMatchData.startTime, "minutes");
-			if (timeDifference < 0) {
-				$("#matchTimeContainer").addClass("alert-success");
-			} else if ((timeDifference >= 0) && (timeDifference < 10)) {
-				$("#matchTimeContainer").addClass("alert-success");
-			} else if ((timeDifference >= 10) && (timeDifference < 20)) {
-				$("#matchTimeContainer").addClass("alert-warning");
-			} else if (timeDifference >= 20) {
-				$("#matchTimeContainer").addClass("alert-danger");
-			}
-		} else {
-			if (localStorage.offseason === "true") {
-				$("#matchTime").html('<b><span id="currentTime"></span></b><br>Starts:<br>' + currentMatchData.startTime);
-			} else {
-				$("#matchTime").html('<b><span id="currentTime"></span></b><br>Starts:<br>' + moment(currentMatchData.startTime).fromNow());
-
-				timeDifference = moment(Date.now()).diff(currentMatchData.startTime, "minutes");
-				if (timeDifference < 0) {
-					$("#matchTimeContainer").addClass("alert-success");
-				} else if ((timeDifference >= 0) && (timeDifference < 10)) {
-					$("#matchTimeContainer").addClass("alert-success");
-				} else if ((timeDifference >= 10) && (timeDifference < 20)) {
-					$("#matchTimeContainer").addClass("alert-warning");
-				} else if (timeDifference >= 20) {
-					$("#matchTimeContainer").addClass("alert-danger");
-				}
-			}
-			$("#matchTimeContainer").removeClass();
-			$("#matchTimeContainer").addClass("col2");
-		}
-	}
-	$("#currentTime").html(moment().format('h:mm:ss a'));
-
-	//display the last pit visit time
-	$("[lastVisit]").each(function () {
-		if ($(this).attr("lastvisit") !== "No recent visit") {
-			$(this).html(moment($(this).attr("lastVisit")).fromNow());
-		}
-	});
-
-	//display the amount of localStorage in use
-	$("#localStorageUsage").html(localStorageSpace() + " in use");
-
-	//display the last time we had rankings
-	$("#allianceselectionlastupdated").html(" (Ranks last updated " + moment(lastRanksUpdate).fromNow() + ")<br>");
-	$("#rankstablelastupdated").html("<b>Ranks last updated " + moment(lastRanksUpdate).fromNow() + "</b>");
-	//update the warning in the Alliance Selection
-	ranksQualsCompare();
 }
 
 function parsePlayoffMatchName(matchName) {
@@ -4162,6 +2753,7 @@ function davidPriceFormat(priceMatchData) {
 	}
 	$("#davidPriceNumber").removeClass("redScore");
 	$("#davidPriceNumber").removeClass("blueScore");
+	if (inChamps() || inMiChamps()) {} else {}
 	if ((matchArray[0] === "Quarterfinal") && (matchArray[1] > 4)) {
 		if (playoffResults["Quarterfinal " + (matchArray[1] - 4)] === "Red") {
 			$("#davidPriceNumber").addClass("redScore");
@@ -4215,76 +2807,10 @@ function davidPriceFormat(priceMatchData) {
 		return "F" + (matchArray[1] || "");
 	}
 
-}
-
-
-function startTimer() {
-	"use strict";
-	if (localStorage.clock === "running") {
-		resetTimer();
-	} else {
-		localStorage.clock = "running";
+	if (matchArray[0] === "Einstein") {
+		return "E" + (matchArray[1] || "");
 	}
-}
 
-function resetTimer() {
-	"use strict";
-	localStorage.matchTimer = matchLength;
-	$("#timer").css({
-		"background-color": "white",
-		"animation-delay": "0s",
-		"animation-name": "timerReset",
-		"animation-duration": "1s",
-		"animation-iteration-count": "1",
-		"color": "black"
-	});
-	localStorage.clock = "ready";
-	$("#clock").html("Tap for match timer");
-}
-
-function inChamps() {
-	"use strict";
-	if (champs.indexOf(localStorage.currentEvent) >= 0) {
-		return true;
-	} else {
-		return false;
-	}
-}
-
-function inDivision() {
-	"use strict";
-	if (champDivisions.indexOf(localStorage.currentEvent) >= 0) {
-		return true;
-	} else {
-		return false;
-	}
-}
-
-function inSubdivision() {
-	"use strict";
-	if (champSubdivisions.indexOf(localStorage.currentEvent) >= 0) {
-		return true;
-	} else {
-		return false;
-	}
-}
-
-function inMiChamps() {
-	"use strict";
-	if (miChamps.indexOf(localStorage.currentEvent) >= 0) {
-		return true;
-	} else {
-		return false;
-	}
-}
-
-function inMiDivision() {
-	"use strict";
-	if (miDivisions.indexOf(localStorage.currentEvent) >= 0) {
-		return true;
-	} else {
-		return false;
-	}
 }
 
 function awardsHilight(awardName) {
@@ -4300,26 +2826,6 @@ function awardsHilight(awardName) {
 			"after": "</span>"
 		};
 	}
-}
-
-function inHallOfFame(team, position) {
-	"use strict";
-	var hofDisplay = "";
-	$("#" + position + "HOF").hide();
-	for (i = 0; i < hallOfFame.length; i++) {
-		if (team === hallOfFame[i].Chairmans) {
-			hofDisplay += hallOfFame[i].Year + " " + hallOfFame[i].Challenge + " Chairman's Award" + localStorage.awardSeparator;
-		}
-		if ((team === hallOfFame[i].Winner1) || (team === hallOfFame[i].Winner2) || (team === hallOfFame[i].Winner3) || (team === hallOfFame[i].Winner4) || (team === hallOfFame[i].Winner5)) {
-			hofDisplay += hallOfFame[i].Year + " " + hallOfFame[i].Challenge + " Winner" + localStorage.awardSeparator;
-		}
-	}
-	if (hofDisplay !== "") {
-		hofDisplay = hofDisplay.slice(0, hofDisplay.length - localStorage.awardSeparator.length);
-		$("#" + position + "HOF").html(hofDisplay);
-		$("#" + position + "HOF").show();
-	}
-
 }
 
 function handleQualsFiles(e) {
@@ -4554,43 +3060,6 @@ function handlePlayoffFiles(e) {
 
 }
 
-function toJSON(dataGrid, headerNames, headerTypes, newLine) {
-	"use strict";
-	//inits...
-	var commentLine = "//";
-	var commentLineEnd = "";
-	var outputText = "[";
-	var numRows = dataGrid.length;
-	var numColumns = headerNames.length;
-
-	//begin render loop
-	for (var i = 0; i < numRows; i++) {
-		var row = dataGrid[i];
-		var rowOutput = "";
-		outputText += "{";
-		for (var j = 0; j < numColumns; j++) {
-			if ((headerTypes[j] === "int") || (headerTypes[j] === "float")) {
-				rowOutput = row[j] || "null";
-			} else {
-				rowOutput = '"' + (row[j] || "") + '"';
-			}
-
-			outputText += ('"' + headerNames[j] + '"' + ":" + rowOutput);
-
-			if (j < (numColumns - 1)) {
-				outputText += ",";
-			}
-		}
-		outputText += "}";
-		if (i < (numRows - 1)) {
-			outputText += "," + newLine;
-		}
-	}
-	outputText += "]";
-
-	return outputText;
-}
-
 function handleQualsFilesReset() {
 	"use strict";
 	clearFileInput("QualsFiles");
@@ -4626,40 +3095,4 @@ function clearFileInput(id) {
 	// TODO: copy any other relevant attributes 
 
 	oldInput.parentNode.replaceChild(newInput, oldInput);
-}
-
-function localStorageSpace() {
-	"use strict";
-	var allStrings = '';
-	var localStorageSize = {};
-	for (var key in window.localStorage) {
-		if (window.localStorage.hasOwnProperty(key)) {
-			allStrings += window.localStorage[key];
-		}
-	}
-	if (allStrings) {} {
-		localStorageSize.size = ((allStrings.length * 16) / (8 * 1024));
-		localStorageSize.marker = " KB";
-		if (localStorageSize.size > 1024) {
-			localStorageSize.marker = " MB";
-			localStorageSize.size = localStorageSize.size / 1024;
-		}
-	}
-	return allStrings ? (3 + Math.round(localStorageSize.size)) + localStorageSize.marker : 'Empty (0 KB)';
-}
-
-function compressLocalStorage(target, value) {
-	"use strict";
-	localStorage[target] = LZString.compress(JSON.stringify(value));
-}
-
-function decompressLocalStorage(target) {
-	"use strict";
-	try {
-		var value = JSON.parse(localStorage[target]);
-		return value;
-
-	} catch (err) {
-		return JSON.parse(LZString.decompress(localStorage[target]));
-	}
 }
